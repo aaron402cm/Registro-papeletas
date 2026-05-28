@@ -226,7 +226,6 @@
             overflow: hidden;
         }
 
-        /* Contenedor scroll para ver el PDF en el celular sin romper nada */
         .preview-scroll-area {
             overflow-y: auto;
             flex: 1;
@@ -253,21 +252,20 @@
         /* ========================================== */
         #pdf-template {
             width: 680px;
-            padding: 25px;
+            padding: 20px;
             background: white;
             color: black !important;
             font-family: Arial, sans-serif;
-            font-size: 12px;
+            font-size: 11.5px;
             box-sizing: border-box;
             margin: 0 auto;
         }
-        .pdf-header { text-align: center; font-weight: bold; font-size: 13px; margin-bottom: 15px; text-transform: uppercase; }
-        .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+        .pdf-header { text-align: center; font-weight: bold; font-size: 13px; margin-bottom: 12px; text-transform: uppercase; }
+        .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
         
-        /* FUERZA TODO EL TEXTO Y ENCABEZADOS DEL PDF A SER NEGROS */
         .pdf-table th, .pdf-table td { 
             border: 1px solid black !important; 
-            padding: 6px; 
+            padding: 5px; 
             text-align: left; 
             font-size: 11px; 
             vertical-align: top;
@@ -279,7 +277,21 @@
             font-weight: bold;
         }
         
-        .section-title { font-weight: bold; margin-top: 12px; margin-bottom: 5px; background: #ddd; padding: 4px; font-size: 11px; text-transform: uppercase; color: black !important; }
+        .section-title { 
+            font-weight: bold; 
+            margin-top: 8px; 
+            margin-bottom: 4px; 
+            background: #ddd; 
+            padding: 4px; 
+            font-size: 11px; 
+            text-transform: uppercase; 
+            color: black !important; 
+        }
+
+        /* Regla anti-cortes de html2pdf para evitar rupturas huérfanas en hojas */
+        .pdf-table, .section-title, #pdf-txt-sancion-bloque, .signature-section {
+            page-break-inside: avoid;
+        }
 
         .loader {
             display: none;
@@ -346,7 +358,7 @@
                 <div class="form-group"><label>Descripción del Acto u Omisión</label><textarea id="inf-descripcion" rows="3"></textarea></div>
                 
                 <div class="form-group">
-                    <label>Medios Probatorios / Evidencias (Max 4 fotos recortadas)</label>
+                    <label>Medios Probatorios / Evidencias (Max 4 fotos)</label>
                     <input type="file" id="inf-evidencias-files" accept="image/*" style="display: none;" onchange="procesarSeleccionFoto()">
                     <button type="button" class="btn-block" style="background-color: var(--secondary); padding: 12px; font-size: 16px; margin-bottom: 10px;" onclick="abrirSelectorDeFoto()">
                         📸 Agregar Foto desde Galería
@@ -360,15 +372,15 @@
                 <div class="radio-tile-group">
                     <label class="radio-tile" id="tile-leve">
                         <input type="radio" name="graduacion" value="LEVE" onclick="marcarRadio(this)">
-                        LEVE (Suspensión temporal de 1 a 07 días)
+                        LEVE
                     </label>
                     <label class="radio-tile" id="tile-grave">
                         <input type="radio" name="graduacion" value="GRAVE" checked onclick="marcarRadio(this)">
-                        GRAVE (Suspensión temporal de 8 a 30 días)
+                        GRAVE
                     </label>
                     <label class="radio-tile" id="tile-muygrave">
                         <input type="radio" name="graduacion" value="MUY GRAVE" onclick="marcarRadio(this)">
-                        MUY GRAVE (Suspensión temporal de 30 días a más)
+                        MUY GRAVE
                     </label>
                 </div>
             </div>
@@ -435,15 +447,14 @@
     <div id="preview-modal" class="preview-modal-overlay">
         <div class="preview-container-box">
             <h3 style="margin-top:0; color:var(--primary); text-align: center;">👀 Vista Previa de la Papeleta</h3>
-            <p style="font-size:14px; color:#6c757d; margin-top:0; text-align: center;">Revise que todo esté correcto antes de generar el documento final.</p>
             
             <div class="preview-scroll-area">
                 <div id="preview-pdf-content" style="background: white; padding: 5px;">
                     
                     <div id="pdf-template">
-                        <div style="float: right; text-align: right; font-weight: bold;">
+                        <div style="float: right; text-align: right; font-weight: bold; font-size: 11px;">
                             APM TERMINALS / Lifting Global Trade<br>
-                            <span style="color:red; font-size:14px;" id="pdf-txt-id-papeleta"></span>
+                            <span style="color:red; font-size:13px;" id="pdf-txt-id-papeleta"></span>
                         </div>
                         <div style="clear: both;"></div>
                         <div class="pdf-header">PAPELETA DE CARGOS No. <span id="pdf-txt-num-papeleta"></span></div>
@@ -477,32 +488,40 @@
                         </table>
 
                         <div class="section-title">DESCRIPCIÓN DEL ACTO U OMISIÓN REALIZADO POR EL PRESUNTO INFRACTOR</div>
-                        <div style="border:1px solid black; padding:8px; min-height:45px; margin-bottom:10px; font-size:11px;" id="pdf-txt-descripcion"></div>
+                        <div style="border:1px solid black; padding:6px; min-height:35px; margin-bottom:8px; font-size:10.5px;" id="pdf-txt-descripcion"></div>
 
-                        <div class="section-title">MEDIOS PROBATORIOS (FOTOS, FILMACIONES, DOCUMENTOS U OTRAS EVIDENCIAS)</div>
-                        <div style="border:1px solid black; padding:8px; min-height:60px; margin-bottom:10px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;" id="pdf-txt-evidencias"></div>
+                        <div class="section-title">MEDIOS PROBATORIOS (EVIDENCIAS FOTOGRÁFICAS)</div>
+                        <div style="border:1px solid black; padding:6px; min-height:50px; margin-bottom:8px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;" id="pdf-txt-evidencias"></div>
 
                         <div class="section-title">PRESUNTA INFRACION (De acuerdo con la tabla del RIS)</div>
-                        <p style="margin: 3px 0;"><strong>Área de la Infracción:</strong> Seguridad y Accesos</p>
-                        <p style="margin: 3px 0;"><strong>Tipo de Conducta Infractora:</strong> <span id="pdf-txt-conducta"></span></p>
-                        <p style="margin: 3px 0;"><strong>Graduación:</strong> <span id="pdf-txt-graduacion" style="font-weight:bold;"></span></p>
-                        <p style="margin: 5px 0 2px 0;"><strong>Posible Sanción:</strong></p>
-                        <div id="pdf-txt-sancion-bloque" style="border: 1px dashed #555; padding: 8px; font-size: 11px; margin-bottom: 10px; background: #fafafa; line-height: 1.4;"></div>
+                        <p style="margin: 2px 0;"><strong>Área de la Infracción:</strong> Seguridad y Accesos</p>
+                        <p style="margin: 2px 0;"><strong>Tipo de Conducta Infractora:</strong> <span id="pdf-txt-conducta"></span></p>
+                        <p style="margin: 2px 0;"><strong>Graduación Seleccionada:</strong> <span id="pdf-txt-graduacion" style="font-weight:bold; color:red;"></span></p>
+                        
+                        <div id="pdf-txt-sancion-bloque" style="border: 1px dashed #555; padding: 6px; font-size: 10.5px; margin-bottom: 8px; background: #fafafa; line-height: 1.35;">
+                            <strong>• Posible Sanción:</strong><br>
+                            • <strong>Primera vez:</strong> Suspensión temporal de 8 a 30 días.<br>
+                            • <strong>Segunda vez:</strong> Se considerará como infracción muy grave y se aplicará suspensión temporal de 31 días a 6 meses.<br>
+                            • <strong>Tercera vez:</strong> Se considerará como infracción muy grave y se aplicará suspensión temporal de 1 año.<br>
+                            • <strong>Medidas de carácter provisional (En caso aplique)</strong>
+                        </div>
 
-                        <table class="pdf-table" style="margin-top:15px;">
-                            <tr>
-                                <th style="width:50%;">RESPONSABLE COMPETENTE</th>
-                                <th style="width:50%;">ÓRGANO DE INSTRUCCIÓN</th>
-                            </tr>
-                            <tr>
-                                <td>DEPARTAMENTO DE PROTECCION<br><br><strong>Emitido por:</strong> <span id="pdf-txt-responsable"></span></td>
-                                <td><strong>FECHA Y HORA DE EMISIÓN:</strong><br><span id="pdf-txt-fecha-envio"></span></td>
-                            </tr>
-                        </table>
+                        <div class="signature-section">
+                            <table class="pdf-table" style="margin-top:10px;">
+                                <tr>
+                                    <th style="width:50%;">RESPONSABLE COMPETENTE</th>
+                                    <th style="width:50%;">ÓRGANO DE INSTRUCCIÓN</th>
+                                </tr>
+                                <tr>
+                                    <td>DEPARTAMENTO DE PROTECCION<br><br><strong>Estatus:</strong> Emitido Electrónicamente</td>
+                                    <td><strong>FECHA Y HORA DE EMISIÓN:</strong><br><span id="pdf-txt-fecha-envio"></span></td>
+                                </tr>
+                            </table>
 
-                        <div style="margin-top: 15px; font-size: 10.5px; text-align: justify; line-height: 1.35; border-top: 1px solid #000; padding-top: 8px;">
-                            En virtud de lo señalado, se le otorga un plazo máximo de tres (3) días hábiles luego de recibida la presente notificación, a efectos de que presente sus descargos/información que considere pertinente.<br>
-                            <strong>Base legal:</strong> Reglamento de Infracciones y Sanciones del Terminal Norte Multipropósito del Terminal Portuario del Callao aprobado por Resolución de Gerencia General Nº 0013-2024-APN-GG.
+                            <div style="margin-top: 10px; font-size: 10px; text-align: justify; line-height: 1.3; border-top: 1px solid #000; padding-top: 6px;">
+                                En virtud de lo señalado, se le otorga un plazo máximo de tres (3) días hábiles luego de recibida la presente notificación, a efectos de que presente sus descargos/información que considere pertinente.<br>
+                                <strong>Base legal:</strong> Reglamento de Infracciones y Sanciones del Terminal Norte Multipropósito del Terminal Portuario del Callao aprobado por Resolución de Gerencia General Nº 0013-2024-APN-GG.
+                            </div>
                         </div>
                     </div>
 
@@ -512,22 +531,22 @@
             <div class="loader" id="form-loader"></div>
 
             <div class="preview-actions" id="preview-buttons-group">
-                <button type="button" class="btn-block" style="background-color:var(--warning); color: #333;" onclick="cerrarVentanaPrevisualizacion()">✏️ Modificar / Corregir</button>
-                <button type="button" class="btn-block" style="background-color:var(--success);" onclick="ejecutarExportacionFinal()">✅ Todo Conforme / Emitir</button>
+                <button type="button" class="btn-block" style="background-color:var(--warning); color: #333;" onclick="cerrarVentanaPrevisualizacion()">✏️ Corregir</button>
+                <button type="button" class="btn-block" style="background-color:var(--success);" onclick="ejecutarExportacionFinal()">✅ Emitir</button>
             </div>
         </div>
     </div>
 
     <script>
-        // PEGA AQUÍ TU ENLACE DE GOOGLE APPS SCRIPT
-        const CONFIG_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykGrZsjMZ3ewTIXjuPKqy-UDpOjtFPtT-ebMM_ilC6bf6qwPRcNn1KhdUhrODdYzEBKg/exec";
+        // ENLACE DE TU GOOGLE APPS SCRIPT
+        const CONFIG_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykGrZsjMZ3ewTIXjuPKqy-UDpOjtFPtT-ebMM_ilC6bf6qwPRcNn1KhdUhrODdYzEBKg/exec"; 
         
         let databaseCache = { usuarios: [], historial: [] };
         let fotosBase64Guardadas = []; 
         let cropperInstance = null;    
         let actualFechaEnvioGlobal = "";
 
-        function abrirSelectorDeFoto() {
+        function abrirSelector DeFoto() {
             if (fotosBase64Guardadas.length >= 4) {
                 alert("⚠️ Ya has alcanzado el límite máximo de 4 fotos.");
                 return;
@@ -572,13 +591,13 @@
             if (!cropperInstance) return;
 
             const canvas = cropperInstance.getCroppedCanvas({
-                width: 400,
-                height: 300,
+                width: 320,
+                height: 240,
                 imageSmoothingEnabled: true,
                 imageSmoothingQuality: 'medium'
             });
 
-            const fotoRecortadaBase64 = canvas.toDataURL("image/jpeg", 0.75);
+            const fotoRecortadaBase64 = canvas.toDataURL("image/jpeg", 0.7);
             fotosBase64Guardadas.push(fotoRecortadaBase64);
 
             const contenedorPrevia = document.getElementById("galeria-previa");
@@ -587,7 +606,7 @@
 
             const img = document.createElement("img");
             img.src = fotoRecortadaBase64;
-            img.style.width = "80px"; img.style.height = "80px";
+            img.style.width = "75px"; img.style.height = "75px";
             img.style.objectFit = "cover"; img.style.borderRadius = "8px";
             img.style.border = "2px solid var(--primary)";
 
@@ -595,8 +614,8 @@
             btnBorrar.innerText = "✕";
             btnBorrar.style.position = "absolute"; btnBorrar.style.top = "-5px"; btnBorrar.style.right = "-5px";
             btnBorrar.style.background = "red"; btnBorrar.style.color = "white"; btnBorrar.style.border = "none";
-            btnBorrar.style.borderRadius = "50%"; btnBorrar.style.width = "20px"; btnBorrar.style.height = "20px";
-            btnBorrar.style.fontSize = "12px"; btnBorrar.style.cursor = "pointer";
+            btnBorrar.style.borderRadius = "50%"; btnBorrar.style.width = "18px"; btnBorrar.style.height = "18px";
+            btnBorrar.style.fontSize = "11px"; btnBorrar.style.cursor = "pointer";
             
             btnBorrar.onclick = function() {
                 const index = fotosBase64Guardadas.indexOf(fotoRecortadaBase64);
@@ -611,21 +630,19 @@
             cerrarModalRecorte();
         }
 
-        // CONSTRUCCIÓN DEL FORMULARIO DINÁMICO
         function abrirVentanaPrevisualizacion() {
             const responsable = document.getElementById("form-responsable").value;
             const numPapeleta = document.getElementById("form-num-papeleta").value;
             const idPapeleta = document.getElementById("form-id-papeleta").value;
             
             if(!responsable || !document.getElementById("inf-nombre").value || !document.getElementById("inf-dni").value) {
-                alert("Por favor, llene los campos obligatorios (Nombre de Oficial, Nombre de Infractor y DNI)");
+                alert("Por favor, llene los campos obligatorios.");
                 return;
             }
 
             const hoy = new Date();
             actualFechaEnvioGlobal = hoy.toLocaleDateString() + " " + hoy.toLocaleTimeString();
 
-            // Sincronizar datos de texto
             document.getElementById("pdf-txt-id-papeleta").innerText = idPapeleta;
             document.getElementById("pdf-txt-num-papeleta").innerText = numPapeleta;
             document.getElementById("pdf-txt-nombre").innerText = document.getElementById("inf-nombre").value;
@@ -638,52 +655,36 @@
             document.getElementById("pdf-txt-placa").innerText = document.getElementById("inf-placa").value;
             document.getElementById("pdf-txt-lugar").innerText = document.getElementById("inf-lugar").value;
             
-            // Formatear Fecha del suceso de forma amigable
             const fInfraccionInput = document.getElementById("inf-fecha-hora").value;
             document.getElementById("pdf-txt-fecha-hora").innerText = fInfraccionInput ? fInfraccionInput.replace("T", " ") : "-";
             
             document.getElementById("pdf-txt-conducta").innerText = document.getElementById("inf-conducta").value;
             document.getElementById("pdf-txt-descripcion").innerText = document.getElementById("inf-descripcion").value;
             
-            // Sincronizar Fotos
             const contenedorPdfEvidencias = document.getElementById("pdf-txt-evidencias");
             contenedorPdfEvidencias.innerHTML = "";
             
             if(fotosBase64Guardadas.length === 0) {
                 contenedorPdfEvidencias.innerText = "NO SE ADJUNTARON EVIDENCIAS FOTOGRÁFICAS.";
             } else {
-                contenedorPdfEvidencias.style.display = "grid";
-                contenedorPdfEvidencias.style.gridTemplateColumns = "repeat(2, 1fr)";
-                contenedorPdfEvidencias.style.gap = "8px";
-                contenedorPdfEvidencias.style.justifyItems = "center";
+                contenedorPdfEvidencias.style.display = "flex";
+                contenedorPdfEvidencias.style.gap = "6px";
 
                 fotosBase64Guardadas.forEach(fotoData => {
                     const imgPdf = document.createElement("img");
                     imgPdf.src = fotoData;
-                    imgPdf.style.width = "100%"; imgPdf.style.maxWidth = "135px";
-                    imgPdf.style.height = "95px"; imgPdf.style.objectFit = "contain";
+                    imgPdf.style.width = "110px"; 
+                    imgPdf.style.height = "80px"; 
+                    imgPdf.style.objectFit = "cover";
                     imgPdf.style.border = "1px solid #333";
                     contenedorPdfEvidencias.appendChild(imgPdf);
                 });
             }
             
-            // ASIGNACIÓN COMPLETA DE SANCIONES SEGÚN EL RIS
             const graduacion = document.querySelector('input[name="graduacion"]:checked').value;
             document.getElementById("pdf-txt-graduacion").innerText = graduacion;
-            document.getElementById("pdf-txt-responsable").innerText = responsable;
             document.getElementById("pdf-txt-fecha-envio").innerText = actualFechaEnvioGlobal;
 
-            let bloqueSancion = "";
-            if(graduacion === "LEVE") {
-                bloqueSancion = "<strong>• Primera vez:</strong> Suspensión temporal de 1 a 07 días.<br><strong>• Segunda vez:</strong> Incremento de sanción respectiva de acuerdo a reincidencia.";
-            } else if(graduacion === "GRAVE") {
-                bloqueSancion = "<strong>• Primera vez:</strong> Suspensión temporal de 8 a 30 días.<br><strong>• Segunda vez:</strong> Se considerará como infracción muy grave y se aplicará suspensión temporal de 31 días a 6 meses.<br><strong>• Tercera vez:</strong> Se considerará como infracción muy grave y se aplicará suspensión temporal de 1 año.<br><strong>• Medidas de carácter provisional:</strong> En caso aplique según evaluación.";
-            } else {
-                bloqueSancion = "<strong>• Primera vez:</strong> Suspensión temporal de 30 días a más.<br><strong>• Reincidencia:</strong> Expulsión total del recinto portuario o cancelación definitiva de los permisos de acceso.";
-            }
-            document.getElementById("pdf-txt-sancion-bloque").innerHTML = bloqueSancion;
-
-            // Mostrar el modal
             document.getElementById("preview-modal").style.display = "flex";
         }
 
@@ -691,7 +692,6 @@
             document.getElementById("preview-modal").style.display = "none";
         }
 
-        // MOTOR DE EXPORTACIÓN MODIFICADO (CAPTURA DESDE LA VENTANA VISIBLE)
         function ejecutarExportacionFinal() {
             document.getElementById("form-loader").style.display = "block";
             document.getElementById("preview-buttons-group").style.display = "none";
@@ -700,23 +700,23 @@
             const idPapeleta = document.getElementById("form-id-papeleta").value;
             const graduacion = document.querySelector('input[name="graduacion"]:checked').value;
             
-            // ¡ESTE ES EL CAMBIO CLAVE! 
-            // Apuntamos al contenedor VISIBLE del scroll. Al estar visible en pantalla, html2pdf no saldrá blanco.
             const elementoAImprimir = document.getElementById("pdf-template");
 
             const opcionesConfig = {
-                margin:       10,
+                margin:       8,
                 filename:     `Papeleta_${idPapeleta}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 2, logging: false, useCORS: true, scrollY: 0 },
-                jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            // Compilar el PDF real
-            html2pdf().set(opcionesConfig).from(elementoAImprimir).toPdf().output('base64').then(function(base64Str) {
+            html2pdf().set(opcionesConfig).from(elementoAImprimir).toPdf().output('datauristring').then(function(pdfDataUri) {
                 
+                const base64Limpio = pdfDataUri.split(',')[1];
+
                 const payload = {
-                    id_papeleta: idPapeleta, responsable: responsable,
+                    id_papeleta: idPapeleta, 
+                    responsable: responsable,
                     infractor_nombre: document.getElementById("inf-nombre").value,
                     infractor_dni: document.getElementById("inf-dni").value,
                     empresa: document.getElementById("inf-empresa").value,
@@ -724,26 +724,23 @@
                     graduacion: graduacion, 
                     fecha_infraccion: document.getElementById("inf-fecha-hora").value,
                     fecha_envio: actualFechaEnvioGlobal, 
-                    pdf_base64: base64Str
+                    pdf_base64: base64Limpio
                 };
 
-                // Enviar datos a Google Drive y Sheets
                 fetch(CONFIG_WEB_APP_URL, {
-                    method: "POST", mode: "no-cors",
+                    method: "POST", 
+                    mode: "no-cors",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 }).then(() => {
-                    // Descargar en el celular
                     html2pdf().set(opcionesConfig).from(elementoAImprimir).save();
                     
-                    alert(`✅ ¡Éxito Total!\nPapeleta ${idPapeleta} guardada en Drive y descargada en tu dispositivo.`);
+                    alert(`✅ ¡Proceso completado!\nPapeleta ${idPapeleta} registrada y guardada.`);
                     
-                    // Resetear interfaz
                     document.getElementById("form-loader").style.display = "none";
                     document.getElementById("preview-buttons-group").style.display = "flex";
                     document.getElementById("preview-modal").style.display = "none";
                     
-                    // Limpieza integral
                     document.getElementById("inf-nombre").value = ""; document.getElementById("inf-dni").value = "";
                     document.getElementById("inf-cargo").value = ""; document.getElementById("inf-contacto").value = "";
                     document.getElementById("inf-empresa").value = ""; document.getElementById("inf-correo").value = "";
@@ -755,7 +752,7 @@
                     
                     cargarDatosBaseDeDatos();
                 }).catch(err => {
-                    alert("⚠️ Error de red al subir a Drive: " + err);
+                    alert("⚠️ Error: " + err);
                     document.getElementById("form-loader").style.display = "none";
                     document.getElementById("preview-buttons-group").style.display = "flex";
                 });
@@ -764,7 +761,7 @@
 
         function verificarPassword() {
             const pass = document.getElementById("app-password").value;
-            if(pass === "C*argo123") {
+            if(pass === "Cargo123") {
                 document.getElementById("login-screen").style.display = "none";
                 document.getElementById("main-app").style.display = "block";
                 cargarDatosBaseDeDatos();
@@ -786,11 +783,10 @@
         }
 
         function cargarDatosBaseDeDatos() {
-            if(CONFIG_WEB_APP_URL.includes("AQUÍ_PEGA")) return;
             fetch(CONFIG_WEB_APP_URL)
             .then(res => res.json())
             .then(data => {
-                if(data.error) { alert("Error: " + data.error); return; }
+                if(data.error) { return; }
                 databaseCache = data;
                 
                 const select = document.getElementById("form-responsable");
@@ -823,8 +819,7 @@
                         </tr>`;
                     });
                 }
-            })
-            .catch(err => alert("Error de conexión: " + err));
+            });
         }
 
         function autoCalcularID() {
