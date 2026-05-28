@@ -233,16 +233,16 @@
         th, td { padding: 12px; border: 1px solid #dee2e6; text-align: left; }
         th { background-color: var(--primary); color: white; }
 
-        /* Plantilla Oculta para impresión en PDF */
+        //* Plantilla Oculta de forma segura para evitar PDFs en blanco */
         #pdf-template {
-            display: none;
-            width: 800px;
-            padding: 40px;
-            background: white;
-            color: black;
-            font-family: Arial, sans-serif;
-            font-size: 12px;
-        }
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+        width: 800px;
+        background: white;
+        color: black;
+        font-family: Arial, sans-serif;
+        font-size: 12px;
         .pdf-header { text-align: center; font-weight: bold; font-size: 14px; margin-bottom: 20px; }
         .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
         .pdf-table th, .pdf-table td { border: 1px solid black; padding: 6px; text-align: left; font-size: 12px; }
@@ -705,9 +705,6 @@
             }
             document.getElementById("pdf-txt-sancion-bloque").innerHTML = bloqueSancion;
 
-            const elementoPDF = document.getElementById("pdf-template");
-            elementoPDF.style.display = "block";
-
             const opcionesConfig = {
                 margin:       10,
                 filename:     `Papeleta_${idPapeleta}.pdf`,
@@ -717,7 +714,7 @@
             };
 
             html2pdf().set(opcionesConfig).from(elementoPDF).toPdf().output('base64').then(function(base64Str) {
-                elementoPDF.style.display = "none";
+            
 
                 const payload = {
                     id_papeleta: idPapeleta, responsable: responsable,
