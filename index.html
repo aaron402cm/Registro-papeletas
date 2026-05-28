@@ -207,7 +207,7 @@
         
         .cropper-container-box, .preview-container-box {
             width: 100%;
-            max-width: 650px;
+            max-width: 760px;
             background: white;
             border-radius: 12px;
             padding: 20px;
@@ -215,7 +215,7 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
             display: flex;
             flex-direction: column;
-            max-height: 90vh;
+            max-height: 95vh;
         }
 
         .cropper-wrapper {
@@ -252,8 +252,8 @@
         /* DISEÑO DE LA PLANTILLA DEL PDF REAL        */
         /* ========================================== */
         #pdf-template {
-            width: 700px; /* Tamaño optimizado para html2pdf */
-            padding: 30px;
+            width: 680px;
+            padding: 25px;
             background: white;
             color: black;
             font-family: Arial, sans-serif;
@@ -261,11 +261,11 @@
             box-sizing: border-box;
             margin: 0 auto;
         }
-        .pdf-header { text-align: center; font-weight: bold; font-size: 14px; margin-bottom: 15px; }
+        .pdf-header { text-align: center; font-weight: bold; font-size: 13px; margin-bottom: 15px; text-transform: uppercase; }
         .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
-        .pdf-table th, .pdf-table td { border: 1px solid black; padding: 6px; text-align: left; font-size: 11px; }
+        .pdf-table th, .pdf-table td { border: 1px solid black; padding: 6px; text-align: left; font-size: 11px; vertical-align: top; }
         .pdf-table th { background-color: #f2f2f2; }
-        .section-title { font-weight: bold; margin-top: 12px; margin-bottom: 5px; background: #ddd; padding: 4px; font-size: 11px; }
+        .section-title { font-weight: bold; margin-top: 12px; margin-bottom: 5px; background: #ddd; padding: 4px; font-size: 11px; text-transform: uppercase; }
 
         .loader {
             display: none;
@@ -345,11 +345,11 @@
                 <h3>Graduación de la Infracción</h3>
                 <div class="radio-tile-group">
                     <label class="radio-tile" id="tile-leve">
-                        <input type="radio" name="graduacion" value="LEVE" checked onclick="marcarRadio(this)">
+                        <input type="radio" name="graduacion" value="LEVE" onclick="marcarRadio(this)">
                         LEVE (Suspensión temporal de 1 a 07 días)
                     </label>
                     <label class="radio-tile" id="tile-grave">
-                        <input type="radio" name="graduacion" value="GRAVE" onclick="marcarRadio(this)">
+                        <input type="radio" name="graduacion" value="GRAVE" checked onclick="marcarRadio(this)">
                         GRAVE (Suspensión temporal de 8 a 30 días)
                     </label>
                     <label class="radio-tile" id="tile-muygrave">
@@ -424,7 +424,75 @@
             <p style="font-size:14px; color:#6c757d; margin-top:0; text-align: center;">Revise que todo esté correcto antes de generar el documento final.</p>
             
             <div class="preview-scroll-area">
-                <div id="preview-pdf-content"></div>
+                <div id="preview-pdf-content" style="background: white; padding: 5px;">
+                    
+                    <div id="pdf-template">
+                        <div style="float: right; text-align: right; font-weight: bold;">
+                            APM TERMINALS / Lifting Global Trade<br>
+                            <span style="color:red; font-size:14px;" id="pdf-txt-id-papeleta"></span>
+                        </div>
+                        <div style="clear: both;"></div>
+                        <div class="pdf-header">PAPELETA DE CARGOS No. <span id="pdf-txt-num-papeleta"></span></div>
+                        
+                        <div class="section-title">DATOS DEL PRESUNTO INFRACTOR</div>
+                        <table class="pdf-table">
+                            <tr>
+                                <td style="width:50%;"><strong>NOMBRES Y APELLIDOS:</strong><br><span id="pdf-txt-nombre"></span></td>
+                                <td style="width:50%;"><strong>DNI/C.E/PASAPORTE:</strong><br><span id="pdf-txt-dni"></span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>CARGO:</strong><br><span id="pdf-txt-cargo"></span></td>
+                                <td><strong>NUMERO DE CONTACTO:</strong><br><span id="pdf-txt-contacto"></span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>EMPRESA/RAZÓN SOCIAL:</strong><br><span id="pdf-txt-empresa"></span></td>
+                                <td><strong>CORREO ELECTRÓNICO:</strong><br><span id="pdf-txt-correo"></span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>N° LICENCIA DE CONDUCIR:</strong><br><span id="pdf-txt-licencia"></span></td>
+                                <td><strong>PLACA DE VEHÍCULO:</strong><br><span id="pdf-txt-placa"></span></td>
+                            </tr>
+                        </table>
+
+                        <div class="section-title">CONDUCTA INFRACTORA DETECTADA</div>
+                        <table class="pdf-table">
+                            <tr>
+                                <td style="width:50%;"><strong>LUGAR / ZONA DE LA INFRACCIÓN:</strong><br><span id="pdf-txt-lugar"></span></td>
+                                <td style="width:50%;"><strong>FECHA Y HORA DE LA INFRACCIÓN:</strong><br><span id="pdf-txt-fecha-hora"></span></td>
+                            </tr>
+                        </table>
+
+                        <div class="section-title">DESCRIPCIÓN DEL ACTO U OMISIÓN REALIZADO POR EL PRESUNTO INFRACTOR</div>
+                        <div style="border:1px solid black; padding:8px; min-height:45px; margin-bottom:10px; font-size:11px;" id="pdf-txt-descripcion"></div>
+
+                        <div class="section-title">MEDIOS PROBATORIOS (FOTOS, FILMACIONES, DOCUMENTOS U OTRAS EVIDENCIAS)</div>
+                        <div style="border:1px solid black; padding:8px; min-height:60px; margin-bottom:10px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;" id="pdf-txt-evidencias"></div>
+
+                        <div class="section-title">PRESUNTA INFRACION (De acuerdo con la tabla del RIS)</div>
+                        <p style="margin: 3px 0;"><strong>Área de la Infracción:</strong> Seguridad y Accesos</p>
+                        <p style="margin: 3px 0;"><strong>Tipo de Conducta Infractora:</strong> <span id="pdf-txt-conducta"></span></p>
+                        <p style="margin: 3px 0;"><strong>Graduación:</strong> <span id="pdf-txt-graduacion" style="font-weight:bold;"></span></p>
+                        <p style="margin: 5px 0 2px 0;"><strong>Posible Sanción:</strong></p>
+                        <div id="pdf-txt-sancion-bloque" style="border: 1px dashed #555; padding: 8px; font-size: 11px; margin-bottom: 10px; background: #fafafa; line-height: 1.4;"></div>
+
+                        <table class="pdf-table" style="margin-top:15px;">
+                            <tr>
+                                <th style="width:50%;">RESPONSABLE COMPETENTE</th>
+                                <th style="width:50%;">ÓRGANO DE INSTRUCCIÓN</th>
+                            </tr>
+                            <tr>
+                                <td>DEPARTAMENTO DE PROTECCION<br><br><strong>Emitido por:</strong> <span id="pdf-txt-responsable"></span></td>
+                                <td><strong>FECHA Y HORA DE EMISIÓN:</strong><br><span id="pdf-txt-fecha-envio"></span></td>
+                            </tr>
+                        </table>
+
+                        <div style="margin-top: 15px; font-size: 10.5px; text-align: justify; line-height: 1.35; border-top: 1px solid #000; padding-top: 8px;">
+                            En virtud de lo señalado, se le otorga un plazo máximo de tres (3) días hábiles luego de recibida la presente notificación, a efectos de que presente sus descargos/información que considere pertinente.<br>
+                            <strong>Base legal:</strong> Reglamento de Infracciones y Sanciones del Terminal Norte Multipropósito del Terminal Portuario del Callao aprobado por Resolución de Gerencia General Nº 0013-2024-APN-GG.
+                        </div>
+                    </div>
+
+                </div>
             </div>
 
             <div class="loader" id="form-loader"></div>
@@ -432,71 +500,6 @@
             <div class="preview-actions" id="preview-buttons-group">
                 <button type="button" class="btn-block" style="background-color:var(--warning); color: #333;" onclick="cerrarVentanaPrevisualizacion()">✏️ Modificar / Corregir</button>
                 <button type="button" class="btn-block" style="background-color:var(--success);" onclick="ejecutarExportacionFinal()">✅ Todo Conforme / Emitir</button>
-            </div>
-        </div>
-    </div>
-
-    <div style="position: absolute; top: -9999px; left: -9999px; overflow: hidden; width: 0; height: 0;">
-        <div id="pdf-template">
-            <div style="float: right; text-align: right; font-weight: bold;">
-                APM TERMINALS / Lifting Global Trade<br>
-                <span style="color:red; font-size:14px;" id="pdf-txt-id-papeleta"></span>
-            </div>
-            <div style="clear: both;"></div>
-            <div class="pdf-header">PAPELETA DE CARGOS No. <span id="pdf-txt-num-papeleta"></span></div>
-            
-            <div class="section-title">DATOS DEL PRESUNTO INFRACTOR</div>
-            <table class="pdf-table">
-                <tr>
-                    <td style="width:50%;"><strong>NOMBRES Y APELLIDOS:</strong><br><span id="pdf-txt-nombre"></span></td>
-                    <td style="width:50%;"><strong>DNI/C.E/PASAPORTE:</strong><br><span id="pdf-txt-dni"></span></td>
-                </tr>
-                <tr>
-                    <td><strong>CARGO:</strong><br><span id="pdf-txt-cargo"></span></td>
-                    <td><strong>NUMERO DE CONTACTO:</strong><br><span id="pdf-txt-contacto"></span></td>
-                </tr>
-                <tr>
-                    <td><strong>EMPRESA/RAZÓN SOCIAL:</strong><br><span id="pdf-txt-empresa"></span></td>
-                    <td><strong>CORREO ELECTRÓNICO:</strong><br><span id="pdf-txt-correo"></span></td>
-                </tr>
-                <tr>
-                    <td><strong>N° LICENCIA DE CONDUCIR:</strong><br><span id="pdf-txt-licencia"></span></td>
-                    <td><strong>PLACA DE VEHÍCULO:</strong><br><span id="pdf-txt-placa"></span></td>
-                </tr>
-            </table>
-
-            <div class="section-title">CONDUCTA INFRACTORA DETECTADA</div>
-            <table class="pdf-table">
-                <tr>
-                    <td style="width:50%;"><strong>LUGAR / ZONA DE LA INFRACCIÓN:</strong><br><span id="pdf-txt-lugar"></span></td>
-                    <td style="width:50%;"><strong>FECHA Y HORA DE LA INFRACCIÓN:</strong><br><span id="pdf-txt-fecha-hora"></span></td>
-                </tr>
-            </table>
-
-            <div class="section-title">DESCRIPCIÓN DEL ACTO U OMISIÓN REALIZADO POR EL PRESUNTO INFRACTOR</div>
-            <div style="border:1px solid black; padding:8px; min-height:40px; margin-bottom:10px; font-size:11px;" id="pdf-txt-descripcion"></div>
-
-            <div class="section-title">MEDIOS PROBATORIOS (FOTOS, FILMACIONES, DOCUMENTOS U OTRAS EVIDENCIAS)</div>
-            <div style="border:1px solid black; padding:8px; min-height:60px; margin-bottom:10px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;" id="pdf-txt-evidencias"></div>
-
-            <div class="section-title">PRESUNTA INFRACIÓN (De acuerdo con la tabla del RIS)</div>
-            <p style="margin: 3px 0;"><strong>Área de la Infracción:</strong> Seguridad y Accesos</p>
-            <p style="margin: 3px 0;"><strong>Tipo de Conducta Infractora:</strong> <span id="pdf-txt-conducta"></span></p>
-            <p style="margin: 3px 0;"><strong>Graduación:</strong> <span id="pdf-txt-graduacion" style="font-weight:bold;"></span></p>
-            <p style="margin: 3px 0;"><strong>Posible Sanción:</strong></p>
-            <div id="pdf-txt-sancion-bloque" style="padding-left:15px; font-style:italic; font-size:11px; margin-bottom:10px;"></div>
-
-            <div style="margin-top:15px;">
-                <table class="pdf-table">
-                    <tr>
-                        <th style="width:50%;">RESPONSABLE COMPETENTE</th>
-                        <th style="width:50%;">ÓRGANO DE INSTRUCCIÓN</th>
-                    </tr>
-                    <tr>
-                        <td>DEPARTAMENTO DE PROTECCION<br><br><strong>Emitido por:</strong> <span id="pdf-txt-responsable"></span></td>
-                        <td><strong>FECHA Y HORA DE EMISIÓN:</strong><br><span id="pdf-txt-fecha-envio"></span></td>
-                    </tr>
-                </table>
             </div>
         </div>
     </div>
@@ -594,21 +597,21 @@
             cerrarModalRecorte();
         }
 
-        // ETAPA 1: LLENAR LA CARPETA OCULTA Y RENDERIZAR LA VISTA PREVIA
+        // CONSTRUCCIÓN DEL FORMULARIO DINÁMICO
         function abrirVentanaPrevisualizacion() {
             const responsable = document.getElementById("form-responsable").value;
             const numPapeleta = document.getElementById("form-num-papeleta").value;
             const idPapeleta = document.getElementById("form-id-papeleta").value;
             
             if(!responsable || !document.getElementById("inf-nombre").value || !document.getElementById("inf-dni").value) {
-                alert("Por favor, rellene los campos obligatorios (Nombre de Oficial, Nombre de Infractor y DNI)");
+                alert("Por favor, llene los campos obligatorios (Nombre de Oficial, Nombre de Infractor y DNI)");
                 return;
             }
 
             const hoy = new Date();
             actualFechaEnvioGlobal = hoy.toLocaleDateString() + " " + hoy.toLocaleTimeString();
 
-            // Sincronizar datos con el objeto oculto real
+            // Sincronizar datos de texto
             document.getElementById("pdf-txt-id-papeleta").innerText = idPapeleta;
             document.getElementById("pdf-txt-num-papeleta").innerText = numPapeleta;
             document.getElementById("pdf-txt-nombre").innerText = document.getElementById("inf-nombre").value;
@@ -620,10 +623,15 @@
             document.getElementById("pdf-txt-licencia").innerText = document.getElementById("inf-licencia").value;
             document.getElementById("pdf-txt-placa").innerText = document.getElementById("inf-placa").value;
             document.getElementById("pdf-txt-lugar").innerText = document.getElementById("inf-lugar").value;
-            document.getElementById("pdf-txt-fecha-hora").innerText = document.getElementById("inf-fecha-hora").value;
+            
+            // Formatear Fecha del suceso de forma amigable
+            const fInfraccionInput = document.getElementById("inf-fecha-hora").value;
+            document.getElementById("pdf-txt-fecha-hora").innerText = fInfraccionInput ? fInfraccionInput.replace("T", " ") : "-";
+            
             document.getElementById("pdf-txt-conducta").innerText = document.getElementById("inf-conducta").value;
             document.getElementById("pdf-txt-descripcion").innerText = document.getElementById("inf-descripcion").value;
             
+            // Sincronizar Fotos
             const contenedorPdfEvidencias = document.getElementById("pdf-txt-evidencias");
             contenedorPdfEvidencias.innerHTML = "";
             
@@ -632,19 +640,20 @@
             } else {
                 contenedorPdfEvidencias.style.display = "grid";
                 contenedorPdfEvidencias.style.gridTemplateColumns = "repeat(2, 1fr)";
-                contenedorPdfEvidencias.style.gap = "10px";
+                contenedorPdfEvidencias.style.gap = "8px";
                 contenedorPdfEvidencias.style.justifyItems = "center";
 
                 fotosBase64Guardadas.forEach(fotoData => {
                     const imgPdf = document.createElement("img");
                     imgPdf.src = fotoData;
-                    imgPdf.style.width = "100%"; imgPdf.style.maxWidth = "140px";
-                    imgPdf.style.height = "100px"; imgPdf.style.objectFit = "contain";
+                    imgPdf.style.width = "100%"; imgPdf.style.maxWidth = "135px";
+                    imgPdf.style.height = "95px"; imgPdf.style.objectFit = "contain";
                     imgPdf.style.border = "1px solid #333";
                     contenedorPdfEvidencias.appendChild(imgPdf);
                 });
             }
             
+            // ASIGNACIÓN COMPLETA DE SANCIONES SEGÚN EL RIS
             const graduacion = document.querySelector('input[name="graduacion"]:checked').value;
             document.getElementById("pdf-txt-graduacion").innerText = graduacion;
             document.getElementById("pdf-txt-responsable").innerText = responsable;
@@ -652,21 +661,15 @@
 
             let bloqueSancion = "";
             if(graduacion === "LEVE") {
-                bloqueSancion = "• Primera vez: Suspensión temporal de 1 a 07 días.<br>• Segunda vez: Incremento de sanción respectiva.";
+                bloqueSancion = "<strong>• Primera vez:</strong> Suspensión temporal de 1 a 07 días.<br><strong>• Segunda vez:</strong> Incremento de sanción respectiva de acuerdo a reincidencia.";
             } else if(graduacion === "GRAVE") {
-                bloqueSancion = "• Primera vez: Suspensión temporal de 8 a 30 días.<br>• Segunda vez: Se considerará como infracción muy grave (31 días a 6 meses).";
+                bloqueSancion = "<strong>• Primera vez:</strong> Suspensión temporal de 8 a 30 días.<br><strong>• Segunda vez:</strong> Se considerará como infracción muy grave y se aplicará suspensión temporal de 31 días a 6 meses.<br><strong>• Tercera vez:</strong> Se considerará como infracción muy grave y se aplicará suspensión temporal de 1 año.<br><strong>• Medidas de carácter provisional:</strong> En caso aplique según evaluación.";
             } else {
-                bloqueSancion = "• Primera vez: Suspensión temporal de 30 días a más.<br>• Reincidencia: Expulsión o cancelación definitiva de accesos.";
+                bloqueSancion = "<strong>• Primera vez:</strong> Suspensión temporal de 30 días a más.<br><strong>• Reincidencia:</strong> Expulsión total del recinto portuario o cancelación definitiva de los permisos de acceso.";
             }
             document.getElementById("pdf-txt-sancion-bloque").innerHTML = bloqueSancion;
 
-            // Clonamos el nodo limpio para mostrarlo dentro de la ventana de scroll
-            const clonParaPreview = document.getElementById("pdf-template").cloneNode(true);
-            const areaDestino = document.getElementById("preview-pdf-content");
-            areaDestino.innerHTML = "";
-            areaDestino.appendChild(clonParaPreview);
-
-            // Abrimos el modal de confirmación
+            // Mostrar el modal
             document.getElementById("preview-modal").style.display = "flex";
         }
 
@@ -674,9 +677,8 @@
             document.getElementById("preview-modal").style.display = "none";
         }
 
-        // ETAPA 2: EL OPERADOR DIJO QUE SÍ, COMPILAMOS EL ARCHIVO BINARIO Y EJECUTAMOS DESCARGA Y SUBIDA
+        // MOTOR DE EXPORTACIÓN MODIFICADO (CAPTURA DESDE LA VENTANA VISIBLE)
         function ejecutarExportacionFinal() {
-            // Activar loaders y apagar botones para evitar doble clic
             document.getElementById("form-loader").style.display = "block";
             document.getElementById("preview-buttons-group").style.display = "none";
 
@@ -684,19 +686,20 @@
             const idPapeleta = document.getElementById("form-id-papeleta").value;
             const graduacion = document.querySelector('input[name="graduacion"]:checked').value;
             
-            // Apuntamos al contenedor original que está renderizado al 100% en el DOM oculto
-            const elementoPDFReal = document.getElementById("pdf-template");
+            // ¡ESTE ES EL CAMBIO CLAVE! 
+            // Apuntamos al contenedor VISIBLE del scroll. Al estar visible en pantalla, html2pdf no saldrá blanco.
+            const elementoAImprimir = document.getElementById("pdf-template");
 
             const opcionesConfig = {
                 margin:       10,
                 filename:     `Papeleta_${idPapeleta}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, logging: false, useCORS: true },
+                html2canvas:  { scale: 2, logging: false, useCORS: true, scrollY: 0 },
                 jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
             };
 
-            // Compilar en memoria
-            html2pdf().set(opcionesConfig).from(elementoPDFReal).toPdf().output('base64').then(function(base64Str) {
+            // Compilar el PDF real
+            html2pdf().set(opcionesConfig).from(elementoAImprimir).toPdf().output('base64').then(function(base64Str) {
                 
                 const payload = {
                     id_papeleta: idPapeleta, responsable: responsable,
@@ -710,23 +713,23 @@
                     pdf_base64: base64Str
                 };
 
-                // Transmitir datos en la nube (Google Drive y Sheets)
+                // Enviar datos a Google Drive y Sheets
                 fetch(CONFIG_WEB_APP_URL, {
                     method: "POST", mode: "no-cors",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 }).then(() => {
-                    // Descargar físicamente en el celular del operador
-                    html2pdf().set(opcionesConfig).from(elementoPDFReal).save();
+                    // Descargar en el celular
+                    html2pdf().set(opcionesConfig).from(elementoAImprimir).save();
                     
-                    alert(`✅ ¡Éxito Total!\nPapeleta ${idPapeleta} registrada en el Excel, guardada en tu Google Drive y guardada en las descargas del dispositivo.`);
+                    alert(`✅ ¡Éxito Total!\nPapeleta ${idPapeleta} guardada en Drive y descargada en tu dispositivo.`);
                     
-                    // Resetear loaders y cerrar modales
+                    // Resetear interfaz
                     document.getElementById("form-loader").style.display = "none";
                     document.getElementById("preview-buttons-group").style.display = "flex";
                     document.getElementById("preview-modal").style.display = "none";
                     
-                    // Limpieza integral del formulario
+                    // Limpieza integral
                     document.getElementById("inf-nombre").value = ""; document.getElementById("inf-dni").value = "";
                     document.getElementById("inf-cargo").value = ""; document.getElementById("inf-contacto").value = "";
                     document.getElementById("inf-empresa").value = ""; document.getElementById("inf-correo").value = "";
@@ -736,9 +739,9 @@
                     document.getElementById("galeria-previa").innerHTML = "";
                     fotosBase64Guardadas = [];
                     
-                    cargarDatosBaseDeDatos(); // Recargar tablas del Dashboard
+                    cargarDatosBaseDeDatos();
                 }).catch(err => {
-                    alert("⚠️ Error al sincronizar con Google Drive: " + err);
+                    alert("⚠️ Error de red al subir a Drive: " + err);
                     document.getElementById("form-loader").style.display = "none";
                     document.getElementById("preview-buttons-group").style.display = "flex";
                 });
@@ -767,8 +770,6 @@
             document.querySelectorAll('.radio-tile').forEach(t => t.classList.remove('selected'));
             radioInput.parentElement.classList.add('selected');
         }
-        
-        marcarRadio(document.querySelector('input[name="graduacion"]:checked'));
 
         function cargarDatosBaseDeDatos() {
             if(CONFIG_WEB_APP_URL.includes("AQUÍ_PEGA")) return;
