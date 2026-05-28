@@ -4,13 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Papeletas APM Terminals</title>
-    <!-- Librerías para generar el PDF de forma nativa -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    
     <style>
         :root {
             --primary: #004b87;
             --secondary: #007bff;
             --success: #28a745;
+            --danger: #dc3545;
             --bg-color: #f8f9fa;
             --text-color: #212529;
         }
@@ -21,7 +24,7 @@
             color: var(--text-color);
             margin: 0;
             padding: 0;
-            font-size: 18px; /* Letras grandes para fácil lectura */
+            font-size: 18px;
         }
 
         /* Pantalla de bloqueo */
@@ -51,7 +54,7 @@
         /* Contenedor Principal */
         #main-app {
             display: none;
-            padding-bottom: 80px; /* Espacio para barra inferior */
+            padding-bottom: 80px;
         }
 
         /* Barra de navegación inferior fija para celular */
@@ -66,7 +69,7 @@
             display: flex;
             justify-content: space-around;
             align-items: center;
-            z-index: 1000;
+            z-index: 999;
         }
 
         .nav-btn {
@@ -144,7 +147,7 @@
             outline: none;
         }
 
-        /* Botones de Opción Grande (Radio personalizados) */
+        /* Botones de Opción Grande */
         .radio-tile-group {
             display: flex;
             flex-direction: column;
@@ -187,32 +190,48 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        .btn-block:active {
-            transform: scale(0.98);
+        /* Ventana Emergente de Recorte (Modal) */
+        .cropper-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .cropper-container-box {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+        .cropper-wrapper {
+            width: 100%;
+            height: 300px;
+            background-color: #333;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        .cropper-wrapper img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        .cropper-actions {
+            display: flex;
+            gap: 10px;
         }
 
         /* Historial y Tablas */
-        .table-responsive {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            font-size: 16px;
-        }
-
-        th, td {
-            padding: 12px;
-            border: 1px solid #dee2e6;
-            text-align: left;
-        }
-
-        th {
-            background-color: var(--primary);
-            color: white;
-        }
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; background: white; font-size: 16px; }
+        th, td { padding: 12px; border: 1px solid #dee2e6; text-align: left; }
+        th { background-color: var(--primary); color: white; }
 
         /* Plantilla Oculta para impresión en PDF */
         #pdf-template {
@@ -230,14 +249,12 @@
         .pdf-table th { background-color: #f2f2f2; }
         .section-title { font-weight: bold; margin-top: 15px; margin-bottom: 5px; background: #ddd; padding: 4px; }
 
-        /* Loader de carga */
         .loader {
             display: none;
             border: 5px solid #f3f3f3;
             border-top: 5px solid var(--secondary);
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 40px; height: 40px;
             animation: spin 1s linear infinite;
             margin: 20px auto;
         }
@@ -246,7 +263,6 @@
 </head>
 <body>
 
-    <!-- 1. PANTALLA DE LOGUEO -->
     <div id="login-screen">
         <div class="login-box">
             <h2 style="border:none; margin-top:0;">🔒 Acceso Seguro</h2>
@@ -259,10 +275,7 @@
         </div>
     </div>
 
-    <!-- 2. APLICACIÓN PRINCIPAL -->
     <div id="main-app">
-        
-        <!-- PESTAÑA: NUEVA PAPELETA -->
         <section id="view-formulario" class="view-section active">
             <h2>📄 Emitir Papeleta</h2>
             
@@ -271,12 +284,10 @@
                     <label for="form-responsable">Oficial Responsable</label>
                     <select id="form-responsable" onchange="autoCalcularID()"></select>
                 </div>
-
                 <div class="form-group">
                     <label for="form-num-papeleta">N° Papeleta Siguiente</label>
                     <input type="text" id="form-num-papeleta" readonly style="background:#e9ecef; font-weight:bold; color:var(--primary);">
                 </div>
-
                 <div class="form-group">
                     <label for="form-id-papeleta">ID Documento Calculado</label>
                     <input type="text" id="form-id-papeleta" readonly style="background:#e9ecef; font-weight:bold; color:red;">
@@ -302,12 +313,11 @@
                 <div class="form-group"><label>Tipo de Conducta Infractora</label><textarea id="inf-conducta" rows="3"></textarea></div>
                 <div class="form-group"><label>Descripción del Acto u Omisión</label><textarea id="inf-descripcion" rows="3"></textarea></div>
                 
-                <!-- CAMPO AJUSTADO: CARGA DESDE LA GALERÍA DEL CELULAR -->
                 <div class="form-group">
-                    <label>Medios Probatorios / Evidencias (Adjuntar Fotos)</label>
-                    <input type="file" id="inf-evidencias-files" accept="image/*" multiple style="display: none;" onchange="previsualizarImagenes()">
-                    <button type="button" class="btn-block" style="background-color: var(--secondary); padding: 12px; font-size: 16px; margin-bottom: 10px;" onclick="document.getElementById('inf-evidencias-files').click()">
-                        📸 Seleccionar Fotos de la Galería
+                    <label>Medios Probatorios / Evidencias (Max 4 fotos recortadas)</label>
+                    <input type="file" id="inf-evidencias-files" accept="image/*" style="display: none;" onchange="procesarSeleccionFoto()">
+                    <button type="button" class="btn-block" style="background-color: var(--secondary); padding: 12px; font-size: 16px; margin-bottom: 10px;" onclick="abrirSelectorDeFoto()">
+                        📸 Agregar Foto desde Galería
                     </button>
                     <div id="galeria-previa" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;"></div>
                 </div>
@@ -335,10 +345,8 @@
             <button class="btn-block" onclick="procesarYExportar()">🚀 GUARDAR Y EXPORTAR PDF</button>
         </section>
 
-        <!-- PESTAÑA: DASHBOARD -->
         <section id="view-dashboard" class="view-section">
             <h2>📊 Historial de Registros</h2>
-            <p style="font-size:14px; color:#6c757d;">Últimos registros sincronizados desde Google Sheets</p>
             <div class="table-responsive">
                 <table id="tabla-dashboard">
                     <thead>
@@ -359,12 +367,10 @@
             </div>
         </section>
 
-        <!-- PESTAÑA: CONFIGURACIÓN -->
         <section id="view-config" class="view-section">
             <h2>⚙️ Configuración del Sistema</h2>
             <div class="card">
                 <h3>Sincronización Activa</h3>
-                <p style="font-size:15px; word-break: break-all;"><strong>Base de Datos:</strong><br> Google Sheets conectado de manera segura en la nube.</p>
                 <button class="btn-block" style="background-color:var(--secondary); padding:10px; font-size:16px;" onclick="cargarDatosBaseDeDatos()">🔄 Sincronizar Datos Ahora</button>
             </div>
             <div class="card">
@@ -372,11 +378,9 @@
                 <ul id="lista-usuarios-config" style="font-size:16px; padding-left:20px;">
                     <li>Cargando lista...</li>
                 </ul>
-                <p style="font-size:13px; color:#6c757d; font-style:italic;">Nota: Para agregar o modificar oficiales y corregir correlativos de base, edita directamente la pestaña 'CONFIGURACION' en tu Google Sheets.</p>
             </div>
         </section>
 
-        <!-- BARRA NAVEGACIÓN FIJA -->
         <nav class="navbar">
             <button class="nav-btn active" onclick="cambiarPestaña('formulario', this)"><span>📄</span>Formulario</button>
             <button class="nav-btn" onclick="cambiarPestaña('dashboard', this)"><span>📊</span>Dashboard</button>
@@ -384,18 +388,26 @@
         </nav>
     </div>
 
-    <!-- ========================================== -->
-    <!-- PLANTILLA DE DISEÑO DEL PDF (OCULTA EN WEB) -->
-    <!-- ========================================== -->
+    <div id="cropper-modal" class="cropper-modal-overlay">
+        <div class="cropper-container-box">
+            <h3 style="margin-top:0; color:var(--primary);">✂️ Recortar Evidencia</h3>
+            <div class="cropper-wrapper">
+                <img id="cropper-image" src="" alt="Previa">
+            </div>
+            <div class="cropper-actions">
+                <button type="button" class="btn-block" style="background-color:var(--danger);" onclick="cerrarModalRecorte()">Cancelar</button>
+                <button type="button" class="btn-block" style="background-color:var(--success);" onclick="aceptarRecorteFoto()">Cortar y Guardar</button>
+            </div>
+        </div>
+    </div>
+
     <div id="pdf-template">
         <div style="float: right; text-align: right; font-weight: bold;">
             APM TERMINALS / Lifting Global Trade<br>
             <span style="color:red; font-size:14px;" id="pdf-txt-id-papeleta"></span>
         </div>
         <div style="clear: both;"></div>
-        <div class="pdf-header">
-            PAPELETA DE CARGOS No. <span id="pdf-txt-num-papeleta"></span>
-        </div>
+        <div class="pdf-header">PAPELETA DE CARGOS No. <span id="pdf-txt-num-papeleta"></span></div>
         
         <div class="section-title">DATOS DEL PRESUNTO INFRACTOR</div>
         <table class="pdf-table">
@@ -429,7 +441,6 @@
         <div style="border:1px solid black; padding:10px; min-height:40px; margin-bottom:10px;" id="pdf-txt-descripcion"></div>
 
         <div class="section-title">MEDIOS PROBATORIOS (FOTOS, FILMACIONES, DOCUMENTOS U OTRAS EVIDENCIAS)</div>
-        <!-- CAMPO AJUSTADO: GALERÍA DE FOTOS DENTRO DEL PDF -->
         <div style="border:1px solid black; padding:10px; min-height:80px; margin-bottom:15px; display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;" id="pdf-txt-evidencias"></div>
 
         <div class="section-title">PRESUNTA INFRACIÓN (De acuerdo con la tabla del RIS)</div>
@@ -451,50 +462,106 @@
                 </tr>
             </table>
         </div>
-
-        <p style="font-size:10px; margin-top:20px; text-align:justify;">
-            En virtud de lo señalado, se le otorga un plazo máximo de tres (3) días hábiles luego de recibida la presente notificación, a efectos de que presente sus descargos/información que considere pertinente.<br>
-            <strong>Base legal:</strong> Reglamento de Infracciones y Sanciones del Terminal Norte Multipropósito del Terminal Portuario del Callao aprobado por Resolución de Gerencia General Nº 0013-2024-APN-GG
-        </p>
     </div>
 
-    <!-- ========================================== -->
-    <!-- LÓGICA LOGÍSTICA DE JAVASCRIPT            -->
-    <!-- ========================================== -->
     <script>
         // PEGA AQUÍ TU ENLACE DE GOOGLE APPS SCRIPT
-        const CONFIG_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzBU6fM_q6IIvlZ3tGL4IyPckDvy-zaUuQgCwueaSM2irY3c_Kbg4O01IV_BOh5KBQ4KQ/exec";
+        const CONFIG_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxK3e7UAGj5mTYA7mNdwl4ftxWMtK1k8WJKwy-AQdKoF7_K2p-DW7miM1oVZ02k4Rmrpg/exec";
         
         let databaseCache = { usuarios: [], historial: [] };
-        let fotosBase64Guardadas = []; // Almacena las fotos en memoria local
+        let fotosBase64Guardadas = []; // Almacena el listado de imágenes ya recortadas
+        let cropperInstance = null;    // Guarda la instancia de Cropper.js
 
-        // Manejo y procesamiento de imágenes desde el celular
-        function previsualizarImagenes() {
-            const archivos = document.getElementById("inf-evidencias-files").files;
-            const contenedorPrevia = document.getElementById("galeria-previa");
-            contenedorPrevia.innerHTML = ""; // Limpiar previas anteriores
-            fotosBase64Guardadas = []; // Reiniciar arreglo de imágenes
+        function abrirSelectorDeFoto() {
+            if (fotosBase64Guardadas.length >= 4) {
+                alert("⚠️ Ya has alcanzado el límite máximo de 4 fotos.");
+                return;
+            }
+            document.getElementById('inf-evidencias-files').click();
+        }
 
-            if (archivos.length === 0) return;
+        // Al seleccionar la foto de la galería, se lee y se abre en la ventana de recorte
+        function procesarSeleccionFoto() {
+            const input = document.getElementById("inf-evidencias-files");
+            if (!input.files || !input.files[0]) return;
 
-            Array.from(archivos).forEach(archivo => {
-                const lector = new FileReader();
-                lector.onload = function(evento) {
-                    const base64Str = evento.target.result;
-                    fotosBase64Guardadas.push(base64Str);
+            const archivo = input.files[0];
+            const lector = new FileReader();
+            
+            lector.onload = function(e) {
+                const imgModal = document.getElementById("cropper-image");
+                imgModal.src = e.target.result;
+                
+                // Mostrar ventana de recorte
+                document.getElementById("cropper-modal").style.display = "flex";
+                
+                // Inicializar Cropper.js optimizado para libre movimiento con el dedo
+                if(cropperInstance) cropperInstance.destroy();
+                cropperInstance = new Cropper(imgModal, {
+                    viewMode: 1,
+                    autoCropArea: 0.8,
+                    responsive: true,
+                    restore: false,
+                    movable: true,
+                    zoomable: true,
+                    rotatable: false,
+                    scalable: false
+                });
+            };
+            lector.readAsDataURL(archivo);
+        }
 
-                    // Miniatura visual en el formulario
-                    const img = document.createElement("img");
-                    img.src = base64Str;
-                    img.style.width = "70px";
-                    img.style.height = "70px";
-                    img.style.objectFit = "cover";
-                    img.style.borderRadius = "5px";
-                    img.style.border = "2px solid var(--primary)";
-                    contenedorPrevia.appendChild(img);
-                }
-                lector.readAsDataURL(archivo);
+        function cerrarModalRecorte() {
+            document.getElementById("cropper-modal").style.display = "none";
+            document.getElementById("inf-evidencias-files").value = ""; // reset selector
+            if(cropperInstance) cropperInstance.destroy();
+        }
+
+        // Ejecuta el corte, comprime la imagen para que sea ligera y la añade a la galería
+        function aceptarRecorteFoto() {
+            if (!cropperInstance) return;
+
+            // Extraemos la imagen cortada reduciendo su resolución para no saturar memoria en celular
+            const canvas = cropperInstance.getCroppedCanvas({
+                width: 400,
+                height: 300,
+                imageSmoothingEnabled: true,
+                imageSmoothingQuality: 'medium'
             });
+
+            const fotoRecortadaBase64 = canvas.toDataURL("image/jpeg", 0.75);
+            fotosBase64Guardadas.push(fotoRecortadaBase64);
+
+            // Dibujar miniatura en el formulario
+            const contenedorPrevia = document.getElementById("galeria-previa");
+            const divContenedor = document.createElement("div");
+            divContenedor.style.position = "relative";
+
+            const img = document.createElement("img");
+            img.src = fotoRecortadaBase64;
+            img.style.width = "80px"; img.style.height = "80px";
+            img.style.objectFit = "cover"; img.style.borderRadius = "8px";
+            img.style.border = "2px solid var(--primary)";
+
+            // Botón pequeño para poder eliminar la foto si se equivocan
+            const btnBorrar = document.createElement("button");
+            btnBorrar.innerText = "✕";
+            btnBorrar.style.position = "absolute"; btnBorrar.style.top = "-5px"; btnBorrar.style.right = "-5px";
+            btnBorrar.style.background = "red"; btnBorrar.style.color = "white"; btnBorrar.style.border = "none";
+            btnBorrar.style.borderRadius = "50%"; btnBorrar.style.width = "20px"; btnBorrar.style.height = "20px";
+            btnBorrar.style.fontSize = "12px"; btnBorrar.style.cursor = "pointer";
+            
+            btnBorrar.onclick = function() {
+                const index = fotosBase64Guardadas.indexOf(fotoRecortadaBase64);
+                if (index > -1) fotosBase64Guardadas.splice(index, 1);
+                divContenedor.remove();
+            };
+
+            divContenedor.appendChild(img);
+            divContenedor.appendChild(btnBorrar);
+            contenedorPrevia.appendChild(divContenedor);
+
+            cerrarModalRecorte();
         }
 
         function verificarPassword() {
@@ -511,7 +578,6 @@
         function cambiarPestaña(target, btn) {
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            
             document.getElementById('view-' + target).classList.add('active');
             btn.classList.add('active');
         }
@@ -521,73 +587,57 @@
             radioInput.parentElement.classList.add('selected');
         }
         
-        // Carga inicial del estado de los radio buttons
         marcarRadio(document.querySelector('input[name="graduacion"]:checked'));
 
-        // Sincronizar info con Google Sheets
         function cargarDatosBaseDeDatos() {
             if(CONFIG_WEB_APP_URL.includes("AQUÍ_PEGA")) return;
-            
             fetch(CONFIG_WEB_APP_URL)
             .then(res => res.json())
             .then(data => {
-                if(data.error) { alert("Error en Google Server: " + data.error); return; }
+                if(data.error) { alert("Error: " + data.error); return; }
                 databaseCache = data;
                 
-                // 1. Renderizar selector de Oficiales
                 const select = document.getElementById("form-responsable");
                 select.innerHTML = "";
                 data.usuarios.forEach(u => {
                     let opt = document.createElement("option");
-                    opt.value = u.nombre;
-                    opt.text = u.nombre;
-                    opt.dataset.iniciales = u.iniciales;
-                    opt.dataset.correlativo = u.siguienteCorrelativo;
+                    opt.value = u.nombre; opt.text = u.nombre;
+                    opt.dataset.iniciales = u.iniciales; opt.dataset.correlativo = u.siguienteCorrelativo;
                     select.appendChild(opt);
                 });
                 autoCalcularID();
 
-                // 2. Renderizar Ajustes
                 const listaConfig = document.getElementById("lista-usuarios-config");
                 listaConfig.innerHTML = "";
                 data.usuarios.forEach(u => {
-                    listaConfig.innerHTML += `<li><strong>${u.nombre}</strong> (${u.iniciales}) - Siguiente Papeleta Base: ${u.siguienteCorrelativo}</li>`;
+                    listaConfig.innerHTML += `<li><strong>${u.nombre}</strong> (${u.iniciales}) - Siguiente: ${u.siguienteCorrelativo}</li>`;
                 });
 
-                // 3. Renderizar Dashboard
                 const tbody = document.querySelector("#tabla-dashboard tbody");
                 tbody.innerHTML = "";
                 if(data.historial.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">No hay registros previos</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">No hay registros</td></tr>`;
                 } else {
                     data.historial.forEach(h => {
                         let fFormat = h.fecha_infraccion ? h.fecha_infraccion.split("T")[0] : "-";
                         tbody.innerHTML += `<tr>
                             <td><strong>${h.id_papeleta}</strong></td>
-                            <td>${h.responsable}</td>
-                            <td>${h.infractor}</td>
-                            <td>${h.dni}</td>
-                            <td>${h.empresa}</td>
-                            <td>${h.conducta}</td>
-                            <td>${fFormat}</td>
+                            <td>${h.responsable}</td><td>${h.infractor}</td><td>${h.dni}</td>
+                            <td>${h.empresa}</td><td>${h.conducta}</td><td>${fFormat}</td>
                         </tr>`;
                     });
                 }
             })
-            .catch(err => alert("Error conectando con la Base de datos: " + err));
+            .catch(err => alert("Error de conexión: " + err));
         }
 
         function autoCalcularID() {
             const select = document.getElementById("form-responsable");
             if(!select.value) return;
-            
             const option = select.options[select.selectedIndex];
-            const iniciales = option.dataset.iniciales;
-            const correlativo = option.dataset.correlativo;
             const yearActual = new Date().getFullYear(); // 2026
-
-            document.getElementById("form-num-papeleta").value = correlativo;
-            document.getElementById("form-id-papeleta").value = `${iniciales}_${correlativo}_${yearActual}`;
+            document.getElementById("form-num-papeleta").value = option.dataset.correlativo;
+            document.getElementById("form-id-papeleta").value = `${option.dataset.iniciales}_${option.dataset.correlativo}_${yearActual}`;
         }
 
         function procesarYExportar() {
@@ -596,17 +646,14 @@
             const idPapeleta = document.getElementById("form-id-papeleta").value;
             
             if(!responsable || !document.getElementById("inf-nombre").value || !document.getElementById("inf-dni").value) {
-                alert("Por favor rellene los datos obligatorios (Nombre, DNI e Infractor)");
+                alert("Rellene los campos obligatorios (Nombre y DNI)");
                 return;
             }
 
             document.getElementById("form-loader").style.display = "block";
-
-            // Obtener variables de tiempo
             const hoy = new Date();
             const fechaEnvioStr = hoy.toLocaleDateString() + " " + hoy.toLocaleTimeString();
 
-            // Mapeo a la plantilla PDF visible/invisible
             document.getElementById("pdf-txt-id-papeleta").innerText = idPapeleta;
             document.getElementById("pdf-txt-num-papeleta").innerText = numPapeleta;
             document.getElementById("pdf-txt-nombre").innerText = document.getElementById("inf-nombre").value;
@@ -617,38 +664,41 @@
             document.getElementById("pdf-txt-correo").innerText = document.getElementById("inf-correo").value;
             document.getElementById("pdf-txt-licencia").innerText = document.getElementById("inf-licencia").value;
             document.getElementById("pdf-txt-placa").innerText = document.getElementById("inf-placa").value;
-            
             document.getElementById("pdf-txt-lugar").innerText = document.getElementById("inf-lugar").value;
             document.getElementById("pdf-txt-fecha-hora").innerText = document.getElementById("inf-fecha-hora").value;
             document.getElementById("pdf-txt-conducta").innerText = document.getElementById("inf-conducta").value;
             document.getElementById("pdf-txt-descripcion").innerText = document.getElementById("inf-descripcion").value;
             
-            // Inserción de imágenes capturadas en el módulo de evidencias del PDF
             const contenedorPdfEvidencias = document.getElementById("pdf-txt-evidencias");
             contenedorPdfEvidencias.innerHTML = "";
             
             if(fotosBase64Guardadas.length === 0) {
                 contenedorPdfEvidencias.innerText = "NO SE ADJUNTARON EVIDENCIAS FOTOGRÁFICAS.";
             } else {
+                contenedorPdfEvidencias.style.display = "grid";
+                contenedorPdfEvidencias.style.gridTemplateColumns = "repeat(2, 1fr)";
+                contenedorPdfEvidencias.style.gap = "10px";
+                contenedorPdfEvidencias.style.justifyItems = "center";
+
                 fotosBase64Guardadas.forEach(fotoData => {
                     const imgPdf = document.createElement("img");
                     imgPdf.src = fotoData;
-                    imgPdf.style.maxHeight = "120px"; // Dimensión exacta para el cuerpo del PDF
+                    imgPdf.style.width = "100%"; imgPdf.style.maxWidth = "160px";
+                    imgPdf.style.height = "110px"; imgPdf.style.objectFit = "contain";
                     imgPdf.style.border = "1px solid #333";
                     contenedorPdfEvidencias.appendChild(imgPdf);
                 });
             }
             
-            const投duacion = document.querySelector('input[name="graduacion"]:checked').value;
-            document.getElementById("pdf-txt-graduacion").innerText =投duacion;
+            const graduacion = document.querySelector('input[name="graduacion"]:checked').value;
+            document.getElementById("pdf-txt-graduacion").innerText = graduacion;
             document.getElementById("pdf-txt-responsable").innerText = responsable;
             document.getElementById("pdf-txt-fecha-envio").innerText = fechaEnvioStr;
 
-            // Bloque dinámico de sanciones según graduación
             let bloqueSancion = "";
-            if(投duacion === "LEVE") {
+            if(graduacion === "LEVE") {
                 bloqueSancion = "• Primera vez: Suspensión temporal de 1 a 07 días.<br>• Segunda vez: Incremento de sanción respectiva.";
-            } else if(投duacion === "GRAVE") {
+            } else if(graduacion === "GRAVE") {
                 bloqueSancion = "• Primera vez: Suspensión temporal de 8 a 30 días.<br>• Segunda vez: Se considerará como infracción muy grave (31 días a 6 meses).";
             } else {
                 bloqueSancion = "• Primera vez: Suspensión temporal de 30 días a más.<br>• Reincidencia: Expulsión o cancelación definitiva de accesos.";
@@ -656,7 +706,7 @@
             document.getElementById("pdf-txt-sancion-bloque").innerHTML = bloqueSancion;
 
             const elementoPDF = document.getElementById("pdf-template");
-            elementoPDF.style.display = "block"; // Mostrar momentáneamente para captura
+            elementoPDF.style.display = "block";
 
             const opcionesConfig = {
                 margin:       10,
@@ -666,52 +716,39 @@
                 jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
             };
 
-            // Generar PDF y enviarlo simultáneamente a Google Drive
             html2pdf().set(opcionesConfig).from(elementoPDF).toPdf().output('base64').then(function(base64Str) {
-                elementoPDF.style.display = "none"; // Ocultar plantilla de nuevo
+                elementoPDF.style.display = "none";
 
                 const payload = {
-                    id_papeleta: idPapeleta,
-                    responsable: responsable,
+                    id_papeleta: idPapeleta, responsable: responsable,
                     infractor_nombre: document.getElementById("inf-nombre").value,
                     infractor_dni: document.getElementById("inf-dni").value,
                     empresa: document.getElementById("inf-empresa").value,
                     conducta_infractora: document.getElementById("inf-conducta").value,
-                    graduacion: 投duacion,
-                    fecha_infraccion: document.getElementById("inf-fecha-hora").value,
-                    fecha_envio: fechaEnvioStr,
-                    pdf_base64: base64Str
+                    graduacion: graduacion, fecha_infraccion: document.getElementById("inf-fecha-hora").value,
+                    fecha_envio: fechaEnvioStr, pdf_base64: base64Str
                 };
 
                 fetch(CONFIG_WEB_APP_URL, {
-                    method: "POST",
-                    mode: "no-cors", 
+                    method: "POST", mode: "no-cors",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 }).then(() => {
-                    // Descargar en el dispositivo del operador
                     html2pdf().set(opcionesConfig).from(elementoPDF).save();
-                    
-                    alert(`✅ ¡Éxito! Papeleta ${idPapeleta} guardada en Google Sheets, cargada en Drive y descargada en tu móvil.`);
+                    alert(`✅ ¡Éxito! Papeleta ${idPapeleta} guardada, enviada a Drive y descargada.`);
                     document.getElementById("form-loader").style.display = "none";
                     
-                    // Limpiar formulario y evidencias
-                    document.getElementById("inf-nombre").value = "";
-                    document.getElementById("inf-dni").value = "";
-                    document.getElementById("inf-cargo").value = "";
-                    document.getElementById("inf-contacto").value = "";
-                    document.getElementById("inf-empresa").value = "";
-                    document.getElementById("inf-correo").value = "";
-                    document.getElementById("inf-licencia").value = "";
-                    document.getElementById("inf-placa").value = "";
-                    document.getElementById("inf-conducta").value = "";
-                    document.getElementById("inf-descripcion").value = "";
+                    // Limpieza del formulario
+                    document.getElementById("inf-nombre").value = ""; document.getElementById("inf-dni").value = "";
+                    document.getElementById("inf-cargo").value = ""; document.getElementById("inf-contacto").value = "";
+                    document.getElementById("inf-empresa").value = ""; document.getElementById("inf-correo").value = "";
+                    document.getElementById("inf-licencia").value = ""; document.getElementById("inf-placa").value = "";
+                    document.getElementById("inf-conducta").value = ""; document.getElementById("inf-descripcion").value = "";
                     document.getElementById("galeria-previa").innerHTML = "";
                     fotosBase64Guardadas = [];
-                    
-                    cargarDatosBaseDeDatos(); // Recargar base
+                    cargarDatosBaseDeDatos();
                 }).catch(err => {
-                    alert("Error guardando datos en la nube: " + err);
+                    alert("Error al subir nube: " + err);
                     document.getElementById("form-loader").style.display = "none";
                 });
             });
