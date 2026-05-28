@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Papeletas APM Terminals</title>
+    <!-- Librerías para generar el PDF de forma nativa -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
@@ -245,6 +246,7 @@
 </head>
 <body>
 
+    <!-- 1. PANTALLA DE LOGUEO -->
     <div id="login-screen">
         <div class="login-box">
             <h2 style="border:none; margin-top:0;">🔒 Acceso Seguro</h2>
@@ -257,8 +259,10 @@
         </div>
     </div>
 
+    <!-- 2. APLICACIÓN PRINCIPAL -->
     <div id="main-app">
         
+        <!-- PESTAÑA: NUEVA PAPELETA -->
         <section id="view-formulario" class="view-section active">
             <h2>📄 Emitir Papeleta</h2>
             
@@ -297,7 +301,16 @@
                 <div class="form-group"><label>Fecha y Hora del Suceso</label><input type="datetime-local" id="inf-fecha-hora"></div>
                 <div class="form-group"><label>Tipo de Conducta Infractora</label><textarea id="inf-conducta" rows="3"></textarea></div>
                 <div class="form-group"><label>Descripción del Acto u Omisión</label><textarea id="inf-descripcion" rows="3"></textarea></div>
-                <div class="form-group"><label>Medios Probatorios / Evidencias</label><input type="text" id="inf-evidencias" value="FOTOS Y FILMACIONES DEL TERMINAL PORTUARIO"></div>
+                
+                <!-- CAMPO AJUSTADO: CARGA DESDE LA GALERÍA DEL CELULAR -->
+                <div class="form-group">
+                    <label>Medios Probatorios / Evidencias (Adjuntar Fotos)</label>
+                    <input type="file" id="inf-evidencias-files" accept="image/*" multiple style="display: none;" onchange="previsualizarImagenes()">
+                    <button type="button" class="btn-block" style="background-color: var(--secondary); padding: 12px; font-size: 16px; margin-bottom: 10px;" onclick="document.getElementById('inf-evidencias-files').click()">
+                        📸 Seleccionar Fotos de la Galería
+                    </button>
+                    <div id="galeria-previa" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;"></div>
+                </div>
             </div>
 
             <div class="card">
@@ -322,6 +335,7 @@
             <button class="btn-block" onclick="procesarYExportar()">🚀 GUARDAR Y EXPORTAR PDF</button>
         </section>
 
+        <!-- PESTAÑA: DASHBOARD -->
         <section id="view-dashboard" class="view-section">
             <h2>📊 Historial de Registros</h2>
             <p style="font-size:14px; color:#6c757d;">Últimos registros sincronizados desde Google Sheets</p>
@@ -345,6 +359,7 @@
             </div>
         </section>
 
+        <!-- PESTAÑA: CONFIGURACIÓN -->
         <section id="view-config" class="view-section">
             <h2>⚙️ Configuración del Sistema</h2>
             <div class="card">
@@ -361,6 +376,7 @@
             </div>
         </section>
 
+        <!-- BARRA NAVEGACIÓN FIJA -->
         <nav class="navbar">
             <button class="nav-btn active" onclick="cambiarPestaña('formulario', this)"><span>📄</span>Formulario</button>
             <button class="nav-btn" onclick="cambiarPestaña('dashboard', this)"><span>📊</span>Dashboard</button>
@@ -368,6 +384,9 @@
         </nav>
     </div>
 
+    <!-- ========================================== -->
+    <!-- PLANTILLA DE DISEÑO DEL PDF (OCULTA EN WEB) -->
+    <!-- ========================================== -->
     <div id="pdf-template">
         <div style="float: right; text-align: right; font-weight: bold;">
             APM TERMINALS / Lifting Global Trade<br>
@@ -410,7 +429,8 @@
         <div style="border:1px solid black; padding:10px; min-height:40px; margin-bottom:10px;" id="pdf-txt-descripcion"></div>
 
         <div class="section-title">MEDIOS PROBATORIOS (FOTOS, FILMACIONES, DOCUMENTOS U OTRAS EVIDENCIAS)</div>
-        <div style="border:1px solid black; padding:10px; min-height:30px; margin-bottom:15px;" id="pdf-txt-evidencias"></div>
+        <!-- CAMPO AJUSTADO: GALERÍA DE FOTOS DENTRO DEL PDF -->
+        <div style="border:1px solid black; padding:10px; min-height:80px; margin-bottom:15px; display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;" id="pdf-txt-evidencias"></div>
 
         <div class="section-title">PRESUNTA INFRACIÓN (De acuerdo con la tabla del RIS)</div>
         <p><strong>Área de la Infracción:</strong> Seguridad y Accesos</p>
@@ -438,11 +458,44 @@
         </p>
     </div>
 
+    <!-- ========================================== -->
+    <!-- LÓGICA LOGÍSTICA DE JAVASCRIPT            -->
+    <!-- ========================================== -->
     <script>
         // PEGA AQUÍ TU ENLACE DE GOOGLE APPS SCRIPT
-        const CONFIG_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzBU6fM_q6IIvlZ3tGL4IyPckDvy-zaUuQgCwueaSM2irY3c_Kbg4O01IV_BOh5KBQ4KQ/exec";
+        const CONFIG_WEB_APP_URL = "AQUÍ_PEGA_TU_URL_DE_APPS_SCRIPT";
         
         let databaseCache = { usuarios: [], historial: [] };
+        let fotosBase64Guardadas = []; // Almacena las fotos en memoria local
+
+        // Manejo y procesamiento de imágenes desde el celular
+        function previsualizarImagenes() {
+            const archivos = document.getElementById("inf-evidencias-files").files;
+            const contenedorPrevia = document.getElementById("galeria-previa");
+            contenedorPrevia.innerHTML = ""; // Limpiar previas anteriores
+            fotosBase64Guardadas = []; // Reiniciar arreglo de imágenes
+
+            if (archivos.length === 0) return;
+
+            Array.from(archivos).forEach(archivo => {
+                const lector = new FileReader();
+                lector.onload = function(evento) {
+                    const base64Str = evento.target.result;
+                    fotosBase64Guardadas.push(base64Str);
+
+                    // Miniatura visual en el formulario
+                    const img = document.createElement("img");
+                    img.src = base64Str;
+                    img.style.width = "70px";
+                    img.style.height = "70px";
+                    img.style.objectFit = "cover";
+                    img.style.borderRadius = "5px";
+                    img.style.border = "2px solid var(--primary)";
+                    contenedorPrevia.appendChild(img);
+                }
+                lector.readAsDataURL(archivo);
+            });
+        }
 
         function verificarPassword() {
             const pass = document.getElementById("app-password").value;
@@ -468,7 +521,7 @@
             radioInput.parentElement.classList.add('selected');
         }
         
-        // Carga inicial del estado estético de los radio buttons
+        // Carga inicial del estado de los radio buttons
         marcarRadio(document.querySelector('input[name="graduacion"]:checked'));
 
         // Sincronizar info con Google Sheets
@@ -569,25 +622,39 @@
             document.getElementById("pdf-txt-fecha-hora").innerText = document.getElementById("inf-fecha-hora").value;
             document.getElementById("pdf-txt-conducta").innerText = document.getElementById("inf-conducta").value;
             document.getElementById("pdf-txt-descripcion").innerText = document.getElementById("inf-descripcion").value;
-            document.getElementById("pdf-txt-evidencias").innerText = document.getElementById("inf-evidencias").value;
             
-            const graduacion = document.querySelector('input[name="graduacion"]:checked').value;
-            document.getElementById("pdf-txt-graduacion").innerText = graduacion;
+            // Inserción de imágenes capturadas en el módulo de evidencias del PDF
+            const contenedorPdfEvidencias = document.getElementById("pdf-txt-evidencias");
+            contenedorPdfEvidencias.innerHTML = "";
+            
+            if(fotosBase64Guardadas.length === 0) {
+                contenedorPdfEvidencias.innerText = "NO SE ADJUNTARON EVIDENCIAS FOTOGRÁFICAS.";
+            } else {
+                fotosBase64Guardadas.forEach(fotoData => {
+                    const imgPdf = document.createElement("img");
+                    imgPdf.src = fotoData;
+                    imgPdf.style.maxHeight = "120px"; // Dimensión exacta para el cuerpo del PDF
+                    imgPdf.style.border = "1px solid #333";
+                    contenedorPdfEvidencias.appendChild(imgPdf);
+                });
+            }
+            
+            const投duacion = document.querySelector('input[name="graduacion"]:checked').value;
+            document.getElementById("pdf-txt-graduacion").innerText =投duacion;
             document.getElementById("pdf-txt-responsable").innerText = responsable;
             document.getElementById("pdf-txt-fecha-envio").innerText = fechaEnvioStr;
 
-            // Bloque dinámico de sanciones según lo solicitado
+            // Bloque dinámico de sanciones según graduación
             let bloqueSancion = "";
-            if(graduacion === "LEVE") {
+            if(投duacion === "LEVE") {
                 bloqueSancion = "• Primera vez: Suspensión temporal de 1 a 07 días.<br>• Segunda vez: Incremento de sanción respectiva.";
-            } else if(graduacion === "GRAVE") {
+            } else if(投duacion === "GRAVE") {
                 bloqueSancion = "• Primera vez: Suspensión temporal de 8 a 30 días.<br>• Segunda vez: Se considerará como infracción muy grave (31 días a 6 meses).";
             } else {
                 bloqueSancion = "• Primera vez: Suspensión temporal de 30 días a más.<br>• Reincidencia: Expulsión o cancelación definitiva de accesos.";
             }
             document.getElementById("pdf-txt-sancion-bloque").innerHTML = bloqueSancion;
 
-            // Ajustes para renderizado del archivo PDF
             const elementoPDF = document.getElementById("pdf-template");
             elementoPDF.style.display = "block"; // Mostrar momentáneamente para captura
 
@@ -603,7 +670,6 @@
             html2pdf().set(opcionesConfig).from(elementoPDF).toPdf().output('base64').then(function(base64Str) {
                 elementoPDF.style.display = "none"; // Ocultar plantilla de nuevo
 
-                // Enviar pack JSON a Google Web App
                 const payload = {
                     id_papeleta: idPapeleta,
                     responsable: responsable,
@@ -611,7 +677,7 @@
                     infractor_dni: document.getElementById("inf-dni").value,
                     empresa: document.getElementById("inf-empresa").value,
                     conducta_infractora: document.getElementById("inf-conducta").value,
-                    graduacion: graduacion,
+                    graduacion: 投duacion,
                     fecha_infraccion: document.getElementById("inf-fecha-hora").value,
                     fecha_envio: fechaEnvioStr,
                     pdf_base64: base64Str
@@ -619,17 +685,17 @@
 
                 fetch(CONFIG_WEB_APP_URL, {
                     method: "POST",
-                    mode: "no-cors", // Para evitar bloqueos CORS en móviles
+                    mode: "no-cors", 
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 }).then(() => {
-                    // Descargar localmente en el celular del operador
+                    // Descargar en el dispositivo del operador
                     html2pdf().set(opcionesConfig).from(elementoPDF).save();
                     
                     alert(`✅ ¡Éxito! Papeleta ${idPapeleta} guardada en Google Sheets, cargada en Drive y descargada en tu móvil.`);
                     document.getElementById("form-loader").style.display = "none";
                     
-                    // Limpiar formulario excepto datos del oficial
+                    // Limpiar formulario y evidencias
                     document.getElementById("inf-nombre").value = "";
                     document.getElementById("inf-dni").value = "";
                     document.getElementById("inf-cargo").value = "";
@@ -640,8 +706,10 @@
                     document.getElementById("inf-placa").value = "";
                     document.getElementById("inf-conducta").value = "";
                     document.getElementById("inf-descripcion").value = "";
+                    document.getElementById("galeria-previa").innerHTML = "";
+                    fotosBase64Guardadas = [];
                     
-                    cargarDatosBaseDeDatos(); // Recargar correlativo y Dashboard
+                    cargarDatosBaseDeDatos(); // Recargar base
                 }).catch(err => {
                     alert("Error guardando datos en la nube: " + err);
                     document.getElementById("form-loader").style.display = "none";
