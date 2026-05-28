@@ -1,1 +1,653 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Papeletas APM Terminals</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --primary: #004b87;
+            --secondary: #007bff;
+            --success: #28a745;
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+        }
 
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            font-size: 18px; /* Letras grandes para fácil lectura */
+        }
+
+        /* Pantalla de bloqueo */
+        #login-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .login-box {
+            background: white;
+            color: var(--text-color);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* Contenedor Principal */
+        #main-app {
+            display: none;
+            padding-bottom: 80px; /* Espacio para barra inferior */
+        }
+
+        /* Barra de navegación inferior fija para celular */
+        .navbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: white;
+            box-shadow: 0 -3px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            font-size: 15px;
+            font-weight: bold;
+            color: #6c757d;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .nav-btn.active {
+            color: var(--primary);
+        }
+
+        .nav-btn span {
+            font-size: 24px;
+            margin-bottom: 2px;
+        }
+
+        /* Vistas/Pestañas */
+        .view-section {
+            display: none;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        h2 {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 8px;
+            font-size: 24px;
+        }
+
+        /* Tarjetas y Formularios */
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 14px;
+            font-size: 18px;
+            border: 2px solid #ced4da;
+            border-radius: 8px;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--secondary);
+            outline: none;
+        }
+
+        /* Botones de Opción Grande (Radio personalizados) */
+        .radio-tile-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .radio-tile {
+            border: 2px solid #ced4da;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            background: white;
+            font-weight: bold;
+        }
+
+        .radio-tile input {
+            width: 25px;
+            height: 25px;
+            margin-right: 15px;
+        }
+
+        .radio-tile.selected {
+            border-color: var(--secondary);
+            background-color: #e7f1ff;
+        }
+
+        /* Botones de acción */
+        .btn-block {
+            width: 100%;
+            background-color: var(--success);
+            color: white;
+            border: none;
+            padding: 18px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-block:active {
+            transform: scale(0.98);
+        }
+
+        /* Historial y Tablas */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            font-size: 16px;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #dee2e6;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        /* Plantilla Oculta para impresión en PDF */
+        #pdf-template {
+            display: none;
+            width: 800px;
+            padding: 40px;
+            background: white;
+            color: black;
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+        }
+        .pdf-header { text-align: center; font-weight: bold; font-size: 14px; margin-bottom: 20px; }
+        .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+        .pdf-table th, .pdf-table td { border: 1px solid black; padding: 6px; text-align: left; font-size: 12px; }
+        .pdf-table th { background-color: #f2f2f2; }
+        .section-title { font-weight: bold; margin-top: 15px; margin-bottom: 5px; background: #ddd; padding: 4px; }
+
+        /* Loader de carga */
+        .loader {
+            display: none;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--secondary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <div class="login-box">
+            <h2 style="border:none; margin-top:0;">🔒 Acceso Seguro</h2>
+            <p style="font-size:16px; color:#6c757d;">Ingrese la clave de autorización:</p>
+            <div class="form-group">
+                <input type="password" id="app-password" placeholder="Contraseña de oficial">
+            </div>
+            <button class="btn-block" style="background-color:var(--primary);" onclick="verificarPassword()">Ingresar</button>
+            <p id="login-error" style="color:red; font-weight:bold; margin-top:10px; display:none;">Clave incorrecta</p>
+        </div>
+    </div>
+
+    <div id="main-app">
+        
+        <section id="view-formulario" class="view-section active">
+            <h2>📄 Emitir Papeleta</h2>
+            
+            <div class="card">
+                <div class="form-group">
+                    <label for="form-responsable">Oficial Responsable</label>
+                    <select id="form-responsable" onchange="autoCalcularID()"></select>
+                </div>
+
+                <div class="form-group">
+                    <label for="form-num-papeleta">N° Papeleta Siguiente</label>
+                    <input type="text" id="form-num-papeleta" readonly style="background:#e9ecef; font-weight:bold; color:var(--primary);">
+                </div>
+
+                <div class="form-group">
+                    <label for="form-id-papeleta">ID Documento Calculado</label>
+                    <input type="text" id="form-id-papeleta" readonly style="background:#e9ecef; font-weight:bold; color:red;">
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Datos del Presunto Infractor</h3>
+                <div class="form-group"><label>Nombres y Apellidos</label><input type="text" id="inf-nombre"></div>
+                <div class="form-group"><label>DNI / C.E / Pasaporte</label><input type="text" id="inf-dni"></div>
+                <div class="form-group"><label>Cargo</label><input type="text" id="inf-cargo"></div>
+                <div class="form-group"><label>Número de Contacto</label><input type="text" id="inf-contacto"></div>
+                <div class="form-group"><label>Empresa / Razón Social</label><input type="text" id="inf-empresa"></div>
+                <div class="form-group"><label>Correo Electrónico</label><input type="email" id="inf-correo"></div>
+                <div class="form-group"><label>N° Licencia de Conducir</label><input type="text" id="inf-licencia"></div>
+                <div class="form-group"><label>Placa de Vehículo</label><input type="text" id="inf-placa"></div>
+            </div>
+
+            <div class="card">
+                <h3>Detalles del Suceso</h3>
+                <div class="form-group"><label>Lugar / Zona de Infracción</label><input type="text" id="inf-lugar"></div>
+                <div class="form-group"><label>Fecha y Hora del Suceso</label><input type="datetime-local" id="inf-fecha-hora"></div>
+                <div class="form-group"><label>Tipo de Conducta Infractora</label><textarea id="inf-conducta" rows="3"></textarea></div>
+                <div class="form-group"><label>Descripción del Acto u Omisión</label><textarea id="inf-descripcion" rows="3"></textarea></div>
+                <div class="form-group"><label>Medios Probatorios / Evidencias</label><input type="text" id="inf-evidencias" value="FOTOS Y FILMACIONES DEL TERMINAL PORTUARIO"></div>
+            </div>
+
+            <div class="card">
+                <h3>Graduación de la Infracción</h3>
+                <div class="radio-tile-group">
+                    <label class="radio-tile" id="tile-leve">
+                        <input type="radio" name="graduacion" value="LEVE" checked onclick="marcarRadio(this)">
+                        LEVE (Suspensión temporal de 1 a 07 días)
+                    </label>
+                    <label class="radio-tile" id="tile-grave">
+                        <input type="radio" name="graduacion" value="GRAVE" onclick="marcarRadio(this)">
+                        GRAVE (Suspensión temporal de 8 a 30 días)
+                    </label>
+                    <label class="radio-tile" id="tile-muygrave">
+                        <input type="radio" name="graduacion" value="MUY GRAVE" onclick="marcarRadio(this)">
+                        MUY GRAVE (Suspensión temporal de 30 días a más)
+                    </label>
+                </div>
+            </div>
+
+            <div class="loader" id="form-loader"></div>
+            <button class="btn-block" onclick="procesarYExportar()">🚀 GUARDAR Y EXPORTAR PDF</button>
+        </section>
+
+        <section id="view-dashboard" class="view-section">
+            <h2>📊 Historial de Registros</h2>
+            <p style="font-size:14px; color:#6c757d;">Últimos registros sincronizados desde Google Sheets</p>
+            <div class="table-responsive">
+                <table id="tabla-dashboard">
+                    <thead>
+                        <tr>
+                            <th>ID Papeleta</th>
+                            <th>Responsable</th>
+                            <th>Infractor</th>
+                            <th>DNI</th>
+                            <th>Empresa</th>
+                            <th>Conducta</th>
+                            <th>Fecha Suceso</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="7" style="text-align:center;">Cargando registros...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="view-config" class="view-section">
+            <h2>⚙️ Configuración del Sistema</h2>
+            <div class="card">
+                <h3>Sincronización Activa</h3>
+                <p style="font-size:15px; word-break: break-all;"><strong>Base de Datos:</strong><br> Google Sheets conectado de manera segura en la nube.</p>
+                <button class="btn-block" style="background-color:var(--secondary); padding:10px; font-size:16px;" onclick="cargarDatosBaseDeDatos()">🔄 Sincronizar Datos Ahora</button>
+            </div>
+            <div class="card">
+                <h3>Usuarios en el Servidor</h3>
+                <ul id="lista-usuarios-config" style="font-size:16px; padding-left:20px;">
+                    <li>Cargando lista...</li>
+                </ul>
+                <p style="font-size:13px; color:#6c757d; font-style:italic;">Nota: Para agregar o modificar oficiales y corregir correlativos de base, edita directamente la pestaña 'CONFIGURACION' en tu Google Sheets.</p>
+            </div>
+        </section>
+
+        <nav class="navbar">
+            <button class="nav-btn active" onclick="cambiarPestaña('formulario', this)"><span>📄</span>Formulario</button>
+            <button class="nav-btn" onclick="cambiarPestaña('dashboard', this)"><span>📊</span>Dashboard</button>
+            <button class="nav-btn" onclick="cambiarPestaña('config', this)"><span>⚙️</span>Ajustes</button>
+        </nav>
+    </div>
+
+    <div id="pdf-template">
+        <div style="float: right; text-align: right; font-weight: bold;">
+            APM TERMINALS / Lifting Global Trade<br>
+            <span style="color:red; font-size:14px;" id="pdf-txt-id-papeleta"></span>
+        </div>
+        <div style="clear: both;"></div>
+        <div class="pdf-header">
+            PAPELETA DE CARGOS No. <span id="pdf-txt-num-papeleta"></span>
+        </div>
+        
+        <div class="section-title">DATOS DEL PRESUNTO INFRACTOR</div>
+        <table class="pdf-table">
+            <tr>
+                <td style="width:50%;"><strong>NOMBRES Y APELLIDOS:</strong><br><span id="pdf-txt-nombre"></span></td>
+                <td style="width:50%;"><strong>DNI/C.E/PASAPORTE:</strong><br><span id="pdf-txt-dni"></span></td>
+            </tr>
+            <tr>
+                <td><strong>CARGO:</strong><br><span id="pdf-txt-cargo"></span></td>
+                <td><strong>NUMERO DE CONTACTO:</strong><br><span id="pdf-txt-contacto"></span></td>
+            </tr>
+            <tr>
+                <td><strong>EMPRESA/RAZÓN SOCIAL:</strong><br><span id="pdf-txt-empresa"></span></td>
+                <td><strong>CORREO ELECTRÓNICO:</strong><br><span id="pdf-txt-correo"></span></td>
+            </tr>
+            <tr>
+                <td><strong>N° LICENCIA DE CONDUCIR:</strong><br><span id="pdf-txt-licencia"></span></td>
+                <td><strong>PLACA DE VEHÍCULO:</strong><br><span id="pdf-txt-placa"></span></td>
+            </tr>
+        </table>
+
+        <div class="section-title">CONDUCTA INFRACTORA DETECTADA</div>
+        <table class="pdf-table">
+            <tr>
+                <td style="width:50%;"><strong>LUGAR / ZONA DE LA INFRACCIÓN:</strong><br><span id="pdf-txt-lugar"></span></td>
+                <td style="width:50%;"><strong>FECHA Y HORA DE LA INFRACCIÓN:</strong><br><span id="pdf-txt-fecha-hora"></span></td>
+            </tr>
+        </table>
+
+        <div class="section-title">DESCRIPCIÓN DEL ACTO U OMISIÓN REALIZADO POR EL PRESUNTO INFRACTOR</div>
+        <div style="border:1px solid black; padding:10px; min-height:40px; margin-bottom:10px;" id="pdf-txt-descripcion"></div>
+
+        <div class="section-title">MEDIOS PROBATORIOS (FOTOS, FILMACIONES, DOCUMENTOS U OTRAS EVIDENCIAS)</div>
+        <div style="border:1px solid black; padding:10px; min-height:30px; margin-bottom:15px;" id="pdf-txt-evidencias"></div>
+
+        <div class="section-title">PRESUNTA INFRACIÓN (De acuerdo con la tabla del RIS)</div>
+        <p><strong>Área de la Infracción:</strong> Seguridad y Accesos</p>
+        <p><strong>Tipo de Conducta Infractora:</strong> <span id="pdf-txt-conducta"></span></p>
+        <p><strong>Graduación:</strong> <span id="pdf-txt-graduacion" style="font-weight:bold;"></span></p>
+        <p><strong>Posible Sanción:</strong></p>
+        <div id="pdf-txt-sancion-bloque" style="padding-left:15px; font-style:italic;"></div>
+
+        <div style="margin-top:20px;">
+            <table class="pdf-table">
+                <tr>
+                    <th style="width:50%;">RESPONSABLE COMPETENTE</th>
+                    <th style="width:50%;">ÓRGANO DE INSTRUCCIÓN</th>
+                </tr>
+                <tr>
+                    <td>DEPARTAMENTO DE PROTECCION<br><br><strong>Emitido por:</strong> <span id="pdf-txt-responsable"></span></td>
+                    <td><strong>FECHA Y HORA DE EMISIÓN:</strong><br><span id="pdf-txt-fecha-envio"></span></td>
+                </tr>
+            </table>
+        </div>
+
+        <p style="font-size:10px; margin-top:20px; text-align:justify;">
+            En virtud de lo señalado, se le otorga un plazo máximo de tres (3) días hábiles luego de recibida la presente notificación, a efectos de que presente sus descargos/información que considere pertinente.<br>
+            <strong>Base legal:</strong> Reglamento de Infracciones y Sanciones del Terminal Norte Multipropósito del Terminal Portuario del Callao aprobado por Resolución de Gerencia General Nº 0013-2024-APN-GG
+        </p>
+    </div>
+
+    <script>
+        // PEGA AQUÍ TU ENLACE DE GOOGLE APPS SCRIPT
+        const CONFIG_WEB_APP_URL = "AQUÍ_PEGA_TU_URL_DE_APPS_SCRIPT";
+        
+        let databaseCache = { usuarios: [], historial: [] };
+
+        function verificarPassword() {
+            const pass = document.getElementById("app-password").value;
+            if(pass === "C*argo123") {
+                document.getElementById("login-screen").style.display = "none";
+                document.getElementById("main-app").style.display = "block";
+                cargarDatosBaseDeDatos();
+            } else {
+                document.getElementById("login-error").style.display = "block";
+            }
+        }
+
+        function cambiarPestaña(target, btn) {
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById('view-' + target).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        function marcarRadio(radioInput) {
+            document.querySelectorAll('.radio-tile').forEach(t => t.classList.remove('selected'));
+            radioInput.parentElement.classList.add('selected');
+        }
+        
+        // Carga inicial del estado estético de los radio buttons
+        marcarRadio(document.querySelector('input[name="graduacion"]:checked'));
+
+        // Sincronizar info con Google Sheets
+        function cargarDatosBaseDeDatos() {
+            if(CONFIG_WEB_APP_URL.includes("AQUÍ_PEGA")) return;
+            
+            fetch(CONFIG_WEB_APP_URL)
+            .then(res => res.json())
+            .then(data => {
+                if(data.error) { alert("Error en Google Server: " + data.error); return; }
+                databaseCache = data;
+                
+                // 1. Renderizar selector de Oficiales
+                const select = document.getElementById("form-responsable");
+                select.innerHTML = "";
+                data.usuarios.forEach(u => {
+                    let opt = document.createElement("option");
+                    opt.value = u.nombre;
+                    opt.text = u.nombre;
+                    opt.dataset.iniciales = u.iniciales;
+                    opt.dataset.correlativo = u.siguienteCorrelativo;
+                    select.appendChild(opt);
+                });
+                autoCalcularID();
+
+                // 2. Renderizar Ajustes
+                const listaConfig = document.getElementById("lista-usuarios-config");
+                listaConfig.innerHTML = "";
+                data.usuarios.forEach(u => {
+                    listaConfig.innerHTML += `<li><strong>${u.nombre}</strong> (${u.iniciales}) - Siguiente Papeleta Base: ${u.siguienteCorrelativo}</li>`;
+                });
+
+                // 3. Renderizar Dashboard
+                const tbody = document.querySelector("#tabla-dashboard tbody");
+                tbody.innerHTML = "";
+                if(data.historial.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">No hay registros previos</td></tr>`;
+                } else {
+                    data.historial.forEach(h => {
+                        let fFormat = h.fecha_infraccion ? h.fecha_infraccion.split("T")[0] : "-";
+                        tbody.innerHTML += `<tr>
+                            <td><strong>${h.id_papeleta}</strong></td>
+                            <td>${h.responsable}</td>
+                            <td>${h.infractor}</td>
+                            <td>${h.dni}</td>
+                            <td>${h.empresa}</td>
+                            <td>${h.conducta}</td>
+                            <td>${fFormat}</td>
+                        </tr>`;
+                    });
+                }
+            })
+            .catch(err => alert("Error conectando con la Base de datos: " + err));
+        }
+
+        function autoCalcularID() {
+            const select = document.getElementById("form-responsable");
+            if(!select.value) return;
+            
+            const option = select.options[select.selectedIndex];
+            const iniciales = option.dataset.iniciales;
+            const correlativo = option.dataset.correlativo;
+            const yearActual = new Date().getFullYear(); // 2026
+
+            document.getElementById("form-num-papeleta").value = correlativo;
+            document.getElementById("form-id-papeleta").value = `${iniciales}_${correlativo}_${yearActual}`;
+        }
+
+        function procesarYExportar() {
+            const responsable = document.getElementById("form-responsable").value;
+            const numPapeleta = document.getElementById("form-num-papeleta").value;
+            const idPapeleta = document.getElementById("form-id-papeleta").value;
+            
+            if(!responsable || !document.getElementById("inf-nombre").value || !document.getElementById("inf-dni").value) {
+                alert("Por favor rellene los datos obligatorios (Nombre, DNI e Infractor)");
+                return;
+            }
+
+            document.getElementById("form-loader").style.display = "block";
+
+            // Obtener variables de tiempo
+            const hoy = new Date();
+            const fechaEnvioStr = hoy.toLocaleDateString() + " " + hoy.toLocaleTimeString();
+
+            // Mapeo a la plantilla PDF visible/invisible
+            document.getElementById("pdf-txt-id-papeleta").innerText = idPapeleta;
+            document.getElementById("pdf-txt-num-papeleta").innerText = numPapeleta;
+            document.getElementById("pdf-txt-nombre").innerText = document.getElementById("inf-nombre").value;
+            document.getElementById("pdf-txt-dni").innerText = document.getElementById("inf-dni").value;
+            document.getElementById("pdf-txt-cargo").innerText = document.getElementById("inf-cargo").value;
+            document.getElementById("pdf-txt-contacto").innerText = document.getElementById("inf-contacto").value;
+            document.getElementById("pdf-txt-empresa").innerText = document.getElementById("inf-empresa").value;
+            document.getElementById("pdf-txt-correo").innerText = document.getElementById("inf-correo").value;
+            document.getElementById("pdf-txt-licencia").innerText = document.getElementById("inf-licencia").value;
+            document.getElementById("pdf-txt-placa").innerText = document.getElementById("inf-placa").value;
+            
+            document.getElementById("pdf-txt-lugar").innerText = document.getElementById("inf-lugar").value;
+            document.getElementById("pdf-txt-fecha-hora").innerText = document.getElementById("inf-fecha-hora").value;
+            document.getElementById("pdf-txt-conducta").innerText = document.getElementById("inf-conducta").value;
+            document.getElementById("pdf-txt-descripcion").innerText = document.getElementById("inf-descripcion").value;
+            document.getElementById("pdf-txt-evidencias").innerText = document.getElementById("inf-evidencias").value;
+            
+            const graduacion = document.querySelector('input[name="graduacion"]:checked').value;
+            document.getElementById("pdf-txt-graduacion").innerText = graduacion;
+            document.getElementById("pdf-txt-responsable").innerText = responsable;
+            document.getElementById("pdf-txt-fecha-envio").innerText = fechaEnvioStr;
+
+            // Bloque dinámico de sanciones según lo solicitado
+            let bloqueSancion = "";
+            if(graduacion === "LEVE") {
+                bloqueSancion = "• Primera vez: Suspensión temporal de 1 a 07 días.<br>• Segunda vez: Incremento de sanción respectiva.";
+            } else if(graduacion === "GRAVE") {
+                bloqueSancion = "• Primera vez: Suspensión temporal de 8 a 30 días.<br>• Segunda vez: Se considerará como infracción muy grave (31 días a 6 meses).";
+            } else {
+                bloqueSancion = "• Primera vez: Suspensión temporal de 30 días a más.<br>• Reincidencia: Expulsión o cancelación definitiva de accesos.";
+            }
+            document.getElementById("pdf-txt-sancion-bloque").innerHTML = bloqueSancion;
+
+            // Ajustes para renderizado del archivo PDF
+            const elementoPDF = document.getElementById("pdf-template");
+            elementoPDF.style.display = "block"; // Mostrar momentáneamente para captura
+
+            const opcionesConfig = {
+                margin:       10,
+                filename:     `Papeleta_${idPapeleta}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, logging: false },
+                jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
+            };
+
+            // Generar PDF y enviarlo simultáneamente a Google Drive
+            html2pdf().set(opcionesConfig).from(elementoPDF).toPdf().output('base64').then(function(base64Str) {
+                elementoPDF.style.display = "none"; // Ocultar plantilla de nuevo
+
+                // Enviar pack JSON a Google Web App
+                const payload = {
+                    id_papeleta: idPapeleta,
+                    responsable: responsable,
+                    infractor_nombre: document.getElementById("inf-nombre").value,
+                    infractor_dni: document.getElementById("inf-dni").value,
+                    empresa: document.getElementById("inf-empresa").value,
+                    conducta_infractora: document.getElementById("inf-conducta").value,
+                    graduacion: graduacion,
+                    fecha_infraccion: document.getElementById("inf-fecha-hora").value,
+                    fecha_envio: fechaEnvioStr,
+                    pdf_base64: base64Str
+                };
+
+                fetch(CONFIG_WEB_APP_URL, {
+                    method: "POST",
+                    mode: "no-cors", // Para evitar bloqueos CORS en móviles
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                }).then(() => {
+                    // Descargar localmente en el celular del operador
+                    html2pdf().set(opcionesConfig).from(elementoPDF).save();
+                    
+                    alert(`✅ ¡Éxito! Papeleta ${idPapeleta} guardada en Google Sheets, cargada en Drive y descargada en tu móvil.`);
+                    document.getElementById("form-loader").style.display = "none";
+                    
+                    // Limpiar formulario excepto datos del oficial
+                    document.getElementById("inf-nombre").value = "";
+                    document.getElementById("inf-dni").value = "";
+                    document.getElementById("inf-cargo").value = "";
+                    document.getElementById("inf-contacto").value = "";
+                    document.getElementById("inf-empresa").value = "";
+                    document.getElementById("inf-correo").value = "";
+                    document.getElementById("inf-licencia").value = "";
+                    document.getElementById("inf-placa").value = "";
+                    document.getElementById("inf-conducta").value = "";
+                    document.getElementById("inf-descripcion").value = "";
+                    
+                    cargarDatosBaseDeDatos(); // Recargar correlativo y Dashboard
+                }).catch(err => {
+                    alert("Error guardando datos en la nube: " + err);
+                    document.getElementById("form-loader").style.display = "none";
+                });
+            });
+        }
+    </script>
+</body>
+</html>
