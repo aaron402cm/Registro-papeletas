@@ -255,7 +255,7 @@
             width: 680px;
             padding: 25px;
             background: white;
-            color: black;
+            color: black !important;
             font-family: Arial, sans-serif;
             font-size: 12px;
             box-sizing: border-box;
@@ -263,9 +263,23 @@
         }
         .pdf-header { text-align: center; font-weight: bold; font-size: 13px; margin-bottom: 15px; text-transform: uppercase; }
         .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
-        .pdf-table th, .pdf-table td { border: 1px solid black; padding: 6px; text-align: left; font-size: 11px; vertical-align: top; }
-        .pdf-table th { background-color: #f2f2f2; }
-        .section-title { font-weight: bold; margin-top: 12px; margin-bottom: 5px; background: #ddd; padding: 4px; font-size: 11px; text-transform: uppercase; }
+        
+        /* FUERZA TODO EL TEXTO Y ENCABEZADOS DEL PDF A SER NEGROS */
+        .pdf-table th, .pdf-table td { 
+            border: 1px solid black !important; 
+            padding: 6px; 
+            text-align: left; 
+            font-size: 11px; 
+            vertical-align: top;
+            color: black !important; 
+        }
+        .pdf-table th { 
+            background-color: #f2f2f2 !important; 
+            color: black !important; 
+            font-weight: bold;
+        }
+        
+        .section-title { font-weight: bold; margin-top: 12px; margin-bottom: 5px; background: #ddd; padding: 4px; font-size: 11px; text-transform: uppercase; color: black !important; }
 
         .loader {
             display: none;
