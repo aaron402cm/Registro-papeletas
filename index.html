@@ -260,6 +260,9 @@
             font-size: 12px;
             box-sizing: border-box;
             margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            min-height: 960px; /* Asegura una estructura base sólida por hoja */
         }
         
         /* FUERZA TODO EL TEXTO, PÁRRAFOS Y DIVISIONES DEL PDF A SER NEGROS */
@@ -270,7 +273,7 @@
         .pdf-header { text-align: center; font-weight: bold; font-size: 13px; margin-bottom: 15px; text-transform: uppercase; color: #000000 !important; }
         .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
         
-        /* FUERZA TODO EL TEXTO Y ENCABEZADOS DEL PDF A SER NEGROS */
+        /* FUERZA TODO EL TEXTO Y ENCABEZADOS DEL PDF A SER NEGROS Y COLOR NARANJA PASTEL CORRELATIVO */
         .pdf-table th, .pdf-table td { 
             border: 1px solid #000000 !important; 
             padding: 6px; 
@@ -280,17 +283,36 @@
             color: #000000 !important; 
         }
         .pdf-table th { 
-            background-color: #f2f2f2 !important; 
+            background-color: #ffd9b3 !important; /* Nuevo Color: Naranja Pastel Intenso para Cabeceras */
             color: #000000 !important; 
             font-weight: bold;
         }
         
-        .section-title { font-weight: bold; margin-top: 12px; margin-bottom: 5px; background: #ddd; padding: 4px; font-size: 11px; text-transform: uppercase; color: #000000 !important; }
+        /* NUEVO COLOR: Naranja Pastel para los Títulos de Sección */
+        .section-title { 
+            font-weight: bold; 
+            margin-top: 12px; 
+            margin-bottom: 5px; 
+            background: #ffe6cc !important; 
+            padding: 5px; 
+            font-size: 11px; 
+            text-transform: uppercase; 
+            color: #000000 !important; 
+            border: 1px solid #000000;
+        }
+
+        /* Bloque Expandible Dinámico para rellenar estéticamente el espacio en blanco */
+        .descripcion-flexible-contenedor {
+            flex-grow: 1;
+            min-height: 90px;
+            margin-bottom: 12px;
+        }
 
         /* Clase protectora contra cortes feos de hojas en el motor PDF */
         .pdf-bloque-protegido {
             page-break-inside: avoid !important;
             break-inside: avoid !important;
+            margin-top: auto; /* Empuja el bloque al fondo si hay espacio sobrante */
         }
 
         .loader {
@@ -489,12 +511,11 @@
                         </table>
 
                         <div class="section-title">DESCRIPCIÓN DEL ACTO U OMISIÓN REALIZADO POR EL PRESUNTO INFRACTOR</div>
-                        <div style="border:1px solid #000000; padding:8px; min-height:45px; margin-bottom:10px; font-size:11px;" id="pdf-txt-descripcion"></div>
+                        <div class="descripcion-flexible-contenedor" style="border:1px solid #000000; padding:8px; font-size:11px;" id="pdf-txt-descripcion"></div>
 
                         <div class="section-title">MEDIOS PROBATORIOS (FOTOS, FILMACIONES, DOCUMENTOS U OTRAS EVIDENCIAS)</div>
-                        <div style="border:1px solid #000000; padding:8px; min-height:60px; margin-bottom:10px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;" id="pdf-txt-evidencias"></div>
+                        <div style="border:1px solid #000000; padding:8px; min-height:60px; margin-bottom:15px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;" id="pdf-txt-evidencias"></div>
 
-                        <!-- Agrupación lógica protegida: RIS, Sanciones, Firmas Anónimas y Base Legal viajan siempre juntas -->
                         <div class="pdf-bloque-protegido">
                             <div class="section-title">PRESUNTA INFRACION (De acuerdo con la tabla del RIS)</div>
                             <p style="margin: 3px 0;"><strong>Área de la Infracción:</strong> Seguridad y Accesos</p>
@@ -509,7 +530,6 @@
                                     <th style="width:50%;">ÓRGANO DE INSTRUCCIÓN</th>
                                 </tr>
                                 <tr>
-                                    <!-- Anonimato del Oficial aplicado de forma fija para resguardar su seguridad -->
                                     <td>DEPARTAMENTO DE PROTECCION<br><br><strong>Emitido:</strong> Electrónicamente</td>
                                     <td><strong>FECHA Y HORA DE EMISIÓN:</strong><br><span id="pdf-txt-fecha-envio"></span></td>
                                 </tr>
@@ -535,7 +555,6 @@
     </div>
 
     <script>
-        // PEGA AQUÍ TU ENLACE DE GOOGLE APPS SCRIPT
         const CONFIG_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykGrZsjMZ3ewTIXjuPKqy-UDpOjtFPtT-ebMM_ilC6bf6qwPRcNn1KhdUhrODdYzEBKg/exec";
         
         let databaseCache = { usuarios: [], historial: [] };
@@ -627,7 +646,6 @@
             cerrarModalRecorte();
         }
 
-        // CONSTRUCCIÓN DEL FORMULARIO DINÁMICO
         function abrirVentanaPrevisualizacion() {
             const responsable = document.getElementById("form-responsable").value;
             const numPapeleta = document.getElementById("form-num-papeleta").value;
@@ -641,7 +659,6 @@
             const hoy = new Date();
             actualFechaEnvioGlobal = hoy.toLocaleDateString() + " " + hoy.toLocaleTimeString();
 
-            // Sincronizar datos de texto
             document.getElementById("pdf-txt-id-papeleta").innerText = idPapeleta;
             document.getElementById("pdf-txt-num-papeleta").innerText = numPapeleta;
             document.getElementById("pdf-txt-nombre").innerText = document.getElementById("inf-nombre").value;
@@ -654,14 +671,12 @@
             document.getElementById("pdf-txt-placa").innerText = document.getElementById("inf-placa").value;
             document.getElementById("pdf-txt-lugar").innerText = document.getElementById("inf-lugar").value;
             
-            // Formatear Fecha del suceso de forma amigable
             const fInfraccionInput = document.getElementById("inf-fecha-hora").value;
             document.getElementById("pdf-txt-fecha-hora").innerText = fInfraccionInput ? fInfraccionInput.replace("T", " ") : "-";
             
             document.getElementById("pdf-txt-conducta").innerText = document.getElementById("inf-conducta").value;
             document.getElementById("pdf-txt-descripcion").innerText = document.getElementById("inf-descripcion").value;
             
-            // Sincronizar Fotos
             const contenedorPdfEvidencias = document.getElementById("pdf-txt-evidencias");
             contenedorPdfEvidencias.innerHTML = "";
             
@@ -683,12 +698,10 @@
                 });
             }
             
-            // ASIGNACIÓN DE ESCALA DE SANCIONES COMPLETA Y FIJA SOLICITADA
             const graduacion = document.querySelector('input[name="graduacion"]:checked').value;
             document.getElementById("pdf-txt-graduacion").innerText = graduacion;
             document.getElementById("pdf-txt-fecha-envio").innerText = actualFechaEnvioGlobal;
 
-            // Bloque inalterable: muestra las tres reincidencias de manera clara y permanente
             let bloqueSancion = "• <strong>Primera vez:</strong> Suspensión temporal de 8 a 30 días.<br>" +
                 "• <strong>Segunda vez:</strong> Se considerará como infracción muy grave y se aplicará suspensión temporal de 31 días a 6 meses.<br>" +
                 "• <strong>Tercera vez:</strong> Se considerará como infracción muy grave y se aplicará suspensión temporal de 1 año.<br>" +
@@ -696,7 +709,6 @@
             
             document.getElementById("pdf-txt-sancion-bloque").innerHTML = bloqueSancion;
 
-            // Mostrar el modal
             document.getElementById("preview-modal").style.display = "flex";
         }
 
@@ -704,7 +716,6 @@
             document.getElementById("preview-modal").style.display = "none";
         }
 
-        // MOTOR DE EXPORTACIÓN MODIFICADO (CAPTURA DESDE LA VENTANA VISIBLE)
         function ejecutarExportacionFinal() {
             document.getElementById("form-loader").style.display = "block";
             document.getElementById("preview-buttons-group").style.display = "none";
@@ -723,10 +734,8 @@
                 jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
             };
 
-            // Compilar el PDF real
             html2pdf().set(opcionesConfig).from(elementoAImprimir).toPdf().output('base64').then(function(base64Str) {
                 
-                // Mantenemos la variable 'responsable' original en el payload para que se almacene perfectamente en tu Google Sheets
                 const payload = {
                     id_papeleta: idPapeleta, responsable: responsable,
                     infractor_nombre: document.getElementById("inf-nombre").value,
@@ -739,23 +748,19 @@
                     pdf_base64: base64Str
                 };
 
-                // Enviar datos a Google Drive y Sheets
                 fetch(CONFIG_WEB_APP_URL, {
                     method: "POST", mode: "no-cors",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 }).then(() => {
-                    // Descargar en el celular
                     html2pdf().set(opcionesConfig).from(elementoAImprimir).save();
                     
                     alert(`✅ ¡Éxito Total!\nPapeleta ${idPapeleta} guardada en Drive y descargada en tu dispositivo.`);
                     
-                    // Resetear interfaz
                     document.getElementById("form-loader").style.display = "none";
                     document.getElementById("preview-buttons-group").style.display = "flex";
                     document.getElementById("preview-modal").style.display = "none";
                     
-                    // Limpieza integral
                     document.getElementById("inf-nombre").value = ""; document.getElementById("inf-dni").value = "";
                     document.getElementById("inf-cargo").value = ""; document.getElementById("inf-contacto").value = "";
                     document.getElementById("inf-empresa").value = ""; document.getElementById("inf-correo").value = "";
