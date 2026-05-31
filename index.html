@@ -227,7 +227,6 @@
             overflow: hidden;
         }
 
-        /* Contenedor scroll para ver el PDF en el celular sin romper nada */
         .preview-scroll-area {
             overflow-y: auto;
             flex: 1;
@@ -288,23 +287,33 @@
             display: none;
         }
 
+        /* Indicador Offline en cabecera */
+        #offline-indicator {
+            display: none;
+            background-color: var(--warning);
+            color: #333;
+            text-align: center;
+            padding: 8px;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
         /* ========================================== */
         /* DISEÑO DE LA PLANTILLA DEL PDF REAL        */
         /* ========================================== */
         #pdf-template {
             width: 680px;
-            padding: 15px 20px; /* Reducido para optimizar a una sola página */
+            padding: 15px 20px;
             background: white;
             color: #000000 !important;
             font-family: Arial, sans-serif;
-            font-size: 11px; /* Reducido de 12px */
+            font-size: 11px;
             box-sizing: border-box;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
         }
         
-        /* FUERZA TODO EL TEXTO, PÁRRAFOS Y DIVISIONES DEL PDF A SER NEGROS */
         #pdf-template div, #pdf-template p, #pdf-template span, #pdf-template strong {
             color: #000000 !important;
         }
@@ -312,41 +321,37 @@
         .pdf-header { text-align: center; font-weight: bold; font-size: 13px; margin-bottom: 10px; text-transform: uppercase; color: #000000 !important; }
         .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
         
-        /* FUERZA TODO EL TEXTO Y ENCABEZADOS DEL PDF A SER NEGROS Y COLOR NARANJA PASTEL CORRELATIVO */
         .pdf-table th, .pdf-table td { 
             border: 1px solid #000000 !important; 
-            padding: 4px 6px; /* Reducido de 6px */
+            padding: 4px 6px; 
             text-align: left; 
-            font-size: 10px; /* Reducido de 11px */
+            font-size: 10px; 
             vertical-align: top;
             color: #000000 !important; 
         }
         .pdf-table th { 
-            background-color: #ffd9b3 !important; /* Nuevo Color: Naranja Pastel Intenso para Cabeceras */
+            background-color: #ffd9b3 !important; 
             color: #000000 !important; 
             font-weight: bold;
         }
         
-        /* NUEVO COLOR: Naranja Pastel para los Títulos de Sección */
         .section-title { 
             font-weight: bold; 
-            margin-top: 8px; /* Reducido de 12px */
-            margin-bottom: 4px; /* Reducido de 5px */
+            margin-top: 8px; 
+            margin-bottom: 4px; 
             background: #ffe6cc !important; 
-            padding: 4px 6px; /* Reducido de 5px */
-            font-size: 10px; /* Reducido de 11px */
+            padding: 4px 6px; 
+            font-size: 10px; 
             text-transform: uppercase; 
             color: #000000 !important; 
             border: 1px solid #000000;
         }
 
-        /* Bloque Expandible Dinámico para rellenar estéticamente el espacio en blanco */
         .descripcion-flexible-contenedor {
-            min-height: 60px; /* Reducido de 90px */
-            margin-bottom: 8px; /* Reducido de 12px */
+            min-height: 60px;
+            margin-bottom: 8px;
         }
 
-        /* Clase protectora contra cortes feos de hojas en el motor PDF */
         .pdf-bloque-protegido {
             page-break-inside: avoid !important;
             break-inside: avoid !important;
@@ -379,7 +384,12 @@
     </div>
 
     <div id="main-app">
-        <!-- Encabezado de la aplicación usando logotipo vectorial inline (SVG) para evitar imágenes rotas -->
+        <!-- Indicador de Sincronización Pendiente (Offline) -->
+        <div id="offline-indicator">
+            ⚠️ Sincronización pendiente: <span id="pending-count">0</span> papeleta(s) guardadas sin conexión.
+        </div>
+
+        <!-- Encabezado de la aplicación -->
         <div class="app-top-header" style="background-color: #002244; padding: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border-bottom: 4px solid var(--primary); margin-bottom: 10px;">
             <svg viewBox="0 0 420 85" style="width: 100%; max-width: 250px; height: auto; display: block; margin: 0 auto;">
                 <g transform="translate(10, 5)">
@@ -472,16 +482,39 @@
             <h2>📊 Historial de Registros</h2>
             
             <div class="card" style="padding: 15px;">
-                <h4 style="margin-top:0; color:var(--primary);">Filtros de Búsqueda</h4>
+                <h4 style="margin-top:0; color:var(--primary);">Filtros de Búsqueda (Últimos 500 registros)</h4>
                 <div class="form-group">
                     <label for="filtro-miembro" style="font-size:15px;">Buscar por Oficial Responsable:</label>
                     <select id="filtro-miembro" onchange="filtrarHistorial()"></select>
                 </div>
                 <div class="form-group">
                     <label for="filtro-dni" style="font-size:15px;">Buscar por DNI de Infractor:</label>
-                    <input type="text" id="filtro-dni" placeholder="Ingrese DNI..." oninput="filtrarHistorial()">
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="filtro-dni" placeholder="Ingrese DNI..." oninput="filtrarHistorial()" style="flex: 1;">
+                        <button type="button" onclick="ejecutarBusquedaAvanzadaDni()" style="background-color: var(--primary); color: white; border: none; padding: 10px 14px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 15px;">
+                            🔍 Búsqueda Avanzada
+                        </button>
+                    </div>
                 </div>
                 <div id="alerta-reincidencia" class="alert-reincidence"></div>
+                
+                <!-- Resultados de Búsqueda Avanzada en Toda la Base de Datos -->
+                <div id="contenedor-avanzada-resultados" style="display: none; border-top: 2px dashed #ccc; margin-top: 15px; padding-top: 10px;">
+                    <h5 style="margin: 0 0 10px 0; color: var(--primary); font-size: 16px;">📂 Historial Completo en Servidor (Toda la base de datos)</h5>
+                    <div id="tabla-avanzada-area" class="table-responsive" style="max-height: 250px; overflow-y: auto;">
+                        <table style="font-size: 14px;">
+                            <thead style="position: sticky; top: 0; z-index: 1;">
+                                <tr>
+                                    <th>ID Papeleta</th>
+                                    <th>Responsable</th>
+                                    <th>Conducta</th>
+                                    <th>Fecha Suceso</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-avanzada-cuerpo"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
             <div class="table-responsive">
@@ -547,7 +580,6 @@
                 <div id="preview-pdf-content" style="background: white; padding: 5px;">
                     
                     <div id="pdf-template">
-                        <!-- Logotipo vectorial inline (SVG) para el PDF, asegurando definición perfecta en la impresión -->
                         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000000; padding-bottom: 6px; margin-bottom: 10px;">
                             <svg viewBox="0 0 420 85" style="width: 165px; height: auto; display: block;">
                                 <g transform="translate(10, 5)">
@@ -659,6 +691,66 @@
 
         let plantillaRawSeleccionada = "";
 
+        // --- INICIALIZACIÓN Y COLA OFFLINE ---
+        window.addEventListener("load", function() {
+            actualizarIndicadorOffline();
+            // Intento de envío al cargar la página si hay conexión
+            procesarColaPendientes();
+            // Intervalo para verificar e intentar sincronizar pendientes cada 15 segundos
+            setInterval(procesarColaPendientes, 15000);
+        });
+
+        window.addEventListener("online", function() {
+            procesarColaPendientes();
+        });
+
+        function obtenerColaPendientes() {
+            const cola = localStorage.getItem("papeletas_pendientes");
+            return cola ? JSON.parse(cola) : [];
+        }
+
+        function guardarColaPendientes(cola) {
+            localStorage.setItem("papeletas_pendientes", JSON.stringify(cola));
+            actualizarIndicadorOffline();
+        }
+
+        function actualizarIndicadorOffline() {
+            const cola = obtenerColaPendientes();
+            const indicador = document.getElementById("offline-indicator");
+            const contador = document.getElementById("pending-count");
+            
+            if (cola.length > 0) {
+                indicador.style.display = "block";
+                contador.innerText = cola.length;
+            } else {
+                indicador.style.display = "none";
+            }
+        }
+
+        // Ejecución de envío automático al servidor
+        function procesarColaPendientes() {
+            if (!navigator.onLine) return;
+            
+            let cola = obtenerColaPendientes();
+            if (cola.length === 0) return;
+
+            const elemento = cola[0]; // Tomar el primer elemento pendiente de la cola
+
+            fetch(CONFIG_WEB_APP_URL, {
+                method: "POST", mode: "no-cors",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(elemento)
+            }).then(() => {
+                // Si el envío fue exitoso, se remueve de la cola local
+                cola.shift();
+                guardarColaPendientes(cola);
+                // Procesar la siguiente de forma recursiva
+                procesarColaPendientes();
+            }).catch(err => {
+                console.log("Error al sincronizar cola: ", err);
+            });
+        }
+
         function abrirSelectorDeFoto() {
             if (fotosBase64Guardadas.length >= 4) {
                 alert("⚠️ Ya has alcanzado el límite máximo de 4 fotos.");
@@ -743,7 +835,7 @@
             cerrarModalRecorte();
         }
 
-        // --- SISTEMA PREDICTIVO DE PLANTILLAS ---
+        // --- SUGERENCIAS PREDICTIVAS ---
         function buscarPlantillas(valor) {
             const listbox = document.getElementById("sugerencias-plantillas");
             if (!valor || valor.trim() === "") {
@@ -893,6 +985,7 @@
             document.getElementById("preview-modal").style.display = "none";
         }
 
+        // --- EMISIÓN FINAL CON COLA OFFLINE INTEGRADA ---
         function ejecutarExportacionFinal() {
             document.getElementById("form-loader").style.display = "block";
             document.getElementById("preview-buttons-group").style.display = "none";
@@ -903,7 +996,6 @@
             
             const elementoAImprimir = document.getElementById("pdf-template");
 
-            // Configuración optimizada: escala de 3 y máxima calidad para imágenes extremadamente nítidas
             const opcionesConfig = {
                 margin:       10,
                 filename:     `Papeleta_${idPapeleta}.pdf`,
@@ -912,7 +1004,7 @@
                 jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
             };
 
-            // 1. Descarga local instantánea de alta calidad sin retraso por red
+            // 1. Descarga local e instantánea (100% offline)
             html2pdf().set(opcionesConfig).from(elementoAImprimir).save();
 
             const payload = {
@@ -925,37 +1017,54 @@
                 graduacion: graduacion, 
                 fecha_infraccion: document.getElementById("inf-fecha-hora").value,
                 fecha_envio: actualFechaEnvioGlobal
-                // El archivo pdf en base64 pesado se ha removido para máxima velocidad del sistema
             };
 
-            // 2. Registro ligero de texto en Google Sheets en segundo plano
-            fetch(CONFIG_WEB_APP_URL, {
-                method: "POST", mode: "no-cors",
-                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                body: JSON.stringify(payload)
-            }).then(() => {
-                alert(`✅ Papeleta emitida con éxito.\nRegistro guardado en el sistema.`);
-                
-                document.getElementById("form-loader").style.display = "none";
-                document.getElementById("preview-buttons-group").style.display = "flex";
-                document.getElementById("preview-modal").style.display = "none";
-                
-                document.getElementById("inf-nombre").value = ""; document.getElementById("inf-dni").value = "";
-                document.getElementById("inf-cargo").value = ""; document.getElementById("inf-contacto").value = "";
-                document.getElementById("inf-empresa").value = ""; document.getElementById("inf-correo").value = "";
-                document.getElementById("inf-licencia").value = ""; document.getElementById("inf-placa").value = "";
-                document.getElementById("inf-lugar").value = ""; document.getElementById("inf-fecha-hora").value = "";
-                document.getElementById("inf-conducta").value = ""; document.getElementById("inf-descripcion").value = "";
-                document.getElementById("galeria-previa").innerHTML = "";
-                fotosBase64Guardadas = [];
-                plantillaRawSeleccionada = "";
-                
-                cargarDatosBaseDeDatos();
-            }).catch(err => {
-                alert("⚠️ Error al sincronizar el registro: " + err);
-                document.getElementById("form-loader").style.display = "none";
-                document.getElementById("preview-buttons-group").style.display = "flex";
-            });
+            // 2. Control de Conectividad (Offline / Online)
+            if (navigator.onLine) {
+                // Hay señal: Intentar registrar directamente en Google Sheets
+                fetch(CONFIG_WEB_APP_URL, {
+                    method: "POST", mode: "no-cors",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify(payload)
+                }).then(() => {
+                    alert(`✅ ¡Éxito!\nPapeleta ${idPapeleta} guardada en el sistema de forma online.`);
+                    finalizarFlujoEmision();
+                }).catch(err => {
+                    // Si falla el envío por intermitencia, se deriva a la cola local
+                    console.log("Error de conexión directa, guardando en cola: ", err);
+                    guardarEnColaOffline(payload);
+                });
+            } else {
+                // No hay señal: Guardar directamente en LocalStorage de forma segura
+                guardarEnColaOffline(payload);
+            }
+        }
+
+        function guardarEnColaOffline(payload) {
+            let cola = obtenerColaPendientes();
+            cola.push(payload);
+            guardarColaPendientes(cola);
+            
+            alert(`⚠️ Guardado sin conexión:\nPapeleta ${payload.id_papeleta} descargada con éxito. Se registrará automáticamente en el sistema cuando recupere la cobertura móvil.`);
+            finalizarFlujoEmision();
+        }
+
+        function finalizarFlujoEmision() {
+            document.getElementById("form-loader").style.display = "none";
+            document.getElementById("preview-buttons-group").style.display = "flex";
+            document.getElementById("preview-modal").style.display = "none";
+            
+            document.getElementById("inf-nombre").value = ""; document.getElementById("inf-dni").value = "";
+            document.getElementById("inf-cargo").value = ""; document.getElementById("inf-contacto").value = "";
+            document.getElementById("inf-empresa").value = ""; document.getElementById("inf-correo").value = "";
+            document.getElementById("inf-licencia").value = ""; document.getElementById("inf-placa").value = "";
+            document.getElementById("inf-lugar").value = ""; document.getElementById("inf-fecha-hora").value = "";
+            document.getElementById("inf-conducta").value = ""; document.getElementById("inf-descripcion").value = "";
+            document.getElementById("galeria-previa").innerHTML = "";
+            fotosBase64Guardadas = [];
+            plantillaRawSeleccionada = "";
+            
+            cargarDatosBaseDeDatos();
         }
 
         function verificarPassword() {
@@ -981,6 +1090,7 @@
             radioInput.parentElement.classList.add('selected');
         }
 
+        // --- CARGA DE LA BASE DE DATOS (HASTA 500 REGISTROS GLOBALES) ---
         function cargarDatosBaseDeDatos() {
             if(CONFIG_WEB_APP_URL.includes("AQUÍ_PEGA")) return;
             fetch(CONFIG_WEB_APP_URL)
@@ -1022,6 +1132,7 @@
             .catch(err => alert("Error de conexión: " + err));
         }
 
+        // --- BÚSQUEDA LOCAL DINÁMICA (EN EL PANEL DE LOS ÚLTIMOS 500 REGISTROS) ---
         function filtrarHistorial() {
             const responsableSeleccionado = document.getElementById("filtro-miembro").value;
             const dniBuscado = document.getElementById("filtro-dni").value.trim().toLowerCase();
@@ -1031,6 +1142,7 @@
             tbody.innerHTML = "";
 
             if (dniBuscado.length >= 4) {
+                // Cuenta las coincidencias locales en la caché de 500 registros
                 const totalInfracciones = databaseCache.historial.filter(h => 
                     h.dni && h.dni.trim().toLowerCase() === dniBuscado
                 ).length;
@@ -1041,21 +1153,21 @@
                     alertaBox.style.backgroundColor = "#f8d7da";
                     alertaBox.style.color = "#721c24";
                     alertaBox.style.borderColor = "#f5c6cb";
-                    alertaBox.innerHTML = `⚠️ ¡Alerta de Reincidente! El DNI ingresado cuenta con <strong>${totalInfracciones} papeletas registradas</strong> en el historial.`;
+                    alertaBox.innerHTML = `⚠️ ¡Alerta de Reincidente! El DNI ingresado cuenta con <strong>${totalInfracciones} papeletas</strong> dentro de la lista de los últimos 500 registros.`;
                 } else if (totalInfracciones === 1) {
                     alertaBox.style.display = "block";
                     alertaBox.className = "alert-reincidence";
                     alertaBox.style.backgroundColor = "#e2e3e5";
                     alertaBox.style.color = "#383d41";
                     alertaBox.style.borderColor = "#d6d8db";
-                    alertaBox.innerHTML = `ℹ️ El infractor con este DNI cuenta con 1 sola falta previa en el historial.`;
+                    alertaBox.innerHTML = `ℹ️ El infractor con este DNI cuenta con 1 sola falta previa en los últimos 500 registros.`;
                 } else {
                     alertaBox.style.display = "block";
                     alertaBox.className = "alert-reincidence";
                     alertaBox.style.backgroundColor = "#d4edda";
                     alertaBox.style.color = "#155724";
                     alertaBox.style.borderColor = "#c3e6cb";
-                    alertaBox.innerHTML = `✅ Limpio: No se registran incidentes previos para este DNI.`;
+                    alertaBox.innerHTML = `✅ Sin incidencias recientes dentro del rango de los últimos 500 registros.`;
                 }
             } else {
                 alertaBox.style.display = "none";
@@ -1083,6 +1195,68 @@
                     <td>${h.conducta}</td>
                     <td>${fFormat}</td>
                 </tr>`;
+            });
+        }
+
+        // --- LÓGICA DE BÚSQUEDA AVANZADA EN TODA LA BASE DE DATOS (EXCEL) ---
+        function ejecutarBusquedaAvanzadaDni() {
+            const dni = document.getElementById("filtro-dni").value.trim();
+            const contenedorResultados = document.getElementById("contenedor-avanzada-resultados");
+            const tbodyAvanzada = document.getElementById("tabla-avanzada-cuerpo");
+            
+            if (dni.length < 4) {
+                alert("Por favor, ingrese un DNI válido de al menos 4 caracteres para iniciar la búsqueda en el servidor.");
+                return;
+            }
+
+            if (!navigator.onLine) {
+                alert("⚠️ Se requiere conexión a internet activa para realizar la búsqueda avanzada en la base de datos completa.");
+                return;
+            }
+
+            tbodyAvanzada.innerHTML = `<tr><td colspan="4" style="text-align:center;">🔍 Escaneando toda la base de datos en el servidor, por favor espere...</td></tr>`;
+            contenedorResultados.style.display = "block";
+
+            // Consulta al servidor enviando parámetros especiales en la URL
+            fetch(`${CONFIG_WEB_APP_URL}?action=busqueda_avanzada&dni=${dni}`)
+            .then(res => res.json())
+            .then(data => {
+                tbodyAvanzada.innerHTML = "";
+                
+                if (data.status === "success" && data.resultados.length > 0) {
+                    data.resultados.forEach(res => {
+                        let fFormat = res.fecha_infraccion ? res.fecha_infraccion.split("T")[0] : "-";
+                        tbodyAvanzada.innerHTML += `<tr>
+                            <td><strong>${res.id_papeleta}</strong></td>
+                            <td>${res.responsable}</td>
+                            <td>${res.conducta}</td>
+                            <td>${fFormat}</td>
+                        </tr>`;
+                    });
+                    
+                    // Alerta específica en la caja superior de reincidencia
+                    const alertaBox = document.getElementById("alerta-reincidencia");
+                    alertaBox.style.display = "block";
+                    alertaBox.className = "alert-reincidence";
+                    alertaBox.style.backgroundColor = "#dc3545";
+                    alertaBox.style.color = "#white";
+                    alertaBox.innerHTML = `🚨 ¡REINCIDENCIA ABSOLUTA DETECTADA! Este infractor tiene un historial completo de <strong>${data.resultados.length} papeletas registradas</strong> en la base de datos histórica.`;
+                    
+                } else if (data.status === "success" && data.resultados.length === 0) {
+                    tbodyAvanzada.innerHTML = `<tr><td colspan="4" style="text-align:center; color: var(--success); font-weight: bold;">✅ Limpio en Historial Completo. No se encontraron incidencias en toda la base de datos para este DNI.</td></tr>`;
+                    
+                    const alertaBox = document.getElementById("alerta-reincidencia");
+                    alertaBox.style.display = "block";
+                    alertaBox.className = "alert-reincidence";
+                    alertaBox.style.backgroundColor = "#d4edda";
+                    alertaBox.style.color = "#155724";
+                    alertaBox.innerHTML = `✅ Verificación Histórica: El infractor no registra ninguna falta previa en toda la base de datos.`;
+                } else {
+                    tbodyAvanzada.innerHTML = `<tr><td colspan="4" style="text-align:center; color: red;">Error en la respuesta del servidor: ${data.message}</td></tr>`;
+                }
+            })
+            .catch(err => {
+                tbodyAvanzada.innerHTML = `<tr><td colspan="4" style="text-align:center; color: red;">Error en la comunicación con el servidor: ${err}</td></tr>`;
             });
         }
 
