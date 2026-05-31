@@ -293,16 +293,15 @@
         /* ========================================== */
         #pdf-template {
             width: 680px;
-            padding: 25px;
+            padding: 15px 20px; /* Reducido para optimizar a una sola página */
             background: white;
             color: #000000 !important;
             font-family: Arial, sans-serif;
-            font-size: 12px;
+            font-size: 11px; /* Reducido de 12px */
             box-sizing: border-box;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            min-height: 960px; /* Asegura una estructura base sólida por hoja */
         }
         
         /* FUERZA TODO EL TEXTO, PÁRRAFOS Y DIVISIONES DEL PDF A SER NEGROS */
@@ -310,15 +309,15 @@
             color: #000000 !important;
         }
 
-        .pdf-header { text-align: center; font-weight: bold; font-size: 13px; margin-bottom: 15px; text-transform: uppercase; color: #000000 !important; }
-        .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+        .pdf-header { text-align: center; font-weight: bold; font-size: 13px; margin-bottom: 10px; text-transform: uppercase; color: #000000 !important; }
+        .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
         
         /* FUERZA TODO EL TEXTO Y ENCABEZADOS DEL PDF A SER NEGROS Y COLOR NARANJA PASTEL CORRELATIVO */
         .pdf-table th, .pdf-table td { 
             border: 1px solid #000000 !important; 
-            padding: 6px; 
+            padding: 4px 6px; /* Reducido de 6px */
             text-align: left; 
-            font-size: 11px; 
+            font-size: 10px; /* Reducido de 11px */
             vertical-align: top;
             color: #000000 !important; 
         }
@@ -331,11 +330,11 @@
         /* NUEVO COLOR: Naranja Pastel para los Títulos de Sección */
         .section-title { 
             font-weight: bold; 
-            margin-top: 12px; 
-            margin-bottom: 5px; 
+            margin-top: 8px; /* Reducido de 12px */
+            margin-bottom: 4px; /* Reducido de 5px */
             background: #ffe6cc !important; 
-            padding: 5px; 
-            font-size: 11px; 
+            padding: 4px 6px; /* Reducido de 5px */
+            font-size: 10px; /* Reducido de 11px */
             text-transform: uppercase; 
             color: #000000 !important; 
             border: 1px solid #000000;
@@ -343,16 +342,14 @@
 
         /* Bloque Expandible Dinámico para rellenar estéticamente el espacio en blanco */
         .descripcion-flexible-contenedor {
-            flex-grow: 1;
-            min-height: 90px;
-            margin-bottom: 12px;
+            min-height: 60px; /* Reducido de 90px */
+            margin-bottom: 8px; /* Reducido de 12px */
         }
 
         /* Clase protectora contra cortes feos de hojas en el motor PDF */
         .pdf-bloque-protegido {
             page-break-inside: avoid !important;
             break-inside: avoid !important;
-            margin-top: auto; /* Empuja el bloque al fondo si hay espacio sobrante */
         }
 
         .loader {
@@ -371,7 +368,7 @@
 
     <div id="login-screen">
         <div class="login-box">
-            <h2 style="border:none; margin-top:0;">🔒 Acceso Seguro</h2>
+            <h2 style="border:none; margin-top:0; color: var(--primary);">🔒 Acceso Seguro</h2>
             <p style="font-size:16px; color:#6c757d;">Ingrese la clave de autorización:</p>
             <div class="form-group">
                 <input type="password" id="app-password" placeholder="Contraseña de oficial">
@@ -382,7 +379,12 @@
     </div>
 
     <div id="main-app">
-        <section id="view-formulario" class="view-section active">
+        <!-- Encabezado de la aplicación -->
+        <div class="app-top-header" style="background-color: #002244; padding: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border-bottom: 4px solid var(--primary); margin-bottom: 10px;">
+            <img src="https://logos-world.net/wp-content/uploads/2023/01/APM-Terminals-Logo.png" alt="APM Terminals" style="max-width: 220px; width: 100%; height: auto; display: block; margin: 0 auto;">
+        </div>
+
+        <section id="view-formulario" class="view-section active" style="padding-top: 10px;">
             <h2>📄 Emitir Papeleta</h2>
             
             <div class="card">
@@ -459,7 +461,7 @@
             <button class="btn-block" style="background-color: var(--primary);" onclick="abrirVentanaPrevisualizacion()">🚀 GUARDAR Y EXPORTAR PDF</button>
         </section>
 
-        <section id="view-dashboard" class="view-section">
+        <section id="view-dashboard" class="view-section" style="padding-top: 10px;">
             <h2>📊 Historial de Registros</h2>
             
             <div class="card" style="padding: 15px;">
@@ -495,7 +497,7 @@
             </div>
         </section>
 
-        <section id="view-config" class="view-section">
+        <section id="view-config" class="view-section" style="padding-top: 10px;">
             <h2>⚙️ Configuración del Sistema</h2>
             <div class="card">
                 <h3>Sincronización Activa</h3>
@@ -538,12 +540,16 @@
                 <div id="preview-pdf-content" style="background: white; padding: 5px;">
                     
                     <div id="pdf-template">
-                        <div style="float: right; text-align: right; font-weight: bold;">
-                            APM TERMINALS / Lifting Global Trade<br>
-                            <span style="color:red; font-size:14px;" id="pdf-txt-id-papeleta"></span>
+                        <!-- Encabezado con Logotipo alineado a la izquierda y Datos correlativos a la derecha -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000000; padding-bottom: 6px; margin-bottom: 10px;">
+                            <img src="https://logos-world.net/wp-content/uploads/2023/01/APM-Terminals-Logo.png" alt="APM Terminals Logo" style="width: 160px; height: auto;">
+                            <div style="text-align: right; font-weight: bold; font-size: 11px; line-height: 1.25;">
+                                APM TERMINALS / Lifting Global Trade<br>
+                                <span style="color:red; font-size:13px;" id="pdf-txt-id-papeleta"></span>
+                            </div>
                         </div>
-                        <div style="clear: both;"></div>
-                        <div class="pdf-header">PAPELETA DE CARGOS No. <span id="pdf-txt-num-papeleta"></span></div>
+
+                        <div class="pdf-header" style="margin-top: 5px;">PAPELETA DE CARGOS No. <span id="pdf-txt-num-papeleta"></span></div>
                         
                         <div class="section-title">DATOS DEL PRESUNTO INFRACTOR</div>
                         <table class="pdf-table">
@@ -574,20 +580,20 @@
                         </table>
 
                         <div class="section-title">DESCRIPCIÓN DEL ACTO U OMISIÓN REALIZADO POR EL PRESUNTO INFRACTOR</div>
-                        <div class="descripcion-flexible-contenedor" style="border:1px solid #000000; padding:8px; font-size:11px;" id="pdf-txt-descripcion"></div>
+                        <div class="descripcion-flexible-contenedor" style="border:1px solid #000000; padding:6px; font-size:10px; line-height: 1.35;" id="pdf-txt-descripcion"></div>
 
                         <div class="section-title">MEDIOS PROBATORIOS (FOTOS, FILMACIONES, DOCUMENTOS U OTRAS EVIDENCIAS)</div>
-                        <div style="border:1px solid #000000; padding:8px; min-height:60px; margin-bottom:15px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;" id="pdf-txt-evidencias"></div>
+                        <div style="border:1px solid #000000; padding:6px; min-height:45px; margin-bottom:8px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;" id="pdf-txt-evidencias"></div>
 
                         <div class="pdf-bloque-protegido">
                             <div class="section-title">PRESUNTA INFRACION (De acuerdo con la tabla del RIS)</div>
-                            <p style="margin: 3px 0;"><strong>Área de la Infracción:</strong> Seguridad y Accesos</p>
-                            <p style="margin: 3px 0;"><strong>Tipo de Conducta Infractora:</strong> <span id="pdf-txt-conducta"></span></p>
-                            <p style="margin: 3px 0;"><strong>Graduación:</strong> <span id="pdf-txt-graduacion" style="font-weight:bold;"></span></p>
-                            <p style="margin: 5px 0 2px 0;"><strong>Posible Sanción:</strong></p>
-                            <div id="pdf-txt-sancion-bloque" style="border: 1px dashed #000000; padding: 8px; font-size: 11px; margin-bottom: 10px; background: #fafafa; line-height: 1.4; color: #000000 !important;"></div>
+                            <p style="margin: 2px 0;"><strong>Área de la Infracción:</strong> Seguridad y Accesos</p>
+                            <p style="margin: 2px 0;"><strong>Tipo de Conducta Infractora:</strong> <span id="pdf-txt-conducta"></span></p>
+                            <p style="margin: 2px 0;"><strong>Graduación:</strong> <span id="pdf-txt-graduacion" style="font-weight:bold;"></span></p>
+                            <p style="margin: 4px 0 1px 0;"><strong>Posible Sanción:</strong></p>
+                            <div id="pdf-txt-sancion-bloque" style="border: 1px dashed #000000; padding: 6px; font-size: 10px; margin-bottom: 8px; background: #fafafa; line-height: 1.35; color: #000000 !important;"></div>
 
-                            <table class="pdf-table" style="margin-top:15px;">
+                            <table class="pdf-table" style="margin-top:10px;">
                                 <tr>
                                     <th style="width:50%;">RESPONSABLE COMPETENTE</th>
                                     <th style="width:50%;">ÓRGANO DE INSTRUCCIÓN</th>
@@ -598,7 +604,7 @@
                                 </tr>
                             </table>
 
-                            <div style="margin-top: 15px; font-size: 10.5px; text-align: justify; line-height: 1.35; border-top: 1px solid #000000; padding-top: 8px; color: #000000 !important;">
+                            <div style="margin-top: 10px; font-size: 9.5px; text-align: justify; line-height: 1.3; border-top: 1px solid #000000; padding-top: 6px; color: #000000 !important;">
                                 En virtud de lo señalado, se le otorga un plazo máximo de tres (3) días hábiles luego de recibida la presente notificación, a efectos de que presente sus descargos/información que considere pertinente.<br>
                                 <strong>Base legal:</strong> Reglamento de Infracciones y Sanciones del Terminal Norte Multipropósito del Terminal Portuario del Callao aprobado por Resolución de Gerencia General Nº 0013-2024-APN-GG.
                             </div>
@@ -625,7 +631,7 @@
         let cropperInstance = null;    
         let actualFechaEnvioGlobal = "";
         
-        // Plantillas locales por defecto si la base de datos se encuentra vacía o para asegurar funcionamiento inmediato
+        // Plantillas por defecto
         let plantillasCache = [
             {
                 conducta: "Personal no se dirigió al complejo SINI",
@@ -759,7 +765,6 @@
             });
         }
 
-        // Ocultar sugerencias si el usuario da clic fuera del área
         document.addEventListener("click", function(e) {
             const listbox = document.getElementById("sugerencias-plantillas");
             const inputConducta = document.getElementById("inf-conducta");
@@ -769,7 +774,6 @@
         });
 
         function desvincularPlantillaRaw() {
-            // Si el usuario edita la descripción a mano, desconectamos el reemplazo automático
             plantillaRawSeleccionada = "";
         }
 
@@ -785,7 +789,6 @@
             const licencia = document.getElementById("inf-licencia").value || "[Licencia]";
             const placa = document.getElementById("inf-placa").value || "[Placa]";
 
-            // Obtener primer apellido o primer término ingresado para simplificar la narrativa
             let apellido = "Infractor";
             if (nombre && nombre !== "[Nombre Completo]") {
                 const partes = nombre.trim().split(/\s+/);
@@ -844,15 +847,15 @@
                 contenedorPdfEvidencias.innerText = "NO SE ADJUNTARON EVIDENCIAS FOTOGRÁFICAS.";
             } else {
                 contenedorPdfEvidencias.style.display = "grid";
-                contenedorPdfEvidencias.style.gridTemplateColumns = "repeat(2, 1fr)";
-                contenedorPdfEvidencias.style.gap = "8px";
+                contenedorPdfEvidencias.style.gridTemplateColumns = "repeat(4, 1fr)";
+                contenedorPdfEvidencias.style.gap = "6px";
                 contenedorPdfEvidencias.style.justifyItems = "center";
 
                 fotosBase64Guardadas.forEach(fotoData => {
                     const imgPdf = document.createElement("img");
                     imgPdf.src = fotoData;
-                    imgPdf.style.width = "100%"; imgPdf.style.maxWidth = "135px";
-                    imgPdf.style.height = "95px"; imgPdf.style.objectFit = "contain";
+                    imgPdf.style.width = "100%"; imgPdf.style.maxWidth = "115px";
+                    imgPdf.style.height = "80px"; imgPdf.style.objectFit = "contain";
                     imgPdf.style.border = "1px solid #333";
                     contenedorPdfEvidencias.appendChild(imgPdf);
                 });
@@ -908,9 +911,10 @@
                     pdf_base64: base64Str
                 };
 
+                // Envío de petición POST usando "text/plain" para evitar bloqueos CORS preflight en navegadores móviles
                 fetch(CONFIG_WEB_APP_URL, {
                     method: "POST", mode: "no-cors",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify(payload)
                 }).then(() => {
                     html2pdf().set(opcionesConfig).from(elementoAImprimir).save();
@@ -933,7 +937,7 @@
                     
                     cargarDatosBaseDeDatos();
                 }).catch(err => {
-                    alert("⚠️ Error de red al subir a Drive: " + err);
+                    alert("⚠️ Error al subir a Drive: " + err);
                     document.getElementById("form-loader").style.display = "none";
                     document.getElementById("preview-buttons-group").style.display = "flex";
                 });
@@ -971,7 +975,6 @@
                 if(data.error) { alert("Error: " + data.error); return; }
                 databaseCache = data;
                 
-                // Actualizar Oficial Responsable en el Formulario
                 const selectForm = document.getElementById("form-responsable");
                 selectForm.innerHTML = "";
                 data.usuarios.forEach(u => {
@@ -982,7 +985,6 @@
                 });
                 autoCalcularID();
 
-                // Actualizar Filtro de Dashboard (Oficial Responsable)
                 const selectDashboard = document.getElementById("filtro-miembro");
                 selectDashboard.innerHTML = '<option value="">-- Todos los Integrantes --</option>';
                 data.usuarios.forEach(u => {
@@ -991,25 +993,21 @@
                     selectDashboard.appendChild(opt);
                 });
 
-                // Cargar plantillas de la base de datos si existen
                 if (data.plantillas && data.plantillas.length > 0) {
                     plantillasCache = data.plantillas;
                 }
 
-                // Actualizar Lista de Configuración
                 const listaConfig = document.getElementById("lista-usuarios-config");
                 listaConfig.innerHTML = "";
                 data.usuarios.forEach(u => {
                     listaConfig.innerHTML += `<li><strong>${u.nombre}</strong> (${u.iniciales}) - Siguiente: ${u.siguienteCorrelativo}</li>`;
                 });
 
-                // Renderizar tabla del historial aplicando los filtros vigentes
                 filtrarHistorial();
             })
             .catch(err => alert("Error de conexión: " + err));
         }
 
-        // --- FUNCIÓN DE FILTRO Y BÚSQUEDA DEL DASHBOARD ---
         function filtrarHistorial() {
             const responsableSeleccionado = document.getElementById("filtro-miembro").value;
             const dniBuscado = document.getElementById("filtro-dni").value.trim().toLowerCase();
@@ -1018,9 +1016,7 @@
             
             tbody.innerHTML = "";
 
-            // Evaluar Alerta de Reincidencia del DNI
             if (dniBuscado.length >= 4) {
-                // Contar cuántas veces aparece el DNI exacto en todo el historial disponible
                 const totalInfracciones = databaseCache.historial.filter(h => 
                     h.dni && h.dni.trim().toLowerCase() === dniBuscado
                 ).length;
@@ -1051,7 +1047,6 @@
                 alertaBox.style.display = "none";
             }
 
-            // Filtrar registros
             const registrosFiltrados = databaseCache.historial.filter(h => {
                 const coincideResponsable = !responsableSeleccionado || h.responsable === responsableSeleccionado;
                 const coincideDni = !dniBuscado || (h.dni && h.dni.toLowerCase().includes(dniBuscado));
