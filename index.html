@@ -371,6 +371,7 @@
 </head>
 <body>
 
+    <!-- Pantalla de bloqueo sin contraseñas grabadas en el código -->
     <div id="login-screen">
         <div class="login-box">
             <h2 style="border:none; margin-top:0; color: var(--primary);">🔒 Acceso Seguro</h2>
@@ -691,12 +692,58 @@
 
         let plantillaRawSeleccionada = "";
 
+        // --- SISTEMA CRIPTOGRÁFICO DE SEGURIDAD (SHA-256 local y privado) ---
+        async function generarHashSHA256(texto) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(texto);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        }
+
+        async function verificarPassword() {
+            const passInput = document.getElementById("app-password").value;
+            const loginError = document.getElementById("login-error");
+            
+            if (!passInput) {
+                alert("Por favor, ingrese una contraseña válida.");
+                return;
+            }
+
+            // Generar el hash SHA-256 de lo que escribió el oficial
+            const hashResultante = await generarHashSHA256(passInput);
+            
+            // Guardar temporalmente en la sesión activa del navegador (desaparece al cerrar la pestaña)
+            sessionStorage.setItem("secure_auth_hash", hashResultante);
+
+            // Intentar cargar la base de datos como prueba de validación en el servidor
+            fetch(`${CONFIG_WEB_APP_URL}?auth=${hashResultante}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    // El servidor rechazó la contraseña, denegar acceso
+                    loginError.style.display = "block";
+                    sessionStorage.removeItem("secure_auth_hash");
+                } else {
+                    // Contraseña aprobada criptográficamente en el servidor
+                    document.getElementById("login-screen").style.display = "none";
+                    document.getElementById("main-app").style.display = "block";
+                    
+                    databaseCache = data;
+                    renderizarDatosSincronizados(data);
+                }
+            })
+            .catch(err => {
+                alert("Error de validación o conexión con el servidor: " + err);
+                sessionStorage.removeItem("secure_auth_hash");
+            });
+        }
+
         // --- INICIALIZACIÓN Y COLA OFFLINE ---
         window.addEventListener("load", function() {
             actualizarIndicadorOffline();
-            // Intento de envío al cargar la página si hay conexión
             procesarColaPendientes();
-            // Intervalo para verificar e intentar sincronizar pendientes cada 15 segundos
             setInterval(procesarColaPendientes, 15000);
         });
 
@@ -727,24 +774,24 @@
             }
         }
 
-        // Ejecución de envío automático al servidor
         function procesarColaPendientes() {
             if (!navigator.onLine) return;
             
             let cola = obtenerColaPendientes();
             if (cola.length === 0) return;
 
-            const elemento = cola[0]; // Tomar el primer elemento pendiente de la cola
+            const elemento = cola[0];
+            
+            // Inyectar el hash de sesión en la cola pendiente de envío para que pase el filtro de seguridad
+            elemento.auth = sessionStorage.getItem("secure_auth_hash");
 
             fetch(CONFIG_WEB_APP_URL, {
                 method: "POST", mode: "no-cors",
                 headers: { "Content-Type": "text/plain;charset=utf-8" },
                 body: JSON.stringify(elemento)
             }).then(() => {
-                // Si el envío fue exitoso, se remueve de la cola local
                 cola.shift();
                 guardarColaPendientes(cola);
-                // Procesar la siguiente de forma recursiva
                 procesarColaPendientes();
             }).catch(err => {
                 console.log("Error al sincronizar cola: ", err);
@@ -985,7 +1032,7 @@
             document.getElementById("preview-modal").style.display = "none";
         }
 
-        // --- EMISIÓN FINAL CON COLA OFFLINE INTEGRADA ---
+        // --- EMISIÓN FINAL CON LLAVE DE AUTORIZACIÓN ---
         function ejecutarExportacionFinal() {
             document.getElementById("form-loader").style.display = "block";
             document.getElementById("preview-buttons-group").style.display = "none";
@@ -1004,10 +1051,10 @@
                 jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
             };
 
-            // 1. Descarga local e instantánea (100% offline)
             html2pdf().set(opcionesConfig).from(elementoAImprimir).save();
 
             const payload = {
+                auth: sessionStorage.getItem("secure_auth_hash"), // Firma criptográfica de seguridad
                 id_papeleta: idPapeleta, 
                 responsable: responsable,
                 infractor_nombre: document.getElementById("inf-nombre").value,
@@ -1019,23 +1066,19 @@
                 fecha_envio: actualFechaEnvioGlobal
             };
 
-            // 2. Control de Conectividad (Offline / Online)
             if (navigator.onLine) {
-                // Hay señal: Intentar registrar directamente en Google Sheets
                 fetch(CONFIG_WEB_APP_URL, {
                     method: "POST", mode: "no-cors",
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify(payload)
                 }).then(() => {
-                    alert(`✅ ¡Éxito!\nPapeleta ${idPapeleta} guardada en el sistema de forma online.`);
+                    alert(`✅ ¡Éxito!\nPapeleta ${idPapeleta} guardada de manera online.`);
                     finalizarFlujoEmision();
                 }).catch(err => {
-                    // Si falla el envío por intermitencia, se deriva a la cola local
                     console.log("Error de conexión directa, guardando en cola: ", err);
                     guardarEnColaOffline(payload);
                 });
             } else {
-                // No hay señal: Guardar directamente en LocalStorage de forma segura
                 guardarEnColaOffline(payload);
             }
         }
@@ -1067,17 +1110,6 @@
             cargarDatosBaseDeDatos();
         }
 
-        function verificarPassword() {
-            const pass = document.getElementById("app-password").value;
-            if(pass === "C*argo123") {
-                document.getElementById("login-screen").style.display = "none";
-                document.getElementById("main-app").style.display = "block";
-                cargarDatosBaseDeDatos();
-            } else {
-                document.getElementById("login-error").style.display = "block";
-            }
-        }
-
         function cambiarPestaña(target, btn) {
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -1090,49 +1122,54 @@
             radioInput.parentElement.classList.add('selected');
         }
 
-        // --- CARGA DE LA BASE DE DATOS (HASTA 500 REGISTROS GLOBALES) ---
+        // --- CARGA DE LA BASE DE DATOS CON FIRMA DE AUTORIZACIÓN ---
         function cargarDatosBaseDeDatos() {
-            if(CONFIG_WEB_APP_URL.includes("AQUÍ_PEGA")) return;
-            fetch(CONFIG_WEB_APP_URL)
+            const secureHash = sessionStorage.getItem("secure_auth_hash");
+            if (!secureHash || CONFIG_WEB_APP_URL.includes("AQUÍ_PEGA")) return;
+            
+            fetch(`${CONFIG_WEB_APP_URL}?auth=${secureHash}`)
             .then(res => res.json())
             .then(data => {
-                if(data.error) { alert("Error: " + data.error); return; }
+                if(data.error) { alert("Error de acceso: " + data.error); return; }
                 databaseCache = data;
-                
-                const selectForm = document.getElementById("form-responsable");
-                selectForm.innerHTML = "";
-                data.usuarios.forEach(u => {
-                    let opt = document.createElement("option");
-                    opt.value = u.nombre; opt.text = u.nombre;
-                    opt.dataset.iniciales = u.iniciales; opt.dataset.correlativo = u.siguienteCorrelativo;
-                    selectForm.appendChild(opt);
-                });
-                autoCalcularID();
-
-                const selectDashboard = document.getElementById("filtro-miembro");
-                selectDashboard.innerHTML = '<option value="">-- Todos los Integrantes --</option>';
-                data.usuarios.forEach(u => {
-                    let opt = document.createElement("option");
-                    opt.value = u.nombre; opt.text = u.nombre;
-                    selectDashboard.appendChild(opt);
-                });
-
-                if (data.plantillas && data.plantillas.length > 0) {
-                    plantillasCache = data.plantillas;
-                }
-
-                const listaConfig = document.getElementById("lista-usuarios-config");
-                listaConfig.innerHTML = "";
-                data.usuarios.forEach(u => {
-                    listaConfig.innerHTML += `<li><strong>${u.nombre}</strong> (${u.iniciales}) - Siguiente: ${u.siguienteCorrelativo}</li>`;
-                });
-
-                filtrarHistorial();
+                renderizarDatosSincronizados(data);
             })
             .catch(err => alert("Error de conexión: " + err));
         }
 
-        // --- BÚSQUEDA LOCAL DINÁMICA (EN EL PANEL DE LOS ÚLTIMOS 500 REGISTROS) ---
+        function renderizarDatosSincronizados(data) {
+            const selectForm = document.getElementById("form-responsable");
+            selectForm.innerHTML = "";
+            data.usuarios.forEach(u => {
+                let opt = document.createElement("option");
+                opt.value = u.nombre; opt.text = u.nombre;
+                opt.dataset.iniciales = u.iniciales; opt.dataset.correlativo = u.siguienteCorrelativo;
+                selectForm.appendChild(opt);
+            });
+            autoCalcularID();
+
+            const selectDashboard = document.getElementById("filtro-miembro");
+            selectDashboard.innerHTML = '<option value="">-- Todos los Integrantes --</option>';
+            data.usuarios.forEach(u => {
+                let opt = document.createElement("option");
+                opt.value = u.nombre; opt.text = u.nombre;
+                selectDashboard.appendChild(opt);
+            });
+
+            if (data.plantillas && data.plantillas.length > 0) {
+                plantillasCache = data.plantillas;
+            }
+
+            const listaConfig = document.getElementById("lista-usuarios-config");
+            listaConfig.innerHTML = "";
+            data.usuarios.forEach(u => {
+                listaConfig.innerHTML += `<li><strong>${u.nombre}</strong> (${u.iniciales}) - Siguiente: ${u.siguienteCorrelativo}</li>`;
+            });
+
+            filtrarHistorial();
+        }
+
+        // --- BÚSQUEDA LOCAL DINÁMICA ---
         function filtrarHistorial() {
             const responsableSeleccionado = document.getElementById("filtro-miembro").value;
             const dniBuscado = document.getElementById("filtro-dni").value.trim().toLowerCase();
@@ -1142,7 +1179,6 @@
             tbody.innerHTML = "";
 
             if (dniBuscado.length >= 4) {
-                // Cuenta las coincidencias locales en la caché de 500 registros
                 const totalInfracciones = databaseCache.historial.filter(h => 
                     h.dni && h.dni.trim().toLowerCase() === dniBuscado
                 ).length;
@@ -1198,11 +1234,12 @@
             });
         }
 
-        // --- LÓGICA DE BÚSQUEDA AVANZADA EN TODA LA BASE DE DATOS (EXCEL) ---
+        // --- BÚSQUEDA AVANZADA HISTÓRICA CON PROTOCOLO DE SEGURIDAD ---
         function ejecutarBusquedaAvanzadaDni() {
             const dni = document.getElementById("filtro-dni").value.trim();
             const contenedorResultados = document.getElementById("contenedor-avanzada-resultados");
             const tbodyAvanzada = document.getElementById("tabla-avanzada-cuerpo");
+            const secureHash = sessionStorage.getItem("secure_auth_hash");
             
             if (dni.length < 4) {
                 alert("Por favor, ingrese un DNI válido de al menos 4 caracteres para iniciar la búsqueda en el servidor.");
@@ -1210,19 +1247,29 @@
             }
 
             if (!navigator.onLine) {
-                alert("⚠️ Se requiere conexión a internet activa para realizar la búsqueda avanzada en la base de datos completa.");
+                alert("⚠️ Se requiere conexión a internet activa para realizar la búsqueda avanzada.");
                 return;
             }
 
-            tbodyAvanzada.innerHTML = `<tr><td colspan="4" style="text-align:center;">🔍 Escaneando toda la base de datos en el servidor, por favor espere...</td></tr>`;
+            if (!secureHash) {
+                alert("Sesión no autorizada. Por favor, vuelva a ingresar.");
+                return;
+            }
+
+            tbodyAvanzada.innerHTML = `<tr><td colspan="4" style="text-align:center;">🔍 Escaneando toda la base de datos en el servidor de forma segura...</td></tr>`;
             contenedorResultados.style.display = "block";
 
-            // Consulta al servidor enviando parámetros especiales en la URL
-            fetch(`${CONFIG_WEB_APP_URL}?action=busqueda_avanzada&dni=${dni}`)
+            // Petición con autenticación SHA-256 adjunta en la consulta
+            fetch(`${CONFIG_WEB_APP_URL}?action=busqueda_avanzada&dni=${dni}&auth=${secureHash}`)
             .then(res => res.json())
             .then(data => {
                 tbodyAvanzada.innerHTML = "";
                 
+                if (data.error) {
+                    tbodyAvanzada.innerHTML = `<tr><td colspan="4" style="text-align:center; color: red;">Error: Acceso denegado por el servidor.</td></tr>`;
+                    return;
+                }
+
                 if (data.status === "success" && data.resultados.length > 0) {
                     data.resultados.forEach(res => {
                         let fFormat = res.fecha_infraccion ? res.fecha_infraccion.split("T")[0] : "-";
@@ -1234,29 +1281,28 @@
                         </tr>`;
                     });
                     
-                    // Alerta específica en la caja superior de reincidencia
                     const alertaBox = document.getElementById("alerta-reincidencia");
                     alertaBox.style.display = "block";
                     alertaBox.className = "alert-reincidence";
                     alertaBox.style.backgroundColor = "#dc3545";
-                    alertaBox.style.color = "#white";
+                    alertaBox.style.color = "white";
                     alertaBox.innerHTML = `🚨 ¡REINCIDENCIA ABSOLUTA DETECTADA! Este infractor tiene un historial completo de <strong>${data.resultados.length} papeletas registradas</strong> en la base de datos histórica.`;
                     
                 } else if (data.status === "success" && data.resultados.length === 0) {
-                    tbodyAvanzada.innerHTML = `<tr><td colspan="4" style="text-align:center; color: var(--success); font-weight: bold;">✅ Limpio en Historial Completo. No se encontraron incidencias en toda la base de datos para este DNI.</td></tr>`;
+                    tbodyAvanzada.innerHTML = `<tr><td colspan="4" style="text-align:center; color: var(--success); font-weight: bold;">✅ Limpio en Historial Completo. No se encontraron incidencias históricas para este DNI.</td></tr>`;
                     
                     const alertaBox = document.getElementById("alerta-reincidencia");
                     alertaBox.style.display = "block";
                     alertaBox.className = "alert-reincidence";
                     alertaBox.style.backgroundColor = "#d4edda";
                     alertaBox.style.color = "#155724";
-                    alertaBox.innerHTML = `✅ Verificación Histórica: El infractor no registra ninguna falta previa en toda la base de datos.`;
+                    alertaBox.innerHTML = `✅ Verificación Histórica: El infractor no registra ninguna falta previa en toda la base de datos de Google Sheets.`;
                 } else {
-                    tbodyAvanzada.innerHTML = `<tr><td colspan="4" style="text-align:center; color: red;">Error en la respuesta del servidor: ${data.message}</td></tr>`;
+                    tbodyAvanzada.innerHTML = `<tr><td colspan="4" style="text-align:center; color: red;">Error: ${data.message}</td></tr>`;
                 }
             })
             .catch(err => {
-                tbodyAvanzada.innerHTML = `<tr><td colspan="4" style="text-align:center; color: red;">Error en la comunicación con el servidor: ${err}</td></tr>`;
+                tbodyAvanzada.innerHTML = `<tr><td colspan="4" style="text-align:center; color: red;">Error de red o comunicación: ${err}</td></tr>`;
             });
         }
 
