@@ -356,29 +356,21 @@
             page-break-inside: avoid !important;
             break-inside: avoid !important;
         }
-
-        .loader {
-            display: none;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid var(--secondary);
-            border-radius: 50%;
-            width: 40px; height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <!-- Pantalla de bloqueo sin contraseñas grabadas en el código -->
+    <!-- Pantalla de bloqueo con ojo visor integrado -->
     <div id="login-screen">
         <div class="login-box">
             <h2 style="border:none; margin-top:0; color: var(--primary);">🔒 Acceso Seguro</h2>
             <p style="font-size:16px; color:#6c757d;">Ingrese la clave de autorización:</p>
-            <div class="form-group">
-                <input type="password" id="app-password" placeholder="Contraseña de oficial">
+            
+            <div class="form-group" style="position: relative; display: flex; align-items: center;">
+                <input type="password" id="app-password" placeholder="Contraseña de oficial" style="padding-right: 45px;">
+                <button type="button" id="toggle-password-btn" onclick="togglePasswordVisibility()" style="position: absolute; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer; color: #6c757d; padding: 5px; outline: none;">👁️</button>
             </div>
+            
             <button class="btn-block" style="background-color:var(--primary);" onclick="verificarPassword()">Ingresar</button>
             <p id="login-error" style="color:red; font-weight:bold; margin-top:10px; display:none;">Clave incorrecta</p>
         </div>
@@ -692,17 +684,21 @@
 
         let plantillaRawSeleccionada = "";
 
-        // --- SISTEMA CRIPTOGRÁFICO DE SEGURIDAD (SHA-256 local y privado) ---
-        async function generarHashSHA256(texto) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(texto);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            return hashHex;
+        // --- SISTEMA DE VISUALIZACIÓN DE CONTRASEÑA (VER / OCULTAR) ---
+        function togglePasswordVisibility() {
+            const passInput = document.getElementById("app-password");
+            const toggleBtn = document.getElementById("toggle-password-btn");
+            if (passInput.type === "password") {
+                passInput.type = "text";
+                toggleBtn.innerText = "🙈";
+            } else {
+                passInput.type = "password";
+                toggleBtn.innerText = "👁️";
+            }
         }
 
-        async function verificarPassword() {
+        // --- SISTEMA DE INICIO DE SESIÓN SEGURO Y COMPATIBLE EN EL SERVIDOR ---
+        function verificarPassword() {
             const passInput = document.getElementById("app-password").value;
             const loginError = document.getElementById("login-error");
             
@@ -711,22 +707,19 @@
                 return;
             }
 
-            // Generar el hash SHA-256 de lo que escribió el oficial
-            const hashResultante = await generarHashSHA256(passInput);
-            
-            // Guardar temporalmente en la sesión activa del navegador (desaparece al cerrar la pestaña)
-            sessionStorage.setItem("secure_auth_hash", hashResultante);
+            // Guardar temporalmente en la sesión activa del navegador (evita que esté en el código)
+            sessionStorage.setItem("secure_auth_plain", passInput);
 
-            // Intentar cargar la base de datos como prueba de validación en el servidor
-            fetch(`${CONFIG_WEB_APP_URL}?auth=${hashResultante}`)
+            // Validar de forma directa y cifrada por HTTPS con el servidor de Google
+            fetch(`${CONFIG_WEB_APP_URL}?auth=${encodeURIComponent(passInput)}`)
             .then(res => res.json())
             .then(data => {
                 if (data.error) {
-                    // El servidor rechazó la contraseña, denegar acceso
+                    // El servidor rechazó la contraseña
                     loginError.style.display = "block";
-                    sessionStorage.removeItem("secure_auth_hash");
+                    sessionStorage.removeItem("secure_auth_plain");
                 } else {
-                    // Contraseña aprobada criptográficamente en el servidor
+                    // Aprobado con éxito en el servidor
                     document.getElementById("login-screen").style.display = "none";
                     document.getElementById("main-app").style.display = "block";
                     
@@ -736,7 +729,7 @@
             })
             .catch(err => {
                 alert("Error de validación o conexión con el servidor: " + err);
-                sessionStorage.removeItem("secure_auth_hash");
+                sessionStorage.removeItem("secure_auth_plain");
             });
         }
 
@@ -782,8 +775,8 @@
 
             const elemento = cola[0];
             
-            // Inyectar el hash de sesión en la cola pendiente de envío para que pase el filtro de seguridad
-            elemento.auth = sessionStorage.getItem("secure_auth_hash");
+            // Adjuntar la contraseña de sesión para pasar el filtro de seguridad
+            elemento.auth = sessionStorage.getItem("secure_auth_plain");
 
             fetch(CONFIG_WEB_APP_URL, {
                 method: "POST", mode: "no-cors",
@@ -1032,7 +1025,7 @@
             document.getElementById("preview-modal").style.display = "none";
         }
 
-        // --- EMISIÓN FINAL CON LLAVE DE AUTORIZACIÓN ---
+        // --- EMISIÓN FINAL ---
         function ejecutarExportacionFinal() {
             document.getElementById("form-loader").style.display = "block";
             document.getElementById("preview-buttons-group").style.display = "none";
@@ -1054,7 +1047,7 @@
             html2pdf().set(opcionesConfig).from(elementoAImprimir).save();
 
             const payload = {
-                auth: sessionStorage.getItem("secure_auth_hash"), // Firma criptográfica de seguridad
+                auth: sessionStorage.getItem("secure_auth_plain"), // Envío de contraseña en texto plano encriptado por canal HTTPS
                 id_papeleta: idPapeleta, 
                 responsable: responsable,
                 infractor_nombre: document.getElementById("inf-nombre").value,
@@ -1122,12 +1115,12 @@
             radioInput.parentElement.classList.add('selected');
         }
 
-        // --- CARGA DE LA BASE DE DATOS CON FIRMA DE AUTORIZACIÓN ---
+        // --- CARGA DE LA BASE DE DATOS ---
         function cargarDatosBaseDeDatos() {
-            const secureHash = sessionStorage.getItem("secure_auth_hash");
-            if (!secureHash || CONFIG_WEB_APP_URL.includes("AQUÍ_PEGA")) return;
+            const securePass = sessionStorage.getItem("secure_auth_plain");
+            if (!securePass || CONFIG_WEB_APP_URL.includes("AQUÍ_PEGA")) return;
             
-            fetch(`${CONFIG_WEB_APP_URL}?auth=${secureHash}`)
+            fetch(`${CONFIG_WEB_APP_URL}?auth=${encodeURIComponent(securePass)}`)
             .then(res => res.json())
             .then(data => {
                 if(data.error) { alert("Error de acceso: " + data.error); return; }
@@ -1234,12 +1227,12 @@
             });
         }
 
-        // --- BÚSQUEDA AVANZADA HISTÓRICA CON PROTOCOLO DE SEGURIDAD ---
+        // --- BÚSQUEDA AVANZADA HISTÓRICA ---
         function ejecutarBusquedaAvanzadaDni() {
             const dni = document.getElementById("filtro-dni").value.trim();
             const contenedorResultados = document.getElementById("contenedor-avanzada-resultados");
             const tbodyAvanzada = document.getElementById("tabla-avanzada-cuerpo");
-            const secureHash = sessionStorage.getItem("secure_auth_hash");
+            const securePass = sessionStorage.getItem("secure_auth_plain");
             
             if (dni.length < 4) {
                 alert("Por favor, ingrese un DNI válido de al menos 4 caracteres para iniciar la búsqueda en el servidor.");
@@ -1251,7 +1244,7 @@
                 return;
             }
 
-            if (!secureHash) {
+            if (!securePass) {
                 alert("Sesión no autorizada. Por favor, vuelva a ingresar.");
                 return;
             }
@@ -1259,8 +1252,7 @@
             tbodyAvanzada.innerHTML = `<tr><td colspan="4" style="text-align:center;">🔍 Escaneando toda la base de datos en el servidor de forma segura...</td></tr>`;
             contenedorResultados.style.display = "block";
 
-            // Petición con autenticación SHA-256 adjunta en la consulta
-            fetch(`${CONFIG_WEB_APP_URL}?action=busqueda_avanzada&dni=${dni}&auth=${secureHash}`)
+            fetch(`${CONFIG_WEB_APP_URL}?action=busqueda_avanzada&dni=${dni}&auth=${encodeURIComponent(securePass)}`)
             .then(res => res.json())
             .then(data => {
                 tbodyAvanzada.innerHTML = "";
