@@ -124,6 +124,7 @@
 
         .form-group {
             margin-bottom: 20px;
+            position: relative;
         }
 
         label {
@@ -248,6 +249,45 @@
         th, td { padding: 12px; border: 1px solid #dee2e6; text-align: left; }
         th { background-color: var(--primary); color: white; }
 
+        /* Contenedor para sugerencias predictivas */
+        .suggestions-box {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: white;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            z-index: 1000;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .suggestion-item {
+            padding: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            font-size: 16px;
+        }
+
+        .suggestion-item:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Alerta de Reincidencia */
+        .alert-reincidence {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            display: none;
+        }
+
         /* ========================================== */
         /* DISEÑO DE LA PLANTILLA DEL PDF REAL        */
         /* ========================================== */
@@ -362,22 +402,31 @@
 
             <div class="card">
                 <h3>Datos del Presunto Infractor</h3>
-                <div class="form-group"><label>Nombres y Apellidos</label><input type="text" id="inf-nombre"></div>
-                <div class="form-group"><label>DNI / C.E / Pasaporte</label><input type="text" id="inf-dni"></div>
-                <div class="form-group"><label>Cargo</label><input type="text" id="inf-cargo"></div>
-                <div class="form-group"><label>Número de Contacto</label><input type="text" id="inf-contacto"></div>
-                <div class="form-group"><label>Empresa / Razón Social</label><input type="text" id="inf-empresa"></div>
-                <div class="form-group"><label>Correo Electrónico</label><input type="email" id="inf-correo"></div>
-                <div class="form-group"><label>N° Licencia de Conducir</label><input type="text" id="inf-licencia"></div>
-                <div class="form-group"><label>Placa de Vehículo</label><input type="text" id="inf-placa"></div>
+                <div class="form-group"><label>Nombres y Apellidos</label><input type="text" id="inf-nombre" oninput="actualizarDescripcionDinamica()"></div>
+                <div class="form-group"><label>DNI / C.E / Pasaporte</label><input type="text" id="inf-dni" oninput="actualizarDescripcionDinamica()"></div>
+                <div class="form-group"><label>Cargo</label><input type="text" id="inf-cargo" oninput="actualizarDescripcionDinamica()"></div>
+                <div class="form-group"><label>Número de Contacto</label><input type="text" id="inf-contacto" oninput="actualizarDescripcionDinamica()"></div>
+                <div class="form-group"><label>Empresa / Razón Social</label><input type="text" id="inf-empresa" oninput="actualizarDescripcionDinamica()"></div>
+                <div class="form-group"><label>Correo Electrónico</label><input type="email" id="inf-correo" oninput="actualizarDescripcionDinamica()"></div>
+                <div class="form-group"><label>N° Licencia de Conducir</label><input type="text" id="inf-licencia" oninput="actualizarDescripcionDinamica()"></div>
+                <div class="form-group"><label>Placa de Vehículo</label><input type="text" id="inf-placa" oninput="actualizarDescripcionDinamica()"></div>
             </div>
 
             <div class="card">
                 <h3>Detalles del Suceso</h3>
                 <div class="form-group"><label>Lugar / Zona de Infracción</label><input type="text" id="inf-lugar"></div>
                 <div class="form-group"><label>Fecha y Hora del Suceso</label><input type="datetime-local" id="inf-fecha-hora"></div>
-                <div class="form-group"><label>Tipo de Conducta Infractora</label><textarea id="inf-conducta" rows="3"></textarea></div>
-                <div class="form-group"><label>Descripción del Acto u Omisión</label><textarea id="inf-descripcion" rows="3"></textarea></div>
+                
+                <div class="form-group">
+                    <label>Tipo de Conducta Infractora</label>
+                    <textarea id="inf-conducta" rows="3" oninput="buscarPlantillas(this.value)" placeholder="Escriba aquí para buscar plantilla o ingresar texto libre..."></textarea>
+                    <div id="sugerencias-plantillas" class="suggestions-box"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Descripción del Acto u Omisión</label>
+                    <textarea id="inf-descripcion" rows="3" oninput="desvincularPlantillaRaw()" placeholder="Se rellenará automáticamente si selecciona una plantilla o puede escribir libremente..."></textarea>
+                </div>
                 
                 <div class="form-group">
                     <label>Medios Probatorios / Evidencias (Max 4 fotos recortadas)</label>
@@ -412,6 +461,20 @@
 
         <section id="view-dashboard" class="view-section">
             <h2>📊 Historial de Registros</h2>
+            
+            <div class="card" style="padding: 15px;">
+                <h4 style="margin-top:0; color:var(--primary);">Filtros de Búsqueda</h4>
+                <div class="form-group">
+                    <label for="filtro-miembro" style="font-size:15px;">Buscar por Oficial Responsable:</label>
+                    <select id="filtro-miembro" onchange="filtrarHistorial()"></select>
+                </div>
+                <div class="form-group">
+                    <label for="filtro-dni" style="font-size:15px;">Buscar por DNI de Infractor:</label>
+                    <input type="text" id="filtro-dni" placeholder="Ingrese DNI..." oninput="filtrarHistorial()">
+                </div>
+                <div id="alerta-reincidencia" class="alert-reincidence"></div>
+            </div>
+
             <div class="table-responsive">
                 <table id="tabla-dashboard">
                     <thead>
@@ -557,10 +620,24 @@
     <script>
         const CONFIG_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykGrZsjMZ3ewTIXjuPKqy-UDpOjtFPtT-ebMM_ilC6bf6qwPRcNn1KhdUhrODdYzEBKg/exec";
         
-        let databaseCache = { usuarios: [], historial: [] };
+        let databaseCache = { usuarios: [], historial: [], plantillas: [] };
         let fotosBase64Guardadas = []; 
         let cropperInstance = null;    
         let actualFechaEnvioGlobal = "";
+        
+        // Plantillas locales por defecto si la base de datos se encuentra vacía o para asegurar funcionamiento inmediato
+        let plantillasCache = [
+            {
+                conducta: "Personal no se dirigió al complejo SINI",
+                descripcion: "El conductor {apellido} no se dirigió al complejo de SINI pese a que el ticket que tenía de ingreso especificaba que su destino era SINI, omitiendo las directrices impartidas por el oficial a cargo."
+            },
+            {
+                conducta: "Tránsito en zona de seguridad sin equipo de protección personal (EPP)",
+                descripcion: "Se detectó al Sr(a). {nombre} transitando por las zonas operativas críticas sin hacer uso correcto de su casco de seguridad, calzado con punta de acero y chaleco reflectivo."
+            }
+        ];
+
+        let plantillaRawSeleccionada = "";
 
         function abrirSelectorDeFoto() {
             if (fotosBase64Guardadas.length >= 4) {
@@ -644,6 +721,89 @@
             contenedorPrevia.appendChild(divContenedor);
 
             cerrarModalRecorte();
+        }
+
+        // --- SISTEMA PREDICTIVO DE PLANTILLAS ---
+        function buscarPlantillas(valor) {
+            const listbox = document.getElementById("sugerencias-plantillas");
+            if (!valor || valor.trim() === "") {
+                listbox.style.display = "none";
+                return;
+            }
+
+            const query = valor.toLowerCase();
+            const coincidencias = plantillasCache.filter(p => 
+                p.conducta.toLowerCase().includes(query) || 
+                (p.descripcion && p.descripcion.toLowerCase().includes(query))
+            );
+
+            if (coincidencias.length === 0) {
+                listbox.style.display = "none";
+                return;
+            }
+
+            listbox.innerHTML = "";
+            listbox.style.display = "block";
+
+            coincidencias.forEach(p => {
+                const item = document.createElement("div");
+                item.className = "suggestion-item";
+                item.innerHTML = `<strong>${p.conducta}</strong>`;
+                item.onclick = function() {
+                    document.getElementById("inf-conducta").value = p.conducta;
+                    plantillaRawSeleccionada = p.descripcion;
+                    actualizarDescripcionDinamica();
+                    listbox.style.display = "none";
+                };
+                listbox.appendChild(item);
+            });
+        }
+
+        // Ocultar sugerencias si el usuario da clic fuera del área
+        document.addEventListener("click", function(e) {
+            const listbox = document.getElementById("sugerencias-plantillas");
+            const inputConducta = document.getElementById("inf-conducta");
+            if (e.target !== listbox && e.target !== inputConducta) {
+                listbox.style.display = "none";
+            }
+        });
+
+        function desvincularPlantillaRaw() {
+            // Si el usuario edita la descripción a mano, desconectamos el reemplazo automático
+            plantillaRawSeleccionada = "";
+        }
+
+        function actualizarDescripcionDinamica() {
+            if (!plantillaRawSeleccionada) return;
+
+            const nombre = document.getElementById("inf-nombre").value || "[Nombre Completo]";
+            const dni = document.getElementById("inf-dni").value || "[DNI]";
+            const cargo = document.getElementById("inf-cargo").value || "[Cargo]";
+            const contacto = document.getElementById("inf-contacto").value || "[Contacto]";
+            const empresa = document.getElementById("inf-empresa").value || "[Empresa]";
+            const correo = document.getElementById("inf-correo").value || "[Correo]";
+            const licencia = document.getElementById("inf-licencia").value || "[Licencia]";
+            const placa = document.getElementById("inf-placa").value || "[Placa]";
+
+            // Obtener primer apellido o primer término ingresado para simplificar la narrativa
+            let apellido = "Infractor";
+            if (nombre && nombre !== "[Nombre Completo]") {
+                const partes = nombre.trim().split(/\s+/);
+                apellido = partes[1] || partes[0];
+            }
+
+            let textoFinal = plantillaRawSeleccionada
+                .replace(/{nombre}/gi, nombre)
+                .replace(/{dni}/gi, dni)
+                .replace(/{cargo}/gi, cargo)
+                .replace(/{contacto}/gi, contacto)
+                .replace(/{empresa}/gi, empresa)
+                .replace(/{correo}/gi, correo)
+                .replace(/{licencia}/gi, licencia)
+                .replace(/{placa}/gi, placa)
+                .replace(/{apellido}/gi, apellido);
+
+            document.getElementById("inf-descripcion").value = textoFinal;
         }
 
         function abrirVentanaPrevisualizacion() {
@@ -755,7 +915,7 @@
                 }).then(() => {
                     html2pdf().set(opcionesConfig).from(elementoAImprimir).save();
                     
-                    alert(`✅ ¡Éxito Total!\nPapeleta ${idPapeleta} guardada en Drive y descargada en tu dispositivo.`);
+                    alert(`✅ ¡Éxito!\nPapeleta ${idPapeleta} guardada en Drive y descargada en tu dispositivo.`);
                     
                     document.getElementById("form-loader").style.display = "none";
                     document.getElementById("preview-buttons-group").style.display = "flex";
@@ -769,6 +929,7 @@
                     document.getElementById("inf-conducta").value = ""; document.getElementById("inf-descripcion").value = "";
                     document.getElementById("galeria-previa").innerHTML = "";
                     fotosBase64Guardadas = [];
+                    plantillaRawSeleccionada = "";
                     
                     cargarDatosBaseDeDatos();
                 }).catch(err => {
@@ -810,38 +971,110 @@
                 if(data.error) { alert("Error: " + data.error); return; }
                 databaseCache = data;
                 
-                const select = document.getElementById("form-responsable");
-                select.innerHTML = "";
+                // Actualizar Oficial Responsable en el Formulario
+                const selectForm = document.getElementById("form-responsable");
+                selectForm.innerHTML = "";
                 data.usuarios.forEach(u => {
                     let opt = document.createElement("option");
                     opt.value = u.nombre; opt.text = u.nombre;
                     opt.dataset.iniciales = u.iniciales; opt.dataset.correlativo = u.siguienteCorrelativo;
-                    select.appendChild(opt);
+                    selectForm.appendChild(opt);
                 });
                 autoCalcularID();
 
+                // Actualizar Filtro de Dashboard (Oficial Responsable)
+                const selectDashboard = document.getElementById("filtro-miembro");
+                selectDashboard.innerHTML = '<option value="">-- Todos los Integrantes --</option>';
+                data.usuarios.forEach(u => {
+                    let opt = document.createElement("option");
+                    opt.value = u.nombre; opt.text = u.nombre;
+                    selectDashboard.appendChild(opt);
+                });
+
+                // Cargar plantillas de la base de datos si existen
+                if (data.plantillas && data.plantillas.length > 0) {
+                    plantillasCache = data.plantillas;
+                }
+
+                // Actualizar Lista de Configuración
                 const listaConfig = document.getElementById("lista-usuarios-config");
                 listaConfig.innerHTML = "";
                 data.usuarios.forEach(u => {
                     listaConfig.innerHTML += `<li><strong>${u.nombre}</strong> (${u.iniciales}) - Siguiente: ${u.siguienteCorrelativo}</li>`;
                 });
 
-                const tbody = document.querySelector("#tabla-dashboard tbody");
-                tbody.innerHTML = "";
-                if(data.historial.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">No hay registros</td></tr>`;
-                } else {
-                    data.historial.forEach(h => {
-                        let fFormat = h.fecha_infraccion ? h.fecha_infraccion.split("T")[0] : "-";
-                        tbody.innerHTML += `<tr>
-                            <td><strong>${h.id_papeleta}</strong></td>
-                            <td>${h.responsable}</td><td>${h.infractor}</td><td>${h.dni}</td>
-                            <td>${h.empresa}</td><td>${h.conducta}</td><td>${fFormat}</td>
-                        </tr>`;
-                    });
-                }
+                // Renderizar tabla del historial aplicando los filtros vigentes
+                filtrarHistorial();
             })
             .catch(err => alert("Error de conexión: " + err));
+        }
+
+        // --- FUNCIÓN DE FILTRO Y BÚSQUEDA DEL DASHBOARD ---
+        function filtrarHistorial() {
+            const responsableSeleccionado = document.getElementById("filtro-miembro").value;
+            const dniBuscado = document.getElementById("filtro-dni").value.trim().toLowerCase();
+            const tbody = document.querySelector("#tabla-dashboard tbody");
+            const alertaBox = document.getElementById("alerta-reincidencia");
+            
+            tbody.innerHTML = "";
+
+            // Evaluar Alerta de Reincidencia del DNI
+            if (dniBuscado.length >= 4) {
+                // Contar cuántas veces aparece el DNI exacto en todo el historial disponible
+                const totalInfracciones = databaseCache.historial.filter(h => 
+                    h.dni && h.dni.trim().toLowerCase() === dniBuscado
+                ).length;
+
+                if (totalInfracciones > 1) {
+                    alertaBox.style.display = "block";
+                    alertaBox.className = "alert-reincidence";
+                    alertaBox.style.backgroundColor = "#f8d7da";
+                    alertaBox.style.color = "#721c24";
+                    alertaBox.style.borderColor = "#f5c6cb";
+                    alertaBox.innerHTML = `⚠️ ¡Alerta de Reincidente! El DNI ingresado cuenta con <strong>${totalInfracciones} papeletas registradas</strong> en el historial.`;
+                } else if (totalInfracciones === 1) {
+                    alertaBox.style.display = "block";
+                    alertaBox.className = "alert-reincidence";
+                    alertaBox.style.backgroundColor = "#e2e3e5";
+                    alertaBox.style.color = "#383d41";
+                    alertaBox.style.borderColor = "#d6d8db";
+                    alertaBox.innerHTML = `ℹ️ El infractor con este DNI cuenta con 1 sola falta previa en el historial.`;
+                } else {
+                    alertaBox.style.display = "block";
+                    alertaBox.className = "alert-reincidence";
+                    alertaBox.style.backgroundColor = "#d4edda";
+                    alertaBox.style.color = "#155724";
+                    alertaBox.style.borderColor = "#c3e6cb";
+                    alertaBox.innerHTML = `✅ Limpio: No se registran incidentes previos para este DNI.`;
+                }
+            } else {
+                alertaBox.style.display = "none";
+            }
+
+            // Filtrar registros
+            const registrosFiltrados = databaseCache.historial.filter(h => {
+                const coincideResponsable = !responsableSeleccionado || h.responsable === responsableSeleccionado;
+                const coincideDni = !dniBuscado || (h.dni && h.dni.toLowerCase().includes(dniBuscado));
+                return coincideResponsable && coincideDni;
+            });
+
+            if(registrosFiltrados.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">No se encontraron registros coincidentes.</td></tr>`;
+                return;
+            }
+
+            registrosFiltrados.forEach(h => {
+                let fFormat = h.fecha_infraccion ? h.fecha_infraccion.split("T")[0] : "-";
+                tbody.innerHTML += `<tr>
+                    <td><strong>${h.id_papeleta}</strong></td>
+                    <td>${h.responsable}</td>
+                    <td>${h.infractor}</td>
+                    <td>${h.dni}</td>
+                    <td>${h.empresa}</td>
+                    <td>${h.conducta}</td>
+                    <td>${fFormat}</td>
+                </tr>`;
+            });
         }
 
         function autoCalcularID() {
