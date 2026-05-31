@@ -379,9 +379,16 @@
     </div>
 
     <div id="main-app">
-        <!-- Encabezado de la aplicación -->
+        <!-- Encabezado de la aplicación usando logotipo vectorial inline (SVG) para evitar imágenes rotas -->
         <div class="app-top-header" style="background-color: #002244; padding: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border-bottom: 4px solid var(--primary); margin-bottom: 10px;">
-            <img src="https://logos-world.net/wp-content/uploads/2023/01/APM-Terminals-Logo.png" alt="APM Terminals" style="max-width: 220px; width: 100%; height: auto; display: block; margin: 0 auto;">
+            <svg viewBox="0 0 420 85" style="width: 100%; max-width: 250px; height: auto; display: block; margin: 0 auto;">
+                <g transform="translate(10, 5)">
+                    <polygon points="35,8 85,8 65,22 15,22" fill="#E05B1B" />
+                    <polygon points="5,28 115,28 95,42 -15,42" fill="#E05B1B" />
+                </g>
+                <text x="125" y="28" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="18" fill="#E05B1B">Lifting Global Trade</text>
+                <text x="125" y="68" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="34" fill="#FFFFFF" letter-spacing="0.5">APM TERMINALS</text>
+            </svg>
         </div>
 
         <section id="view-formulario" class="view-section active" style="padding-top: 10px;">
@@ -540,9 +547,16 @@
                 <div id="preview-pdf-content" style="background: white; padding: 5px;">
                     
                     <div id="pdf-template">
-                        <!-- Encabezado con Logotipo alineado a la izquierda y Datos correlativos a la derecha -->
+                        <!-- Logotipo vectorial inline (SVG) para el PDF, asegurando definición perfecta en la impresión -->
                         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000000; padding-bottom: 6px; margin-bottom: 10px;">
-                            <img src="https://logos-world.net/wp-content/uploads/2023/01/APM-Terminals-Logo.png" alt="APM Terminals Logo" style="width: 160px; height: auto;">
+                            <svg viewBox="0 0 420 85" style="width: 165px; height: auto; display: block;">
+                                <g transform="translate(10, 5)">
+                                    <polygon points="35,8 85,8 65,22 15,22" fill="#E05B1B" />
+                                    <polygon points="5,28 115,28 95,42 -15,42" fill="#E05B1B" />
+                                </g>
+                                <text x="125" y="28" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="18" fill="#E05B1B">Lifting Global Trade</text>
+                                <text x="125" y="68" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="34" fill="#002244" letter-spacing="0.5">APM TERMINALS</text>
+                            </svg>
                             <div style="text-align: right; font-weight: bold; font-size: 11px; line-height: 1.25;">
                                 APM TERMINALS / Lifting Global Trade<br>
                                 <span style="color:red; font-size:13px;" id="pdf-txt-id-papeleta"></span>
@@ -631,7 +645,7 @@
         let cropperInstance = null;    
         let actualFechaEnvioGlobal = "";
         
-        // Plantillas por defecto
+        // Plantillas locales por defecto
         let plantillasCache = [
             {
                 conducta: "Personal no se dirigió al complejo SINI",
@@ -693,10 +707,10 @@
                 width: 400,
                 height: 300,
                 imageSmoothingEnabled: true,
-                imageSmoothingQuality: 'medium'
+                imageSmoothingQuality: 'high'
             });
 
-            const fotoRecortadaBase64 = canvas.toDataURL("image/jpeg", 0.75);
+            const fotoRecortadaBase64 = canvas.toDataURL("image/jpeg", 0.90);
             fotosBase64Guardadas.push(fotoRecortadaBase64);
 
             const contenedorPrevia = document.getElementById("galeria-previa");
@@ -889,58 +903,58 @@
             
             const elementoAImprimir = document.getElementById("pdf-template");
 
+            // Configuración optimizada: escala de 3 y máxima calidad para imágenes extremadamente nítidas
             const opcionesConfig = {
                 margin:       10,
                 filename:     `Papeleta_${idPapeleta}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, logging: false, useCORS: true, scrollY: 0 },
+                image:        { type: 'jpeg', quality: 1.0 },
+                html2canvas:  { scale: 3, logging: false, useCORS: true, scrollY: 0 },
                 jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
             };
 
-            html2pdf().set(opcionesConfig).from(elementoAImprimir).toPdf().output('base64').then(function(base64Str) {
-                
-                const payload = {
-                    id_papeleta: idPapeleta, responsable: responsable,
-                    infractor_nombre: document.getElementById("inf-nombre").value,
-                    infractor_dni: document.getElementById("inf-dni").value,
-                    empresa: document.getElementById("inf-empresa").value,
-                    conducta_infractora: document.getElementById("inf-conducta").value,
-                    graduacion: graduacion, 
-                    fecha_infraccion: document.getElementById("inf-fecha-hora").value,
-                    fecha_envio: actualFechaEnvioGlobal, 
-                    pdf_base64: base64Str
-                };
+            // 1. Descarga local instantánea de alta calidad sin retraso por red
+            html2pdf().set(opcionesConfig).from(elementoAImprimir).save();
 
-                // Envío de petición POST usando "text/plain" para evitar bloqueos CORS preflight en navegadores móviles
-                fetch(CONFIG_WEB_APP_URL, {
-                    method: "POST", mode: "no-cors",
-                    headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify(payload)
-                }).then(() => {
-                    html2pdf().set(opcionesConfig).from(elementoAImprimir).save();
-                    
-                    alert(`✅ ¡Éxito!\nPapeleta ${idPapeleta} guardada en Drive y descargada en tu dispositivo.`);
-                    
-                    document.getElementById("form-loader").style.display = "none";
-                    document.getElementById("preview-buttons-group").style.display = "flex";
-                    document.getElementById("preview-modal").style.display = "none";
-                    
-                    document.getElementById("inf-nombre").value = ""; document.getElementById("inf-dni").value = "";
-                    document.getElementById("inf-cargo").value = ""; document.getElementById("inf-contacto").value = "";
-                    document.getElementById("inf-empresa").value = ""; document.getElementById("inf-correo").value = "";
-                    document.getElementById("inf-licencia").value = ""; document.getElementById("inf-placa").value = "";
-                    document.getElementById("inf-lugar").value = ""; document.getElementById("inf-fecha-hora").value = "";
-                    document.getElementById("inf-conducta").value = ""; document.getElementById("inf-descripcion").value = "";
-                    document.getElementById("galeria-previa").innerHTML = "";
-                    fotosBase64Guardadas = [];
-                    plantillaRawSeleccionada = "";
-                    
-                    cargarDatosBaseDeDatos();
-                }).catch(err => {
-                    alert("⚠️ Error al subir a Drive: " + err);
-                    document.getElementById("form-loader").style.display = "none";
-                    document.getElementById("preview-buttons-group").style.display = "flex";
-                });
+            const payload = {
+                id_papeleta: idPapeleta, 
+                responsable: responsable,
+                infractor_nombre: document.getElementById("inf-nombre").value,
+                infractor_dni: document.getElementById("inf-dni").value,
+                empresa: document.getElementById("inf-empresa").value,
+                conducta_infractora: document.getElementById("inf-conducta").value,
+                graduacion: graduacion, 
+                fecha_infraccion: document.getElementById("inf-fecha-hora").value,
+                fecha_envio: actualFechaEnvioGlobal
+                // El archivo pdf en base64 pesado se ha removido para máxima velocidad del sistema
+            };
+
+            // 2. Registro ligero de texto en Google Sheets en segundo plano
+            fetch(CONFIG_WEB_APP_URL, {
+                method: "POST", mode: "no-cors",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(payload)
+            }).then(() => {
+                alert(`✅ Papeleta emitida con éxito.\nRegistro guardado en el sistema.`);
+                
+                document.getElementById("form-loader").style.display = "none";
+                document.getElementById("preview-buttons-group").style.display = "flex";
+                document.getElementById("preview-modal").style.display = "none";
+                
+                document.getElementById("inf-nombre").value = ""; document.getElementById("inf-dni").value = "";
+                document.getElementById("inf-cargo").value = ""; document.getElementById("inf-contacto").value = "";
+                document.getElementById("inf-empresa").value = ""; document.getElementById("inf-correo").value = "";
+                document.getElementById("inf-licencia").value = ""; document.getElementById("inf-placa").value = "";
+                document.getElementById("inf-lugar").value = ""; document.getElementById("inf-fecha-hora").value = "";
+                document.getElementById("inf-conducta").value = ""; document.getElementById("inf-descripcion").value = "";
+                document.getElementById("galeria-previa").innerHTML = "";
+                fotosBase64Guardadas = [];
+                plantillaRawSeleccionada = "";
+                
+                cargarDatosBaseDeDatos();
+            }).catch(err => {
+                alert("⚠️ Error al sincronizar el registro: " + err);
+                document.getElementById("form-loader").style.display = "none";
+                document.getElementById("preview-buttons-group").style.display = "flex";
             });
         }
 
