@@ -375,7 +375,7 @@
                 <button type="button" id="toggle-password-btn" onclick="togglePasswordVisibility()" style="position: absolute; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer; color: #6c757d; padding: 5px; outline: none;">👁️</button>
             </div>
             
-            <button class="btn-block" style="background-color:var(--primary);" onclick="verificarPassword()">Ingresar</button>
+            <button id="login-btn" class="btn-block" style="background-color:var(--primary);" onclick="verificarPassword()">Ingresar</button>
             <p id="login-error" style="color:red; font-weight:bold; margin-top:10px; display:none;">Credenciales incorrectas</p>
         </div>
     </div>
@@ -430,7 +430,7 @@
 
             <div class="card">
                 <h3>Detalles del Suceso</h3>
-                <div class="form-group"><label>Lugar / Zona de Infracción</label><input type="text" id="inf-lugar"></div>
+                <div class="form-group"><label>Lugar / Zona de Infracción</label><input type="text" id="inf-lugar" oninput="actualizarDescripcionDinamica()"></div>
                 <div class="form-group"><label>Fecha y Hora del Suceso</label><input type="datetime-local" id="inf-fecha-hora"></div>
                 
                 <div class="form-group">
@@ -703,43 +703,67 @@
 
         // --- INICIO DE SESIÓN INDIVIDUAL SEGURO ---
         function verificarPassword() {
-            const userInput = document.getElementById("app-username").value.trim().toUpperCase();
-            const passInput = document.getElementById("app-password").value.trim();
-            const loginError = document.getElementById("login-error");
+    const userInput = document.getElementById("app-username").value.trim().toUpperCase();
+    const passInput = document.getElementById("app-password").value.trim();
+    const loginError = document.getElementById("login-error");
+    const loginBtn = document.getElementById("login-btn"); // <-- AGREGADO: Referencia al botón
+    
+    if (!userInput || !passInput) {
+        alert("Por favor, ingrese sus Iniciales y Contraseña.");
+        return;
+    }
+
+    // Ocultar error previo si existiera
+    loginError.style.display = "none";
+
+    // AGREGADO: Cambiar estado del botón a "Verificando..." y desactivarlo temporalmente
+    loginBtn.disabled = true;
+    loginBtn.innerText = "⏳ Verificando... Espere por favor";
+    loginBtn.style.backgroundColor = "#6c757d"; // Color gris de espera
+
+    // Guardar temporalmente en la sesión activa del navegador
+    sessionStorage.setItem("secure_user_initials", userInput);
+    sessionStorage.setItem("secure_auth_plain", passInput);
+
+    // Validar de forma cifrada por HTTPS con el servidor de Google
+    fetch(`${CONFIG_WEB_APP_URL}?user=${encodeURIComponent(userInput)}&auth=${encodeURIComponent(passInput)}`)
+    .then(res => res.json())
+    .then(data => {
+        if (data.error) {
+            // Acceso denegado
+            loginError.style.display = "block";
+            sessionStorage.removeItem("secure_user_initials");
+            sessionStorage.removeItem("secure_auth_plain");
             
-            if (!userInput || !passInput) {
-                alert("Por favor, ingrese sus Iniciales y Contraseña.");
-                return;
-            }
+            // AGREGADO: Restaurar el botón para que pueda intentar de nuevo
+            loginBtn.disabled = false;
+            loginBtn.innerText = "Ingresar";
+            loginBtn.style.backgroundColor = "var(--primary)";
+        } else {
+            // Acceso aprobado de manera segura
+            document.getElementById("login-screen").style.display = "none";
+            document.getElementById("main-app").style.display = "block";
+            
+            databaseCache = data;
+            renderizarDatosSincronizados(data);
 
-            // Guardar temporalmente en la sesión activa del navegador (solo texto ligero en memoria)
-            sessionStorage.setItem("secure_user_initials", userInput);
-            sessionStorage.setItem("secure_auth_plain", passInput);
-
-            // Validar de forma cifrada por HTTPS con el servidor de Google
-            fetch(`${CONFIG_WEB_APP_URL}?user=${encodeURIComponent(userInput)}&auth=${encodeURIComponent(passInput)}`)
-            .then(res => res.json())
-            .then(data => {
-                if (data.error) {
-                    // Acceso denegado
-                    loginError.style.display = "block";
-                    sessionStorage.removeItem("secure_user_initials");
-                    sessionStorage.removeItem("secure_auth_plain");
-                } else {
-                    // Acceso aprobado de manera segura
-                    document.getElementById("login-screen").style.display = "none";
-                    document.getElementById("main-app").style.display = "block";
-                    
-                    databaseCache = data;
-                    renderizarDatosSincronizados(data);
-                }
-            })
-            .catch(err => {
-                alert("Error de validación o conexión con el servidor: " + err);
-                sessionStorage.removeItem("secure_user_initials");
-                sessionStorage.removeItem("secure_auth_plain");
-            });
+            // AGREGADO: Dejar el botón listo por si llegara a cerrar sesión posteriormente
+            loginBtn.disabled = false;
+            loginBtn.innerText = "Ingresar";
+            loginBtn.style.backgroundColor = "var(--primary)";
         }
+    })
+    .catch(err => {
+        alert("Error de validación o conexión con el servidor: " + err);
+        sessionStorage.removeItem("secure_user_initials");
+        sessionStorage.removeItem("secure_auth_plain");
+        
+        // AGREGADO: Restaurar el botón en caso de error de red o de servidor
+        loginBtn.disabled = false;
+        loginBtn.innerText = "Ingresar";
+        loginBtn.style.backgroundColor = "var(--primary)";
+    });
+}
 
         // --- INICIALIZACIÓN Y COLA OFFLINE ---
         window.addEventListener("load", function() {
@@ -943,6 +967,7 @@
             const correo = document.getElementById("inf-correo").value || "[Correo]";
             const licencia = document.getElementById("inf-licencia").value || "[Licencia]";
             const placa = document.getElementById("inf-placa").value || "[Placa]";
+            const lugar = document.getElementById("inf-lugar").value || "[Lugar/Zona]";
 
             let apellido = "Infractor";
             if (nombre && nombre !== "[Nombre Completo]") {
@@ -959,6 +984,8 @@
                 .replace(/{correo}/gi, correo)
                 .replace(/{licencia}/gi, licencia)
                 .replace(/{placa}/gi, placa)
+                .replace(/{lugar}/gi, lugar)
+                .replace(/{zona}/gi, lugar)
                 .replace(/{apellido}/gi, apellido);
 
             document.getElementById("inf-descripcion").value = textoFinal;
