@@ -1061,8 +1061,8 @@
             document.getElementById("preview-modal").style.display = "none";
         }
 
-        // --- EMISIÓN FINAL CON LLAVES INDIVIDUALES ---
         // --- EMISIÓN FINAL CON GUARDADO EN GOOGLE SHEETS Y EN GOOGLE DRIVE ---
+        // --- EMISIÓN FINAL OPTIMIZADA CON GENERACIÓN EN LA NUBE (SERVIDOR) ---
         function ejecutarExportacionFinal() {
             document.getElementById("form-loader").style.display = "block";
             document.getElementById("preview-buttons-group").style.display = "none";
@@ -1073,86 +1073,57 @@
             
             const elementoAImprimir = document.getElementById("pdf-template");
 
+            // Configuración optimizada de descarga local (Muy ligera y rápida)
             const opcionesConfig = {
                 margin:       10,
                 filename:     `Papeleta_${idPapeleta}.pdf`,
-                image:        { type: 'jpeg', quality: 1.0 },
-                html2canvas:  { scale: 3, logging: false, useCORS: true, scrollY: 0 },
+                image:        { type: 'jpeg', quality: 0.90 },
+                html2canvas:  { scale: 1.5, logging: false, useCORS: true, scrollY: 0 }, // <-- Escala ligera para descargas móviles instantáneas
                 jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
             };
 
-            // 1. Descarga del archivo localmente para el emisor
+            // Ejecuta la descarga física local en el dispositivo del oficial
             html2pdf().set(opcionesConfig).from(elementoAImprimir).save();
 
-            // 2. Renderizado del PDF en formato Base64 para enviar a la carpeta de Drive
-            html2pdf().set(opcionesConfig).from(elementoAImprimir).outputPdf('datauristring').then(function(pdfDataUri) {
-                // Extraer únicamente los datos codificados después de la coma de la cabecera DataURI
-                const base64String = pdfDataUri.substring(pdfDataUri.indexOf(',') + 1);
+            // Construir el payload JSON de datos planos y fotos recortadas
+            const payload = {
+                user: sessionStorage.getItem("secure_user_initials"),
+                auth: sessionStorage.getItem("secure_auth_plain"),
+                id_papeleta: idPapeleta, 
+                responsable: responsable,
+                infractor_nombre: document.getElementById("inf-nombre").value,
+                infractor_dni: document.getElementById("inf-dni").value,
+                infractor_cargo: document.getElementById("inf-cargo").value,       // <-- Nuevo campo
+                infractor_contacto: document.getElementById("inf-contacto").value, // <-- Nuevo campo
+                empresa: document.getElementById("inf-empresa").value,
+                infractor_correo: document.getElementById("inf-correo").value,
+                infractor_licencia: document.getElementById("inf-licencia").value, // <-- Nuevo campo
+                infractor_placa: document.getElementById("inf-placa").value,       // <-- Nuevo campo
+                infractor_lugar: document.getElementById("inf-lugar").value,       // <-- Nuevo campo
+                fecha_infraccion: document.getElementById("inf-fecha-hora").value,
+                conducta_infractora: document.getElementById("inf-conducta").value,
+                infractor_descripcion: document.getElementById("inf-descripcion").value, // <-- Nuevo campo
+                graduacion: graduacion, 
+                fecha_envio: actualFechaEnvioGlobal,
+                fotos: fotosBase64Guardadas // <-- Array de fotos base64 recortadas (ligeras)
+            };
 
-                const payload = {
-                    user: sessionStorage.getItem("secure_user_initials"), 
-                    auth: sessionStorage.getItem("secure_auth_plain"),    
-                    id_papeleta: idPapeleta, 
-                    responsable: responsable,
-                    infractor_nombre: document.getElementById("inf-nombre").value,
-                    infractor_dni: document.getElementById("inf-dni").value,
-                    empresa: document.getElementById("inf-empresa").value,
-                    conducta_infractora: document.getElementById("inf-conducta").value,
-                    graduacion: graduacion, 
-                    fecha_infraccion: document.getElementById("inf-fecha-hora").value,
-                    fecha_envio: actualFechaEnvioGlobal,
-                    infractor_correo: document.getElementById("inf-correo").value, // <-- Agregado para columna J
-                    pdf_base64: base64String // <-- PDF codificado adjunto
-                };
-
-                if (navigator.onLine) {
-                    fetch(CONFIG_WEB_APP_URL, {
-                        method: "POST", mode: "no-cors",
-                        headers: { "Content-Type": "text/plain;charset=utf-8" },
-                        body: JSON.stringify(payload)
-                    }).then(() => {
-                        alert(`✅ ¡Éxito!\nPapeleta ${idPapeleta} guardada en línea y subida a Google Drive.`);
-                        finalizarFlujoEmision();
-                    }).catch(err => {
-                        console.log("Error de conexión directa, guardando en cola: ", err);
-                        guardarEnColaOffline(payload);
-                    });
-                } else {
+            // Enviar el paquete de datos en línea
+            if (navigator.onLine) {
+                fetch(CONFIG_WEB_APP_URL, {
+                    method: "POST", mode: "no-cors",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify(payload)
+                }).then(() => {
+                    alert(`✅ ¡Éxito!\nPapeleta ${idPapeleta} registrada. El PDF se generará con máxima nitidez en tu Google Drive.`);
+                    finalizarFlujoEmision();
+                }).catch(err => {
+                    console.log("Error de conexión directa, guardando en cola offline: ", err);
                     guardarEnColaOffline(payload);
-                }
-            }).catch(function(err) {
-                console.error("Error al generar Base64 para Drive: ", err);
-                alert("⚠️ Se descargó el PDF, pero ocurrió un problema al procesar la copia para Google Drive. Se guardarán los datos de texto de igual manera.");
-                
-                // Fallback clásico de envío sin adjunto en caso de que ocurra un fallo de generación
-                const fallbackPayload = {
-                    user: sessionStorage.getItem("secure_user_initials"),
-                    auth: sessionStorage.getItem("secure_auth_plain"),
-                    id_papeleta: idPapeleta, 
-                    responsable: responsable,
-                    infractor_nombre: document.getElementById("inf-nombre").value,
-                    infractor_dni: document.getElementById("inf-dni").value,
-                    empresa: document.getElementById("inf-empresa").value,
-                    conducta_infractora: document.getElementById("inf-conducta").value,
-                    graduacion: graduacion, 
-                    fecha_infraccion: document.getElementById("inf-fecha-hora").value,
-                    fecha_envio: actualFechaEnvioGlobal,
-                    infractor_correo: document.getElementById("inf-correo").value
-                };
-                if (navigator.onLine) {
-                    fetch(CONFIG_WEB_APP_URL, {
-                        method: "POST", mode: "no-cors",
-                        headers: { "Content-Type": "text/plain;charset=utf-8" },
-                        body: JSON.stringify(fallbackPayload)
-                    }).then(() => {
-                        finalizarFlujoEmision();
-                    }).catch(e => {
-                        guardarEnColaOffline(fallbackPayload);
-                    });
-                } else {
-                    guardarEnColaOffline(fallbackPayload);
-                }
-            });
+                });
+            } else {
+                guardarEnColaOffline(payload);
+            }
         }
 
         function guardarEnColaOffline(payload) {
