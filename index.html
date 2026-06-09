@@ -478,7 +478,7 @@
         <section id="view-dashboard" class="view-section" style="padding-top: 10px;">
             <h2>📊 Historial de Registros</h2>
             
-            <div class="card" style="padding: 15px;">
+            <div class="card" id="seccion-busqueda-dashboard" style="padding: 15px;">
                 <h4 style="margin-top:0; color:var(--primary);">Filtros de Búsqueda (Últimos 500 registros)</h4>
                 <div class="form-group">
                     <label for="filtro-miembro" style="font-size:15px;">Buscar por Oficial Responsable:</label>
@@ -1182,6 +1182,21 @@
         }
 
         function renderizarDatosSincronizados(data) {
+            // --- AGREGADO: CONTROL DE SEGURIDAD INDIVIDUAL PARA BÚSQUEDAS ---
+            const ADMIN_USERS = ["NI", "GK", "BB", "RV"];
+            const loggedUser = sessionStorage.getItem("secure_user_initials");
+            const esAdmin = ADMIN_USERS.includes(loggedUser);
+            
+            const seccionBusqueda = document.getElementById("seccion-busqueda-dashboard");
+            if (seccionBusqueda) {
+                if (esAdmin) {
+                    seccionBusqueda.style.display = "block"; // Los administradores ven la búsqueda
+                } else {
+                    seccionBusqueda.style.display = "none";  // Los restringidos no ven la búsqueda
+                }
+            }
+            // ---------------------------------------------------------------
+
             const selectForm = document.getElementById("form-responsable");
             selectForm.innerHTML = "";
             data.usuarios.forEach(u => {
