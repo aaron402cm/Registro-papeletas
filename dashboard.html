@@ -527,7 +527,7 @@
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            display: flex;
+            display: none; /* <-- MODIFICADO: Oculto por defecto en el login */
             justify-content: center;
             align-items: center;
             cursor: pointer;
@@ -759,7 +759,7 @@
                         </div>
 
                         <div class="panel-section" id="panel-seccion-descargo">
-                            <div class="panel-section-title">Análisis de Justificación (IA)</div>
+                            <div class="panel-section-title">Análisis de Justificación / Descargos (IA)</div>
                             <div class="panel-section-content" id="panel-txt-justificacion" style="font-style: italic;">Por favor, seleccione un caso de la lista para ver el análisis de la Inteligencia Artificial.</div>
                         </div>
 
@@ -768,10 +768,19 @@
                             <div class="panel-section-content" id="panel-txt-reincidencia">-</div>
                         </div>
 
+                        <!-- SECCIÓN DE REGLAMENTO APN APLICADO -->
                         <div class="panel-section">
-                            <div class="panel-section-title">Sanción Recomendada por RIS</div>
+                            <div class="panel-section-title">Infracción Aplicable según APN</div>
                             <div class="panel-section-content">
-                                <span id="panel-txt-sancion-base">-</span>
+                                <p style="margin:4px 0;"><strong>Conducta Evaluada:</strong><br><span id="panel-txt-conducta-ris" style="font-weight:bold; color:var(--apm-blue);">-</span></p>
+                                <p style="margin:4px 0;"><strong>Clasificación RIS:</strong> <span id="panel-txt-graduacion-ris" style="font-weight:bold;">-</span></p>
+                                <p style="margin:4px 0;"><strong>Sanción Estipulada en Tabla:</strong><br><span id="panel-txt-sancion-raw" style="white-space: pre-wrap; display: block; background: #fafafa; padding: 6px; border: 1px solid #ced4da; border-radius:4px; margin-top:5px; line-height:1.4;">-</span></p>
+                            </div>
+                        </div>
+
+                        <div class="panel-section">
+                            <div class="panel-section-title">Sanción Sugerida (Días Modificables)</div>
+                            <div class="panel-section-content">
                                 <div class="sancion-input-group">
                                     <label style="font-size:12px; font-weight:bold;">Sanción Final (Días):</label>
                                     <input type="number" id="sancion-dias-final" min="0" value="0">
@@ -899,7 +908,7 @@
     </div>
 
     <!-- BOTÓN Y CHAT FLOTANTE DE CONSULTA IA -->
-    <div class="chat-fab" onclick="toggleChatFlotante()" title="Consultar Asistente RIS">💬</div>
+    <div class="chat-fab" id="chat-fab-element" onclick="toggleChatFlotante()" title="Consultar Asistente RIS">💬</div>
     
     <div class="chat-panel" id="chat-flotante-ris">
         <div class="chat-header">
@@ -997,6 +1006,9 @@
                     document.getElementById("login-screen").style.display = "none";
                     document.getElementById("main-app").style.display = "flex";
                     document.getElementById("user-display").innerText = user;
+                    
+                    // MOSTRAR LA BURBUJA DE CHAT ÚNICAMENTE AL LOGUEARSE CON ÉXITO
+                    document.getElementById("chat-fab-element").style.display = "flex";
 
                     inicializarDashboardConDatos(data.data);
                 } else if (data.error) {
@@ -1021,6 +1033,10 @@
             document.getElementById("sec-password").value = "";
             document.getElementById("sec-otp").value = "";
             document.getElementById("panel-lateral-evaluacion").style.display = "none";
+            
+            // OCULTAR LA BURBUJA DE CHAT AL CERRAR SESIÓN
+            document.getElementById("chat-fab-element").style.display = "none";
+            document.getElementById("chat-flotante-ris").style.display = "none";
         }
 
         // --- POBLADO DINÁMICO DE PANELES ---
@@ -1100,7 +1116,9 @@
             document.getElementById("panel-txt-expediente").innerHTML = `<strong>ID Papeleta:</strong> ${id}<br><span style="color:gray;">Cargando expediente...</span>`;
             document.getElementById("panel-txt-justificacion").innerHTML = "🤖 <em>Analizando caso, rastreando descargos en Gmail y auditando historial de reincidencias...</em>";
             document.getElementById("panel-txt-reincidencia").innerHTML = "Auditando historial...";
-            document.getElementById("panel-txt-sancion-base").innerHTML = "Evaluando...";
+            document.getElementById("panel-txt-conducta-ris").innerText = "Evaluando...";
+            document.getElementById("panel-txt-graduacion-ris").innerText = "-";
+            document.getElementById("panel-txt-sancion-raw").innerText = "-";
             document.getElementById("sancion-dias-final").value = 0;
             document.getElementById("panel-txt-correo-borrador").innerText = "Generando borrador de resolución...";
 
@@ -1124,7 +1142,12 @@
                     <strong>Análisis legal RIS:</strong> ${data.analisis_caso}
                 `;
                 document.getElementById("panel-txt-reincidencia").innerHTML = data.reincidencia_texto;
-                document.getElementById("panel-txt-sancion-base").innerHTML = data.sancion_base;
+                
+                // RELLENAR LOS NUEVOS CAMPOS DEL REGLAMENTO APLICADO EN LA PAPELETA
+                document.getElementById("panel-txt-conducta-ris").innerText = data.conducta_tabla || "-";
+                document.getElementById("panel-txt-graduacion-ris").innerText = data.graduacion_tabla || "-";
+                document.getElementById("panel-txt-sancion-raw").innerText = data.sancion_estipulada_tabla || "-";
+                
                 document.getElementById("sancion-dias-final").value = data.dias_sugeridos;
                 document.getElementById("panel-txt-correo-borrador").innerText = data.correo_borrador;
             })
