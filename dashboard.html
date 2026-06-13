@@ -79,18 +79,18 @@
             color: var(--apm-dark-blue);
         }
 
-        .form-group input {
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 12px;
-            font-size: 16px;
+            font-size: 15px;
             border: 2px solid #ced4da;
             border-radius: 6px;
             box-sizing: border-box;
             background-color: #fff;
-            transition: border-color 0.2s;
+            font-family: inherit;
         }
 
-        .form-group input:focus {
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             border-color: var(--apm-blue);
             outline: none;
         }
@@ -113,11 +113,6 @@
             background-color: #c74d15;
         }
 
-        .btn-apm:disabled {
-            background-color: #6c757d;
-            cursor: not-allowed;
-        }
-
         #otp-section {
             display: none;
         }
@@ -137,7 +132,6 @@
             flex: 1;
         }
 
-        /* Encabezado Corporativo */
         .app-header {
             background-color: var(--apm-dark-blue);
             color: white;
@@ -158,7 +152,6 @@
             margin: 0;
             font-size: 20px;
             font-weight: 900;
-            letter-spacing: 0.5px;
         }
 
         .header-brand span {
@@ -182,7 +175,6 @@
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
-            transition: all 0.2s;
         }
 
         .btn-logout:hover {
@@ -190,7 +182,6 @@
             color: var(--apm-dark-blue);
         }
 
-        /* Menú de Navegación por Pestañas */
         .nav-tabs {
             background-color: white;
             display: flex;
@@ -208,7 +199,6 @@
             color: #6c757d;
             cursor: pointer;
             border-bottom: 3px solid transparent;
-            transition: all 0.2s;
         }
 
         .tab-link.active {
@@ -216,7 +206,6 @@
             border-bottom-color: var(--apm-orange);
         }
 
-        /* Área de Contenido */
         .content-area {
             padding: 30px;
             flex: 1;
@@ -234,14 +223,12 @@
             display: block;
         }
 
-        /* Tarjetas de Información */
         .card {
             background: white;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             padding: 20px;
             margin-bottom: 25px;
-            box-sizing: border-box;
         }
 
         .card-title {
@@ -251,9 +238,12 @@
             font-size: 18px;
             border-bottom: 2px solid #f4f6f9;
             padding-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        /* --- DISEÑO DE LA TABLA Y SEMÁFOROS (PESTAÑA 1) --- */
+        /* --- TABLAS Y DISEÑO DE BANDEJA --- */
         .dashboard-layout {
             display: flex;
             gap: 25px;
@@ -281,11 +271,6 @@
         th {
             background-color: var(--apm-dark-blue);
             color: white;
-            font-weight: bold;
-        }
-
-        tr {
-            transition: background-color 0.2s;
         }
 
         tr.clickable-row {
@@ -296,37 +281,20 @@
             background-color: #f1f5f9;
         }
 
-        /* Estilos de las etiquetas del Semáforo */
         .badge {
             display: inline-block;
             padding: 6px 12px;
             border-radius: 50px;
             font-size: 12px;
             font-weight: bold;
-            text-align: center;
         }
 
-        .badge-green {
-            background-color: #e2f0d9;
-            color: var(--success-green);
-        }
+        .badge-green { background-color: #e2f0d9; color: var(--success-green); }
+        .badge-yellow { background-color: #fff2cc; color: #b28900; }
+        .badge-red { background-color: #fce4d6; color: var(--danger-red); }
+        .badge-blue { background-color: #e8f1f5; color: var(--apm-blue); }
 
-        .badge-yellow {
-            background-color: #fff2cc;
-            color: #b28900;
-        }
-
-        .badge-red {
-            background-color: #fce4d6;
-            color: var(--danger-red);
-        }
-
-        .badge-blue {
-            background-color: #e8f1f5;
-            color: var(--apm-blue);
-        }
-
-        /* --- PANEL LATERAL DE EVALUACIÓN DE IA --- */
+        /* --- PANEL LATERAL IA --- */
         .ai-side-panel {
             width: 380px;
             background: white;
@@ -337,7 +305,7 @@
             box-sizing: border-box;
             position: sticky;
             top: 30px;
-            display: none; /* Se muestra al seleccionar una fila */
+            display: none;
         }
 
         .panel-section {
@@ -384,10 +352,9 @@
             max-height: 150px;
             overflow-y: auto;
             white-space: pre-wrap;
-            font-family: Arial, sans-serif;
         }
 
-        /* --- PEPELETA DIARIA & AGENTES (PESTAÑA 2) --- */
+        /* --- PEPELETA DIARIA & AGENTES --- */
         .kpi-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -404,9 +371,7 @@
             border-bottom: 4px solid var(--apm-blue);
         }
 
-        .kpi-card.accent-orange {
-            border-bottom-color: var(--apm-orange);
-        }
+        .kpi-card.accent-orange { border-bottom-color: var(--apm-orange); }
 
         .kpi-value {
             font-size: 36px;
@@ -421,13 +386,7 @@
             font-weight: bold;
         }
 
-        /* Tabla de agentes */
-        .agents-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
+        .agents-list { list-style: none; padding: 0; margin: 0; }
         .agents-list-item {
             display: flex;
             justify-content: space-between;
@@ -435,11 +394,7 @@
             border-bottom: 1px solid #dee2e6;
             font-size: 14px;
         }
-
-        .agents-list-item:last-child {
-            border-bottom: none;
-        }
-
+        .agents-list-item:last-child { border-bottom: none; }
         .agent-rank {
             background-color: var(--apm-blue);
             color: white;
@@ -449,7 +404,7 @@
             font-weight: bold;
         }
 
-        /* --- EL NOTICIERO DE SEGURIDAD (PESTAÑA 3) --- */
+        /* --- EL NOTICIERO DE SEGURIDAD --- */
         .newspaper-container {
             max-width: 800px;
             margin: 0 auto;
@@ -504,24 +459,173 @@
             color: var(--apm-orange);
         }
 
-        /* --- AJUSTES Y REGLAS DEL RIS (PESTAÑA 4) --- */
+        /* --- AJUSTES Y REGLAS DEL RIS (CRUD) --- */
         .ris-rule-card {
             border: 1px solid #dee2e6;
             border-radius: 6px;
             padding: 15px;
             margin-bottom: 15px;
             background-color: #fafafa;
+            position: relative;
         }
 
         .ris-rule-card h4 {
             margin-top: 0;
             margin-bottom: 8px;
             color: var(--apm-blue);
+            max-width: 80%;
         }
 
         .ris-rule-card p {
             font-size: 13px;
             margin: 4px 0;
+        }
+
+        .btn-edit-rule {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: var(--apm-blue);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Modal para Formulario de Edición de Reglas */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .modal-box {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            width: 100%;
+            max-width: 550px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        /* --- ASISTENTE FLOTANTE CHAT IA --- */
+        .chat-fab {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background-color: var(--apm-orange);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+            z-index: 2500;
+            font-size: 28px;
+            transition: transform 0.2s;
+        }
+
+        .chat-fab:hover {
+            transform: scale(1.08);
+        }
+
+        .chat-panel {
+            position: fixed;
+            bottom: 95px;
+            right: 25px;
+            width: 360px;
+            height: 480px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            border-top: 4px solid var(--apm-orange);
+            display: none; /* Se activa al presionar el FAB */
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 2500;
+        }
+
+        .chat-header {
+            background-color: var(--apm-dark-blue);
+            color: white;
+            padding: 12px 15px;
+            font-weight: bold;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background-color: #f8f9fa;
+        }
+
+        .chat-bubble {
+            max-width: 80%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .chat-bubble-ai {
+            background-color: #e2eafc;
+            color: #000;
+            align-self: flex-start;
+            border-top-left-radius: 1px;
+            white-space: pre-wrap;
+        }
+
+        .chat-bubble-user {
+            background-color: var(--apm-blue);
+            color: white;
+            align-self: flex-end;
+            border-top-right-radius: 1px;
+        }
+
+        .chat-input-area {
+            padding: 10px 15px;
+            border-top: 1px solid #dee2e6;
+            display: flex;
+            gap: 8px;
+            background: white;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .chat-input-area button {
+            background-color: var(--apm-orange);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
         }
 
         /* --- CARGADOR --- */
@@ -544,7 +648,7 @@
 </head>
 <body>
 
-    <!-- PANTALLA DE INGRESO SEGURO CON 2FA -->
+    <!-- PANTALLA DE INGRESO SEGURO CON 2FA REAL -->
     <div id="login-screen">
         <div class="login-box">
             <svg viewBox="0 0 420 85" class="login-logo" style="width: 100%; max-width: 200px; height: auto; display: block; margin: 0 auto 20px auto;">
@@ -733,31 +837,19 @@
                 </div>
             </div>
 
-            <!-- PESTAÑA 4: REGLAS DEL RIS -->
+            <!-- PESTAÑA 4: REGLAS DEL RIS (DINÁMICO CON EXCEL) -->
             <div id="panel-config" class="tab-panel">
                 <div class="card">
-                    <h3 class="card-title">Reglamento de Infracciones y Sanciones (Tabla RIS Digital)</h3>
-                    <p style="font-size:14px; color:#6c757d; margin-top:0;">Este catálogo de reglas es utilizado por la Inteligencia Artificial para determinar automáticamente la gravedad y proponer los días estimados de sanción.</p>
+                    <div class="card-title">
+                        <span>Reglamento de Infracciones y Sanciones (Catálogo de Sanciones de la APN)</span>
+                        <button class="btn-apm" style="width: auto; padding: 8px 16px; font-size: 13px;" onclick="abrirModalEdicionRegla('nuevo', '', '', 'Leve', '')">
+                            ➕ Agregar Nueva Regla
+                        </button>
+                    </div>
+                    <p style="font-size:14px; color:#6c757d; margin-top:0;">Este catálogo de reglas es leído dinámicamente por la Inteligencia Artificial en el servidor de Google para analizar los casos y recomendar las sanciones oficiales.</p>
                     
-                    <div class="ris-rule-card">
-                        <h4>Conducta: Personal no se dirigió al complejo SINI</h4>
-                        <p><strong>Clasificación RIS:</strong> GRAVE (Falta de atención a directivas de desvío obligatorio).</p>
-                        <p><strong>1° Vez:</strong> Suspensión de 8 a 15 días.</p>
-                        <p><strong>2° Vez (Reincidente):</strong> Pasa a MUY GRAVE (Suspensión de 30 a 60 días).</p>
-                    </div>
-
-                    <div class="ris-rule-card">
-                        <h4>Conducta: Tránsito en zona de seguridad sin equipo de protección personal (EPP)</h4>
-                        <p><strong>Clasificación RIS:</strong> GRAVE (Peligro contra la integridad física en zona operativa).</p>
-                        <p><strong>1° Vez:</strong> Suspensión de 8 a 30 días.</p>
-                        <p><strong>2° Vez (Reincidente):</strong> Suspensión de 60 a 90 días.</p>
-                    </div>
-
-                    <div class="ris-rule-card">
-                        <h4>Conducta: Exceso de velocidad en el terminal</h4>
-                        <p><strong>Clasificación RIS:</strong> LEVE a GRAVE (Dependiendo del porcentaje de exceso sobre el límite de 15 km/h).</p>
-                        <p><strong>1° Vez:</strong> Suspensión de 1 a 7 días.</p>
-                        <p><strong>2° Vez (Reincidente):</strong> Suspensión de 8 a 30 días.</p>
+                    <div id="contenedor-reglas-ris-dinamico">
+                        <p style="text-align:center;">Cargando reglas del RIS de la base de datos de Excel...</p>
                     </div>
                 </div>
             </div>
@@ -765,11 +857,68 @@
         </main>
     </div>
 
+    <!-- MODAL DE EDICIÓN / ADICIÓN DE REGLAS RIS -->
+    <div class="modal-overlay" id="modal-edicion-regla">
+        <div class="modal-box">
+            <h3 style="margin-top:0; color:var(--apm-dark-blue); border-bottom:2px solid var(--apm-orange); padding-bottom:8px;" id="modal-title">Editar Regla del RIS</h3>
+            
+            <input type="hidden" id="edit-rule-id">
+            
+            <div class="form-group">
+                <label>Área de la Infracción</label>
+                <select id="edit-rule-area">
+                    <option value="OPERACIONES">OPERACIONES</option>
+                    <option value="SEGURIDAD Y ACCESOS">SEGURIDAD Y ACCESOS</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Tipo de Conducta Infractora</label>
+                <textarea id="edit-rule-conducta" rows="3" placeholder="Escriba la conducta..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Graduación de la Infracción</label>
+                <select id="edit-rule-graduacion">
+                    <option value="Leve">Leve</option>
+                    <option value="Grave">Grave</option>
+                    <option value="Muy Grave">Muy Grave</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Sanciones Estipuladas (Ej: Primera vez, Segunda vez, etc.)</label>
+                <textarea id="edit-rule-sancion" rows="5" placeholder="Escriba las sanciones correspondientes..."></textarea>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button class="btn-apm" style="background-color: var(--danger-red);" onclick="cerrarModalEdicionRegla()">Cancelar</button>
+                <button class="btn-apm" style="background-color: var(--success-green);" onclick="ejecutarGuardadoReglaRIS()">Guardar Cambios en Excel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTÓN Y CHAT FLOTANTE DE CONSULTA IA -->
+    <div class="chat-fab" onclick="toggleChatFlotante()" title="Consultar Asistente RIS">💬</div>
+    
+    <div class="chat-panel" id="chat-flotante-ris">
+        <div class="chat-header">
+            <span>🤖 Asistente de Consulta RIS (IA)</span>
+            <span style="cursor:pointer;" onclick="toggleChatFlotante()">✕</span>
+        </div>
+        <div class="chat-messages" id="chat-mensajes-area">
+            <div class="chat-bubble chat-bubble-ai">
+                ¡Hola! Soy tu asistente de consulta para el RIS de APM Terminals. ¿Tienes alguna duda o caso específico que quieras discutir o analizar según la tabla de sanciones de la APN? Escríbelo aquí abajo.
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chat-input-texto" placeholder="Pregunta sobre algún caso o regla..." onkeydown="detectarEnterChat(event)">
+            <button onclick="enviarConsultaChatIA()">Enviar</button>
+        </div>
+    </div>
+
     <script>
-        // CAMBIA ESTO CON LA URL DE TU PROPIO GOOGLE APPS SCRIPT IMPLEMENTADO
-        const CONFIG_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykGrZsjMZ3ewTIXjuPKqy-UDpOjtFPtT-ebMM_ilC6bf6qwPRcNn1KhdUhrODdYzEBKg/exec";
-        
-        let globalDashboardCache = null; // Caché local de datos para no re-consultar el servidor innecesariamente
+        let globalDashboardCache = null; 
 
         // --- FUNCIÓN DE NAVEGACIÓN ---
         function cambiarPanel(target, btn) {
@@ -777,6 +926,11 @@
             document.querySelectorAll('.tab-link').forEach(b => b.classList.remove('active'));
             document.getElementById('panel-' + target).classList.add('active');
             btn.classList.add('active');
+            
+            // Si entra a Ajustes, cargar las reglas frescas de Excel
+            if (target === 'config') {
+                cargarReglasRISDesdeServidor();
+            }
         }
 
         // --- SISTEMA DE INGRESO SEGURO CON 2FA REAL ---
@@ -794,13 +948,11 @@
             loader.style.display = "block";
             loginError.style.display = "none";
 
-            // LLAMADA AL BACKEND REAL PARA VALIDAR CREDENCIALES Y ENVIAR OTP AL CORREO
             fetch(`${CONFIG_WEB_APP_URL}?action=request_otp&user=${encodeURIComponent(user)}&pass=${encodeURIComponent(pass)}`)
             .then(res => res.json())
             .then(data => {
                 loader.style.display = "none";
                 if (data.status === "otp_sent") {
-                    // Éxito: Ocultar credenciales y mostrar campo de verificación OTP
                     document.getElementById("credentials-section").style.display = "none";
                     document.getElementById("otp-section").style.display = "block";
                     sessionStorage.setItem("temp_user", user);
@@ -831,22 +983,18 @@
             loader.style.display = "block";
             loginError.style.display = "none";
 
-            // LLAMADA AL BACKEND REAL PARA VERIFICAR OTP Y CARGAR DATOS DEL DASHBOARD
             fetch(`${CONFIG_WEB_APP_URL}?action=verify_otp&user=${encodeURIComponent(user)}&otp=${encodeURIComponent(otp)}`)
             .then(res => res.json())
             .then(data => {
                 loader.style.display = "none";
                 if (data.status === "success") {
-                    // Guardar credenciales autorizadas en la sesión del navegador
                     sessionStorage.setItem("secure_user_initials", user);
                     sessionStorage.setItem("secure_auth_plain", sessionStorage.getItem("temp_pass"));
                     
-                    // Ocultar login y mostrar Dashboard principal
                     document.getElementById("login-screen").style.display = "none";
                     document.getElementById("main-app").style.display = "flex";
                     document.getElementById("user-display").innerText = user;
 
-                    // Poblamos el panel con toda la información real
                     inicializarDashboardConDatos(data.data);
                 } else if (data.error) {
                     loginError.innerText = data.error;
@@ -872,11 +1020,10 @@
             document.getElementById("panel-lateral-evaluacion").style.display = "none";
         }
 
-        // --- POBLADO DINÁMICO DE PANELES CON DATOS REALES ---
+        // --- POBLADO DINÁMICO DE PANELES ---
         function inicializarDashboardConDatos(data) {
-            globalDashboardCache = data; // Guardamos en caché local
+            globalDashboardCache = data; 
 
-            // 1. Poblar la tabla de papeletas del Dashboard con los Semáforos Reales
             const tbody = document.querySelector("#tabla-control-papeletas tbody");
             tbody.innerHTML = "";
 
@@ -902,12 +1049,10 @@
                 });
             }
 
-            // 2. Poblar los KPIs dinámicos principales
             document.getElementById("kpi-hoy").innerText = data.dashboardData.kpis.hoy || 0;
             document.getElementById("kpi-mes").innerText = data.dashboardData.kpis.esteMes || 0;
             document.getElementById("kpi-absueltas").innerText = data.dashboardData.kpis.absueltas || 0;
 
-            // 3. Poblar Ranking de Oficiales de Seguridad
             const listaAgentes = document.getElementById("lista-kpi-agentes");
             listaAgentes.innerHTML = "";
             if (data.dashboardData.kpis.agentes && data.dashboardData.kpis.agentes.length > 0) {
@@ -923,7 +1068,6 @@
                 listaAgentes.innerHTML = `<li class="agents-list-item">Sin datos de oficiales disponibles.</li>`;
             }
 
-            // 4. Poblar Estadísticas de Conductas más frecuentes
             const listaConductas = document.getElementById("lista-kpi-conductas");
             listaConductas.innerHTML = "";
             if (data.dashboardData.kpis.conductas && data.dashboardData.kpis.conductas.length > 0) {
@@ -939,7 +1083,6 @@
                 listaConductas.innerHTML = `<li class="agents-list-item">Sin estadísticas disponibles.</li>`;
             }
 
-            // 5. Poblar Noticiero de Seguridad IA diario
             if (data.dashboardData.newsSummary) {
                 document.getElementById("noticia-fecha").innerText = data.dashboardData.newsSummary.fecha;
                 document.getElementById("noticia-cuerpo").innerText = data.dashboardData.newsSummary.cuerpo;
@@ -951,7 +1094,6 @@
             const panel = document.getElementById("panel-lateral-evaluacion");
             panel.style.display = "block";
             
-            // Colocar cargador visual en el panel mientras la IA procesa
             document.getElementById("panel-txt-expediente").innerHTML = `<strong>ID Papeleta:</strong> ${id}<br><span style="color:gray;">Cargando expediente...</span>`;
             document.getElementById("panel-txt-justificacion").innerHTML = "🤖 <em>Analizando caso, rastreando descargos en Gmail y auditando historial de reincidencias...</em>";
             document.getElementById("panel-txt-reincidencia").innerHTML = "Auditando historial...";
@@ -962,7 +1104,6 @@
             const user = sessionStorage.getItem("secure_user_initials");
             const auth = sessionStorage.getItem("secure_auth_plain");
 
-            // LLAMADA DE RED PARA EJECUTAR EL PROCESAMIENTO CON IA EN EL SERVIDOR
             fetch(`${CONFIG_WEB_APP_URL}?action=analizar_ia&id=${encodeURIComponent(id)}&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
             .then(res => res.json())
             .then(data => {
@@ -971,7 +1112,6 @@
                     return;
                 }
                 
-                // Rellenar todos los campos dinámicos con el resultado real de la IA
                 document.getElementById("panel-txt-expediente").innerHTML = `
                     <strong>ID Papeleta:</strong> ${id}<br>
                     <strong>Análisis del RIS completado</strong>
@@ -990,13 +1130,185 @@
             });
         }
 
-        // Acción al presionar "Enviar Resolución"
         function ejecutarAprobacionYSancion() {
             const diasSancion = document.getElementById("sancion-dias-final").value;
-            // Cuando IT te entregue las credenciales de MS Graph, esta función se actualizará
-            // para enviar de forma real el correo de resolución redactado por la IA desde procesos.ris@apmterminals.com
             alert(`🚀 ¡Conforme!\nSe ha aprobado y aplicado la sanción oficial de ${diasSancion} días.\n\n[Siguiente Fase de IT]: Cuando TI entregue la API de Microsoft Graph, este botón enviará directamente la resolución en PDF oficial a la empresa y cerrará el caso de manera directa.`);
             document.getElementById("panel-lateral-evaluacion").style.display = "none";
+        }
+
+        // --- SISTEMA CRUD DINÁMICO DE REGLAS RIS (EXCEL) ---
+        function cargarReglasRISDesdeServidor() {
+            const container = document.getElementById("contenedor-reglas-ris-dinamico");
+            container.innerHTML = `<p style="text-align:center;">🔄 Cargando y digitalizando reglas oficiales del Excel...</p>`;
+
+            const user = sessionStorage.getItem("secure_user_initials");
+            const auth = sessionStorage.getItem("secure_auth_plain");
+
+            fetch(`${CONFIG_WEB_APP_URL}?action=get_ris_rules&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
+            .then(res => res.json())
+            .then(data => {
+                container.innerHTML = "";
+                if (data.error) {
+                    container.innerHTML = `<p style="text-align:center; color:red; font-weight:bold;">Error al cargar: ${data.error}</p>`;
+                    return;
+                }
+
+                if (data.length === 0) {
+                    container.innerHTML = `<p style="text-align:center; color:gray;">No se encontraron reglas en la tabla del RIS de Excel.</p>`;
+                    return;
+                }
+
+                data.forEach(r => {
+                    const card = document.createElement("div");
+                    card.className = "ris-rule-card";
+                    card.innerHTML = `
+                        <h4>Conducta: ${r.conducta}</h4>
+                        <p><strong>Área:</strong> ${r.area}</p>
+                        <p><strong>Clasificación RIS:</strong> ${r.graduacion}</p>
+                        <p><strong>Sanción Estipulada:</strong><br><span style="white-space: pre-wrap; display: block; margin-top:5px; line-height:1.4;">${r.sancion}</span></p>
+                        <button class="btn-edit-rule" onclick="abrirModalEdicionRegla('${r.id}', '${escapeJS(r.area)}', '${escapeJS(r.conducta)}', '${escapeJS(r.graduacion)}', '${escapeJS(r.sancion)}')">✏️ Editar Regla</button>
+                    `;
+                    container.appendChild(card);
+                });
+            })
+            .catch(err => {
+                container.innerHTML = `<p style="text-align:center; color:red; font-weight:bold;">Error de conexión con el servidor: ${err.toString()}</p>`;
+            });
+        }
+
+        // Escapar caracteres para pasar strings de manera segura a las funciones onClick
+        function escapeJS(str) {
+            return str ? str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r') : '';
+        }
+
+        function abrirModalEdicionRegla(id, area, conducta, graduacion, sancion) {
+            document.getElementById("edit-rule-id").value = id;
+            document.getElementById("edit-rule-area").value = area || "OPERACIONES";
+            document.getElementById("edit-rule-conducta").value = conducta || "";
+            document.getElementById("edit-rule-graduacion").value = graduacion || "Leve";
+            document.getElementById("edit-rule-sancion").value = sancion || "";
+            
+            document.getElementById("modal-title").innerText = id === "nuevo" ? "➕ Agregar Nueva Regla al RIS" : "✏️ Editar Regla de Sanción RIS";
+            document.getElementById("modal-edicion-regla").style.display = "flex";
+        }
+
+        function cerrarModalEdicionRegla() {
+            document.getElementById("modal-edicion-regla").style.display = "none";
+        }
+
+        function ejecutarGuardadoReglaRIS() {
+            const id = document.getElementById("edit-rule-id").value;
+            const area = document.getElementById("edit-rule-area").value;
+            const conducta = document.getElementById("edit-rule-conducta").value.trim();
+            const graduacion = document.getElementById("edit-rule-graduacion").value;
+            const sancion = document.getElementById("edit-rule-sancion").value.trim();
+
+            if (!conducta || !sancion) {
+                alert("Por favor, complete todos los campos requeridos (Conducta y Sanciones).");
+                return;
+            }
+
+            const user = sessionStorage.getItem("secure_user_initials");
+            const auth = sessionStorage.getItem("secure_auth_plain");
+
+            const payload = {
+                action: "save_ris_rule",
+                user: user,
+                auth: auth,
+                id: id,
+                area: area,
+                conducta: conducta,
+                graduacion: graduacion,
+                sancion: sancion
+            };
+
+            // Mostrar estado guardando en el botón
+            const saveBtn = document.querySelector(".modal-box button[onclick='ejecutarGuardadoReglaRIS()']");
+            const originalText = saveBtn.innerText;
+            saveBtn.innerText = "⏳ Guardando cambios en Excel...";
+            saveBtn.disabled = true;
+
+            fetch(CONFIG_WEB_APP_URL + "?action=save_ris_rule", {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                alert("✅ ¡Éxito!\nLa regla ha sido guardada directamente en tu base de datos de Google Sheets.");
+                cerrarModalEdicionRegla();
+                saveBtn.innerText = originalText;
+                saveBtn.disabled = false;
+                
+                // Recargar las reglas del panel
+                cargarReglasRISDesdeServidor();
+            })
+            .catch(err => {
+                alert("Error al intentar guardar los cambios en Excel: " + err.toString());
+                saveBtn.innerText = originalText;
+                saveBtn.disabled = false;
+            });
+        }
+
+        // --- SISTEMA DE CHAT FLOTANTE RIS (IA) ---
+        function toggleChatFlotante() {
+            const chat = document.getElementById("chat-flotante-ris");
+            if (chat.style.display === "flex") {
+                chat.style.display = "none";
+            } else {
+                chat.style.display = "flex";
+                document.getElementById("chat-input-texto").focus();
+            }
+        }
+
+        function detectarEnterChat(event) {
+            if (event.key === "Enter") {
+                enviarConsultaChatIA();
+            }
+        }
+
+        function enviarConsultaChatIA() {
+            const input = document.getElementById("chat-input-texto");
+            const query = input.value.trim();
+            if (!query) return;
+
+            const areaMensajes = document.getElementById("chat-mensajes-area");
+
+            // 1. Agregar el mensaje del usuario en pantalla
+            const bubbleUser = document.createElement("div");
+            bubbleUser.className = "chat-bubble chat-bubble-user";
+            bubbleUser.innerText = query;
+            areaMensajes.appendChild(bubbleUser);
+            
+            // Limpiar input y hacer scroll abajo
+            input.value = "";
+            areaMensajes.scrollTop = areaMensajes.scrollHeight;
+
+            // 2. Agregar burbuja de cargando para la IA
+            const bubbleAI = document.createElement("div");
+            bubbleAI.className = "chat-bubble chat-bubble-ai";
+            bubbleAI.innerHTML = "🤖 <em>Pensando y buscando en la tabla oficial de sanciones...</em>";
+            areaMensajes.appendChild(bubbleAI);
+            areaMensajes.scrollTop = areaMensajes.scrollHeight;
+
+            const user = sessionStorage.getItem("secure_user_initials");
+            const auth = sessionStorage.getItem("secure_auth_plain");
+
+            // 3. Consultar el endpoint de chat en el Google Apps Script
+            fetch(`${CONFIG_WEB_APP_URL}?action=consultar_chat_ia&query=${encodeURIComponent(query)}&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.respuesta) {
+                    bubbleAI.innerText = data.respuesta;
+                } else {
+                    bubbleAI.innerText = "Error: No se recibió una respuesta válida de la Inteligencia Artificial.";
+                }
+                areaMensajes.scrollTop = areaMensajes.scrollHeight;
+            })
+            .catch(err => {
+                bubbleAI.innerHTML = `<span style="color:red; font-weight:bold;">Error de conexión con la IA: ${err.toString()}</span>`;
+                areaMensajes.scrollTop = areaMensajes.scrollHeight;
+            });
         }
     </script>
 </body>
