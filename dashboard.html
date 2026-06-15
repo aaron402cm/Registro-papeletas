@@ -1019,7 +1019,25 @@
         // CAMBIA ESTO CON LA URL DE TU PROPIO GOOGLE APPS SCRIPT IMPLEMENTADO
         const CONFIG_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykGrZsjMZ3ewTIXjuPKqy-UDpOjtFPtT-ebMM_ilC6bf6qwPRcNn1KhdUhrODdYzEBKg/exec";
 
-        let globalDashboardCache = null; 
+        let globalDashboardCache = null;
+        // Función para dar formato visual de negrita y saltos de línea al chat de forma segura
+function formatearRespuestaChat(texto) {
+    if (!texto) return "";
+    
+    // Escapar caracteres HTML básicos para prevenir fallos de renderizado o XSS
+    let seguro = texto
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    
+    // Reemplazar saltos de línea por etiquetas <br>
+    seguro = seguro.replace(/\n/g, "<br>");
+    
+    // Reemplazar **texto** por <strong>texto</strong> para renderizar negritas
+    seguro = seguro.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+    
+    return seguro;
+}
 
         // --- FUNCIÓN DE NAVEGACIÓN ---
         function cambiarPanel(target, btn) {
@@ -1468,7 +1486,7 @@
             .then(res => res.json())
             .then(data => {
                 if (data.respuesta) {
-                    bubbleAI.innerText = data.respuesta;
+                    bubbleAI.innerHTML = formatearRespuestaChat(data.respuesta);
                 } else {
                     bubbleAI.innerText = "Error: No se recibió una respuesta válida de la Inteligencia Artificial.";
                 }
