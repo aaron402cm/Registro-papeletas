@@ -1254,15 +1254,15 @@ function formatearRespuestaChat(texto) {
                     <strong>Análisis del RIS completado</strong>
                 `;
                 document.getElementById("panel-txt-justificacion").innerHTML = `
-                    <strong>Resumen:</strong> ${data.resumen_descargo}<br><br>
-                    <strong>Análisis legal RIS:</strong> ${data.analisis_caso}
+                    <strong>Resumen:</strong> ${formatearRespuestaChat(data.resumen_descargo)}<br><br>
+                    <strong>Análisis legal RIS:</strong> ${formatearRespuestaChat(data.analisis_caso)}
                 `;
-                document.getElementById("panel-txt-reincidencia").innerHTML = data.reincidencia_texto;
+                document.getElementById("panel-txt-reincidencia").innerHTML = formatearRespuestaChat(data.reincidencia_texto);
                 
                 // RELLENAR LOS NUEVOS CAMPOS DEL REGLAMENTO APLICADO EN LA PAPELETA
                 document.getElementById("panel-txt-conducta-ris").innerText = data.conducta_tabla || "-";
                 document.getElementById("panel-txt-graduacion-ris").innerText = data.graduacion_tabla || "-";
-                document.getElementById("panel-txt-sancion-raw").innerText = data.sancion_estipulada_tabla || "-";
+                document.getElementById("panel-txt-sancion-raw").innerHTML = formatearRespuestaChat(data.sancion_estipulada_tabla || "-");
                 
                 document.getElementById("sancion-dias-final").value = data.dias_sugeridos;
                 document.getElementById("panel-txt-correo-borrador").innerText = data.correo_borrador;
