@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Control RIS - APM Terminals</title>
+    <!-- Librería Chart.js para el gráfico del Timeline -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Librería SheetJS para exportar de forma nativa a Excel -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
         :root {
             --apm-orange: #E05B1B;
@@ -250,6 +254,26 @@
             align-items: flex-start;
         }
 
+        /* BARRA DE DESPLAZAMIENTO (SCROLLBAR) PARA LA TABLA */
+        .table-scroll-container {
+            max-height: 480px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+        }
+
+        .table-scroll-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-scroll-container thead th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: var(--apm-dark-blue);
+        }
+
         .table-container {
             flex: 1;
             overflow-x: auto;
@@ -282,7 +306,6 @@
             background-color: #f1f5f9;
         }
 
-        /* Resaltar Fila Activa en la Selección */
         tr.active-row {
             background-color: #ffe6cc !important;
             font-weight: bold;
@@ -302,7 +325,6 @@
         .badge-red { background-color: #fce4d6; color: var(--danger-red); }
         .badge-blue { background-color: #e8f1f5; color: var(--apm-blue); }
 
-        /* Botón de Visualización de PDF */
         .btn-pdf-view {
             background-color: var(--apm-blue);
             color: white;
@@ -319,7 +341,7 @@
             background-color: var(--apm-dark-blue);
         }
 
-        /* --- PANEL LATERAL IA --- */
+        /* --- BARRA DE DESPLAZAMIENTO (SCROLLBAR) PARA PANEL LATERAL --- */
         .ai-side-panel {
             width: 380px;
             background: white;
@@ -330,6 +352,8 @@
             box-sizing: border-box;
             position: sticky;
             top: 30px;
+            max-height: calc(100vh - 180px);
+            overflow-y: auto;
             display: none;
         }
 
@@ -382,7 +406,7 @@
         /* --- PEPELETA DIARIA & AGENTES --- */
         .kpi-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 20px;
             margin-bottom: 25px;
         }
@@ -574,7 +598,7 @@
             height: 480px;
             background-color: white;
             border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
             border-top: 4px solid var(--apm-orange);
             display: none; /* Se activa al presionar el FAB */
             flex-direction: column;
@@ -801,27 +825,59 @@
 
             <!-- PESTAÑA 1: BANDEJA DE CONTROL Y EVALUACIÓN IA -->
             <div id="panel-control" class="tab-panel active">
+                
+                <!-- BARRA DE BÚSQUEDA Y FILTROS AVANZADOS -->
+                <div class="card" style="margin-bottom: 15px; padding: 15px;">
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                        <input type="text" id="tabla-buscador-rapido" placeholder="🔎 Buscar por DNI, infractor, empresa, conducta..." style="flex: 1; min-width: 250px; padding: 10px; border: 2px solid #ced4da; border-radius: 4px;" oninput="filtrarYRenderizarTabla()">
+                        
+                        <select id="filtro-empresa" style="width: 150px; padding: 10px; border: 2px solid #ced4da; border-radius: 4px;" onchange="filtrarYRenderizarTabla()">
+                            <option value="">Filtro Empresa</option>
+                        </select>
+                        
+                        <select id="filtro-graduacion" style="width: 150px; padding: 10px; border: 2px solid #ced4da; border-radius: 4px;" onchange="filtrarYRenderizarTabla()">
+                            <option value="">Filtro Graduación</option>
+                            <option value="Leve">Leve</option>
+                            <option value="Grave">Grave</option>
+                            <option value="Muy Grave">Muy Grave</option>
+                        </select>
+                        
+                        <select id="filtro-semaforo" style="width: 150px; padding: 10px; border: 2px solid #ced4da; border-radius: 4px;" onchange="filtrarYRenderizarTabla()">
+                            <option value="">Filtro Semáforo</option>
+                            <option value="vigente">Plazo Vigente</option>
+                            <option value="ultimo_dia">Último Día</option>
+                            <option value="vencido">Plazo Vencido</option>
+                            <option value="descargo">Descargo Recibido</option>
+                        </select>
+                        
+                        <button class="btn-apm" style="width: auto; padding: 10px 15px;" onclick="exportarTablaAExcel()">📥 Excel</button>
+                        <button class="btn-apm" style="width: auto; padding: 10px 15px; background-color: var(--apm-blue);" onclick="forzarSincronizacionManual()">🔄 Sincronizar</button>
+                    </div>
+                </div>
+
                 <div class="dashboard-layout">
                     
-                    <!-- Tabla de papeletas activas -->
+                    <!-- Tabla de papeletas activas con scrollbar interno -->
                     <div class="table-container card">
                         <h3 class="card-title">Seguimiento de Papeletas y Semáforo de Plazos (Últimos 30 días)</h3>
-                        <table id="tabla-control-papeletas">
-                            <thead>
-                                <tr>
-                                    <th>ID Papeleta</th>
-                                    <th>Infractor</th>
-                                    <th>Empresa</th>
-                                    <th>Conducta Infractora</th>
-                                    <th>Fecha Suceso</th>
-                                    <th>Semáforo RIS</th>
-                                    <th>Ver PDF</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td colspan="7" style="text-align:center;">Por favor, inicie sesión de forma segura para cargar la base de datos...</td></tr>
-                            </tbody>
-                        </table>
+                        <div class="table-scroll-container">
+                            <table id="tabla-control-papeletas">
+                                <thead>
+                                    <tr>
+                                        <th>ID Papeleta</th>
+                                        <th>Infractor</th>
+                                        <th>Empresa</th>
+                                        <th>Conducta Infractora</th>
+                                        <th>Fecha Suceso</th>
+                                        <th>Semáforo RIS</th>
+                                        <th>Ver PDF</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td colspan="7" style="text-align:center;">Por favor, inicie sesión de forma segura para cargar la base de datos...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                     <!-- Panel Lateral Inteligencia RIS (IA) -->
@@ -843,7 +899,7 @@
                             <div class="panel-section-content" id="panel-txt-reincidencia">-</div>
                         </div>
 
-                        <!-- NUEVA SECCIÓN DE REGLAMENTO APN APLICADO -->
+                        <!-- SECCIÓN DE REGLAMENTO APN APLICADO -->
                         <div class="panel-section">
                             <div class="panel-section-title">Infracción Aplicable según APN</div>
                             <div class="panel-section-content">
@@ -874,7 +930,7 @@
                 </div>
             </div>
 
-            <!-- PESTAÑA 2: KPIS DINÁMICOS Y OFICIALES -->
+            <!-- PESTAÑA 2: KPIS DINÁMICOS, OFICIALES Y TIMELINE -->
             <div id="panel-kpis" class="tab-panel">
                 <div class="kpi-grid">
                     <div class="kpi-card accent-orange">
@@ -888,6 +944,21 @@
                     <div class="kpi-card" style="border-bottom-color: var(--success-green);">
                         <div class="kpi-value" id="kpi-absueltas">0</div>
                         <div class="kpi-label">CASOS ABSUELTOS</div>
+                    </div>
+                    <!-- Generador del reporte mensual PDF de gerencia -->
+                    <div class="kpi-card" style="border-bottom-color: var(--apm-blue); cursor: pointer;" onclick="generarReporteMensualGerencia()">
+                        <div class="kpi-value" style="font-size: 24px; padding: 12px 0;" id="kpi-reporte-btn-text">📊 GENERAR</div>
+                        <div class="kpi-label">REPORTE MENSUAL PDF</div>
+                    </div>
+                </div>
+
+                <div class="dashboard-layout" style="margin-bottom: 25px;">
+                    <!-- Gráfico Timeline de Infracciones -->
+                    <div class="card" style="flex: 1; padding: 20px;">
+                        <h3 class="card-title">📈 Línea de Tiempo de Infracciones (Últimos 30 días)</h3>
+                        <div style="height: 250px; position: relative;">
+                            <canvas id="timelineChart"></canvas>
+                        </div>
                     </div>
                 </div>
 
@@ -905,11 +976,24 @@
                             <li class="agents-list-item">Cargando estadísticas de conductas...</li>
                         </ul>
                     </div>
+
+                    <!-- Panel de Empresas Contratistas -->
+                    <div class="table-container card" style="flex: 1;">
+                        <h3 class="card-title">🏢 Infracciones por Empresa Contratista</h3>
+                        <ul class="agents-list" id="lista-kpi-contratistas">
+                            <li class="agents-list-item">Cargando estadísticas de contratistas...</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 
             <!-- PESTAÑA 3: EL NOTICIERO DE SEGURIDAD -->
             <div id="panel-news" class="tab-panel">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <button class="btn-apm" style="width: auto; padding: 10px 20px;" id="btn-informe-semanal" onclick="generarInformeSemanalIA()">
+                        📰 Generar Análisis de Patrones Semanal (IA)
+                    </button>
+                </div>
                 <div class="newspaper-container">
                     <div class="newspaper-header">
                         <h2>EL NOTICIERO DE SEGURIDAD</h2>
@@ -921,7 +1005,7 @@
                 </div>
             </div>
 
-            <!-- PESTAÑA 4: REGLAS DEL RIS (DINÁMICO CON EXCEL) -->
+            <!-- PESTAÑA 4: REGLAS DEL RIS -->
             <div id="panel-config" class="tab-panel">
                 <div class="card">
                     <div class="card-title">
@@ -1019,25 +1103,65 @@
         // CAMBIA ESTO CON LA URL DE TU PROPIO GOOGLE APPS SCRIPT IMPLEMENTADO
         const CONFIG_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykGrZsjMZ3ewTIXjuPKqy-UDpOjtFPtT-ebMM_ilC6bf6qwPRcNn1KhdUhrODdYzEBKg/exec";
 
-        let globalDashboardCache = null;
+        let globalDashboardCache = null; 
+        let activeFilteredPapeletas = [];
+        let timelineChartInstance = null;
+
         // Función para dar formato visual de negrita y saltos de línea al chat de forma segura
-function formatearRespuestaChat(texto) {
-    if (!texto) return "";
-    
-    // Escapar caracteres HTML básicos para prevenir fallos de renderizado o XSS
-    let seguro = texto
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-    
-    // Reemplazar saltos de línea por etiquetas <br>
-    seguro = seguro.replace(/\n/g, "<br>");
-    
-    // Reemplazar **texto** por <strong>texto</strong> para renderizar negritas
-    seguro = seguro.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-    
-    return seguro;
-}
+        function formatearRespuestaChat(texto) {
+            if (!texto) return "";
+            
+            let seguro = texto
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+            
+            seguro = seguro.replace(/\n/g, "<br>");
+            seguro = seguro.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+            
+            return seguro;
+        }
+
+        // --- SISTEMA DE SINCRONIZACIÓN AUTOMÁTICA (CADA 1 MINUTO) ---
+        setInterval(function() {
+            if (sessionStorage.getItem("secure_user_initials")) {
+                ejecutarSincronizacionSilenciosa();
+            }
+        }, 60000);
+
+        function ejecutarSincronizacionSilenciosa() {
+            const user = sessionStorage.getItem("secure_user_initials");
+            const auth = sessionStorage.getItem("secure_auth_plain");
+            fetch(`${CONFIG_WEB_APP_URL}?user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
+            .then(res => res.json())
+            .then(data => {
+                inicializarDashboardConDatos(data);
+            })
+            .catch(err => console.log("Sincronización silenciosa fallida: " + err));
+        }
+
+        function forzarSincronizacionManual() {
+            const user = sessionStorage.getItem("secure_user_initials");
+            const auth = sessionStorage.getItem("secure_auth_plain");
+            const btn = document.querySelector("button[onclick='forzarSincronizacionManual()']");
+            const txtOriginal = btn.innerText;
+            btn.innerText = "⏳ Sincronizando...";
+            btn.disabled = true;
+
+            fetch(`${CONFIG_WEB_APP_URL}?user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
+            .then(res => res.json())
+            .then(data => {
+                inicializarDashboardConDatos(data);
+                alert("✅ ¡Base de datos de Excel sincronizada con éxito!");
+                btn.innerText = txtOriginal;
+                btn.disabled = false;
+            })
+            .catch(err => {
+                alert("Error de sincronización manual: " + err.toString());
+                btn.innerText = txtOriginal;
+                btn.disabled = false;
+            });
+        }
 
         // --- FUNCIÓN DE NAVEGACIÓN ---
         function cambiarPanel(target, btn) {
@@ -1046,7 +1170,6 @@ function formatearRespuestaChat(texto) {
             document.getElementById('panel-' + target).classList.add('active');
             btn.classList.add('active');
             
-            // Si entra a Ajustes, cargar las reglas frescas de Excel
             if (target === 'config') {
                 cargarReglasRISDesdeServidor();
             }
@@ -1114,7 +1237,6 @@ function formatearRespuestaChat(texto) {
                     document.getElementById("main-app").style.display = "flex";
                     document.getElementById("user-display").innerText = user;
                     
-                    // MOSTRAR LA BURBUJA DE CHAT ÚNICAMENTE AL LOGUEARSE CON ÉXITO
                     document.getElementById("chat-fab-element").style.display = "flex";
 
                     inicializarDashboardConDatos(data.data);
@@ -1141,7 +1263,6 @@ function formatearRespuestaChat(texto) {
             document.getElementById("sec-otp").value = "";
             document.getElementById("panel-lateral-evaluacion").style.display = "none";
             
-            // OCULTAR LA BURBUJA DE CHAT AL CERRAR SESIÓN
             document.getElementById("chat-fab-element").style.display = "none";
             document.getElementById("chat-flotante-ris").style.display = "none";
         }
@@ -1149,40 +1270,8 @@ function formatearRespuestaChat(texto) {
         // --- POBLADO DINÁMICO DE PANELES ---
         function inicializarDashboardConDatos(data) {
             globalDashboardCache = data; 
-
-            const tbody = document.querySelector("#tabla-control-papeletas tbody");
-            tbody.innerHTML = "";
-
-            if (!data.dashboardData || !data.dashboardData.papeletas || data.dashboardData.papeletas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">No se registraron papeletas en los últimos 30 días.</td></tr>`;
-            } else {
-                data.dashboardData.papeletas.forEach(p => {
-                    let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.replace("T", " ") : "-";
-                    
-                    const tr = document.createElement("tr");
-                    tr.className = "clickable-row";
-                    tr.id = `row-${p.id_papeleta}`;
-                    tr.onclick = function() {
-                        // Quitar el resaltado activo de todas las filas
-                        document.querySelectorAll("#tabla-control-papeletas tbody tr").forEach(row => row.classList.remove("active-row"));
-                        // Resaltar y pintar la fila seleccionada
-                        tr.classList.add("active-row");
-                        
-                        seleccionarPapeletaParaRevision(p.id_papeleta);
-                    };
-                    
-                    tr.innerHTML = `
-                        <td><strong>${p.id_papeleta}</strong></td>
-                        <td>${p.infractor}</td>
-                        <td>${p.empresa}</td>
-                        <td>${p.conducta}</td>
-                        <td>${fechaFormat}</td>
-                        <td><span class="badge badge-${p.estado_color}">${p.estado_texto}</span></td>
-                        <td><button class="btn-pdf-view" onclick="abrirVisorPDF('${p.id_papeleta}', event)">📄 PDF</button></td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            }
+            poblarFiltrosDinamicos(data.dashboardData.papeletas);
+            filtrarYRenderizarTabla();
 
             document.getElementById("kpi-hoy").innerText = data.dashboardData.kpis.hoy || 0;
             document.getElementById("kpi-mes").innerText = data.dashboardData.kpis.esteMes || 0;
@@ -1218,10 +1307,100 @@ function formatearRespuestaChat(texto) {
                 listaConductas.innerHTML = `<li class="agents-list-item">Sin estadísticas disponibles.</li>`;
             }
 
+            renderizarKpisContratistas(data.dashboardData.papeletas);
+            renderizarTimelineChart(data.dashboardData.papeletas);
+
             if (data.dashboardData.newsSummary) {
                 document.getElementById("noticia-fecha").innerText = data.dashboardData.newsSummary.fecha;
                 document.getElementById("noticia-cuerpo").innerText = data.dashboardData.newsSummary.cuerpo;
             }
+        }
+
+        // --- FILTROS DINÁMICOS Y BUSCADOR ---
+        function poblarFiltrosDinamicos(papeletas) {
+            const selectEmpresa = document.getElementById("filtro-empresa");
+            selectEmpresa.innerHTML = '<option value="">Filtro Empresa</option>';
+            
+            let empresas = new Set();
+            papeletas.forEach(p => {
+                if (p.empresa) empresas.add(p.empresa);
+            });
+            
+            empresas.forEach(emp => {
+                const opt = document.createElement("option");
+                opt.value = emp;
+                opt.innerText = emp;
+                selectEmpresa.appendChild(opt);
+            });
+        }
+
+        function filtrarYRenderizarTabla() {
+            if (!globalDashboardCache || !globalDashboardCache.dashboardData || !globalDashboardCache.dashboardData.papeletas) return;
+            
+            const query = document.getElementById("tabla-buscador-rapido").value.trim().toLowerCase();
+            const empresaFiltro = document.getElementById("filtro-empresa").value;
+            const graduacionFiltro = document.getElementById("filtro-graduacion").value;
+            const semaforoFiltro = document.getElementById("filtro-semaforo").value;
+            
+            const papeletas = globalDashboardCache.dashboardData.papeletas;
+            activeFilteredPapeletas = papeletas.filter(p => {
+                const cumpleBuscador = !query || 
+                    String(p.id_papeleta).toLowerCase().includes(query) ||
+                    String(p.infractor).toLowerCase().includes(query) ||
+                    String(p.dni).toLowerCase().includes(query) ||
+                    String(p.empresa).toLowerCase().includes(query) ||
+                    String(p.conducta).toLowerCase().includes(query);
+                
+                const cumpleEmpresa = !empresaFiltro || p.empresa === empresaFiltro;
+                
+                const cumpleGraduacion = !graduacionFiltro || String(p.conducta).toLowerCase().includes(graduacionFiltro.toLowerCase()) || String(p.estado_texto).toLowerCase().includes(graduacionFiltro.toLowerCase());
+                
+                const cumpleSemaforo = !semaforoFiltro || p.estado_semaforo === semaforoFiltro;
+                
+                return cumpleBuscador && cumpleEmpresa && cumpleGraduacion && cumpleSemaforo;
+            });
+            
+            renderizarTablaFiltrada(activeFilteredPapeletas);
+        }
+
+        function renderizarTablaFiltrada(papeletasFiltradas) {
+            const tbody = document.querySelector("#tabla-control-papeletas tbody");
+            tbody.innerHTML = "";
+
+            if (papeletasFiltradas.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">No se encontraron papeletas con los filtros seleccionados.</td></tr>`;
+            } else {
+                papeletasFiltradas.forEach(p => {
+                    let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.replace("T", " ") : "-";
+                    
+                    const tr = document.createElement("tr");
+                    tr.className = "clickable-row";
+                    tr.id = `row-${p.id_papeleta}`;
+                    tr.onclick = function() {
+                        document.querySelectorAll("#tabla-control-papeletas tbody tr").forEach(row => row.classList.remove("active-row"));
+                        tr.classList.add("active-row");
+                        seleccionarPapeletaParaRevision(p.id_papeleta);
+                    };
+                    
+                    tr.innerHTML = `
+                        <td><strong>${p.id_papeleta}</strong></td>
+                        <td>${p.infractor}</td>
+                        <td>${p.empresa}</td>
+                        <td>${p.conducta}</td>
+                        <td>${fechaFormat}</td>
+                        <td><span class="badge badge-${p.estado_color}">${p.estado_texto}</span></td>
+                        <td><button class="btn-pdf-view" onclick="abrirVisorPDF('${p.id_papeleta}', event)">📄 PDF</button></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+
+        // --- EXPORTAR A EXCEL (SHEETJS) ---
+        function exportarTablaAExcel() {
+            const table = document.getElementById("tabla-control-papeletas");
+            const wb = XLSX.utils.table_to_book(table, { sheet: "Papeletas RIS APM" });
+            XLSX.writeFile(wb, "Reporte_Filtro_RIS_APM.xlsx");
         }
 
         // --- SISTEMA INTERACTIVO DE EVALUACIÓN DE IA REAL ---
@@ -1259,7 +1438,6 @@ function formatearRespuestaChat(texto) {
                 `;
                 document.getElementById("panel-txt-reincidencia").innerHTML = formatearRespuestaChat(data.reincidencia_texto);
                 
-                // RELLENAR LOS NUEVOS CAMPOS DEL REGLAMENTO APLICADO EN LA PAPELETA
                 document.getElementById("panel-txt-conducta-ris").innerText = data.conducta_tabla || "-";
                 document.getElementById("panel-txt-graduacion-ris").innerText = data.graduacion_tabla || "-";
                 document.getElementById("panel-txt-sancion-raw").innerHTML = formatearRespuestaChat(data.sancion_estipulada_tabla || "-");
@@ -1318,7 +1496,6 @@ function formatearRespuestaChat(texto) {
             });
         }
 
-        // Escapar caracteres para pasar strings de manera segura a las funciones onClick
         function escapeJS(str) {
             return str ? str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r') : '';
         }
@@ -1364,7 +1541,6 @@ function formatearRespuestaChat(texto) {
                 sancion: sancion
             };
 
-            // Mostrar estado guardando en el botón
             const saveBtn = document.querySelector(".modal-box button[onclick='ejecutarGuardadoReglaRIS()']");
             const originalText = saveBtn.innerText;
             saveBtn.innerText = "⏳ Guardando cambios en Excel...";
@@ -1381,8 +1557,6 @@ function formatearRespuestaChat(texto) {
                 cerrarModalEdicionRegla();
                 saveBtn.innerText = originalText;
                 saveBtn.disabled = false;
-                
-                // Recargar las reglas del panel
                 cargarReglasRISDesdeServidor();
             })
             .catch(err => {
@@ -1394,7 +1568,6 @@ function formatearRespuestaChat(texto) {
 
         // --- SISTEMA DE VISUALIZACION DE PDF EMERGENte ---
         function abrirVisorPDF(id, event) {
-            // Evitar que el clic en el botón de PDF seleccione también la fila completa de la tabla para análisis
             if (event) {
                 event.stopPropagation();
             }
@@ -1437,6 +1610,162 @@ function formatearRespuestaChat(texto) {
             document.getElementById("pdf-visor-iframe").src = "";
         }
 
+        // --- GENERAR REPORTE MENSUAL PDF DE GERENCIA ---
+        function generarReporteMensualGerencia() {
+            const textBtn = document.getElementById("kpi-reporte-btn-text");
+            const user = sessionStorage.getItem("secure_user_initials");
+            const auth = sessionStorage.getItem("secure_auth_plain");
+            const originalText = textBtn.innerText;
+            textBtn.innerText = "⏳ GENERANDO...";
+            
+            fetch(`${CONFIG_WEB_APP_URL}?action=generar_reporte_mensual&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
+            .then(res => res.json())
+            .then(data => {
+                textBtn.innerText = originalText;
+                if (data.status === "success" && data.url) {
+                    abrirModalPDFGenerado(data.url);
+                } else {
+                    alert("Error: " + (data.error || "No se pudo generar el reporte mensual."));
+                }
+            })
+            .catch(err => {
+                textBtn.innerText = originalText;
+                alert("Error de conexión al generar el reporte mensual: " + err.toString());
+            });
+        }
+
+        function abrirModalPDFGenerado(url) {
+            const modal = document.getElementById("pdf-visor-modal");
+            const iframe = document.getElementById("pdf-visor-iframe");
+            const loader = document.getElementById("pdf-visor-loader");
+            const titulo = document.getElementById("pdf-visor-titulo");
+
+            modal.style.display = "flex";
+            iframe.style.display = "block";
+            loader.style.display = "none";
+            iframe.src = url;
+            titulo.innerText = "📄 Reporte Mensual RIS Generado";
+        }
+
+        // --- GENERAR INFORME SEMANAL IA DE PATRONES ---
+        function generarInformeSemanalIA() {
+            const btn = document.getElementById("btn-informe-semanal");
+            const user = sessionStorage.getItem("secure_user_initials");
+            const auth = sessionStorage.getItem("secure_auth_plain");
+            const originalText = btn.innerText;
+            btn.innerText = "🤖 Analizando patrones con Gemini...";
+            btn.disabled = true;
+
+            fetch(`${CONFIG_WEB_APP_URL}?action=generar_informe_ia_semanal&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
+            .then(res => res.json())
+            .then(data => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+                if (data.respuesta) {
+                    document.getElementById("noticia-fecha").innerText = "INFORME SEMANAL IA - " + new Date().toLocaleDateString();
+                    document.getElementById("noticia-cuerpo").innerHTML = formatearRespuestaChat(data.respuesta);
+                } else {
+                    alert("No se pudo generar el análisis de la IA.");
+                }
+            })
+            .catch(err => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+                alert("Error de conexión con la IA: " + err.toString());
+            });
+        }
+
+        // --- LINEA DE TIEMPO CHART.JS ---
+        function renderizarTimelineChart(papeletas) {
+            const ctx = document.getElementById("timelineChart").getContext("2d");
+            
+            let countsByDay = {};
+            
+            const hoy = new Date();
+            for (let i = 29; i >= 0; i--) {
+                let d = new Date();
+                d.setDate(hoy.getDate() - i);
+                let key = d.toISOString().split("T")[0];
+                countsByDay[key] = 0;
+            }
+            
+            papeletas.forEach(p => {
+                if (p.fecha_envio) {
+                    let key = String(p.fecha_envio).split("T")[0];
+                    if (countsByDay[key] !== undefined) {
+                        countsByDay[key]++;
+                    }
+                }
+            });
+            
+            const labels = Object.keys(countsByDay).map(dateStr => {
+                const parts = dateStr.split("-");
+                return `${parts[2]}/${parts[1]}`; 
+            });
+            const values = Object.values(countsByDay);
+            
+            if (timelineChartInstance) {
+                timelineChartInstance.destroy();
+            }
+            
+            timelineChartInstance = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Infracciones Registradas",
+                        data: values,
+                        borderColor: "#E05B1B",
+                        backgroundColor: "rgba(224, 91, 27, 0.1)",
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- KPI CONTRATISTAS LÓGICA ---
+        function renderizarKpisContratistas(papeletas) {
+            const container = document.getElementById("lista-kpi-contratistas");
+            container.innerHTML = "";
+            
+            let counts = {};
+            papeletas.forEach(p => {
+                if (p.empresa) {
+                    counts[p.empresa] = (counts[p.empresa] || 0) + 1;
+                }
+            });
+            
+            const sortedContratistas = Object.entries(counts)
+                .map(([empresa, count]) => ({ empresa, count }))
+                .sort((a,b) => b.count - a.count);
+                
+            if (sortedContratistas.length === 0) {
+                container.innerHTML = `<li class="agents-list-item">Sin infracciones registradas en contratistas.</li>`;
+                return;
+            }
+            
+            sortedContratistas.forEach(c => {
+                container.innerHTML += `
+                    <li class="agents-list-item">
+                        <span>🏢 Contratista <strong>${c.empresa}</strong></span>
+                        <div><span class="agent-rank" style="background-color: var(--danger-red);">${c.count} falta${c.count !== 1 ? 's' : ''}</span></div>
+                    </li>
+                `;
+            });
+        }
+
         // --- SISTEMA DE CHAT FLOTANTE RIS (IA) ---
         function toggleChatFlotante() {
             const chat = document.getElementById("chat-flotante-ris");
@@ -1461,17 +1790,14 @@ function formatearRespuestaChat(texto) {
 
             const areaMensajes = document.getElementById("chat-mensajes-area");
 
-            // 1. Agregar el mensaje del usuario en pantalla
             const bubbleUser = document.createElement("div");
             bubbleUser.className = "chat-bubble chat-bubble-user";
             bubbleUser.innerText = query;
             areaMensajes.appendChild(bubbleUser);
             
-            // Limpiar input y hacer scroll abajo
             input.value = "";
             areaMensajes.scrollTop = areaMensajes.scrollHeight;
 
-            // 2. Agregar burbuja de cargando para la IA
             const bubbleAI = document.createElement("div");
             bubbleAI.className = "chat-bubble chat-bubble-ai";
             bubbleAI.innerHTML = "🤖 <em>Pensando y buscando en la tabla oficial de sanciones...</em>";
@@ -1481,7 +1807,6 @@ function formatearRespuestaChat(texto) {
             const user = sessionStorage.getItem("secure_user_initials");
             const auth = sessionStorage.getItem("secure_auth_plain");
 
-            // 3. Consultar el endpoint de chat en el Google Apps Script
             fetch(`${CONFIG_WEB_APP_URL}?action=consultar_chat_ia&query=${encodeURIComponent(query)}&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
             .then(res => res.json())
             .then(data => {
