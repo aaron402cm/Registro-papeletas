@@ -983,7 +983,7 @@
             color: var(--apm-blue);
         }
 
-        /* --- ASISTENTE FLOTANTE CHAT IA (ESTILOS PROTEGIDOS) --- */
+        /* --- ASISTENTE FLOTANTE CHAT IA --- */
         .chat-fab {
             position: fixed;
             bottom: 25px;
@@ -1096,6 +1096,48 @@
             cursor: pointer;
             font-weight: bold;
             font-size: 13px;
+        }
+
+        /* --- NUEVO INDICADOR DE ESTADO PULSANTE GEMINI --- */
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 6px;
+            position: relative;
+            vertical-align: middle;
+        }
+        .status-dot.connected {
+            background-color: var(--success-green);
+            box-shadow: 0 0 8px var(--success-green);
+            animation: pulse-green 2s infinite;
+        }
+        .status-dot.disconnected {
+            background-color: var(--danger-red);
+            box-shadow: 0 0 8px var(--danger-red);
+            animation: pulse-red 2s infinite;
+        }
+        .status-dot.checking {
+            background-color: var(--warning-yellow);
+            box-shadow: 0 0 8px var(--warning-yellow);
+            animation: pulse-yellow 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(40, 167, 69, 0); }
+            100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+        }
+        @keyframes pulse-red {
+            0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(220, 53, 69, 0); }
+            100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+        }
+        @keyframes pulse-yellow {
+            0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(255, 193, 7, 0); }
+            100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
         }
     </style>
 </head>
@@ -1569,7 +1611,10 @@
     
     <div class="chat-panel" id="chat-flotante-ris">
         <div class="chat-header">
-            <span>🤖 Asistente de Consulta RIS (IA)</span>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <span>🤖 Asistente de Consulta RIS (IA)</span>
+                <span class="status-dot connected" id="gemini-status-dot" title="Gemini Conectado"></span>
+            </div>
             <span style="cursor:pointer;" onclick="toggleChatFlotante()">✕</span>
         </div>
         <div class="chat-messages" id="chat-mensajes-area">
@@ -1615,6 +1660,30 @@
             
             return seguro;
         }
+
+        // --- SISTEMA DE INDICADOR DE ESTADO GEMINI (DINÁMICO) ---
+        function actualizarEstadoGemini(estado) {
+            const dot = document.getElementById("gemini-status-dot");
+            if (!dot) return;
+            
+            dot.className = "status-dot"; // Reiniciar clases
+            if (estado === "connected") {
+                dot.classList.add("connected");
+                dot.title = "Gemini Conectado (IA Activa)";
+                localStorage.setItem("gemini_status", "connected");
+            } else if (estado === "disconnected") {
+                dot.classList.add("disconnected");
+                dot.title = "Gemini Desconectado (Cuota Excedida / Sin Conexión)";
+                localStorage.setItem("gemini_status", "disconnected");
+            } else {
+                dot.classList.add("checking");
+                dot.title = "Verificando Conexión...";
+            }
+        }
+
+        // Cargar estado inicial guardado
+        const estadoInicialGemini = localStorage.getItem("gemini_status") || "connected";
+        actualizarEstadoGemini(estadoInicialGemini);
 
         // --- MODO OSCURO ---
         function toggleDarkMode() {
@@ -1742,6 +1811,7 @@
             });
         }
 
+        // --- VERIFICAR OTP ---
         function verificarCodigoOTP() {
             const otp = document.getElementById("sec-otp").value.trim();
             const loader = document.getElementById("login-loader");
@@ -2221,10 +2291,18 @@
             .then(res => res.json())
             .then(data => {
                 if (data.error) {
+                    actualizarEstadoGemini("disconnected");
                     document.getElementById("wiz-val-criterio-legal").innerHTML = `<span style="color:red; font-weight:bold;">Error: ${data.error}</span>`;
                     return;
                 }
                 
+                // Si la respuesta es exitosa, verificamos si contiene el error de cuota gratuito
+                if (data.resumen_descargo && (data.resumen_descargo.includes("Error 429") || data.resumen_descargo.includes("límite de cuotas"))) {
+                    actualizarEstadoGemini("disconnected");
+                } else {
+                    actualizarEstadoGemini("connected");
+                }
+
                 // Buscar el expediente en caché local para tener los datos del Paso 1
                 const localData = activeFilteredPapeletas.find(p => String(p.id_papeleta) === String(id));
                 if (localData) {
@@ -2326,7 +2404,7 @@
                 document.getElementById("panel-txt-correo-borrador").value = data.correo_borrador;
             })
             .catch(err => {
-                document.getElementById("wiz-val-criterio-legal").innerHTML = `<span style="color:red; font-weight:bold;">Error de conexión con la IA: ${err.toString()}</span>`;
+                actualizarEstadoGemini("disconnected");
             });
         }
 
@@ -2698,6 +2776,11 @@
             .then(res => res.json())
             .then(data => {
                 if (data.respuesta) {
+                    if (data.respuesta.includes("Error 429") || data.respuesta.includes("excedido su límite")) {
+                        actualizarEstadoGemini("disconnected");
+                    } else {
+                        actualizarEstadoGemini("connected");
+                    }
                     bubbleAI.innerHTML = formatearRespuestaChat(data.respuesta);
                 } else {
                     bubbleAI.innerText = "Error: No se recibió una respuesta válida de la Inteligencia Artificial.";
@@ -2705,6 +2788,7 @@
                 areaMensajes.scrollTop = areaMensajes.scrollHeight;
             })
             .catch(err => {
+                actualizarEstadoGemini("disconnected");
                 bubbleAI.innerHTML = `<span style="color:red; font-weight:bold;">Error de conexión con la IA: ${err.toString()}</span>`;
                 areaMensajes.scrollTop = areaMensajes.scrollHeight;
             });
