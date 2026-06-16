@@ -742,6 +742,195 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* --- NUEVOS ESTILOS DEL WIZARD (FLUJO DE PASOS) --- */
+        .wizard-progress-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .wizard-progress-bar {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: #dee2e6;
+            z-index: 1;
+            transform: translateY(-50%);
+        }
+
+        .wizard-progress-line {
+            height: 100%;
+            background-color: var(--apm-blue);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .wizard-progress-node {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background-color: #f4f6f9;
+            border: 3px solid #dee2e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 2;
+            transition: all 0.3s ease;
+            color: #6c757d;
+        }
+
+        .wizard-progress-node.active {
+            border-color: var(--apm-orange);
+            background-color: white;
+            color: var(--apm-orange);
+            box-shadow: 0 0 8px rgba(224, 91, 27, 0.3);
+        }
+
+        .wizard-progress-node.completed {
+            border-color: var(--apm-blue);
+            background-color: var(--apm-blue);
+            color: white;
+        }
+
+        .wizard-step-content {
+            display: none;
+        }
+
+        .wizard-step-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .wizard-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        /* Componentes de datos del Wizard */
+        .compact-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        .compact-table tr {
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .compact-table tr:last-child {
+            border-bottom: none;
+        }
+
+        .compact-table td {
+            padding: 8px 4px;
+        }
+
+        .compact-table td.label-cell {
+            font-weight: bold;
+            color: var(--apm-blue);
+            width: 40%;
+        }
+
+        .highlight-callout {
+            background-color: #fff2cc;
+            border-left: 4px solid var(--warning-yellow);
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .highlight-callout.urgent {
+            background-color: #fce4d6;
+            border-left-color: var(--apm-orange);
+            color: #8c3b00;
+        }
+
+        .highlight-callout.success {
+            background-color: #e2f0d9;
+            border-left-color: var(--success-green);
+            color: #1e632c;
+        }
+
+        .wizard-pill {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 14px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* Línea de tiempo visual vertical para reincidencias */
+        .vertical-timeline {
+            position: relative;
+            margin: 15px 0 15px 15px;
+            padding-left: 20px;
+            border-left: 2px dashed #dee2e6;
+        }
+
+        .timeline-item-wizard {
+            position: relative;
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+
+        .timeline-item-wizard::before {
+            content: '';
+            position: absolute;
+            left: -27px;
+            top: 2px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #6c757d;
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px #dee2e6;
+        }
+
+        .timeline-item-wizard.danger::before {
+            background-color: var(--danger-red);
+            box-shadow: 0 0 0 2px #fce4d6;
+        }
+
+        .timeline-item-wizard.warning::before {
+            background-color: var(--warning-yellow);
+            box-shadow: 0 0 0 2px #fff2cc;
+        }
+
+        .timeline-item-wizard.success::before {
+            background-color: var(--success-green);
+            box-shadow: 0 0 0 2px #e2f0d9;
+        }
+
+        .timeline-date {
+            font-weight: bold;
+            color: var(--apm-dark-blue);
+            margin-bottom: 3px;
+        }
+
+        .timeline-desc {
+            color: #555;
+            line-height: 1.35;
+        }
     </style>
 </head>
 <body>
@@ -879,51 +1068,131 @@
                         </div>
                     </div>
 
-                    <!-- Panel Lateral Inteligencia RIS (IA) -->
+                    <!-- Panel Lateral Inteligencia RIS (IA Rediseñado en Pasos Navegables) -->
                     <div class="ai-side-panel" id="panel-lateral-evaluacion">
-                        <h3 style="margin-top:0; color:var(--apm-dark-blue); font-size: 16px; border-bottom: 2px solid var(--apm-orange); padding-bottom:6px;">🤖 Asistente de Inteligencia RIS</h3>
+                        <h3 style="margin-top:0; color:var(--apm-dark-blue); font-size: 16px; border-bottom: 2px solid var(--apm-orange); padding-bottom:6px; display: flex; justify-content: space-between; align-items: center;">
+                            <span>🤖 Asistente de Inteligencia RIS</span>
+                            <span id="wizard-step-indicator" style="font-size: 12px; color: var(--apm-orange); font-weight: bold;">Paso 1 de 6</span>
+                        </h3>
                         
-                        <div class="panel-section">
-                            <div class="panel-section-title">Expediente Seleccionado</div>
-                            <div class="panel-section-content" id="panel-txt-expediente"><strong>Papeleta:</strong> -<br><strong>Infractor:</strong> -</div>
-                        </div>
-
-                        <div class="panel-section" id="panel-seccion-descargo">
-                            <div class="panel-section-title">Análisis de Justificación / Descargos (IA)</div>
-                            <div class="panel-section-content" id="panel-txt-justificacion" style="font-style: italic;">Por favor, seleccione un caso de la lista para ver el análisis de la Inteligencia Artificial.</div>
-                        </div>
-
-                        <div class="panel-section">
-                            <div class="panel-section-title">Historial de Reincidencias (IA)</div>
-                            <div class="panel-section-content" id="panel-txt-reincidencia">-</div>
-                        </div>
-
-                        <!-- SECCIÓN DE REGLAMENTO APN APLICADO -->
-                        <div class="panel-section">
-                            <div class="panel-section-title">Infracción Aplicable según APN</div>
-                            <div class="panel-section-content">
-                                <p style="margin:4px 0;"><strong>Conducta Evaluada:</strong><br><span id="panel-txt-conducta-ris" style="font-weight:bold; color:var(--apm-blue);">-</span></p>
-                                <p style="margin:4px 0;"><strong>Clasificación RIS:</strong> <span id="panel-txt-graduacion-ris" style="font-weight:bold;">-</span></p>
-                                <p style="margin:4px 0;"><strong>Sanción Estipulada en Tabla:</strong><br><span id="panel-txt-sancion-raw" style="white-space: pre-wrap; display: block; background: #fafafa; padding: 6px; border: 1px solid #ced4da; border-radius:4px; margin-top:5px; line-height:1.4;">-</span></p>
+                        <!-- BARRA DE PROGRESO DE PASOS -->
+                        <div class="wizard-progress-container">
+                            <div class="wizard-progress-bar">
+                                <div class="wizard-progress-line" id="wizard-line"></div>
                             </div>
+                            <div class="wizard-progress-node active" data-step="1" title="Expediente">1</div>
+                            <div class="wizard-progress-node" data-step="2" title="Descargos">2</div>
+                            <div class="wizard-progress-node" data-step="3" title="Legal RIS">3</div>
+                            <div class="wizard-progress-node" data-step="4" title="Reincidencias">4</div>
+                            <div class="wizard-progress-node" data-step="5" title="APN">5</div>
+                            <div class="wizard-progress-node" data-step="6" title="Sanción">6</div>
                         </div>
 
-                        <div class="panel-section">
-                            <div class="panel-section-title">Sanción Sugerida (Días Modificables)</div>
-                            <div class="panel-section-content">
-                                <div class="sancion-input-group">
-                                    <label style="font-size:12px; font-weight:bold;">Sanción Final (Días):</label>
-                                    <input type="number" id="sancion-dias-final" min="0" value="0">
+                        <!-- CONTENIDO DE PASOS -->
+                        <div id="wizard-steps-container">
+                            
+                            <!-- PASO 1: EXPEDIENTE -->
+                            <div class="wizard-step-content active" id="wizard-step-1">
+                                <div class="panel-section-title">📁 Expediente Seleccionado</div>
+                                <table class="compact-table">
+                                    <tbody>
+                                        <tr>
+                                            <td class="label-cell">Expediente ID</td>
+                                            <td id="wiz-txt-expediente-id" style="font-weight: bold;">-</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label-cell">Infractor</td>
+                                            <td id="wiz-txt-expediente-nombre">-</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label-cell">DNI</td>
+                                            <td id="wiz-txt-expediente-dni">-</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label-cell">Empresa</td>
+                                            <td id="wiz-txt-expediente-empresa">-</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label-cell">Falta Reportada</td>
+                                            <td id="wiz-txt-expediente-conducta" style="font-style: italic;">-</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- PASO 2: DESCARGOS -->
+                            <div class="wizard-step-content" id="wizard-step-2">
+                                <div class="panel-section-title">📩 Análisis de Justificación y Descargos</div>
+                                <div id="wiz-descargo-alerta" class="highlight-callout urgent">
+                                    <strong>Estado:</strong> Cargando datos del buzón de correo...
+                                </div>
+                                <div class="panel-section-content" id="wiz-txt-justificacion" style="background-color: #f8f9fa; padding: 10px; border-radius: 6px; border-left: 3px solid var(--apm-blue);">
+                                    Seleccione un caso para activar el análisis inteligente de Gmail.
                                 </div>
                             </div>
+
+                            <!-- PASO 3: LEGAL RIS -->
+                            <div class="wizard-step-content" id="wizard-step-3">
+                                <div class="panel-section-title">⚖️ Veredicto Legal RIS</div>
+                                <div style="margin-bottom: 15px; text-align: center;">
+                                    <span id="wiz-legal-graduacion" class="wizard-pill badge-green">Cargando...</span>
+                                </div>
+                                <div class="panel-section-content" style="background-color: #f8f9fa; padding: 12px; border-radius: 6px; line-height: 1.45;">
+                                    <strong>Evaluación Jurídica (IA):</strong>
+                                    <p id="wiz-legal-evaluacion-txt" style="margin-top: 6px; margin-bottom: 0;">-</p>
+                                </div>
+                            </div>
+
+                            <!-- PASO 4: REINCIDENCIAS -->
+                            <div class="wizard-step-content" id="wizard-step-4">
+                                <div class="panel-section-title">⏱️ Historial de Reincidencias Recientes</div>
+                                <div class="vertical-timeline" id="wiz-timeline-reincidencias">
+                                    <div class="timeline-item-wizard success">
+                                        <div class="timeline-date">Auditoría del Conductor</div>
+                                        <div class="timeline-desc" id="wiz-txt-reincidencias-resumen">Cargando base de datos histórica...</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PASO 5: INFRACCIÓN APN -->
+                            <div class="wizard-step-content" id="wizard-step-5">
+                                <div class="panel-section-title">📘 Infracción Aplicable según la APN</div>
+                                <table class="compact-table" style="margin-bottom: 10px;">
+                                    <tbody>
+                                        <tr>
+                                            <td class="label-cell" style="vertical-align: top;">Conducta RIS</td>
+                                            <td id="wiz-apn-conducta-titulo" style="font-weight: bold; color: var(--apm-blue);">-</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="panel-section-content">
+                                    <p style="margin: 4px 0; font-weight: bold; font-size:12px;">Sanciones Estipuladas en Reglamento:</p>
+                                    <span id="wiz-apn-sancion-raw" style="white-space: pre-wrap; display: block; background: #fafafa; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; line-height: 1.4; font-size: 11px;">-</span>
+                                </div>
+                            </div>
+
+                            <!-- PASO 6: SANCIÓN Y CORREO -->
+                            <div class="wizard-step-content" id="wizard-step-6">
+                                <div class="panel-section-title">🎯 Sanción Final y Emisión</div>
+                                
+                                <div class="sancion-input-group" style="background: #fff5f0; padding: 10px; border-radius: 6px; border: 1px solid #ffddcc; margin-bottom: 15px;">
+                                    <label style="font-size:12px; font-weight:bold; color: var(--apm-orange);">Suspender Acceso (Días):</label>
+                                    <input type="number" id="sancion-dias-final" min="0" value="0">
+                                </div>
+
+                                <div class="panel-section-title" style="font-size: 11px;">Borrador de Correo de Resolución (Editable)</div>
+                                <textarea id="panel-txt-correo-borrador" rows="8" style="width:100%; font-family: inherit; font-size:11px; padding: 8px; border:1px solid #ced4da; border-radius: 4px; box-sizing: border-box; resize: vertical; margin-bottom: 15px; background: #fdfdfd;"></textarea>
+
+                                <button class="btn-apm" style="background-color:var(--success-green);" onclick="ejecutarAprobacionYSancion()">✅ Enviar Resolución Oficial</button>
+                            </div>
+
                         </div>
 
-                        <div class="panel-section">
-                            <div class="panel-section-title">Borrador de Correo de Resolución</div>
-                            <div class="mail-preview-box" id="panel-txt-correo-borrador">El borrador de correo se estructurará automáticamente...</div>
+                        <!-- BOTONES DE NAVEGACIÓN -->
+                        <div class="wizard-footer">
+                            <button class="btn-pdf-view" id="btn-wizard-prev" onclick="cambiarPasoWizard(-1)" style="background-color: #6c757d;">⬅️ Anterior</button>
+                            <button class="btn-apm" id="btn-wizard-next" onclick="cambiarPasoWizard(1)" style="width: auto; padding: 8px 18px; margin: 0;">Siguiente ➡️</button>
                         </div>
-
-                        <button class="btn-apm" style="background-color:var(--success-green);" onclick="ejecutarAprobacionYSancion()">✅ Enviar Resolución Oficial</button>
                     </div>
 
                 </div>
@@ -1105,6 +1374,9 @@
         let globalDashboardCache = null; 
         let activeFilteredPapeletas = [];
         let timelineChartInstance = null;
+        
+        // Control de estado del Wizard
+        let wizardPasoActual = 1;
 
         // Función para dar formato visual de negrita y saltos de línea al chat de forma segura
         function formatearRespuestaChat(texto) {
@@ -1395,19 +1667,92 @@
             }
         }
 
-        // --- SISTEMA INTERACTIVO DE EVALUACIÓN DE IA REAL ---
+        // --- SISTEMA INTERACTIVO DE EVALUACIÓN DE IA REAL CON WIZARD (REDISEÑADO) ---
+        function renderizarPasoWizardActual() {
+            // Activar contenido de paso
+            document.querySelectorAll(".wizard-step-content").forEach(pane => pane.classList.remove("active"));
+            const stepPane = document.getElementById(`wizard-step-${wizardPasoActual}`);
+            if (stepPane) stepPane.classList.add("active");
+
+            // Actualizar nodos visuales de la barra superior
+            document.querySelectorAll(".wizard-progress-node").forEach(node => {
+                const val = parseInt(node.getAttribute("data-step"), 10);
+                node.classList.remove("active", "completed");
+                if (val < wizardPasoActual) {
+                    node.classList.add("completed");
+                } else if (val === wizardPasoActual) {
+                    node.classList.add("active");
+                }
+            });
+
+            // Actualizar la línea de progreso
+            const porcentaje = ((wizardPasoActual - 1) / 5) * 100;
+            document.getElementById("wizard-line").style.width = `${porcentaje}%`;
+
+            // Actualizar textos e indicadores de navegación
+            document.getElementById("wizard-step-indicator").innerText = `Paso ${wizardPasoActual} de 6`;
+            
+            // Configurar botones de pie de página
+            const btnPrev = document.getElementById("btn-wizard-prev");
+            const btnNext = document.getElementById("btn-wizard-next");
+
+            btnPrev.disabled = (wizardPasoActual === 1);
+            btnPrev.style.opacity = (wizardPasoActual === 1) ? "0.5" : "1";
+
+            if (wizardPasoActual === 6) {
+                btnNext.innerText = "Finalizar ✨";
+                btnNext.style.backgroundColor = "var(--success-green)";
+            } else {
+                btnNext.innerText = "Siguiente ➡️";
+                btnNext.style.backgroundColor = "var(--apm-blue)";
+            }
+        }
+
+        function cambiarPasoWizard(direccion) {
+            const nuevoPaso = wizardPasoActual + direccion;
+            if (nuevoPaso >= 1 && nuevoPaso <= 6) {
+                wizardPasoActual = nuevoPaso;
+                renderizarPasoWizardActual();
+            } else if (nuevoPaso > 6) {
+                // Si presiona siguiente en el último paso, ejecuta la acción
+                ejecutarAprobacionYSancion();
+            }
+        }
+
         function seleccionarPapeletaParaRevision(id) {
             const panel = document.getElementById("panel-lateral-evaluacion");
             panel.style.display = "block";
             
-            document.getElementById("panel-txt-expediente").innerHTML = `<strong>ID Papeleta:</strong> ${id}<br><span style="color:gray;">Cargando expediente...</span>`;
-            document.getElementById("panel-txt-justificacion").innerHTML = "🤖 <em>Analizando caso, rastreando descargos en Gmail y auditando historial de reincidencias...</em>";
-            document.getElementById("panel-txt-reincidencia").innerHTML = "Auditando historial...";
-            document.getElementById("panel-txt-conducta-ris").innerText = "Evaluando...";
-            document.getElementById("panel-txt-graduacion-ris").innerText = "-";
-            document.getElementById("panel-txt-sancion-raw").innerText = "-";
+            // Inicializar el flujo en el paso 1 cada vez que se selecciona una papeleta
+            wizardPasoActual = 1;
+            renderizarPasoWizardActual();
+
+            // Limpiar valores previos e inyectar estado de carga
+            document.getElementById("wiz-txt-expediente-id").innerText = id;
+            document.getElementById("wiz-txt-expediente-nombre").innerText = "Cargando...";
+            document.getElementById("wiz-txt-expediente-dni").innerText = "Cargando...";
+            document.getElementById("wiz-txt-expediente-empresa").innerText = "Cargando...";
+            document.getElementById("wiz-txt-expediente-conducta").innerText = "Cargando...";
+
+            document.getElementById("wiz-descargo-alerta").className = "highlight-callout urgent";
+            document.getElementById("wiz-descargo-alerta").innerHTML = "<strong>Estado:</strong> Analizando buzón de Gmail en tiempo real...";
+            document.getElementById("wiz-txt-justificacion").innerHTML = "🤖 <em>Analizando caso, rastreando descargos en Gmail...</em>";
+            
+            document.getElementById("wiz-legal-graduacion").className = "wizard-pill badge-yellow";
+            document.getElementById("wiz-legal-graduacion").innerText = "Procesando...";
+            document.getElementById("wiz-legal-evaluacion-txt").innerText = "Esperando respuesta legal de la IA...";
+            
+            document.getElementById("wiz-timeline-reincidencias").innerHTML = `
+                <div class="timeline-item-wizard">
+                    <div class="timeline-date">Auditoría de Reincidencias</div>
+                    <div class="timeline-desc">Analizando historial de la base de datos...</div>
+                </div>
+            `;
+            
+            document.getElementById("wiz-apn-conducta-titulo").innerText = "Cargando...";
+            document.getElementById("wiz-apn-sancion-raw").innerText = "Cargando...";
             document.getElementById("sancion-dias-final").value = 0;
-            document.getElementById("panel-txt-correo-borrador").innerText = "Generando borrador de resolución...";
+            document.getElementById("panel-txt-correo-borrador").value = "Generando borrador de resolución...";
 
             const user = sessionStorage.getItem("secure_user_initials");
             const auth = sessionStorage.getItem("secure_auth_plain");
@@ -1416,35 +1761,101 @@
             .then(res => res.json())
             .then(data => {
                 if (data.error) {
-                    document.getElementById("panel-txt-justificacion").innerHTML = `<span style="color:red; font-weight:bold;">Error: ${data.error}</span>`;
+                    document.getElementById("wiz-txt-justificacion").innerHTML = `<span style="color:red; font-weight:bold;">Error: ${data.error}</span>`;
                     return;
                 }
                 
-                document.getElementById("panel-txt-expediente").innerHTML = `
-                    <strong>ID Papeleta:</strong> ${id}<br>
-                    <strong>Análisis del RIS completado</strong>
-                `;
-                document.getElementById("panel-txt-justificacion").innerHTML = `
-                    <strong>Resumen:</strong> ${formatearRespuestaChat(data.resumen_descargo)}<br><br>
-                    <strong>Análisis legal RIS:</strong> ${formatearRespuestaChat(data.analisis_caso)}
-                `;
-                document.getElementById("panel-txt-reincidencia").innerHTML = formatearRespuestaChat(data.reincidencia_texto);
+                // Buscar datos adicionales desde la lista activa local si están disponibles para complementar el Paso 1
+                const papeletaLocal = activeFilteredPapeletas.find(p => String(p.id_papeleta) === String(id));
+                if (papeletaLocal) {
+                    document.getElementById("wiz-txt-expediente-nombre").innerText = papeletaLocal.infractor;
+                    document.getElementById("wiz-txt-expediente-dni").innerText = papeletaLocal.dni || "No Registrado";
+                    document.getElementById("wiz-txt-expediente-empresa").innerText = papeletaLocal.empresa;
+                    document.getElementById("wiz-txt-expediente-conducta").innerText = papeletaLocal.conducta;
+                } else {
+                    document.getElementById("wiz-txt-expediente-nombre").innerText = "-";
+                    document.getElementById("wiz-txt-expediente-dni").innerText = "-";
+                    document.getElementById("wiz-txt-expediente-empresa").innerText = "-";
+                    document.getElementById("wiz-txt-expediente-conducta").innerText = "-";
+                }
+
+                // Paso 2: Análisis de descargos
+                const descargoAlerta = document.getElementById("wiz-descargo-alerta");
+                const descargoTxt = String(data.resumen_descargo || "").toLowerCase();
                 
-                document.getElementById("panel-txt-conducta-ris").innerText = data.conducta_tabla || "-";
-                document.getElementById("panel-txt-graduacion-ris").innerText = data.graduacion_tabla || "-";
-                document.getElementById("panel-txt-sancion-raw").innerHTML = formatearRespuestaChat(data.sancion_estipulada_tabla || "-");
+                if (descargoTxt.includes("no se recibieron") || descargoTxt.includes("venció") || descargoTxt.includes("sin descargos")) {
+                    descargoAlerta.className = "highlight-callout success";
+                    descargoAlerta.innerHTML = "<strong>✅ Plazo Vencido:</strong> No se han detectado descargos de oposición en Gmail.";
+                } else {
+                    descargoAlerta.className = "highlight-callout urgent";
+                    descargoAlerta.innerHTML = "<strong>⚠️ Descargo Recibido:</strong> El infractor o su empresa enviaron argumentos de justificación.";
+                }
+                document.getElementById("wiz-txt-justificacion").innerHTML = formatearRespuestaChat(data.resumen_descargo);
+
+                // Paso 3: Legal RIS (Graduación semántica)
+                const graduacionPill = document.getElementById("wiz-legal-graduacion");
+                const gradStr = String(data.graduacion_tabla || "Leve");
+                graduacionPill.innerText = gradStr;
                 
+                if (gradStr.toLowerCase().includes("muy grave")) {
+                    graduacionPill.className = "wizard-pill badge-red";
+                } else if (gradStr.toLowerCase().includes("grave")) {
+                    graduacionPill.className = "wizard-pill badge-yellow";
+                } else {
+                    graduacionPill.className = "wizard-pill badge-green";
+                }
+                document.getElementById("wiz-legal-evaluacion-txt").innerHTML = formatearRespuestaChat(data.analisis_caso);
+
+                // Paso 4: Reincidencias (Timeline visual)
+                const timelineContainer = document.getElementById("wiz-timeline-reincidencias");
+                timelineContainer.innerHTML = "";
+                
+                if (data.reincidencia_texto) {
+                    const lineas = data.reincidencia_texto.split("\n").filter(l => l.trim().length > 0);
+                    lineas.forEach((linea, index) => {
+                        const item = document.createElement("div");
+                        // Asignar semáforo de reincidencia por línea
+                        if (linea.toLowerCase().includes("reincidente") || linea.toLowerCase().includes("alerta") || linea.toLowerCase().includes("reincidencia")) {
+                            item.className = "timeline-item-wizard danger";
+                        } else if (linea.toLowerCase().includes("limpio") || linea.toLowerCase().includes("no registra")) {
+                            item.className = "timeline-item-wizard success";
+                        } else {
+                            item.className = "timeline-item-wizard warning";
+                        }
+                        
+                        item.innerHTML = `
+                            <div class="timeline-date">Evento de Auditoría ${index + 1}</div>
+                            <div class="timeline-desc">${formatearRespuestaChat(linea)}</div>
+                        `;
+                        timelineContainer.appendChild(item);
+                    });
+                } else {
+                    timelineContainer.innerHTML = `
+                        <div class="timeline-item-wizard success">
+                            <div class="timeline-date">Historial Limpio</div>
+                            <div class="timeline-desc">No se encontraron antecedentes previos registrados para este conductor.</div>
+                        </div>
+                    `;
+                }
+
+                // Paso 5: Reglamento APN
+                document.getElementById("wiz-apn-conducta-titulo").innerText = data.conducta_tabla || "-";
+                document.getElementById("wiz-apn-sancion-raw").innerHTML = formatearRespuestaChat(data.sancion_estipulada_tabla || "-");
+                
+                // Paso 6: Sanción Final y Correo editable
                 document.getElementById("sancion-dias-final").value = data.dias_sugeridos;
-                document.getElementById("panel-txt-correo-borrador").innerText = data.correo_borrador;
+                document.getElementById("panel-txt-correo-borrador").value = data.correo_borrador || "";
             })
             .catch(err => {
-                document.getElementById("panel-txt-justificacion").innerHTML = `<span style="color:red; font-weight:bold;">Error de conexión con la IA: ${err.toString()}</span>`;
+                document.getElementById("wiz-txt-justificacion").innerHTML = `<span style="color:red; font-weight:bold;">Error de conexión con la IA: ${err.toString()}</span>`;
             });
         }
 
         function ejecutarAprobacionYSancion() {
             const diasSancion = document.getElementById("sancion-dias-final").value;
-            alert(`🚀 ¡Conforme!\nSe ha aprobado y aplicado la sanción oficial de ${diasSancion} días.\n\n[Siguiente Fase de IT]: Cuando TI entregue la API de Microsoft Graph, este botón enviará directamente la resolución en PDF oficial a la empresa y cerrará el caso de manera directa.`);
+            const correoModificado = document.getElementById("panel-txt-correo-borrador").value;
+            
+            alert(`🚀 ¡Resolución Procesada!\nSe ha aprobado y aplicado la sanción oficial de ${diasSancion} días.\n\n[Siguiente Fase de IT]: Cuando TI entregue la API de Microsoft Graph, este botón enviará directamente el siguiente borrador de correo personalizado:\n\n${correoModificado.substring(0, 150)}...`);
             document.getElementById("panel-lateral-evaluacion").style.display = "none";
         }
 
