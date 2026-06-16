@@ -359,11 +359,22 @@
             align-items: center;
         }
 
-        /* --- TABLAS Y DISEÑO DE BANDEJA --- */
+        /* --- REJILLA EXCLUSIVA FIJA DE 580PX PARA PANEL LATERAL --- */
         .dashboard-layout {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr 580px;
             gap: 25px;
             align-items: flex-start;
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard-layout {
+                grid-template-columns: 1fr;
+            }
+            .ai-side-panel {
+                width: 100% !important;
+                min-width: 100% !important;
+            }
         }
 
         /* BARRA DE DESPLAZAMIENTO (SCROLLBAR) PARA LA TABLA */
@@ -393,8 +404,9 @@
         }
 
         .table-container {
-            flex: 1;
+            width: 100%;
             overflow-x: auto;
+            box-sizing: border-box;
         }
 
         table {
@@ -460,10 +472,10 @@
             background-color: var(--apm-dark-blue);
         }
 
-        /* --- ESTADO VACÍO Y PANEL LATERAL EXPANDIDO (520px) --- */
+        /* --- DISEÑO DE PANEL LATERAL ANCHO DE 580PX --- */
         .ai-side-panel {
-            width: 520px;
-            min-width: 520px;
+            width: 580px;
+            min-width: 580px;
             background: var(--card-bg);
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -526,7 +538,7 @@
             border-radius: 4px;
         }
 
-        /* --- HISTORIAL DE TRAZABILIDAD (PASO 1) --- */
+        /* --- TIMELINE DE TRAZABILIDAD (PASO 1) --- */
         .trazabilidad-timeline {
             margin-top: 12px;
             padding-left: 15px;
@@ -865,16 +877,225 @@
             padding-top: 15px;
         }
 
-        .mail-preview-box {
+        /* --- TIMELINE VISUAL DE REINCIDENCIAS --- */
+        .vertical-timeline {
+            position: relative;
+            margin: 15px 0 15px 15px;
+            padding-left: 20px;
+            border-left: 2px dashed var(--border-color);
+        }
+
+        .timeline-item-wizard {
+            position: relative;
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+
+        .timeline-item-wizard::before {
+            content: '';
+            position: absolute;
+            left: -27px;
+            top: 2px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #6c757d;
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px #dee2e6;
+        }
+
+        .timeline-item-wizard.danger::before {
+            background-color: var(--danger-red);
+            box-shadow: 0 0 0 2px #fce4d6;
+        }
+
+        .timeline-item-wizard.warning::before {
+            background-color: var(--warning-yellow);
+            box-shadow: 0 0 0 2px #fff2cc;
+        }
+
+        .timeline-item-wizard.success::before {
+            background-color: var(--success-green);
+            box-shadow: 0 0 0 2px #e2f0d9;
+        }
+
+        .timeline-date {
+            font-weight: bold;
+            color: var(--text-color);
+            margin-bottom: 3px;
+        }
+
+        .timeline-desc {
+            color: #555;
+            line-height: 1.35;
+        }
+
+        .compact-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        .compact-table tr {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .compact-table tr:last-child {
+            border-bottom: none;
+        }
+
+        .compact-table td {
+            padding: 8px 4px;
+        }
+
+        .compact-table td.label-cell {
+            font-weight: bold;
+            color: var(--apm-blue);
+            width: 35%;
+        }
+
+        .highlight-callout {
+            background-color: #fff2cc;
+            border-left: 4px solid var(--warning-yellow);
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .highlight-callout.urgent {
+            background-color: #fce4d6;
+            border-left-color: var(--apm-orange);
+            color: #8c3b00;
+        }
+
+        .highlight-callout.success {
+            background-color: #e2f0d9;
+            border-left-color: var(--success-green);
+            color: #1e632c;
+        }
+
+        .highlight-callout.info {
+            background-color: #e8f1f5;
+            border-left-color: var(--apm-blue);
+            color: var(--apm-blue);
+        }
+
+        /* --- ASISTENTE FLOTANTE CHAT IA (ESTILOS PROTEGIDOS) --- */
+        .chat-fab {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background-color: var(--apm-orange);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: none; /* Se oculta por defecto en el login */
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+            z-index: 9999;
+            font-size: 28px;
+            transition: transform 0.2s;
+        }
+
+        .chat-fab:hover {
+            transform: scale(1.08);
+        }
+
+        .chat-panel {
+            position: fixed;
+            bottom: 95px;
+            right: 25px;
+            width: 380px;
+            height: 480px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+            border-top: 4px solid var(--apm-orange);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 9999;
+            transition: background-color 0.3s;
+        }
+
+        .chat-header {
+            background-color: var(--apm-dark-blue);
+            color: white;
+            padding: 12px 15px;
+            font-weight: bold;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background-color: var(--bg-color);
+        }
+
+        .chat-bubble {
+            max-width: 80%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .chat-bubble-ai {
+            background-color: #e2eafc;
+            color: #000;
+            align-self: flex-start;
+            border-top-left-radius: 1px;
+            white-space: pre-wrap;
+        }
+
+        .chat-bubble-user {
+            background-color: var(--apm-blue);
+            color: white;
+            align-self: flex-end;
+            border-top-right-radius: 1px;
+        }
+
+        .chat-input-area {
+            padding: 10px 15px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 8px;
+            background: var(--card-bg);
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border-color);
             background-color: var(--input-bg);
             color: var(--text-color);
-            border: 1px solid var(--border-color);
             border-radius: 4px;
-            padding: 10px;
-            font-size: 11px;
-            max-height: 150px;
-            overflow-y: auto;
-            white-space: pre-wrap;
+            font-size: 13px;
+        }
+
+        .chat-input-area button {
+            background-color: var(--apm-orange);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
         }
     </style>
 </head>
@@ -1053,17 +1274,17 @@
                         </div>
                     </div>
 
-                    <!-- Panel Lateral Inteligencia RIS (Persistentemente visible y adaptativo, ancho 520px) -->
+                    <!-- Panel Lateral Inteligencia RIS (Persistentemente visible y de gran tamaño 580px) -->
                     <div class="ai-side-panel" id="panel-lateral-evaluacion">
                         
                         <!-- ESTADO VACÍO (INICIAL) -->
                         <div id="panel-lateral-vacio" class="panel-empty-state">
                             <div class="icon">📁</div>
                             <h3>Ningún Expediente Seleccionado</h3>
-                            <p>Haga clic en cualquiera de las papeletas de la bandeja para cargar su expediente, evaluar descargos y procesar la sanción correspondiente.</p>
+                            <p>Haga clic en cualquiera de las papeletas de la bandeja para cargar su expediente, evaluar descargos e iniciar la instrucción formal de sanción.</p>
                         </div>
 
-                        <!-- FLUXO ACTIVO DE PASOS (WIZARD) -->
+                        <!-- FLUJO ACTIVO DE PASOS (WIZARD) -->
                         <div id="panel-lateral-activo" style="display: none;">
                             <h3 style="margin-top:0; color:var(--apm-orange); font-size: 16px; border-bottom: 2px solid var(--apm-blue); padding-bottom:6px; display: flex; justify-content: space-between;">
                                 <span>🚀 Instrucción del Expediente</span>
@@ -1083,78 +1304,97 @@
                                 <div class="wizard-step-node" id="node-step-6">6</div>
                             </div>
 
-                            <!-- CONTENEDORES DE CADA PASO -->
+                            <!-- CONTENEDORES DE CADA PASO REORDENADOS -->
                             <div id="wizard-panes-container">
                                 
-                                <!-- PASO 1: EXPEDIENTE Y TRAZABILIDAD -->
+                                <!-- PASO 1: EXPEDIENTE Y TRAZABILIDAD (TIMELINE VISUAL) -->
                                 <div class="wizard-step-pane active" id="pane-step-1">
-                                    <div class="panel-section-title">Paso 1: Expediente General</div>
+                                    <div class="panel-section-title">Paso 1: Expediente General y Trazabilidad</div>
                                     <div class="panel-section-content">
-                                        <table style="width: 100%; border: none; font-size: 13px;">
-                                            <tr><td style="font-weight:bold; width:35%;">ID Expediente:</td><td id="wiz-val-id">-</td></tr>
-                                            <tr><td style="font-weight:bold;">Conductor:</td><td id="wiz-val-infractor">-</td></tr>
-                                            <tr><td style="font-weight:bold;">Empresa:</td><td id="wiz-val-empresa">-</td></tr>
-                                            <tr><td style="font-weight:bold;">Conducta:</td><td id="wiz-val-conducta" style="font-style:italic;">-</td></tr>
+                                        <table class="compact-table">
+                                            <tbody>
+                                                <tr><td class="label-cell">ID Expediente:</td><td id="wiz-val-id" style="font-weight: bold;">-</td></tr>
+                                                <tr><td class="label-cell">Conductor:</td><td id="wiz-val-infractor">-</td></tr>
+                                                <tr><td class="label-cell">Empresa:</td><td id="wiz-val-empresa">-</td></tr>
+                                                <tr><td class="label-cell">Conducta:</td><td id="wiz-val-conducta" style="font-style:italic;">-</td></tr>
+                                            </tbody>
                                         </table>
                                         
                                         <p style="font-weight: bold; font-size: 12px; margin-top: 15px; margin-bottom: 5px;">📍 Trazabilidad e Historial de Acciones:</p>
                                         <div class="trazabilidad-timeline" id="wiz-val-trazabilidad">
-                                            <!-- Historial trazable -->
+                                            <!-- Timeline estructurado de eventos -->
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- PASO 2: DESCARGOS GMAIL -->
+                                <!-- PASO 2: RESUMEN Y CRITERIO LEGAL RIS -->
                                 <div class="wizard-step-pane" id="pane-step-2">
-                                    <div class="panel-section-title">Paso 2: Descargos y Apelaciones (Gmail)</div>
+                                    <div class="panel-section-title">Paso 2: Análisis e Interpretación Legal RIS</div>
                                     <div class="panel-section-content">
-                                        <div id="panel-seccion-descargo">
-                                            <div class="panel-section-content" id="panel-txt-justificacion" style="font-style: italic; background-color: var(--input-bg); border-left: 3px solid var(--apm-orange); padding: 10px; border-radius: 4px;">Por favor, espere mientras la IA analiza...</div>
+                                        <div style="background-color: var(--input-bg); padding: 12px; border-radius: 6px; border-left: 3px solid var(--apm-orange); margin-bottom: 12px;">
+                                            <strong>Resumen de la Infracción (IA):</strong>
+                                            <p id="wiz-val-resumen-infraccion" style="margin-top: 5px; margin-bottom: 0;">-</p>
+                                        </div>
+                                        <div style="background-color: var(--input-bg); padding: 12px; border-radius: 6px; border-left: 3px solid var(--apm-blue);">
+                                            <strong>Criterio Legal RIS (IA):</strong>
+                                            <p id="wiz-val-criterio-legal" style="margin-top: 5px; margin-bottom: 0;">-</p>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- PASO 3: LEGAL RIS (PILAS SEMÁNTICAS) -->
+                                <!-- PASO 3: REINCIDENCIAS (TIMELINE VISUAL) -->
                                 <div class="wizard-step-pane" id="pane-step-3">
-                                    <div class="panel-section-title">Paso 3: Gravedad RIS y Veredicto</div>
-                                    <div class="panel-section-content" style="text-align: center; padding: 15px 0;">
-                                        <div style="font-size: 12px; margin-bottom: 5px; color:#6c757d;">Clasificación Legal RIS:</div>
-                                        <span id="panel-txt-graduacion-ris" class="badge" style="font-size: 14px; padding: 8px 16px;">-</span>
-                                        <div style="font-size:12px; line-height:1.4; text-align:left; margin-top:15px; padding:10px; background-color: var(--input-bg); border-radius: 4px;" id="panel-txt-conducta-ris">
-                                            -
+                                    <div class="panel-section-title">Paso 3: Historial de Reincidencias Recurrentes</div>
+                                    <div class="panel-section-content">
+                                        <div class="vertical-timeline" id="wiz-val-reincidencias-timeline">
+                                            <!-- Se llena dinámicamente con nodos de color semántico -->
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- PASO 4: REINCIDENCIAS (TIMELINE) -->
+                                <!-- PASO 4: INFRACCIÓN APN (TABLA ESTRUCTURADA) -->
                                 <div class="wizard-step-pane" id="pane-step-4">
-                                    <div class="panel-section-title">Paso 4: Historial de Reincidencias</div>
+                                    <div class="panel-section-title">Paso 4: Infracción APN y Catálogo de Sanciones</div>
                                     <div class="panel-section-content">
-                                        <div id="panel-txt-reincidencia" style="background-color: var(--input-bg); padding: 12px; border-radius: 6px; border-left: 3px solid var(--apm-blue); font-size:12px;">-</div>
+                                        <table class="compact-table" style="margin-bottom: 15px;">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="label-cell" style="vertical-align: top;">Conducta RIS:</td>
+                                                    <td id="panel-txt-conducta-ris" style="font-weight: bold; color: var(--apm-blue);">-</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="label-cell">Graduación:</td>
+                                                    <td><span id="panel-txt-graduacion-ris" class="badge">-</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div>
+                                            <strong>Sanción Estipulada en Reglamento APN:</strong>
+                                            <span id="panel-txt-sancion-raw" style="white-space: pre-wrap; display: block; background: var(--input-bg); padding: 10px; border: 1px solid var(--border-color); border-radius:4px; margin-top:5px; line-height:1.4; font-size: 11px;">-</span>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <!-- PASO 5: REGLAMENTO APN -->
+                                <!-- PASO 5: DESCARGOS (CONDICIONAL) -->
                                 <div class="wizard-step-pane" id="pane-step-5">
-                                    <div class="panel-section-title">Paso 5: Reglamento de la APN Aplicado</div>
-                                    <div class="panel-section-content">
-                                        <p style="margin:4px 0; font-size: 12px;"><strong>Fórmula estipulada en tabla de sanciones:</strong></p>
-                                        <span id="panel-txt-sancion-raw" style="white-space: pre-wrap; display: block; background: var(--input-bg); padding: 10px; border: 1px solid var(--border-color); border-radius:4px; margin-top:5px; line-height:1.4; font-size: 11px;">-</span>
+                                    <div class="panel-section-title">Paso 5: Evaluación de Descargos Gmail</div>
+                                    <div class="panel-section-content" id="wiz-val-descargos-container">
+                                        <!-- Renderizado condicional automático -->
                                     </div>
                                 </div>
 
-                                <!-- PASO 6: EMISIÓN DE CORREO EDITABLE -->
+                                <!-- PASO 6: RESOLUCIÓN Y CORREO EDITABLE -->
                                 <div class="wizard-step-pane" id="pane-step-6">
-                                    <div class="panel-section-title">Paso 6: Sanción Aplicada y Borrador de Correo</div>
+                                    <div class="panel-section-title">Paso 6: Resolución Final y Notificación</div>
                                     <div class="panel-section-content">
-                                        <div class="sancion-input-group" style="margin-bottom: 15px;">
-                                            <label style="font-size:12px; font-weight:bold;">Sanción Final (Días Modificables):</label>
+                                        <div class="sancion-input-group" style="background: rgba(224, 91, 27, 0.05); padding: 10px; border-radius: 6px; border: 1px solid rgba(224, 91, 27, 0.2); margin-bottom: 15px;">
+                                            <label style="font-size:12px; font-weight:bold; color: var(--apm-orange);">Suspender Acceso (Días):</label>
                                             <input type="number" id="sancion-dias-final" min="0" value="0">
                                         </div>
                                         
-                                        <p style="margin:4px 0; font-size: 11px; font-weight: bold;">Borrador de Resolución Final (Editable):</p>
-                                        <!-- Editable Text Area -->
-                                        <textarea id="panel-txt-correo-borrador" rows="8" style="width: 100%; border: 1px solid var(--border-color); background-color: var(--input-bg); color: var(--text-color); padding: 8px; font-family: inherit; font-size: 11px; border-radius: 4px; box-sizing: border-box; resize: vertical; margin-bottom: 10px;"></textarea>
+                                        <p style="margin:4px 0; font-size: 11px; font-weight: bold;">Borrador del Correo Formal (Editable):</p>
+                                        <!-- Input de Correo Completamente Editable -->
+                                        <textarea id="panel-txt-correo-borrador" rows="8" style="width: 100%; border: 1px solid var(--border-color); background-color: var(--input-bg); color: var(--text-color); padding: 8px; font-family: inherit; font-size: 11px; border-radius: 4px; box-sizing: border-box; resize: vertical; margin-bottom: 15px;"></textarea>
 
                                         <button class="btn-apm" style="background-color:var(--success-green);" onclick="ejecutarAprobacionYSancion()">✅ Enviar Resolución Oficial</button>
                                     </div>
@@ -1324,7 +1564,7 @@
         </div>
     </div>
 
-    <!-- BOTÓN Y CHAT FLOTANTE DE CONSULTA IA -->
+    <!-- BOTÓN Y CHAT FLOTANTE DE CONSULTA IA (COLOCADO FUERA DEL MAIN-APP PARA GARANTIZAR COMPORTAMIENTO FLOTANTE) -->
     <div class="chat-fab" id="chat-fab-element" onclick="toggleChatFlotante()" title="Consultar Asistente RIS">💬</div>
     
     <div class="chat-panel" id="chat-flotante-ris">
@@ -1357,6 +1597,9 @@
         let sortOrdenAscendente = false;
         
         let prevPapeletasCount = null;
+
+        // Control de estado del Wizard
+        let wizardPasoActual = 1;
 
         // Función para dar formato visual de negrita y saltos de línea al chat de forma segura
         function formatearRespuestaChat(texto) {
@@ -1897,8 +2140,6 @@
         }
 
         // --- SISTEMA INTERACTIVO DE EVALUACIÓN WIZARD (6 PASOS) ---
-        let wizardPasoActual = 1;
-
         function navegarWizard(direccion) {
             const nuevoPaso = wizardPasoActual + direccion;
             if (nuevoPaso >= 1 && nuevoPaso <= 6) {
@@ -1911,7 +2152,7 @@
             // Actualizar indicación textual
             document.getElementById("lbl-wizard-paso-actual").innerText = `Paso ${wizardPasoActual}/6`;
 
-            // Ocultar todos los pánes y activar el actual
+            // Ocultar todos los panes y activar el actual
             document.querySelectorAll(".wizard-step-pane").forEach(pane => pane.classList.remove("active"));
             document.getElementById(`pane-step-${wizardPasoActual}`).classList.add("active");
 
@@ -1961,8 +2202,11 @@
             document.getElementById("wiz-val-conducta").innerText = "Cargando...";
             document.getElementById("wiz-val-trazabilidad").innerHTML = "Generando trazabilidad...";
 
-            document.getElementById("panel-txt-justificacion").innerHTML = "🤖 <em>Analizando caso, rastreando descargos en Gmail...</em>";
-            document.getElementById("panel-txt-reincidencia").innerHTML = "Auditando historial...";
+            document.getElementById("wiz-val-resumen-infraccion").innerHTML = "Generando resumen...";
+            document.getElementById("wiz-val-criterio-legal").innerHTML = "Generando criterio legal...";
+            document.getElementById("wiz-val-reincidencias-timeline").innerHTML = "Evaluando reincidencias...";
+            document.getElementById("wiz-val-descargos-container").innerHTML = "Analizando buzón...";
+
             document.getElementById("panel-txt-conducta-ris").innerText = "Evaluando...";
             document.getElementById("panel-txt-graduacion-ris").innerText = "-";
             document.getElementById("panel-txt-graduacion-ris").className = "badge";
@@ -1977,7 +2221,7 @@
             .then(res => res.json())
             .then(data => {
                 if (data.error) {
-                    document.getElementById("panel-txt-justificacion").innerHTML = `<span style="color:red; font-weight:bold;">Error: ${data.error}</span>`;
+                    document.getElementById("wiz-val-criterio-legal").innerHTML = `<span style="color:red; font-weight:bold;">Error: ${data.error}</span>`;
                     return;
                 }
                 
@@ -2004,15 +2248,66 @@
                         tHtml += `<div class="trazabilidad-item"><strong>Plazo Activo</strong> - En espera de alegatos o vencimiento del plazo formal.</div>`;
                     }
                     document.getElementById("wiz-val-trazabilidad").innerHTML = tHtml;
+
+                    // Paso 5: Descargos Condicionales
+                    const descargosContenedor = document.getElementById("wiz-val-descargos-container");
+                    if (localData.estado_semaforo === "descargo") {
+                        descargosContenedor.innerHTML = `
+                            <div class="highlight-callout urgent" style="margin-bottom: 12px;">
+                                <strong>📧 Descargo Recibido:</strong> El buzón Gmail registra correspondencia formal del infractor dentro del plazo legal.
+                            </div>
+                            <div style="background-color: var(--input-bg); padding: 12px; border-radius: 6px; border-left: 3px solid var(--apm-blue);">
+                                <strong>Análisis Crítico de la Apelación (IA):</strong>
+                                <p style="margin-top: 5px; margin-bottom: 0; font-size:12px;">${formatearRespuestaChat(data.resumen_descargo)}</p>
+                            </div>
+                        `;
+                    } else {
+                        descargosContenedor.innerHTML = `
+                            <div class="highlight-callout info" style="text-align: center; padding: 25px 15px; margin: 0;">
+                                <div style="font-size: 32px; margin-bottom: 8px;">⏳</div>
+                                <strong style="color: var(--apm-blue);">En espera de los descargos de la empresa</strong>
+                                <p style="margin: 5px 0 0 0; font-size: 12px; line-height: 1.4; color: #666;">
+                                    El plazo formal sigue vigente y no se registran descargos de oposición en el buzón Gmail de APM Terminals.
+                                </p>
+                            </div>
+                        `;
+                    }
                 }
 
-                // Paso 2: Descargos
-                document.getElementById("panel-txt-justificacion").innerHTML = `
-                    <strong>Buzón Gmail:</strong> ${formatearRespuestaChat(data.resumen_descargo)}<br><br>
-                    <strong>Criterio Legal RIS:</strong> ${formatearRespuestaChat(data.analisis_caso)}
-                `;
+                // Paso 2: Resumen e Infracción Criterio Legal RIS
+                document.getElementById("wiz-val-resumen-infraccion").innerHTML = formatearRespuestaChat(data.resumen_descargo || "Análisis preliminar de hechos completado.");
+                document.getElementById("wiz-val-criterio-legal").innerHTML = formatearRespuestaChat(data.analisis_caso || "Alineación legal completada.");
 
-                // Paso 3: Veredicto RIS (Píldora semántica)
+                // Paso 3: Reincidencias (Timeline visual)
+                const timelineContainer = document.getElementById("wiz-val-reincidencias-timeline");
+                timelineContainer.innerHTML = "";
+                if (data.reincidencia_texto) {
+                    const lineas = data.reincidencia_texto.split("\n").filter(l => l.trim().length > 0);
+                    lineas.forEach((linea, index) => {
+                        const item = document.createElement("div");
+                        if (linea.toLowerCase().includes("reincidente") || linea.toLowerCase().includes("alerta") || linea.toLowerCase().includes("reincidencia")) {
+                            item.className = "timeline-item-wizard danger";
+                        } else if (linea.toLowerCase().includes("limpio") || linea.toLowerCase().includes("no registra")) {
+                            item.className = "timeline-item-wizard success";
+                        } else {
+                            item.className = "timeline-item-wizard warning";
+                        }
+                        item.innerHTML = `
+                            <div class="timeline-date">Evento de Auditoría ${index + 1}</div>
+                            <div class="timeline-desc">${formatearRespuestaChat(linea)}</div>
+                        `;
+                        timelineContainer.appendChild(item);
+                    });
+                } else {
+                    timelineContainer.innerHTML = `
+                        <div class="timeline-item-wizard success">
+                            <div class="timeline-date">Historial Limpio</div>
+                            <div class="timeline-desc">No se encontraron antecedentes previos registrados para este conductor.</div>
+                        </div>
+                    `;
+                }
+
+                // Paso 4: APN Catalogo
                 const gradRIS = data.graduacion_tabla || "Leve";
                 const badgeRIS = document.getElementById("panel-txt-graduacion-ris");
                 badgeRIS.innerText = gradRIS;
@@ -2024,11 +2319,6 @@
                     badgeRIS.className = "badge badge-green";
                 }
                 document.getElementById("panel-txt-conducta-ris").innerText = data.conducta_tabla || "-";
-
-                // Paso 4: Reincidencia
-                document.getElementById("panel-txt-reincidencia").innerHTML = formatearRespuestaChat(data.reincidencia_texto);
-                
-                // Paso 5: APN
                 document.getElementById("panel-txt-sancion-raw").innerHTML = formatearRespuestaChat(data.sancion_estipulada_tabla || "-");
                 
                 // Paso 6: Sanción final
@@ -2036,7 +2326,7 @@
                 document.getElementById("panel-txt-correo-borrador").value = data.correo_borrador;
             })
             .catch(err => {
-                document.getElementById("panel-txt-justificacion").innerHTML = `<span style="color:red; font-weight:bold;">Error de conexión con la IA: ${err.toString()}</span>`;
+                document.getElementById("wiz-val-criterio-legal").innerHTML = `<span style="color:red; font-weight:bold;">Error de conexión con la IA: ${err.toString()}</span>`;
             });
         }
 
@@ -2044,7 +2334,7 @@
             const diasSancion = document.getElementById("sancion-dias-final").value;
             const correoFinal = document.getElementById("panel-txt-correo-borrador").value;
             
-            alert(`🚀 ¡Conforme!\nSe ha aprobado y aplicado la sanción oficial de ${diasSancion} días.\n\n[Siguiente Fase de IT]: Cuando TI entregue la API de Microsoft Graph, este botón enviará directamente la resolución oficial en base a este borrador:\n\n${correoFinal.substring(0, 180)}...`);
+            alert(`🚀 ¡Resolución Procesada!\nSe ha aprobado y aplicado la sanción oficial de ${diasSancion} días.\n\n[Siguiente Fase de IT]: Cuando TI entregue la API de Microsoft Graph, este botón enviará directamente la resolución oficial en base a este borrador:\n\n${correoFinal.substring(0, 180)}...`);
             
             // Resetear panel lateral a estado vacío
             document.getElementById("panel-lateral-activo").style.display = "none";
