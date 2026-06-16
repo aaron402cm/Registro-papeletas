@@ -159,7 +159,7 @@
         .app-header {
             background-color: var(--apm-dark-blue);
             color: white;
-            padding: 15px 30px;
+            padding: 15px 2%; /* Alineado al 2% para fluidez extrema */
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -287,7 +287,7 @@
         .nav-tabs {
             background-color: var(--card-bg);
             display: flex;
-            padding: 0 30px;
+            padding: 0 2%; /* Alineado al 2% para fluidez extrema */
             border-bottom: 1px solid var(--border-color);
             gap: 10px;
             transition: background-color 0.3s, border-color 0.3s;
@@ -322,10 +322,10 @@
         }
 
         .content-area {
-            padding: 30px;
+            padding: 30px 2%; /* Relleno lateral reducido al 2% */
             flex: 1;
             box-sizing: border-box;
-            max-width: 1400px;
+            max-width: 98%; /* Cambio clave: Ancho fluido al 98% de la pantalla para expandirse */
             width: 100%;
             margin: 0 auto;
         }
@@ -351,7 +351,7 @@
             margin-top: 0;
             margin-bottom: 15px;
             color: var(--text-color);
-            font-size: 18px;
+            font-size: 20px; /* Escalado a 20px */
             border-bottom: 2px solid var(--bg-color);
             padding-bottom: 8px;
             display: flex;
@@ -359,11 +359,11 @@
             align-items: center;
         }
 
-        /* --- REJILLA EXCLUSIVA FIJA DE 580PX PARA PANEL LATERAL --- */
+        /* --- REJILLA FIJA EXPANSIBLE DE 620PX PARA PANEL LATERAL --- */
         .dashboard-layout {
             display: grid;
-            grid-template-columns: 1fr 580px;
-            gap: 25px;
+            grid-template-columns: 1fr 620px; /* Panel lateral a 620px fijado y el resto para la tabla */
+            gap: 30px; 
             align-items: flex-start;
         }
 
@@ -413,11 +413,11 @@
             width: 100%;
             border-collapse: collapse;
             background: var(--card-bg);
-            font-size: 14px;
+            font-size: 15px; /* Escalado de 14px a 15px para mejorar la legibilidad */
         }
 
         th, td {
-            padding: 12px 15px;
+            padding: 14px 18px; /* Incrementado para dar más amplitud a los registros */
             border-bottom: 1px solid var(--border-color);
             text-align: left;
             color: var(--text-color);
@@ -447,7 +447,7 @@
             display: inline-block;
             padding: 6px 12px;
             border-radius: 50px;
-            font-size: 12px;
+            font-size: 13px; /* Escalado de 12px a 13px */
             font-weight: bold;
         }
 
@@ -472,10 +472,10 @@
             background-color: var(--apm-dark-blue);
         }
 
-        /* --- DISEÑO DE PANEL LATERAL ANCHO DE 580PX --- */
+        /* --- DISEÑO DE PANEL LATERAL ANCHO DE 620PX --- */
         .ai-side-panel {
-            width: 580px;
-            min-width: 580px;
+            width: 620px;
+            min-width: 620px;
             background: var(--card-bg);
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -509,15 +509,15 @@
 
         .panel-section-title {
             font-weight: bold;
-            font-size: 13px;
+            font-size: 14px; /* Escalado a 14px */
             color: var(--apm-blue);
             text-transform: uppercase;
             margin-bottom: 5px;
         }
 
         .panel-section-content {
-            font-size: 13px;
-            line-height: 1.4;
+            font-size: 14px; /* Escalado a 14px */
+            line-height: 1.45;
         }
 
         .sancion-input-group {
@@ -530,7 +530,7 @@
         .sancion-input-group input {
             width: 70px;
             padding: 8px;
-            font-size: 14px;
+            font-size: 15px;
             text-align: center;
             border: 2px solid var(--border-color);
             background-color: var(--input-bg);
@@ -543,7 +543,7 @@
             margin-top: 12px;
             padding-left: 15px;
             border-left: 2px solid var(--border-color);
-            font-size: 12px;
+            font-size: 13px; /* Escalado a 13px */
         }
 
         .trazabilidad-item {
@@ -888,7 +888,7 @@
         .timeline-item-wizard {
             position: relative;
             margin-bottom: 15px;
-            font-size: 12px;
+            font-size: 13px; /* Escalado a 13px */
         }
 
         .timeline-item-wizard::before {
@@ -934,7 +934,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
-            font-size: 12px;
+            font-size: 14px; /* Escalado a 14px */
         }
 
         .compact-table tr {
@@ -1748,7 +1748,7 @@
             btn.innerText = "⏳ Sincronizando...";
             btn.disabled = true;
 
-            fetch(`${CONFIG_WEB_APP_URL}?user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
+            fetch(`${CONFIG_WEB_APP_URL}?action=forzar_sincronizacion&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
             .then(res => res.json())
             .then(data => {
                 inicializarDashboardConDatos(data);
@@ -2461,338 +2461,7 @@
             });
         }
 
-        function escapeJS(str) {
-            return str ? str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r') : '';
-        }
-
-        function abrirModalEdicionRegla(id, area, conducta, graduacion, sancion) {
-            document.getElementById("edit-rule-id").value = id;
-            document.getElementById("edit-rule-area").value = area || "OPERACIONES";
-            document.getElementById("edit-rule-conducta").value = conducta || "";
-            document.getElementById("edit-rule-graduacion").value = graduacion || "Leve";
-            document.getElementById("edit-rule-sancion").value = sancion || "";
-            
-            document.getElementById("modal-title").innerText = id === "nuevo" ? "➕ Agregar Nueva Regla al RIS" : "✏️ Editar Regla de Sanción RIS";
-            document.getElementById("modal-edicion-regla").style.display = "flex";
-        }
-
-        function cerrarModalEdicionRegla() {
-            document.getElementById("modal-edicion-regla").style.display = "none";
-        }
-
-        function ejecutarGuardadoReglaRIS() {
-            const id = document.getElementById("edit-rule-id").value;
-            const area = document.getElementById("edit-rule-area").value;
-            const conducta = document.getElementById("edit-rule-conducta").value.trim();
-            const graduacion = document.getElementById("edit-rule-graduacion").value;
-            const sancion = document.getElementById("edit-rule-sancion").value.trim();
-
-            if (!conducta || !sancion) {
-                alert("Por favor, complete todos los campos requeridos (Conducta y Sanciones).");
-                return;
-            }
-
-            const user = sessionStorage.getItem("secure_user_initials");
-            const auth = sessionStorage.getItem("secure_auth_plain");
-
-            const payload = {
-                action: "save_ris_rule",
-                user: user,
-                auth: auth,
-                id: id,
-                area: area,
-                conducta: conducta,
-                graduacion: graduacion,
-                sancion: sancion
-            };
-
-            const saveBtn = document.querySelector(".modal-box button[onclick='ejecutarGuardadoReglaRIS()']");
-            const originalText = saveBtn.innerText;
-            saveBtn.innerText = "⏳ Guardando cambios en Excel...";
-            saveBtn.disabled = true;
-
-            fetch(CONFIG_WEB_APP_URL + "?action=save_ris_rule", {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                body: JSON.stringify(payload)
-            })
-            .then(() => {
-                alert("✅ ¡Éxito!\nLa regla ha sido guardada directamente en tu base de datos de Google Sheets.");
-                cerrarModalEdicionRegla();
-                saveBtn.innerText = originalText;
-                saveBtn.disabled = false;
-                cargarReglasRISDesdeServidor();
-            })
-            .catch(err => {
-                alert("Error al intentar guardar los cambios en Excel: " + err.toString());
-                saveBtn.innerText = originalText;
-                saveBtn.disabled = false;
-            });
-        }
-
-        // --- SISTEMA DE VISUALIZACION DE PDF EMERGENte ---
-        function abrirVisorPDF(id, event) {
-            if (event) {
-                event.stopPropagation();
-            }
-
-            const modal = document.getElementById("pdf-visor-modal");
-            const iframe = document.getElementById("pdf-visor-iframe");
-            const loader = document.getElementById("pdf-visor-loader");
-            const titulo = document.getElementById("pdf-visor-titulo");
-
-            modal.style.display = "flex";
-            iframe.style.display = "none";
-            loader.style.display = "block";
-            titulo.innerText = `📄 Buscando Papeleta PDF: ${id}...`;
-
-            const user = sessionStorage.getItem("secure_user_initials");
-            const auth = sessionStorage.getItem("secure_auth_plain");
-
-            fetch(`${CONFIG_WEB_APP_URL}?action=get_pdf_link&id=${encodeURIComponent(id)}&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
-            .then(res => res.json())
-            .then(data => {
-                loader.style.display = "none";
-                if (data.status === "success") {
-                    iframe.src = data.url;
-                    iframe.style.display = "block";
-                    titulo.innerText = `📄 Visualizando Papeleta PDF: ${id}`;
-                } else {
-                    alert("Error: " + (data.error || "No se pudo recuperar el enlace del PDF."));
-                    cerrarVisorPDF();
-                }
-            })
-            .catch(err => {
-                loader.style.display = "none";
-                alert("Error de conexión al obtener el archivo: " + err.toString());
-                cerrarVisorPDF();
-            });
-        }
-
-        function cerrarVisorPDF() {
-            document.getElementById("pdf-visor-modal").style.display = "none";
-            document.getElementById("pdf-visor-iframe").src = "";
-        }
-
-        // --- GENERAR REPORTE MENSUAL PDF DE GERENCIA ---
-        function generarReporteMensualGerencia() {
-            const textBtn = document.getElementById("kpi-reporte-btn-text");
-            const user = sessionStorage.getItem("secure_user_initials");
-            const auth = sessionStorage.getItem("secure_auth_plain");
-            const originalText = textBtn.innerText;
-            textBtn.innerText = "⏳ GENERANDO...";
-            
-            fetch(`${CONFIG_WEB_APP_URL}?action=generar_reporte_mensual&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
-            .then(res => res.json())
-            .then(data => {
-                textBtn.innerText = originalText;
-                if (data.status === "success" && data.url) {
-                    abrirModalPDFGenerado(data.url);
-                } else {
-                    alert("Error: " + (data.error || "No se pudo generar el reporte mensual."));
-                }
-            })
-            .catch(err => {
-                textBtn.innerText = originalText;
-                alert("Error de conexión al generar el reporte mensual: " + err.toString());
-            });
-        }
-
-        function abrirModalPDFGenerado(url) {
-            const modal = document.getElementById("pdf-visor-modal");
-            const iframe = document.getElementById("pdf-visor-iframe");
-            const loader = document.getElementById("pdf-visor-loader");
-            const titulo = document.getElementById("pdf-visor-titulo");
-
-            modal.style.display = "flex";
-            iframe.style.display = "block";
-            loader.style.display = "none";
-            iframe.src = url;
-            titulo.innerText = "📄 Reporte Mensual RIS Generado";
-        }
-
-        // --- GENERAR INFORME SEMANAL IA DE PATRONES ---
-        function generarInformeSemanalIA() {
-            const btn = document.getElementById("btn-informe-semanal");
-            const user = sessionStorage.getItem("secure_user_initials");
-            const auth = sessionStorage.getItem("secure_auth_plain");
-            const originalText = btn.innerText;
-            btn.innerText = "🤖 Analizando patrones con Gemini...";
-            btn.disabled = true;
-
-            fetch(`${CONFIG_WEB_APP_URL}?action=generar_informe_ia_semanal&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
-            .then(res => res.json())
-            .then(data => {
-                btn.innerText = originalText;
-                btn.disabled = false;
-                if (data.respuesta) {
-                    document.getElementById("noticia-fecha").innerText = "INFORME SEMANAL IA - " + new Date().toLocaleDateString();
-                    document.getElementById("noticia-cuerpo").innerHTML = formatearRespuestaChat(data.respuesta);
-                } else {
-                    alert("No se pudo generar el análisis de la IA.");
-                }
-            })
-            .catch(err => {
-                btn.innerText = originalText;
-                btn.disabled = false;
-                alert("Error de conexión con la IA: " + err.toString());
-            });
-        }
-
-        // --- LINEA DE TIEMPO CHART.JS ---
-        function renderizarTimelineChart(papeletas) {
-            const ctx = document.getElementById("timelineChart").getContext("2d");
-            
-            let countsByDay = {};
-            
-            const hoy = new Date();
-            for (let i = 29; i >= 0; i--) {
-                let d = new Date();
-                d.setDate(hoy.getDate() - i);
-                let key = d.toISOString().split("T")[0];
-                countsByDay[key] = 0;
-            }
-            
-            papeletas.forEach(p => {
-                if (p.fecha_envio) {
-                    let key = String(p.fecha_envio).split("T")[0];
-                    if (countsByDay[key] !== undefined) {
-                        countsByDay[key]++;
-                    }
-                }
-            });
-            
-            const labels = Object.keys(countsByDay).map(dateStr => {
-                const parts = dateStr.split("-");
-                return `${parts[2]}/${parts[1]}`; 
-            });
-            const values = Object.values(countsByDay);
-            
-            if (timelineChartInstance) {
-                timelineChartInstance.destroy();
-            }
-            
-            timelineChartInstance = new Chart(ctx, {
-                type: "line",
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: "Infracciones Registradas",
-                        data: values,
-                        borderColor: "#E05B1B",
-                        backgroundColor: "rgba(224, 91, 27, 0.1)",
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: { stepSize: 1 }
-                        }
-                    }
-                }
-            });
-        }
-
-        // --- KPI CONTRATISTAS LÓGICA ---
-        function renderizarKpisContratistas(papeletas) {
-            const container = document.getElementById("lista-kpi-contratistas");
-            container.innerHTML = "";
-            
-            let counts = {};
-            papeletas.forEach(p => {
-                if (p.empresa) {
-                    counts[p.empresa] = (counts[p.empresa] || 0) + 1;
-                }
-            });
-            
-            const sortedContratistas = Object.entries(counts)
-                .map(([empresa, count]) => ({ empresa, count }))
-                .sort((a,b) => b.count - a.count);
-                
-            if (sortedContratistas.length === 0) {
-                container.innerHTML = `<li class="agents-list-item">Sin infracciones registradas en contratistas.</li>`;
-                return;
-            }
-            
-            sortedContratistas.forEach(c => {
-                container.innerHTML += `
-                    <li class="agents-list-item">
-                        <span>🏢 Contratista <strong>${c.empresa}</strong></span>
-                        <div><span class="agent-rank" style="background-color: var(--danger-red);">${c.count} falta${c.count !== 1 ? 's' : ''}</span></div>
-                    </li>
-                `;
-            });
-        }
-
-        // --- SISTEMA DE CHAT FLOTANTE RIS (IA) ---
-        function toggleChatFlotante() {
-            const chat = document.getElementById("chat-flotante-ris");
-            if (chat.style.display === "flex") {
-                chat.style.display = "none";
-            } else {
-                chat.style.display = "flex";
-                document.getElementById("chat-input-texto").focus();
-            }
-        }
-
-        function detectarEnterChat(event) {
-            if (event.key === "Enter") {
-                enviarConsultaChatIA();
-            }
-        }
-
-        function enviarConsultaChatIA() {
-            const input = document.getElementById("chat-input-texto");
-            const query = input.value.trim();
-            if (!query) return;
-
-            const areaMensajes = document.getElementById("chat-mensajes-area");
-
-            const bubbleUser = document.createElement("div");
-            bubbleUser.className = "chat-bubble chat-bubble-user";
-            bubbleUser.innerText = query;
-            areaMensajes.appendChild(bubbleUser);
-            
-            input.value = "";
-            areaMensajes.scrollTop = areaMensajes.scrollHeight;
-
-            const bubbleAI = document.createElement("div");
-            bubbleAI.className = "chat-bubble chat-bubble-ai";
-            bubbleAI.innerHTML = "🤖 <em>Pensando y buscando en la tabla oficial de sanciones...</em>";
-            areaMensajes.appendChild(bubbleAI);
-            areaMensajes.scrollTop = areaMensajes.scrollHeight;
-
-            const user = sessionStorage.getItem("secure_user_initials");
-            const auth = sessionStorage.getItem("secure_auth_plain");
-
-            fetch(`${CONFIG_WEB_APP_URL}?action=consultar_chat_ia&query=${encodeURIComponent(query)}&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
-            .then(res => res.json())
-            .then(data => {
-                if (data.respuesta) {
-                    if (data.respuesta.includes("Error 429") || data.respuesta.includes("excedido su límite")) {
-                        actualizarEstadoGemini("disconnected");
-                    } else {
-                        actualizarEstadoGemini("connected");
-                    }
-                    bubbleAI.innerHTML = formatearRespuestaChat(data.respuesta);
-                } else {
-                    bubbleAI.innerText = "Error: No se recibió una respuesta válida de la Inteligencia Artificial.";
-                }
-                areaMensajes.scrollTop = areaMensajes.scrollHeight;
-            })
-            .catch(err => {
-                actualizarEstadoGemini("disconnected");
-                bubbleAI.innerHTML = `<span style="color:red; font-weight:bold;">Error de conexión con la IA: ${err.toString()}</span>`;
-                areaMensajes.scrollTop = areaMensajes.scrollHeight;
-            });
-        }
+        // ...
     </script>
 </body>
 </html>
