@@ -119,6 +119,24 @@
             outline: none;
         }
 
+        /* Botón profesional para mostrar/ocultar contraseña */
+        .toggle-password-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #6c757d;
+            font-size: 18px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
         .btn-apm {
             width: 100%;
             background-color: var(--apm-orange);
@@ -339,8 +357,8 @@
             padding: 25px 30px;
             flex: 1;
             box-sizing: border-box;
-            max-width: 1750px; /* Ampliado para reducir espacios muertos en costados */
-            width: 95%;        /* Mayor fluidez horizontal */
+            max-width: 1750px;
+            width: 95%;
             margin: 0 auto;
         }
 
@@ -373,10 +391,10 @@
             align-items: center;
         }
 
-        /* --- REJILLA OPTIMIZADA PARA MAYOR ESPACIO EN LA TABLA --- */
+        /* --- REJILLA OPTIMIZADA --- */
         .dashboard-layout {
             display: grid;
-            grid-template-columns: 1fr 540px; /* Reducido levemente de 580px para dar más espacio horizontal a la bandeja de datos */
+            grid-template-columns: 1fr 540px;
             gap: 25px;
             align-items: flex-start;
         }
@@ -393,7 +411,7 @@
 
         /* BARRA DE DESPLAZAMIENTO (SCROLLBAR) PARA LA TABLA */
         .table-scroll-container {
-            max-height: 580px; /* Ampliado verticalmente para aprovechar monitores modernos */
+            max-height: 580px;
             overflow-y: auto;
             border: 1px solid var(--border-color);
             border-radius: 6px;
@@ -431,7 +449,7 @@
         }
 
         th, td {
-            padding: 12px 12px; /* Ligeramente más compacto para evitar compresión de texto */
+            padding: 12px 12px;
             border-bottom: 1px solid var(--border-color);
             text-align: left;
             color: var(--text-color);
@@ -442,7 +460,6 @@
             color: white;
         }
 
-        /* Evita que los datos cortos se partan en varias líneas por falta de espacio horizontal */
         #tabla-control-papeletas td:nth-child(1),
         #tabla-control-papeletas td:nth-child(5),
         #tabla-control-papeletas td:nth-child(6),
@@ -810,7 +827,7 @@
             background: var(--card-bg);
             border-radius: 8px;
             width: 100%;
-            max-width: 1100px; /* Ampliado para mejorar la visibilidad del documento */
+            max-width: 1100px;
             height: 90%;
             display: flex;
             flex-direction: column;
@@ -1162,6 +1179,20 @@
             70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(255, 193, 7, 0); }
             100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
         }
+
+        /* --- ESTILO DE ANIMACIÓN SPINNER --- */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.15);
+            border-left-color: var(--apm-orange);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
     </style>
 </head>
 <body>
@@ -1185,11 +1216,14 @@
             <div id="credentials-section">
                 <div class="form-group">
                     <label>Nombre de Usuario</label>
-                    <input type="text" id="sec-username" placeholder="Iniciales de la secretaria">
+                    <input type="text" id="sec-username" placeholder="Iniciales de la secretaria" onkeydown="detectarEnterLogin(event)">
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="position: relative;">
                     <label>Contraseña</label>
-                    <input type="password" id="sec-password" placeholder="••••••••">
+                    <div style="position: relative;">
+                        <input type="password" id="sec-password" placeholder="••••••••" style="padding-right: 45px;" onkeydown="detectarEnterLogin(event)">
+                        <button type="button" class="toggle-password-btn" id="btn-toggle-password" onclick="toggleLoginPassword()">👁️</button>
+                    </div>
                 </div>
                 <button class="btn-apm" onclick="enviarCredentialsLogin()">Ingresar y Solicitar OTP</button>
             </div>
@@ -1198,7 +1232,7 @@
             <div id="otp-section">
                 <div class="form-group">
                     <label>Código de Seguridad OTP</label>
-                    <input type="text" id="sec-otp" placeholder="XXXXXX" maxlength="6" style="text-align: center; font-size: 24px; letter-spacing: 4px;">
+                    <input type="text" id="sec-otp" placeholder="XXXXXX" maxlength="6" style="text-align: center; font-size: 24px; letter-spacing: 4px;" onkeydown="detectarEnterOTP(event)">
                     <p style="font-size:12px; color:#6c757d; margin-top:8px; margin-bottom:0;">Se ha enviado un código a su correo de APM Terminals procesos.ris@apmterminals.com.</p>
                 </div>
                 <button class="btn-apm" onclick="verificarCodigoOTP()">Verificar e Ingresar</button>
@@ -1251,13 +1285,14 @@
             </div>
         </header>
 
-        <!-- MENU PESTAÑAS (Simplificado: 3 pestañas principales) -->
+        <!-- MENU PESTAÑAS (Simplificado: 4 pestañas con Análisis Semanal IA) -->
         <nav class="nav-tabs">
             <div class="nav-tabs-inner">
                 <button class="tab-link active" onclick="cambiarPanel('control', this)">
                     📥 Bandeja de Papeletas <span class="tab-badge" id="badge-total-papeletas" style="display:none;">0</span>
                 </button>
                 <button class="tab-link" onclick="cambiarPanel('kpis', this)">📊 KPIs Operativos</button>
+                <button class="tab-link" onclick="cambiarPanel('informe-ia', this)">📰 Análisis Semanal (IA)</button>
                 <button class="tab-link" onclick="cambiarPanel('config', this)">⚙️ Ajustes y RIS</button>
             </div>
         </nav>
@@ -1391,7 +1426,7 @@
                                         
                                         <p style="font-weight: bold; font-size: 12px; margin-top: 15px; margin-bottom: 5px;">📍 Trazabilidad e Historial de Acciones:</p>
                                         <div class="trazabilidad-timeline" id="wiz-val-trazabilidad">
-                                            <!-- Timeline estructurado de eventos -->
+                                            <!-- Timeline de eventos -->
                                         </div>
                                     </div>
                                 </div>
@@ -1416,7 +1451,7 @@
                                     <div class="panel-section-title">Paso 3: Historial de Reincidencias Recurrentes</div>
                                     <div class="panel-section-content">
                                         <div class="vertical-timeline" id="wiz-val-reincidencias-timeline">
-                                            <!-- Se llena dinámicamente con nodos de color semántico -->
+                                            <!-- Nodos de reincidencia -->
                                         </div>
                                     </div>
                                 </div>
@@ -1448,7 +1483,7 @@
                                 <div class="wizard-step-pane" id="pane-step-5">
                                     <div class="panel-section-title">Paso 5: Evaluación de Descargos Gmail</div>
                                     <div class="panel-section-content" id="wiz-val-descargos-container">
-                                        <!-- Renderizado condicional automático -->
+                                        <!-- Descargos de Gmail -->
                                     </div>
                                 </div>
 
@@ -1483,26 +1518,8 @@
                 </div>
             </div>
 
-            <!-- PESTAÑA 2: KPIS DINÁMICOS, OFICIALES Y TIMELINE (Con periódico IA Integrado) -->
+            <!-- PESTAÑA 2: KPIS DINÁMICOS, OFICIALES Y TIMELINE -->
             <div id="panel-kpis" class="tab-panel">
-                
-                <!-- EL NOTICIERO DE SEGURIDAD (INTEGRADO AQUÍ) -->
-                <div class="newspaper-container">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <span style="font-size: 11px; font-weight: bold; color: var(--apm-orange);">EDICIÓN DIARIA INTELIGENTE</span>
-                        <button class="btn-pdf-view" id="btn-informe-semanal" onclick="generarInformeSemanalIA()" style="font-size: 11px; padding: 5px 10px;">
-                            📰 Generar Análisis de Patrones Semanal (IA)
-                        </button>
-                    </div>
-                    <div class="newspaper-header">
-                        <h2>EL NOTICIERO DE SEGURIDAD</h2>
-                        <div class="date-line" id="noticia-fecha">EMISIÓN DIARIA IA - CARGANDO</div>
-                    </div>
-                    <div class="newspaper-body">
-                        <p id="noticia-cuerpo">Por favor, inicie sesión para que la Inteligencia Artificial redacte el parte operativo diario...</p>
-                    </div>
-                </div>
-
                 <div class="kpi-grid">
                     <div class="kpi-card accent-orange">
                         <div class="kpi-value" id="kpi-hoy">0</div>
@@ -1554,6 +1571,29 @@
                         <ul class="agents-list" id="lista-kpi-contratistas">
                             <li class="agents-list-item">Cargando estadísticas de contratistas...</li>
                         </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PESTAÑA 3: INFORME Y AUDITORÍA SEMANAL IA (NUEVA PESTAÑA DEDICADA) -->
+            <div id="panel-informe-ia" class="tab-panel">
+                <div class="card">
+                    <div class="card-title">
+                        <span>📰 El Noticiero y Análisis de Patrones Semanales</span>
+                        <button class="btn-apm" id="btn-informe-semanal" onclick="generarInformeSemanalIA()" style="width: auto; padding: 8px 16px; font-size: 13px;">
+                            ✨ Generar Análisis de Patrones Semanal (IA)
+                        </button>
+                    </div>
+                    <p style="font-size:14px; color:#6c757d; margin-top:0;">Esta auditoría procesa de forma heurística el consolidado de infracciones mediante Inteligencia Artificial para identificar áreas críticas o conductas peligrosas recurrentes en la terminal.</p>
+                    
+                    <div class="newspaper-container" style="margin-top: 20px;">
+                        <div class="newspaper-header">
+                            <h2>EL NOTICIERO DE SEGURIDAD</h2>
+                            <div class="date-line" id="noticia-fecha">EMISIÓN DIARIA IA - ESPERANDO INICIACIÓN</div>
+                        </div>
+                        <div class="newspaper-body" id="noticia-cuerpo">
+                            Por favor, inicie sesión o haga clic en el botón de generación para que la Inteligencia Artificial analice la base de datos de seguridad de la APN...
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1630,6 +1670,15 @@
                 <div class="loader pdf-loader" id="pdf-visor-loader"></div>
                 <iframe id="pdf-visor-iframe" src=""></iframe>
             </div>
+        </div>
+    </div>
+
+    <!-- VENTANA EMERGENTE DE PROCESAMIENTO (LOADER MODAL REPORTES IA) -->
+    <div class="modal-overlay" id="loading-reporte-modal" style="display: none; z-index: 4000; background: rgba(0, 34, 68, 0.85); align-items: center; justify-content: center;">
+        <div class="modal-box" style="text-align: center; max-width: 400px; padding: 40px 25px;">
+            <div class="spinner" style="margin: 0 auto 20px auto;"></div>
+            <h3 style="margin-top: 0; color: var(--apm-dark-blue);">🤖 Inteligencia Artificial</h3>
+            <p style="font-size: 14px; margin-bottom: 0; line-height: 1.5; color: var(--text-color);" id="loading-reporte-texto">Procesando su informe, por favor espere...</p>
         </div>
     </div>
 
@@ -1775,7 +1824,7 @@
             btn.innerText = "⏳ Sincronizando...";
             btn.disabled = true;
 
-            fetch(`${CONFIG_WEB_APP_URL}?user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
+            fetch(`${CONFIG_WEB_APP_URL}?action=forzar_sincronizacion&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
             .then(res => res.json())
             .then(data => {
                 inicializarDashboardConDatos(data);
@@ -1799,6 +1848,42 @@
             
             if (target === 'config') {
                 cargarReglasRISDesdeServidor();
+            }
+        }
+
+        // --- FUNCIÓN MOSTRAR/OCULTAR CONTRASEÑA EN LOGIN ---
+        function toggleLoginPassword() {
+            const passInput = document.getElementById("sec-password");
+            const toggleBtn = document.getElementById("btn-toggle-password");
+            if (passInput.type === "password") {
+                passInput.type = "text";
+                toggleBtn.innerText = "🔒";
+            } else {
+                passInput.type = "password";
+                toggleBtn.innerText = "👁️";
+            }
+        }
+
+        // --- MANEJO DEL MODAL DE PROCESAMIENTO (LOADER MODAL) ---
+        function mostrarLoaderModal(texto) {
+            document.getElementById("loading-reporte-texto").innerText = texto || "Procesando su informe, por favor espere...";
+            document.getElementById("loading-reporte-modal").style.display = "flex";
+        }
+
+        function ocultarLoaderModal() {
+            document.getElementById("loading-reporte-modal").style.display = "none";
+        }
+
+        // --- ESCUCHADORES DE ENTRADA CON ENTER ---
+        function detectarEnterLogin(event) {
+            if (event.key === "Enter") {
+                enviarCredentialsLogin();
+            }
+        }
+
+        function detectarEnterOTP(event) {
+            if (event.key === "Enter") {
+                verificarCodigoOTP();
             }
         }
 
@@ -1826,6 +1911,8 @@
                     document.getElementById("otp-section").style.display = "block";
                     sessionStorage.setItem("temp_user", user);
                     sessionStorage.setItem("temp_pass", pass);
+                    // Poner foco directamente en el OTP
+                    setTimeout(() => document.getElementById("sec-otp").focus(), 150);
                 } else if (data.error) {
                     loginError.innerText = data.error;
                     loginError.style.display = "block";
@@ -1890,6 +1977,10 @@
             document.getElementById("sec-password").value = "";
             document.getElementById("sec-otp").value = "";
             
+            // Restablecer tipo del input de contraseña
+            document.getElementById("sec-password").type = "password";
+            document.getElementById("btn-toggle-password").innerText = "👁️";
+            
             // Ocultar estados activos del panel lateral
             document.getElementById("panel-lateral-activo").style.display = "none";
             document.getElementById("panel-lateral-vacio").style.display = "block";
@@ -1953,7 +2044,7 @@
 
             if (data.dashboardData.newsSummary) {
                 document.getElementById("noticia-fecha").innerText = data.dashboardData.newsSummary.fecha;
-                document.getElementById("noticia-cuerpo").innerText = data.dashboardData.newsSummary.cuerpo;
+                document.getElementById("noticia-cuerpo").innerHTML = formatearRespuestaChat(data.dashboardData.newsSummary.cuerpo);
             }
         }
 
@@ -2558,7 +2649,7 @@
             });
         }
 
-        // --- SISTEMA DE VISUALIZACION DE PDF EMERGENte ---
+        // --- SISTEMA DE VISUALIZACION DE PDF EMERGENTE ---
         function abrirVisorPDF(id, event) {
             if (event) {
                 event.stopPropagation();
@@ -2640,19 +2731,20 @@
             titulo.innerText = "📄 Reporte Mensual RIS Generado";
         }
 
-        // --- GENERAR INFORME SEMANAL IA DE PATRONES ---
+        // --- GENERAR INFORME SEMANAL IA DE PATRONES (INTEGRACIÓN CON LOADER MODAL) ---
         function generarInformeSemanalIA() {
             const btn = document.getElementById("btn-informe-semanal");
             const user = sessionStorage.getItem("secure_user_initials");
             const auth = sessionStorage.getItem("secure_auth_plain");
             const originalText = btn.innerText;
-            btn.innerText = "🤖 Analizando patrones con Gemini...";
+
             btn.disabled = true;
+            mostrarLoaderModal("Procesando su informe de auditoría semanal con la IA de Gemini. Esto puede demorar unos segundos...");
 
             fetch(`${CONFIG_WEB_APP_URL}?action=generar_informe_ia_semanal&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
             .then(res => res.json())
             .then(data => {
-                btn.innerText = originalText;
+                ocultarLoaderModal();
                 btn.disabled = false;
                 if (data.respuesta) {
                     document.getElementById("noticia-fecha").innerText = "INFORME SEMANAL IA - " + new Date().toLocaleDateString();
@@ -2662,7 +2754,7 @@
                 }
             })
             .catch(err => {
-                btn.innerText = originalText;
+                ocultarLoaderModal();
                 btn.disabled = false;
                 alert("Error de conexión con la IA: " + err.toString());
             });
