@@ -1285,9 +1285,9 @@
         }
 
         function renderizarDatosSincronizados(data) {
-            // --- AGREGADO: CONTROL DE SEGURIDAD INDIVIDUAL PARA BÚSQUEDAS ---
+            // --- CONTROL DE SEGURIDAD INDIVIDUAL PARA BÚSQUEDAS ---
             const ADMIN_USERS = ["NI", "GK", "BB", "JSD", "RV"];
-            const loggedUser = sessionStorage.getItem("secure_user_initials");
+            const loggedUser = (sessionStorage.getItem("secure_user_initials") || "").trim().toUpperCase();
             const esAdmin = ADMIN_USERS.includes(loggedUser);
             
             const seccionBusqueda = document.getElementById("seccion-busqueda-dashboard");
@@ -1300,16 +1300,39 @@
             }
             // ---------------------------------------------------------------
 
+            // MODIFICADO: Selección automática del Oficial Responsable según su Login
             const selectForm = document.getElementById("form-responsable");
             selectForm.innerHTML = "";
-            data.usuarios.forEach(u => {
+
+            // Buscamos al usuario logueado en la lista de usuarios devuelta por el servidor
+            const oficialLogueado = data.usuarios.find(u => u.iniciales.toUpperCase() === loggedUser);
+
+            if (oficialLogueado) {
+                // Si encontramos coincidencia, agregamos solo a ese Oficial
                 let opt = document.createElement("option");
-                opt.value = u.nombre; opt.text = u.nombre;
-                opt.dataset.iniciales = u.iniciales; opt.dataset.correlativo = u.siguienteCorrelativo;
+                opt.value = oficialLogueado.nombre; 
+                opt.text = oficialLogueado.nombre;
+                opt.dataset.iniciales = oficialLogueado.iniciales; 
+                opt.dataset.correlativo = oficialLogueado.siguienteCorrelativo;
                 selectForm.appendChild(opt);
-            });
+
+                // Deshabilitamos el select para que no pueda emitir bajo el nombre de otro oficial
+                selectForm.disabled = true;
+            } else {
+                // Fallback de seguridad: Si por alguna razón no coincide, listamos todos (modo normal)
+                data.usuarios.forEach(u => {
+                    let opt = document.createElement("option");
+                    opt.value = u.nombre; opt.text = u.nombre;
+                    opt.dataset.iniciales = u.iniciales; opt.dataset.correlativo = u.siguienteCorrelativo;
+                    selectForm.appendChild(opt);
+                });
+                selectForm.disabled = false;
+            }
+
+            // Calcula automáticamente el N° de papeleta y el ID del documento
             autoCalcularID();
 
+            // Población del selector de filtros del Dashboard
             const selectDashboard = document.getElementById("filtro-miembro");
             selectDashboard.innerHTML = '<option value="">-- Todos los Integrantes --</option>';
             data.usuarios.forEach(u => {
