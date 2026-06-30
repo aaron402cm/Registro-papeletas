@@ -356,6 +356,63 @@
             page-break-inside: avoid !important;
             break-inside: avoid !important;
         }
+        /* Pantalla de Espera del Buque Navegando */
+        .waiting-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 34, 68, 0.96); /* Azul APM Terminals oscuro */
+            z-index: 3000;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        .ship-container {
+            position: relative;
+            width: 240px;
+            height: 130px;
+            margin-bottom: 25px;
+        }
+
+        .sailing-ship {
+            font-size: 75px;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: rockShip 3.2s ease-in-out infinite;
+            user-select: none;
+        }
+
+        .sea-waves {
+            position: absolute;
+            bottom: 0px;
+            left: 0;
+            width: 100%;
+            height: 25px;
+            font-size: 32px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            animation: waveMove 1.4s ease-in-out infinite;
+            user-select: none;
+        }
+
+        @keyframes rockShip {
+            0%, 100% { transform: translate(-50%, 0) rotate(-5deg); }
+            50% { transform: translate(-50%, -10px) rotate(5deg); }
+        }
+
+        @keyframes waveMove {
+            0%, 100% { transform: translateX(-8px); }
+            50% { transform: translateX(8px); }
+        }
     </style>
 </head>
 <body>
@@ -1061,68 +1118,114 @@
             document.getElementById("preview-modal").style.display = "none";
         }
 
-        // --- EMISIÓN FINAL CON GUARDADO EN GOOGLE SHEETS Y EN GOOGLE DRIVE ---
-        // --- EMISIÓN FINAL OPTIMIZADA CON GENERACIÓN EN LA NUBE (SERVIDOR) ---
+        // --- EMISIÓN FINAL CON GENERACIÓN EN LA NUBE Y REDIRECCIÓN COMPLETA ---
         function ejecutarExportacionFinal() {
-            document.getElementById("form-loader").style.display = "block";
-            document.getElementById("preview-buttons-group").style.display = "none";
+            // 1. Mostrar la animación del buque navegando
+            document.getElementById("waiting-modal").style.display = "flex";
 
             const responsable = document.getElementById("form-responsable").value;
             const idPapeleta = document.getElementById("form-id-papeleta").value;
             const graduacion = document.querySelector('input[name="graduacion"]:checked').value;
+            const conducta = document.getElementById("inf-conducta").value;
+            const infractorNombre = document.getElementById("inf-nombre").value;
+            const infractorDni = document.getElementById("inf-dni").value;
             
             const elementoAImprimir = document.getElementById("pdf-template");
 
-            // Configuración optimizada de descarga local (Muy ligera y rápida)
+            // Configuración optimizada de descarga local rápida en el móvil
             const opcionesConfig = {
                 margin:       10,
                 filename:     `Papeleta_${idPapeleta}.pdf`,
                 image:        { type: 'jpeg', quality: 0.90 },
-                html2canvas:  { scale: 1.5, logging: false, useCORS: true, scrollY: 0 }, // <-- Escala ligera para descargas móviles instantáneas
+                html2canvas:  { scale: 1.5, logging: false, useCORS: true, scrollY: 0 }, 
                 jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
             };
 
-            // Ejecuta la descarga física local en el dispositivo del oficial
+            // Ejecuta la descarga física local instantánea
             html2pdf().set(opcionesConfig).from(elementoAImprimir).save();
 
-            // Construir el payload JSON de datos planos y fotos recortadas
+            // Construir el paquete de datos para guardar y subir a Drive
             const payload = {
                 user: sessionStorage.getItem("secure_user_initials"),
                 auth: sessionStorage.getItem("secure_auth_plain"),
                 id_papeleta: idPapeleta, 
                 responsable: responsable,
-                infractor_nombre: document.getElementById("inf-nombre").value,
-                infractor_dni: document.getElementById("inf-dni").value,
-                infractor_cargo: document.getElementById("inf-cargo").value,       // <-- Nuevo campo
-                infractor_contacto: document.getElementById("inf-contacto").value, // <-- Nuevo campo
+                infractor_nombre: infractorNombre,
+                infractor_dni: infractorDni,
+                infractor_cargo: document.getElementById("inf-cargo").value,       
+                infractor_contacto: document.getElementById("inf-contacto").value, 
                 empresa: document.getElementById("inf-empresa").value,
                 infractor_correo: document.getElementById("inf-correo").value,
-                infractor_licencia: document.getElementById("inf-licencia").value, // <-- Nuevo campo
-                infractor_placa: document.getElementById("inf-placa").value,       // <-- Nuevo campo
-                infractor_lugar: document.getElementById("inf-lugar").value,       // <-- Nuevo campo
+                infractor_licencia: document.getElementById("inf-licencia").value, 
+                infractor_placa: document.getElementById("inf-placa").value,       
+                infractor_lugar: document.getElementById("inf-lugar").value,       
                 fecha_infraccion: document.getElementById("inf-fecha-hora").value,
-                conducta_infractora: document.getElementById("inf-conducta").value,
-                infractor_descripcion: document.getElementById("inf-descripcion").value, // <-- Nuevo campo
+                conducta_infractora: conducta,
+                infractor_descripcion: document.getElementById("inf-descripcion").value, 
                 graduacion: graduacion, 
                 fecha_envio: actualFechaEnvioGlobal,
-                fotos: fotosBase64Guardadas // <-- Array de fotos base64 recortadas (ligeras)
+                fotos: fotosBase64Guardadas 
             };
 
-            // Enviar el paquete de datos en línea
+            // Determinamos el saludo correspondiente por hora
+            const hora = new Date().getHours();
+            let saludo = "Buenas noches";
+            if (hora >= 5 && hora < 12) {
+                saludo = "Buenos días";
+            } else if (hora >= 12 && hora < 18) {
+                saludo = "Buenas tardes";
+            }
+
+            // Si está conectado a internet, subimos y redireccionamos
             if (navigator.onLine) {
+                // MODIFICADO: Quitamos 'mode: "no-cors"' para poder leer la respuesta JSON del servidor
                 fetch(CONFIG_WEB_APP_URL, {
-                    method: "POST", mode: "no-cors",
+                    method: "POST",
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify(payload)
-                }).then(() => {
-                    alert(`✅ ¡Éxito!\nPapeleta ${idPapeleta} registrada. El PDF se generará con máxima nitidez en tu Google Drive.`);
-                    finalizarFlujoEmision();
-                }).catch(err => {
-                    console.log("Error de conexión directa, guardando en cola offline: ", err);
+                })
+                .then(res => res.json())
+                .then(data => {
+                    // Ocultamos la animación del buque
+                    document.getElementById("waiting-modal").style.display = "none";
+
+                    if (data.status === "success") {
+                        // Construimos el mensaje para el grupo de WhatsApp
+                        const mensajeWhatsApp = 
+                            `¡${saludo}! Les saluda el inspector *${responsable}*.\n\n` +
+                            `Se envía la papeleta número *${idPapeleta}* correspondiente al presunto infractor *${infractorNombre}* (DNI: ${infractorDni}), por cometer la conducta infractora:\n` +
+                            `_"${conducta}"_.\n\n` +
+                            `📄 *Papeleta en PDF (Drive):*\n${data.url}`;
+
+                        const enlaceWhatsApp = "https://wa.me/?text=" + encodeURIComponent(mensajeWhatsApp);
+                        
+                        // Redirigimos al inspector a compartir en su grupo de WhatsApp
+                        window.location.href = enlaceWhatsApp;
+                        
+                        finalizarFlujoEmision();
+                    } else {
+                        alert("Error al procesar: " + data.message);
+                    }
+                })
+                .catch(err => {
+                    document.getElementById("waiting-modal").style.display = "none";
+                    console.log("Error al procesar en línea, guardando en cola offline: ", err);
                     guardarEnColaOffline(payload);
                 });
             } else {
+                // Flujo sin conexión (Offline)
+                document.getElementById("waiting-modal").style.display = "none";
                 guardarEnColaOffline(payload);
+
+                // En modo offline, aún le permitimos enviar el reporte al grupo pero con un aviso de red
+                const mensajeWhatsAppOffline = 
+                    `¡${saludo}! Les saluda el inspector *${responsable}*.\n\n` +
+                    `Se envía la papeleta número *${idPapeleta}* correspondiente al presunto infractor *${infractorNombre}* (DNI: ${infractorDni}), por cometer la conducta infractora:\n` +
+                    `_"${conducta}"_.\n\n` +
+                    `⚠️ _(El archivo PDF se sincronizará y cargará automáticamente en la nube cuando el dispositivo recupere cobertura de red)_`;
+
+                const enlaceWhatsApp = "https://wa.me/?text=" + encodeURIComponent(mensajeWhatsAppOffline);
+                window.location.href = enlaceWhatsApp;
             }
         }
 
@@ -1374,5 +1477,16 @@
             document.getElementById("form-id-papeleta").value = `${option.dataset.iniciales}_${option.dataset.correlativo}_${yearActual}`;
         }
     </script>
+    <!-- MODAL DE ESPERA: BUQUE NAVEGANDO -->
+    <div id="waiting-modal" class="waiting-modal-overlay">
+        <div class="ship-container">
+            <div class="sailing-ship">🚢</div>
+            <div class="sea-waves">🌊🌊🌊🌊</div>
+        </div>
+        <h3 style="margin: 0 0 10px 0; color: #E05B1B; font-size: 22px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">Procesando Papeleta...</h3>
+        <p style="font-size: 15px; color: #e9ecef; margin: 0; max-width: 350px; line-height: 1.45;">
+            Sincronizando con el servidor principal y generando el documento en la nube. Por favor, mantenga esta ventana abierta.
+        </p>
+    </div>
 </body>
 </html>
