@@ -476,7 +476,10 @@
             <div class="card">
                 <h3>Datos del Presunto Infractor</h3>
                 <div class="form-group"><label>Nombres y Apellidos</label><input type="text" id="inf-nombre" oninput="actualizarDescripcionDinamica()"></div>
-                <div class="form-group"><label>DNI / C.E / Pasaporte</label><input type="text" id="inf-dni" oninput="actualizarDescripcionDinamica()"></div>
+                <div class="form-group">
+                <label>DNI / C.E / Pasaporte</label>
+                <input type="tel" id="inf-dni" inputmode="numeric" pattern="[0-9]*" maxlength="8" oninput="validarYActualizarDNI(this)" placeholder="Ingrese 8 dígitos">
+                </div>
                 <div class="form-group"><label>Cargo</label><input type="text" id="inf-cargo" oninput="actualizarDescripcionDinamica()"></div>
                 <div class="form-group"><label>Número de Contacto</label><input type="text" id="inf-contacto" oninput="actualizarDescripcionDinamica()"></div>
                 <div class="form-group"><label>Empresa / Razón Social</label><input type="text" id="inf-empresa" oninput="actualizarDescripcionDinamica()"></div>
@@ -508,24 +511,6 @@
                         📸 Agregar Foto desde Galería
                     </button>
                     <div id="galeria-previa" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;"></div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Graduación de la Infracción</h3>
-                <div class="radio-tile-group">
-                    <label class="radio-tile" id="tile-leve">
-                        <input type="radio" name="graduacion" value="LEVE" onclick="marcarRadio(this)">
-                        LEVE (Suspensión temporal de 1 a 07 días)
-                    </label>
-                    <label class="radio-tile" id="tile-grave">
-                        <input type="radio" name="graduacion" value="GRAVE" checked onclick="marcarRadio(this)">
-                        GRAVE (Suspensión temporal de 8 a 30 días)
-                    </label>
-                    <label class="radio-tile" id="tile-muygrave">
-                        <input type="radio" name="graduacion" value="MUY GRAVE" onclick="marcarRadio(this)">
-                        MUY GRAVE (Suspensión temporal de 30 días a más)
-                    </label>
                 </div>
             </div>
 
@@ -1107,7 +1092,7 @@
                 });
             }
             
-            const graduacion = document.querySelector('input[name="graduacion"]:checked').value;
+            const graduacion = "GRAVE";
             document.getElementById("pdf-txt-graduacion").innerText = graduacion;
             document.getElementById("pdf-txt-fecha-envio").innerText = actualFechaEnvioGlobal;
 
@@ -1132,7 +1117,7 @@
 
             const responsable = document.getElementById("form-responsable").value;
             const idPapeleta = document.getElementById("form-id-papeleta").value;
-            const graduacion = document.querySelector('input[name="graduacion"]:checked').value;
+            const graduacion = "GRAVE";
             const conducta = document.getElementById("inf-conducta").value;
             const infractorNombre = document.getElementById("inf-nombre").value;
             const infractorDni = document.getElementById("inf-dni").value;
