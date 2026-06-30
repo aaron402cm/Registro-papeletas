@@ -1385,12 +1385,6 @@
                 plantillasCache = data.plantillas;
             }
 
-            const listaConfig = document.getElementById("lista-usuarios-config");
-            listaConfig.innerHTML = "";
-            data.usuarios.forEach(u => {
-                listaConfig.innerHTML += `<li><strong>${u.nombre}</strong> (${u.iniciales}) - Siguiente: ${u.siguienteCorrelativo}</li>`;
-            });
-
             filtrarHistorial();
         }
 
@@ -1545,26 +1539,26 @@
             if (!tbody) return;
             tbody.innerHTML = "";
 
-            if (!data || !data.dashboardData || !data.dashboardData.kpis || !data.dashboardData.kpis.agentes) {
+            if (!data || !data.usuarios) {
                 tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">No hay datos de oficiales registrados aún.</td></tr>`;
                 return;
             }
 
-            // Mapeamos los counts devueltos por la base de datos de Sheets
-            const conteos = {};
-            data.dashboardData.kpis.agentes.forEach(item => {
-                conteos[item.agente.toUpperCase()] = item.count;
-            });
+            // Lista de iniciales de administradores a excluir en el podio de "Puesto"
+            const EXCLUDE_INITIALS = ["NI", "GK", "BB", "RV", "SEC", "JSD"];
 
-            // Creamos la lista del ranking con sus iniciales correspondientes
-            const ranking = data.usuarios.map(u => {
-                const total = conteos[u.nombre.toUpperCase()] || 0;
-                return {
-                    nombre: u.nombre,
-                    iniciales: u.iniciales.toUpperCase(),
-                    count: total
-                };
-            }).sort((a, b) => b.count - a.count);
+            // Filtramos excluyendo administradores y calculamos la cantidad de papeletas desde "Ultimo_Correlativo" (siguienteCorrelativo - 1)
+            const ranking = data.usuarios
+                .filter(u => !EXCLUDE_INITIALS.includes(u.iniciales.toUpperCase()))
+                .map(u => {
+                    const totalPapeletas = Number(u.siguienteCorrelativo) - 1; // Siguiente correlativo menos 1 es el correlativo actual de la base de datos
+                    return {
+                        nombre: u.nombre,
+                        iniciales: u.iniciales.toUpperCase(),
+                        count: totalPapeletas
+                    };
+                })
+                .sort((a, b) => b.count - a.count);
 
             // 1. Renderizar Podium (Top 3)
             // 1er Puesto
