@@ -1433,9 +1433,8 @@
         <!-- MENU PESTAÑAS (Simplificado: 4 pestañas con Análisis Semanal IA) -->
         <nav class="nav-tabs">
             <div class="nav-tabs-inner">
-                <button class="tab-link active" onclick="cambiarPanel('control', this)">
-                    📥 Bandeja de Papeletas <span class="tab-badge" id="badge-total-papeletas" style="display:none;">0</span>
-                </button>
+                <button class="tab-link active" onclick="cambiarPanel('control', this)">📥 Bandeja de Papeletas <span class="tab-badge" id="badge-total-papeletas" style="display:none;">0</span></button>
+                <button class="tab-link" onclick="cambiarPanel('cerradas-panel', this)">🟢 Casos Cerrados</button>
                 <button class="tab-link" onclick="cambiarPanel('kpis', this)">📊 KPIs Operativos</button>
                 <button class="tab-link" onclick="cambiarPanel('informe-ia', this)">📰 Análisis Semanal (IA)</button>
                 <button class="tab-link" onclick="cambiarPanel('config', this)">⚙️ Ajustes y RIS</button>
@@ -1445,49 +1444,40 @@
         <!-- AREA DE CONTENIDO -->
         <main class="content-area">
 
-            <!-- PESTAÑA 1: BANDEJA DE CONTROL Y EVALUACIÓN IA -->
+         <!-- PESTAÑA 1: BANDEJA DE CONTROL Y EVALUACIÓN IA -->
             <div id="panel-control" class="tab-panel active">
                 
-                <!-- PIPELINE STAGE FILTERS (Barra de Etapas Operativas) -->
+                <!-- PIPELINE STAGE FILTERS (Modificado según nuevo flujo operativo) -->
                 <div class="pipeline-bar">
                     <div class="pipeline-node active" id="pipe-all" onclick="filtrarPorEtapaTramite('TODOS')">
-                        TODOS LOS CASOS
+                        TODOS LOS CASOS ACTIVOS
                         <span class="pipeline-counter" id="pipe-count-all">0</span>
                     </div>
                     <div class="pipeline-node" id="pipe-pendiente" onclick="filtrarPorEtapaTramite('PENDIENTE')">
-                        1. RECEPCIONADOS
+                        PAPELETAS ENVIADAS A LA EMPRESA
                         <span class="pipeline-counter" id="pipe-count-pendiente">0</span>
                     </div>
                     <div class="pipeline-node" id="pipe-descargos" onclick="filtrarPorEtapaTramite('ESPERA_DESCARGOS')">
-                        2. EN DESCARGOS (3D)
+                        DESCARGOS (GMAIL)
                         <span class="pipeline-counter" id="pipe-count-descargos">0</span>
                     </div>
-                    <div class="pipeline-node" id="pipe-evaluacion" onclick="filtrarPorEtapaTramite('EVALUACION')">
-                        3. EN EVALUACIÓN RIS
-                        <span class="pipeline-counter" id="pipe-count-evaluacion">0</span>
+                    <div class="pipeline-node" id="pipe-evaluacion-humana" onclick="filtrarPorEtapaTramite('HUMANA')">
+                        EVALUACIÓN HUMANA
+                        <span class="pipeline-counter" id="pipe-count-humana">0</span>
                     </div>
-                    <div class="pipeline-node" id="pipe-cerrados" onclick="filtrarPorEtapaTramite('CERRADO')">
-                        4. CASOS CERRADOS
-                        <span class="pipeline-counter" id="pipe-count-cerrados">0</span>
+                    <div class="pipeline-node" id="pipe-evaluacion-ia" onclick="filtrarPorEtapaTramite('IA')">
+                        EVALUACIÓN IA (AUTOMÁTICA 17:00)
+                        <span class="pipeline-counter" id="pipe-count-ia">0</span>
                     </div>
                 </div>
 
-                <!-- BARRA DE BÚSQUEDA Y FILTROS AVANZADOS -->
+                <!-- BARRA DE BÚSQUEDA DEL PANEL DE ACTIVOS -->
                 <div class="card" style="margin-bottom: 15px; padding: 15px;">
                     <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-                        <input type="text" id="tabla-buscador-rapido" placeholder="🔎 Buscar por DNI, infractor, empresa, conducta..." style="flex: 1; min-width: 250px; padding: 10px; border: 2px solid var(--border-color); border-radius: 4px;" oninput="filtrarYRenderizarTabla()">
-                        
+                        <input type="text" id="tabla-buscador-rapido" placeholder="🔎 Buscar por DNI, ID, Nombre o Empresa..." style="flex: 1; min-width: 250px; padding: 10px; border: 2px solid var(--border-color); border-radius: 4px;" oninput="ejecutarBusquedaDBServidor('activo')">
                         <select id="filtro-empresa" style="width: 150px; padding: 10px; border: 2px solid var(--border-color); border-radius: 4px;" onchange="filtrarYRenderizarTabla()">
                             <option value="">Filtro Empresa</option>
                         </select>
-                        
-                        <select id="filtro-graduacion" style="width: 150px; padding: 10px; border: 2px solid var(--border-color); border-radius: 4px;" onchange="filtrarYRenderizarTabla()">
-                            <option value="">Filtro Graduación</option>
-                            <option value="Leve">Leve</option>
-                            <option value="Grave">Grave</option>
-                            <option value="Muy Grave">Muy Grave</option>
-                        </select>
-                        
                         <select id="filtro-semaforo" style="width: 150px; padding: 10px; border: 2px solid var(--border-color); border-radius: 4px;" onchange="filtrarYRenderizarTabla()">
                             <option value="">Filtro Semáforo</option>
                             <option value="vigente">Plazo Vigente</option>
@@ -1495,30 +1485,14 @@
                             <option value="vencido">Plazo Vencido</option>
                             <option value="descargo">Descargo Recibido</option>
                         </select>
-
-                        <!-- Filtro Rango de Fechas -->
-                        <div style="display:flex; align-items:center; gap:5px; font-size:12px;">
-                            <span>Desde:</span>
-                            <input type="date" id="filtro-fecha-desde" style="padding:8px; border: 2px solid var(--border-color); border-radius:4px;" onchange="filtrarYRenderizarTabla()">
-                            <span>Hasta:</span>
-                            <input type="date" id="filtro-fecha-hasta" style="padding:8px; border: 2px solid var(--border-color); border-radius:4px;" onchange="filtrarYRenderizarTabla()">
-                        </div>
-
-                        <!-- Toggle de Vistas (Lista / Tarjetas) -->
-                        <div style="display: flex; gap: 2px;">
-                            <button id="btn-view-list" class="btn-pdf-view" onclick="cambiarVistaBandeja('list')" style="border-radius: 4px 0 0 4px; padding: 10px 12px;">≡ Lista</button>
-                            <button id="btn-view-grid" class="btn-pdf-view" onclick="cambiarVistaBandeja('grid')" style="border-radius: 0 4px 4px 0; padding: 10px 12px; background-color: var(--apm-dark-blue);">⊞ Tarjetas</button>
-                        </div>
-                        
                         <button class="btn-apm" style="width: auto; padding: 10px 15px; background-color: var(--apm-blue);" onclick="forzarSincronizacionManual()">🔄 Sincronizar</button>
                     </div>
                 </div>
 
                 <div class="dashboard-layout">
-                    
                     <!-- Tabla de papeletas activas con scrollbar interno -->
                     <div class="table-container card" id="bandeja-tabla-container">
-                        <h3 class="card-title">Seguimiento de Papeletas y Semáforo de Plazos</h3>
+                        <h3 class="card-title">Seguimiento de Expedientes de Infracciones en Curso</h3>
                         <div class="table-scroll-container">
                             <table id="tabla-control-papeletas">
                                 <thead>
@@ -1528,43 +1502,33 @@
                                         <th onclick="ordenarTablaPor('empresa')">Empresa <span id="sort-icon-empresa"></span></th>
                                         <th onclick="ordenarTablaPor('conducta')">Conducta Infractora <span id="sort-icon-conducta"></span></th>
                                         <th onclick="ordenarTablaPor('fecha_infraccion')">Fecha Suceso <span id="sort-icon-fecha_infraccion"></span></th>
+                                        <th>¿Se envió papeleta a la empresa?</th>
                                         <th onclick="ordenarTablaPor('estado_semaforo')">Semáforo RIS <span id="sort-icon-estado_semaforo"></span></th>
                                         <th>Descargo</th>
                                         <th>Ver PDF</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr><td colspan="8" style="text-align:center;">Por favor, inicie sesión de forma segura para cargar la base de datos...</td></tr>
+                                    <tr><td colspan="9" style="text-align:center;">Por favor, inicie sesión de forma segura para cargar la base de datos...</td></tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
 
-                    <!-- Vista Alternativa de Tarjetas (Oculta por defecto) -->
-                    <div class="table-container" id="bandeja-tarjetas-container" style="display:none; overflow-y:auto; max-height:550px;">
-                        <div class="cards-grid-container" id="tarjetas-papeletas-contenedor">
-                            <!-- Se renderiza de forma dinámica -->
-                        </div>
-                    </div>
-
-                    <!-- Panel Lateral Inteligencia RIS (Persistentemente visible y de gran tamaño 540px) -->
+                    <!-- Panel Lateral Inteligencia RIS (540px) -->
                     <div class="ai-side-panel" id="panel-lateral-evaluacion">
-                        
-                        <!-- ESTADO VACÍO (INICIAL) -->
                         <div id="panel-lateral-vacio" class="panel-empty-state">
                             <div class="icon">📁</div>
                             <h3>Ningún Expediente Seleccionado</h3>
-                            <p>Haga clic en cualquiera de las papeletas de la bandeja para cargar su expediente, evaluar descargos e iniciar la instrucción formal de sanción.</p>
+                            <p>Seleccione una papeleta activa para cargar su trazabilidad e iniciar el análisis de IA.</p>
                         </div>
 
-                        <!-- FLUJO ACTIVO DE PASOS (WIZARD) -->
                         <div id="panel-lateral-activo" style="display: none;">
                             <h3 style="margin-top:0; color:var(--apm-orange); font-size: 16px; border-bottom: 2px solid var(--apm-blue); padding-bottom:6px; display: flex; justify-content: space-between;">
                                 <span>🚀 Instrucción del Expediente</span>
                                 <span id="lbl-wizard-paso-actual" style="font-size: 11px; background-color: var(--apm-blue); color: white; padding: 2px 8px; border-radius: 4px;">Paso 1/6</span>
                             </h3>
 
-                            <!-- Barra Visual de Progreso (6 Pasos) -->
                             <div style="position: relative; display: flex; justify-content: space-between; align-items: center; margin: 15px 0 20px 0;">
                                 <div class="wizard-progress-bar-line">
                                     <div class="wizard-progress-line-fill" id="wizard-progress-bar-fill"></div>
@@ -1577,10 +1541,8 @@
                                 <div class="wizard-step-node" id="node-step-6">6</div>
                             </div>
 
-                            <!-- CONTENEDORES DE CADA PASO REORDENADOS -->
                             <div id="wizard-panes-container">
-                                
-                                <!-- PASO 1: EXPEDIENTE Y TRAZABILIDAD (TIMELINE VISUAL) -->
+                                <!-- PASO 1: EXPEDIENTE Y TRAZABILIDAD -->
                                 <div class="wizard-step-pane active" id="pane-step-1">
                                     <div class="panel-section-title">Paso 1: Expediente General y Trazabilidad</div>
                                     <div class="panel-section-content">
@@ -1592,16 +1554,14 @@
                                                 <tr><td class="label-cell">Conducta:</td><td id="wiz-val-conducta" style="font-style:italic;">-</td></tr>
                                             </tbody>
                                         </table>
-
-                                        <!-- Enlace dinámico a la subcarpeta de la papeleta en Drive -->
-                                        <a href="#" target="_blank" id="btn-abrir-carpeta-drive" class="btn-drive-link">
-                                            📂 Abrir Subcarpeta del Expediente en Drive
-                                        </a>
                                         
+                                        <!-- Enlace dinámico a la subcarpeta de Drive -->
+                                        <a href="#" target="_blank" id="btn-abrir-carpeta-drive" class="btn-drive-link">
+                                            📂 Abrir Carpeta del Expediente en Drive
+                                        </a>
+
                                         <p style="font-weight: bold; font-size: 12px; margin-top: 15px; margin-bottom: 5px;">📍 Trazabilidad e Historial de Acciones:</p>
-                                        <div class="trazabilidad-timeline" id="wiz-val-trazabilidad">
-                                            <!-- Timeline de eventos -->
-                                        </div>
+                                        <div class="trazabilidad-timeline" id="wiz-val-trazabilidad"></div>
                                     </div>
                                 </div>
 
@@ -1620,17 +1580,15 @@
                                     </div>
                                 </div>
 
-                                <!-- PASO 3: REINCIDENCIAS (TIMELINE VISUAL) -->
+                                <!-- PASO 3: REINCIDENCIAS -->
                                 <div class="wizard-step-pane" id="pane-step-3">
                                     <div class="panel-section-title">Paso 3: Historial de Reincidencias Recurrentes</div>
                                     <div class="panel-section-content">
-                                        <div class="vertical-timeline" id="wiz-val-reincidencias-timeline">
-                                            <!-- Nodos de reincidencia -->
-                                        </div>
+                                        <div class="vertical-timeline" id="wiz-val-reincidencias-timeline"></div>
                                     </div>
                                 </div>
 
-                                <!-- PASO 4: INFRACCIÓN APN (TABLA ESTRUCTURADA) -->
+                                <!-- PASO 4: INFRACCIÓN APN -->
                                 <div class="wizard-step-pane" id="pane-step-4">
                                     <div class="panel-section-title">Paso 4: Infracción APN y Catálogo de Sanciones</div>
                                     <div class="panel-section-content">
@@ -1653,24 +1611,21 @@
                                     </div>
                                 </div>
 
-                                <!-- PASO 5: DESCARGOS (CONDICIONAL) -->
+                                <!-- PASO 5: DESCARGOS -->
                                 <div class="wizard-step-pane" id="pane-step-5">
                                     <div class="panel-section-title">Paso 5: Evaluación de Descargos Gmail</div>
-                                    <div class="panel-section-content" id="wiz-val-descargos-container">
-                                        <!-- Descargos de Gmail -->
-                                    </div>
+                                    <div class="panel-section-content" id="wiz-val-descargos-container"></div>
                                 </div>
 
-                                <!-- PASO 6: RESOLUCIÓN Y CORREO EDITABLE -->
+                                <!-- PASO 6: RESOLUCIÓN -->
                                 <div class="wizard-step-pane" id="pane-step-6">
                                     <div class="panel-section-title">Paso 6: Resolución Final y Notificación</div>
                                     <div class="panel-section-content">
-                                        
-                                        <!-- Selector Automático / Manual Toggle Switch -->
+                                        <!-- Switch de Trámite Automatizado -->
                                         <div class="toggle-switch-container">
                                             <div>
                                                 <strong style="font-size: 13px;">Trámite Automatizado (IA)</strong>
-                                                <span style="display: block; font-size: 11px; color:#6c757d;">Permitir resolución automática del caso</span>
+                                                <span style="display: block; font-size: 11px; color:#6c757d;">Enviar resolución automáticamente a las 17:00</span>
                                             </div>
                                             <label class="switch">
                                                 <input type="checkbox" id="toggle-automode-switch" onchange="cambiarModoTramiteServidor()">
@@ -1684,15 +1639,53 @@
                                         </div>
                                         
                                         <p style="margin:4px 0; font-size: 11px; font-weight: bold;">Borrador del Correo Formal (Editable):</p>
-                                        <!-- Input de Correo Completamente Editable -->
                                         <textarea id="panel-txt-correo-borrador" rows="8" style="width: 100%; border: 1px solid var(--border-color); background-color: var(--input-bg); color: var(--text-color); padding: 8px; font-family: inherit; font-size: 11px; border-radius: 4px; box-sizing: border-box; resize: vertical; margin-bottom: 15px;"></textarea>
 
                                         <button class="btn-apm" style="background-color:var(--success-green);" onclick="ejecutarAprobacionYSancion()">✅ Enviar Resolución Oficial</button>
                                     </div>
                                 </div>
-
                             </div>
 
+                            <div class="wizard-navigation">
+                                <button class="btn-pdf-view" id="btn-wiz-prev" onclick="navegarWizard(-1)">⬅️ Anterior</button>
+                                <button class="btn-apm" id="btn-wiz-next" onclick="navegarWizard(1)" style="width:auto; margin:0; padding:8px 16px;">Siguiente ➡️</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+                             <!-- NUEVA PESTAÑA: CASOS CERRADOS (HISTORIAL RECIENTE Y BÚSQUEDA AVANZADA) -->
+            <div id="panel-cerradas-panel" class="tab-panel">
+                <div class="card" style="margin-bottom: 15px; padding: 15px;">
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="text" id="buscador-casos-cerrados" placeholder="🔎 Búsqueda Histórica Avanzada en Base de Datos (ID, DNI, Nombre, Empresa)..." style="flex: 1; padding: 10px; border: 2px solid var(--border-color); border-radius: 4px;" oninput="ejecutarBusquedaDBServidor('cerrado')">
+                        <button class="btn-apm" style="width: auto; padding: 10px 20px; background-color: var(--apm-blue);" onclick="forzarSincronizacionManual()">🔄 Sincronizar</button>
+                    </div>
+                </div>
+
+                <div class="table-container card">
+                    <h3 class="card-title">Historial de Expedientes Cerrados (Últimos 10 días / Búsqueda General)</h3>
+                    <div class="table-scroll-container">
+                        <table id="tabla-casos-cerrados">
+                            <thead>
+                                <tr>
+                                    <th>ID Papeleta</th>
+                                    <th>Infractor</th>
+                                    <th>Empresa Contratista</th>
+                                    <th>Conducta Sancionada</th>
+                                    <th>Fecha Suceso</th>
+                                    <th>Estado de Trámite</th>
+                                    <th>Drive Folder</th>
+                                    <th>Ver PDF</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td colspan="8" style="text-align:center;">Por favor, realice una búsqueda o sincronice para cargar el historial cerrado...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
                             <!-- CONTROLES DE NAVEGACIÓN -->
                             <div class="wizard-navigation">
                                 <button class="btn-pdf-view" id="btn-wiz-prev" onclick="navegarWizard(-1)">⬅️ Anterior</button>
@@ -1912,6 +1905,170 @@
     </div>
 
     <script>
+        // --- NUEVA VARIABLE GLOBAL PARA CONTROLAR LA ETAPA DEL PIPELINE ---
+        let etapaTramiteActual = "TODOS";
+
+        // --- PIPELINE FILTERS CALCULATOR ---
+        function calcularFiltrosEtapa(papeletas) {
+            let counts = { PENDIENTE: 0, ESPERA_DESCARGOS: 0, EVALUACION: 0, CERRADO: 0 };
+            papeletas.forEach(p => {
+                const est = p.estado_tramite || "PENDIENTE";
+                if (est === "PENDIENTE") counts.PENDIENTE++;
+                else if (est === "ESPERA_DESCARGOS") counts.ESPERA_DESCARGOS++;
+                else if (est === "DESCARGO_RECIBIDO" || est === "PLAZO_VENCIDO") counts.EVALUACION++;
+                else if (est.indexOf("CERRADO") !== -1) counts.CERRADO++;
+            });
+
+            document.getElementById("pipe-count-all").innerText = papeletas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1).length;
+            document.getElementById("pipe-count-pendiente").innerText = counts.PENDIENTE;
+            document.getElementById("pipe-count-descargos").innerText = counts.ESPERA_DESCARGOS;
+            document.getElementById("pipe-count-evaluacion").innerText = counts.EVALUACION;
+            document.getElementById("pipe-count-cerrados").innerText = counts.CERRADO;
+        }
+
+        function filtrarPorEtapaTramite(etapa) {
+            etapaTramiteActual = etapa;
+            document.querySelectorAll(".pipeline-node").forEach(n => n.classList.remove("active"));
+            if (etapa === "TODOS") {
+                document.getElementById("pipe-all").classList.add("active");
+            } else if (etapa === "HUMANA") {
+                document.getElementById("pipe-evaluacion-humana").classList.add("active");
+            } else if (etapa === "IA") {
+                document.getElementById("pipe-evaluacion-ia").classList.add("active");
+            } else {
+                document.getElementById(`pipe-${etapa.toLowerCase().replace("_", "")}`).classList.add("active");
+            }
+            filtrarYRenderizarTabla();
+        }
+
+        // --- MODIFICADO: RENDERIZAR BANDEJA DE ENTRADA EXCLUYENDO CASOS CERRADOS ---
+        function renderizarTablaFiltrada(papeletasFiltradas) {
+            const tbody = document.querySelector("#tabla-control-papeletas tbody");
+            tbody.innerHTML = "";
+
+            // Ojo: Filtramos para que NO se muestren elementos CERRADOS en la bandeja de activos
+            const activas = papeletasFiltradas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1);
+
+            if (activas.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;">No se encontraron papeletas activas en esta etapa.</td></tr>`;
+                return;
+            }
+
+            activas.forEach(p => {
+                let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.replace("T", " ") : "-";
+                
+                const tr = document.createElement("tr");
+                tr.className = "clickable-row";
+                tr.id = `row-${p.id_papeleta}`;
+                if (activePapeletaId === p.id_papeleta) {
+                    tr.classList.add("active-row");
+                }
+                tr.onclick = function() {
+                    document.querySelectorAll("#tabla-control-papeletas tbody tr").forEach(row => row.classList.remove("active-row"));
+                    tr.classList.add("active-row");
+                    seleccionarPapeletaParaRevision(p.id_papeleta);
+                };
+
+                let descargoBadge = "";
+                if (p.estado_semaforo === "descargo") {
+                    descargoBadge = `<span style="color:var(--success-green); font-weight:bold;">✅ Recibido</span>`;
+                } else if (p.estado_semaforo === "vencido") {
+                    descargoBadge = `<span style="color:var(--danger-red); font-weight:bold;">❌ Expirado</span>`;
+                } else {
+                    descargoBadge = `<span style="color:var(--apm-blue); font-weight:bold;">⏳ Pendiente</span>`;
+                }
+
+                // Definición visual de la columna de éxito de envío inicial
+                let notificacionBadge = p.estado_envio === "Se envió correctamente" 
+                    ? `<span style="color:var(--success-green); font-weight:bold;">🟢 Se envió correctamente</span>`
+                    : `<span style="color:var(--danger-red); font-weight:bold;">🔴 Problema con el envío</span>`;
+                
+                tr.innerHTML = `
+                    <td><strong>${p.id_papeleta}</strong></td>
+                    <td>${p.infractor}</td>
+                    <td>${p.empresa}</td>
+                    <td>${p.conducta}</td>
+                    <td>${fechaFormat}</td>
+                    <td>${notificacionBadge}</td>
+                    <td><span class="badge badge-${p.estado_color}">${p.estado_texto}</span></td>
+                    <td>${descargoBadge}</td>
+                    <td><button class="btn-pdf-view" onclick="abrirVisorPDF('${p.id_papeleta}', event)">📄 PDF</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- NUEVO: RENDERIZAR TABLA DE CASOS CERRADOS ---
+        function renderizarTablaCasosCerrados(papeletasCerradas) {
+            const tbody = document.querySelector("#tabla-casos-cerrados tbody");
+            tbody.innerHTML = "";
+
+            if (papeletasCerradas.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">No hay expedientes cerrados recientemente (Máx 10 días). Use la búsqueda para casos antiguos.</td></tr>`;
+                return;
+            }
+
+            papeletasCerradas.forEach(p => {
+                let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.replace("T", " ") : "-";
+                const tr = document.createElement("tr");
+                tr.className = "clickable-row";
+
+                let driveButton = p.carpeta_drive_url 
+                    ? `<a href="${p.carpeta_drive_url}" target="_blank" class="btn-pdf-view" style="background-color:#107c41; text-decoration:none; display:inline-block; padding:4px 8px;">📂 Drive</a>`
+                    : `<span style="color:gray;">No disponible</span>`;
+
+                tr.innerHTML = `
+                    <td><strong>${p.id_papeleta}</strong></td>
+                    <td>${p.infractor}</td>
+                    <td>${p.empresa}</td>
+                    <td>${p.conducta}</td>
+                    <td>${fechaFormat}</td>
+                    <td><span class="badge badge-green">${p.estado_tramite === "CERRADO_SANCION" ? "SANCIONADO" : "AMONESTADO"}</span></td>
+                    <td>${driveButton}</td>
+                    <td><button class="btn-pdf-view" onclick="abrirVisorPDF('${p.id_papeleta}', event)">📄 PDF</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- NUEVO: EJECUTAR BÚSQUEDA AVANZADA DIRECTAMENTE DESDE LA BASE DE DATOS EXCEL ---
+        function ejecutarBusquedaDBServidor(tipo) {
+            const inputId = tipo === "activo" ? "tabla-buscador-rapido" : "buscador-casos-cerrados";
+            const query = document.getElementById(inputId).value.trim();
+            
+            // Si el campo de búsqueda está vacío, volvemos a filtrar el caché local normal
+            if (query.length === 0) {
+                if (tipo === "activo") {
+                    filtrarYRenderizarTabla();
+                } else {
+                    const cerradasDefault = globalDashboardCache.dashboardData.papeletas.filter(p => p.estado_tramite && p.estado_tramite.indexOf("CERRADO") !== -1);
+                    renderizarTablaCasosCerrados(cerradasDefault);
+                }
+                return;
+            }
+
+            // Realizamos la búsqueda avanzada en el Sheets si el término es mayor a 2 caracteres
+            if (query.length > 2) {
+                const user = sessionStorage.getItem("secure_user_initials");
+                const auth = sessionStorage.getItem("secure_auth_plain");
+
+                fetch(`${CONFIG_WEB_APP_URL}?action=busqueda_avanzada&query=${encodeURIComponent(query)}&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "success" && data.resultados) {
+                        if (tipo === "activo") {
+                            // Mostrar activos que coincidan en la bandeja de entrada
+                            const activosEncontrados = data.resultados.filter(p => p.estado_tramite.indexOf("CERRADO") === -1);
+                            renderizarTablaFiltrada(activosEncontrados);
+                        } else {
+                            // Mostrar cerrados históricos sin límite de 10 días
+                            const cerradosEncontrados = data.resultados.filter(p => p.estado_tramite.indexOf("CERRADO") !== -1);
+                            renderizarTablaCasosCerrados(cerradosEncontrados);
+                        }
+                    }
+                });
+            }
+        }
         // CAMBIA ESTO CON LA URL DE TU PROPIO GOOGLE APPS SCRIPT IMPLEMENTADO
         const CONFIG_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykGrZsjMZ3ewTIXjuPKqy-UDpOjtFPtT-ebMM_ilC6bf6qwPRcNn1KhdUhrODdYzEBKg/exec";
 
