@@ -1544,14 +1544,15 @@
                             <p>Seleccione una papeleta activa para cargar su trazabilidad e iniciar el análisis de IA.</p>
                         </div>
 
-                        <!-- SECCIONES EN ACORDEÓN (A, B, C, D) - REDISEÑO PROFESIONAL -->
+                        
+        <!-- SECCIONES EN ACORDEÓN (A, B, C, D) - REDISEÑO PROFESIONAL LIMPIO -->
         <div id="panel-lateral-activo" style="display: none;">
             <h3 style="margin-top:0; color:var(--apm-orange); font-size: 16px; border-bottom: 2px solid var(--apm-blue); padding-bottom:6px; display: flex; justify-content: space-between; align-items: center;">
                 <span>🚀 Instrucción del Expediente</span>
                 <span id="lbl-estado-papeleta-badge" class="badge badge-green">-</span>
             </h3>
 
-            <!-- Control de Modo Automatizado (Siempre visible al inicio del panel) -->
+            <!-- Control de Modo Automatizado -->
             <div class="toggle-switch-container" style="display: flex; align-items: center; justify-content: space-between; background: rgba(0,75,135,0.06); padding: 10px; border-radius: 6px; border: 1px solid rgba(0,75,135,0.12); margin-bottom: 12px;">
                 <div>
                     <strong style="font-size: 12px; color: var(--apm-blue);">Trámite Automatizado (IA)</strong>
@@ -2699,7 +2700,8 @@
             // Activar el botón presionado
             btn.classList.add("active");
         }
-         function seleccionarPapeletaParaRevision(id) {
+         // REEMPLACE LA FUNCIÓN 'seleccionarPapeletaParaRevision' EN SU JS POR ESTA:
+        function seleccionarPapeletaParaRevision(id) {
             activePapeletaId = id;
             document.getElementById("panel-lateral-vacio").style.display = "none";
             document.getElementById("panel-lateral-activo").style.display = "block";
@@ -2719,98 +2721,104 @@
             .then(res => res.json())
             .then(data => {
                 completarYQuitarRobotLoader();
-                const localData = activeFilteredP_
+                
+                // Búsqueda en la caché local del navegador
+                const localData = activeFilteredPapeletas.find(p => String(p.id_papeleta) === String(id));
+                
                 if (localData) {
+                    const elId = document.getElementById("wiz-val-id");
+                    if (elId) elId.innerText = id;
+
                     const elInf = document.getElementById("wiz-val-infractor");
-                if (elInf) elInf.innerText = localData.infractor;
-                
-                const elEmp = document.getElementById("wiz-val-empresa");
-                if (elEmp) elEmp.innerText = localData.empresa;
-                
-                const elCon = document.getElementById("wiz-val-conducta");
-                if (elCon) elCon.innerText = localData.conducta;
+                    if (elInf) elInf.innerText = localData.infractor;
+                    
+                    const elEmp = document.getElementById("wiz-val-empresa");
+                    if (elEmp) elEmp.innerText = localData.empresa;
+                    
+                    const elCon = document.getElementById("wiz-val-conducta");
+                    if (elCon) elCon.innerText = localData.conducta;
 
-                const elBadgeEstado = document.getElementById("lbl-estado-papeleta-badge");
-                if (elBadgeEstado) {
-                    elBadgeEstado.innerText = localData.estado_texto;
-                    elBadgeEstado.className = `badge badge-${localData.estado_color}`;
+                    const elBadgeEstado = document.getElementById("lbl-estado-papeleta-badge");
+                    if (elBadgeEstado) {
+                        elBadgeEstado.innerText = localData.estado_texto;
+                        elBadgeEstado.className = `badge badge-${localData.estado_color}`;
+                    }
+
+                    const btnDrive = document.getElementById("btn-abrir-carpeta-drive");
+                    if (btnDrive) {
+                        if (localData.carpeta_drive_url) {
+                            btnDrive.href = localData.carpeta_drive_url;
+                            btnDrive.style.display = "flex";
+                        } else {
+                            btnDrive.style.display = "none";
+                        }
+                    }
+
+                    // Trazabilidad temporal
+                    let tHtml = "";
+                    if (localData.fecha_infraccion) tHtml += `<div class="trazabilidad-item"><strong>${localData.fecha_infraccion.split("T")[0]}</strong> - Reportado por Oficial.</div>`;
+                    if (localData.fecha_envio) tHtml += `<div class="trazabilidad-item"><strong>${localData.fecha_envio.split("T")[0]}</strong> - Notificación generada.</div>`;
+                    if (localData.estado_semaforo === "descargo") tHtml += `<div class="trazabilidad-item" style="color:var(--success-green);"><strong>Vía Gmail</strong> - Descargo recibido.</div>`;
+                    
+                    const elTraz = document.getElementById("wiz-val-trazabilidad");
+                    if (elTraz) elTraz.innerHTML = tHtml;
+
+                    // Sección C: Descargos
+                    const descargosContenedor = document.getElementById("wiz-val-descargos-container");
+                    if (descargosContenedor) {
+                        if (localData.estado_semaforo === "descargo") {
+                            descargosContenedor.innerHTML = `
+                                <div class="highlight-callout urgent" style="margin-bottom: 12px;"><strong>📧 Descargo Recibido</strong></div>
+                                <div style="background-color: var(--input-bg); padding:12px; border-radius:6px; border-left:3px solid var(--apm-blue);">
+                                    <p style="font-size:12px; margin:0;">${formatearRespuestaChat(data.resumen_descargo)}</p>
+                                </div>`;
+                        } else {
+                            descargosContenedor.innerHTML = `<div class="highlight-callout info">En espera de descargos en el buzón.</div>`;
+                        }
+                    }
+                    const switchEl = document.getElementById("toggle-automode-switch");
+                    if (switchEl) switchEl.checked = (localData.modo_tramite === "AUTOMATICO");
                 }
+                
+                // Sección B: Análisis Legal
+                const elRes = document.getElementById("wiz-val-resumen-infraccion");
+                if (elRes) elRes.innerHTML = formatearRespuestaChat(data.resumen_descargo);
+                
+                const elCrit = document.getElementById("wiz-val-criterio-legal");
+                if (elCrit) elCrit.innerHTML = formatearRespuestaChat(data.analisis_caso);
 
-                const btnDrive = document.getElementById("btn-abrir-carpeta-drive");
-                if (btnDrive) {
-                    if (localData.carpeta_drive_url) {
-                        btnDrive.href = localData.carpeta_drive_url;
-                        btnDrive.style.display = "flex";
-                    } else {
-                        btnDrive.style.display = "none";
+                const timelineContainer = document.getElementById("wiz-val-reincidencias-timeline");
+                if (timelineContainer) {
+                    timelineContainer.innerHTML = "";
+                    if (data.reincidencia_texto) {
+                        const lineas = data.reincidencia_texto.split("\n").filter(l => l.trim().length > 0);
+                        lineas.forEach((linea, index) => {
+                            const item = document.createElement("div");
+                            item.className = "timeline-item-wizard warning";
+                            item.innerHTML = `<div class="timeline-date">Evento ${index + 1}</div><div class="timeline-desc">${formatearRespuestaChat(linea)}</div>`;
+                            timelineContainer.appendChild(item);
+                        });
                     }
                 }
-
-                // Trazabilidad temporal
-                let tHtml = "";
-                if (localData.fecha_infraccion) tHtml += `<div class="trazabilidad-item"><strong>${localData.fecha_infraccion.split("T")[0]}</strong> - Reportado por Oficial.</div>`;
-                if (localData.fecha_envio) tHtml += `<div class="trazabilidad-item"><strong>${localData.fecha_envio.split("T")[0]}</strong> - Notificación generada.</div>`;
-                if (localData.estado_semaforo === "descargo") tHtml += `<div class="trazabilidad-item" style="color:var(--success-green);"><strong>Vía Gmail</strong> - Descargo recibido.</div>`;
                 
-                const elTraz = document.getElementById("wiz-val-trazabilidad");
-                if (elTraz) elTraz.innerHTML = tHtml;
-
-                // Sección C: Descargos
-                const descargosContenedor = document.getElementById("wiz-val-descargos-container");
-                if (descargosContenedor) {
-                    if (localData.estado_semaforo === "descargo") {
-                        descargosContenedor.innerHTML = `
-                            <div class="highlight-callout urgent" style="margin-bottom: 12px;"><strong>📧 Descargo Recibido</strong></div>
-                            <div style="background-color: var(--input-bg); padding:12px; border-radius:6px; border-left:3px solid var(--apm-blue);">
-                                <p style="font-size:12px; margin:0;">${formatearRespuestaChat(data.resumen_descargo)}</p>
-                            </div>`;
-                    } else {
-                        descargosContenedor.innerHTML = `<div class="highlight-callout info">En espera de descargos en el buzón.</div>`;
-                    }
-                }
-                const switchEl = document.getElementById("toggle-automode-switch");
-                if (switchEl) switchEl.checked = (localData.modo_tramite === "AUTOMATICO");
-            }
-            
-            // Sección B: Análisis Legal
-            const elRes = document.getElementById("wiz-val-resumen-infraccion");
-            if (elRes) elRes.innerHTML = formatearRespuestaChat(data.resumen_descargo);
-            
-            const elCrit = document.getElementById("wiz-val-criterio-legal");
-            if (elCrit) elCrit.innerHTML = formatearRespuestaChat(data.analisis_caso);
-
-            const timelineContainer = document.getElementById("wiz-val-reincidencias-timeline");
-            if (timelineContainer) {
-                timelineContainer.innerHTML = "";
-                if (data.reincidencia_texto) {
-                    const lineas = data.reincidencia_texto.split("\n").filter(l => l.trim().length > 0);
-                    lineas.forEach((linea, index) => {
-                        const item = document.createElement("div");
-                        item.className = "timeline-item-wizard warning";
-                        item.innerHTML = `<div class="timeline-date">Evento ${index + 1}</div><div class="timeline-desc">${formatearRespuestaChat(linea)}</div>`;
-                        timelineContainer.appendChild(item);
-                    });
-                }
-            }
-            
-            const elCondR = document.getElementById("panel-txt-conducta-ris");
-            if (elCondR) elCondR.innerText = data.conducta_tabla || "-";
-            
-            const elSancR = document.getElementById("panel-txt-sancion-raw");
-            if (elSancR) elSancR.innerHTML = formatearRespuestaChat(data.sancion_estipulada_tabla);
-            
-            // Sección D: Resolución
-            const elDiasF = document.getElementById("sancion-dias-final");
-            if (elDiasF) elDiasF.value = data.dias_sugeridos;
-            
-            const elCorrB = document.getElementById("panel-txt-correo-borrador");
-            if (elCorrB) elCorrB.value = data.correo_borrador;
-        })
-        .catch(err => {
-            const elLoader = document.getElementById("robot-ia-loader");
-            if (elLoader) elLoader.style.display = "none";
-        });
-    }
+                const elCondR = document.getElementById("panel-txt-conducta-ris");
+                if (elCondR) elCondR.innerText = data.conducta_tabla || "-";
+                
+                const elSancR = document.getElementById("panel-txt-sancion-raw");
+                if (elSancR) elSancR.innerHTML = formatearRespuestaChat(data.sancion_estipulada_tabla);
+                
+                // Sección D: Resolución
+                const elDiasF = document.getElementById("sancion-dias-final");
+                if (elDiasF) elDiasF.value = data.dias_sugeridos;
+                
+                const elCorrB = document.getElementById("panel-txt-correo-borrador");
+                if (elCorrB) elCorrB.value = data.correo_borrador;
+            })
+            .catch(err => {
+                const elLoader = document.getElementById("robot-ia-loader");
+                if (elLoader) elLoader.style.display = "none";
+            });
+        }
 
         function ejecutarAprobacionYSancion() {
             const diasSancion = document.getElementById("sancion-dias-final").value;
