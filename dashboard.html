@@ -1645,11 +1645,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="wizard-navigation">
-                                <button class="btn-pdf-view" id="btn-wiz-prev" onclick="navegarWizard(-1)">⬅️ Anterior</button>
-                                <button class="btn-apm" id="btn-wiz-next" onclick="navegarWizard(1)" style="width:auto; margin:0; padding:8px 16px;">Siguiente ➡️</button>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -1894,175 +1889,6 @@
     </div>
 
     <script>
-
-        // --- PIPELINE FILTERS CALCULATOR ---
-        function calcularFiltrosEtapa(papeletas) {
-            let counts = { PENDIENTE: 0, ESPERA_DESCARGOS: 0, EVALUACION: 0, CERRADO: 0 };
-            papeletas.forEach(p => {
-                const est = p.estado_tramite || "PENDIENTE";
-                if (est === "PENDIENTE") counts.PENDIENTE++;
-                else if (est === "ESPERA_DESCARGOS") counts.ESPERA_DESCARGOS++;
-                else if (est === "DESCARGO_RECIBIDO" || est === "PLAZO_VENCIDO") counts.EVALUACION++;
-                else if (est.indexOf("CERRADO") !== -1) counts.CERRADO++;
-            });
-
-            document.getElementById("pipe-count-all").innerText = papeletas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1).length;
-            document.getElementById("pipe-count-pendiente").innerText = counts.PENDIENTE;
-            document.getElementById("pipe-count-descargos").innerText = counts.ESPERA_DESCARGOS;
-            document.getElementById("pipe-count-evaluacion").innerText = counts.EVALUACION;
-            document.getElementById("pipe-count-cerrados").innerText = counts.CERRADO;
-        }
-
-        function filtrarPorEtapaTramite(etapa) {
-            etapaTramiteActual = etapa;
-            document.querySelectorAll(".pipeline-node").forEach(n => n.classList.remove("active"));
-            if (etapa === "TODOS") {
-                document.getElementById("pipe-all").classList.add("active");
-            } else if (etapa === "HUMANA") {
-                document.getElementById("pipe-evaluacion-humana").classList.add("active");
-            } else if (etapa === "IA") {
-                document.getElementById("pipe-evaluacion-ia").classList.add("active");
-            } else {
-                document.getElementById(`pipe-${etapa.toLowerCase().replace("_", "")}`).classList.add("active");
-            }
-            filtrarYRenderizarTabla();
-        }
-
-        // --- MODIFICADO: RENDERIZAR BANDEJA DE ENTRADA EXCLUYENDO CASOS CERRADOS ---
-        // BUSQUE Y REEMPLACE LA FUNCIÓN 'renderizarTablaFiltrada' POR ESTA:
-function renderizarTablaFiltrada(papeletasFiltradas) {
-    const tbody = document.querySelector("#tabla-control-papeletas tbody");
-    tbody.innerHTML = "";
-
-    const activas = papeletasFiltradas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1);
-
-    if (activas.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;">No se encontraron papeletas activas en esta etapa.</td></tr>`;
-        return;
-    }
-
-    activas.forEach(p => {
-        let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.replace("T", " ") : "-";
-        
-        const tr = document.createElement("tr");
-        tr.className = "clickable-row";
-        tr.id = `row-${p.id_papeleta}`;
-        if (activePapeletaId === p.id_papeleta) {
-            tr.classList.add("active-row");
-        }
-        tr.onclick = function() {
-            document.querySelectorAll("#tabla-control-papeletas tbody tr").forEach(row => row.classList.remove("active-row"));
-            tr.classList.add("active-row");
-            seleccionarPapeletaParaRevision(p.id_papeleta);
-        };
-
-        let descargoBadge = "";
-        if (p.estado_semaforo === "descargo") {
-            descargoBadge = `<span style="color:var(--success-green); font-weight:bold;">✅ Recibido</span>`;
-        } else if (p.estado_semaforo === "vencido") {
-            descargoBadge = `<span style="color:var(--danger-red); font-weight:bold;">❌ Expirado</span>`;
-        } else {
-            descargoBadge = `<span style="color:var(--apm-blue); font-weight:bold;">⏳ Pendiente</span>`;
-        }
-
-        // Definición de las 3 opciones para la columna de envío inicial
-        let notificacionBadge = "";
-        const estEnvio = p.estado_envio ? String(p.estado_envio).trim() : "";
-        if (estEnvio === "Se envió correctamente" || estEnvio === "") {
-            notificacionBadge = `<span style="color:var(--success-green); font-weight:bold;">🟢 Se envió correctamente</span>`;
-        } else if (estEnvio === "Problema con el envío") {
-            notificacionBadge = `<span style="color:var(--danger-red); font-weight:bold;">🔴 Problemas con el envío</span>`;
-        } else {
-            notificacionBadge = `<span style="color:var(--danger-red); font-weight:bold;">🔴 No se envió</span>`;
-        }
-        
-        // Dibujado alineado de las 9 columnas
-        tr.innerHTML = `
-            <td><strong>${p.id_papeleta}</strong></td>
-            <td>${p.infractor}</td>
-            <td>${p.empresa}</td>
-            <td>${p.conducta}</td>
-            <td>${fechaFormat}</td>
-            <td>${notificacionBadge}</td>
-            <td><span class="badge badge-${p.estado_color}">${p.estado_texto}</span></td>
-            <td>${descargoBadge}</td>
-            <td><button class="btn-pdf-view" onclick="abrirVisorPDF('${p.id_papeleta}', event)">📄 PDF</button></td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
-
-        // --- NUEVO: RENDERIZAR TABLA DE CASOS CERRADOS ---
-        function renderizarTablaCasosCerrados(papeletasCerradas) {
-            const tbody = document.querySelector("#tabla-casos-cerrados tbody");
-            tbody.innerHTML = "";
-
-            if (papeletasCerradas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">No hay expedientes cerrados recientemente (Máx 10 días). Use la búsqueda para casos antiguos.</td></tr>`;
-                return;
-            }
-
-            papeletasCerradas.forEach(p => {
-                let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.replace("T", " ") : "-";
-                const tr = document.createElement("tr");
-                tr.className = "clickable-row";
-
-                let driveButton = p.carpeta_drive_url 
-                    ? `<a href="${p.carpeta_drive_url}" target="_blank" class="btn-pdf-view" style="background-color:#107c41; text-decoration:none; display:inline-block; padding:4px 8px;">📂 Drive</a>`
-                    : `<span style="color:gray;">No disponible</span>`;
-
-                tr.innerHTML = `
-                    <td><strong>${p.id_papeleta}</strong></td>
-                    <td>${p.infractor}</td>
-                    <td>${p.empresa}</td>
-                    <td>${p.conducta}</td>
-                    <td>${fechaFormat}</td>
-                    <td><span class="badge badge-green">${p.estado_tramite === "CERRADO_SANCION" ? "SANCIONADO" : "AMONESTADO"}</span></td>
-                    <td>${driveButton}</td>
-                    <td><button class="btn-pdf-view" onclick="abrirVisorPDF('${p.id_papeleta}', event)">📄 PDF</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        // --- NUEVO: EJECUTAR BÚSQUEDA AVANZADA DIRECTAMENTE DESDE LA BASE DE DATOS EXCEL ---
-        function ejecutarBusquedaDBServidor(tipo) {
-            const inputId = tipo === "activo" ? "tabla-buscador-rapido" : "buscador-casos-cerrados";
-            const query = document.getElementById(inputId).value.trim();
-            
-            // Si el campo de búsqueda está vacío, volvemos a filtrar el caché local normal
-            if (query.length === 0) {
-                if (tipo === "activo") {
-                    filtrarYRenderizarTabla();
-                } else {
-                    const cerradasDefault = globalDashboardCache.dashboardData.papeletas.filter(p => p.estado_tramite && p.estado_tramite.indexOf("CERRADO") !== -1);
-                    renderizarTablaCasosCerrados(cerradasDefault);
-                }
-                return;
-            }
-
-            // Realizamos la búsqueda avanzada en el Sheets si el término es mayor a 2 caracteres
-            if (query.length > 2) {
-                const user = sessionStorage.getItem("secure_user_initials");
-                const auth = sessionStorage.getItem("secure_auth_plain");
-
-                fetch(`${CONFIG_WEB_APP_URL}?action=busqueda_avanzada&query=${encodeURIComponent(query)}&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === "success" && data.resultados) {
-                        if (tipo === "activo") {
-                            // Mostrar activos que coincidan en la bandeja de entrada
-                            const activosEncontrados = data.resultados.filter(p => p.estado_tramite.indexOf("CERRADO") === -1);
-                            renderizarTablaFiltrada(activosEncontrados);
-                        } else {
-                            // Mostrar cerrados históricos sin límite de 10 días
-                            const cerradosEncontrados = data.resultados.filter(p => p.estado_tramite.indexOf("CERRADO") !== -1);
-                            renderizarTablaCasosCerrados(cerradosEncontrados);
-                        }
-                    }
-                });
-            }
-        }
         // CAMBIA ESTO CON LA URL DE TU PROPIO GOOGLE APPS SCRIPT IMPLEMENTADO
         const CONFIG_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykGrZsjMZ3ewTIXjuPKqy-UDpOjtFPtT-ebMM_ilC6bf6qwPRcNn1KhdUhrODdYzEBKg/exec";
 
@@ -2268,12 +2094,6 @@ function renderizarTablaFiltrada(papeletasFiltradas) {
             }
         }
 
-        function detectarEnterOTP(event) {
-            if (event.key === "Enter") {
-                verificarCodigoOTP();
-            }
-        }
-
         // --- CONTROL AUTOMATICO / MANUAL DE TRAMITE ---
         function cambiarModoTramiteServidor() {
             if (!activePapeletaId) return;
@@ -2321,6 +2141,16 @@ function renderizarTablaFiltrada(papeletasFiltradas) {
                     sessionStorage.setItem("temp_pass", pass);
                     // Poner foco directamente en el OTP
                     setTimeout(() => document.getElementById("sec-otp").focus(), 150);
+                } else if (data.status === "success") {
+                    // INGRESO DIRECTO DE DESARROLLO (SALTANDO OTP)
+                    sessionStorage.setItem("secure_user_initials", user);
+                    sessionStorage.setItem("secure_auth_plain", pass);
+                    
+                    document.getElementById("login-screen").style.display = "none";
+                    document.getElementById("main-app").style.display = "flex";
+                    document.getElementById("chat-fab-element").style.display = "flex";
+
+                    inicializarDashboardConDatos(data.data);
                 } else if (data.error) {
                     loginError.innerText = data.error;
                     loginError.style.display = "block";
@@ -2427,10 +2257,13 @@ function renderizarTablaFiltrada(papeletasFiltradas) {
                 if (p.estado_tramite && p.estado_tramite.indexOf("CERRADO") !== -1) {
                     totalDias += 15; // Estimado promedio por falta cerrada
                 }
-                if (dniUnicos.has(p.dni)) {
-                    dnisRepetidos.add(p.dni);
-                } else {
-                    dniUnicos.add(p.dni);
+                const dniVal = p.dni ? String(p.dni).trim() : "";
+                if (dniVal) {
+                    if (dniUnicos.has(dniVal)) {
+                        dnisRepetidos.add(dniVal);
+                    } else {
+                        dniUnicos.add(dniVal);
+                    }
                 }
             });
             document.getElementById("kpi-suspension-dias").innerText = `${totalDias} d`;
@@ -2549,7 +2382,7 @@ function renderizarTablaFiltrada(papeletasFiltradas) {
                 else if (est.indexOf("CERRADO") !== -1) counts.CERRADO++;
             });
 
-            document.getElementById("pipe-count-all").innerText = papeletas.length;
+            document.getElementById("pipe-count-all").innerText = papeletas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1).length;
             document.getElementById("pipe-count-pendiente").innerText = counts.PENDIENTE;
             document.getElementById("pipe-count-descargos").innerText = counts.ESPERA_DESCARGOS;
             document.getElementById("pipe-count-evaluacion").innerText = counts.EVALUACION;
@@ -2559,8 +2392,15 @@ function renderizarTablaFiltrada(papeletasFiltradas) {
         function filtrarPorEtapaTramite(etapa) {
             etapaTramiteActual = etapa;
             document.querySelectorAll(".pipeline-node").forEach(n => n.classList.remove("active"));
-            if (etapa === "TODOS") document.getElementById("pipe-all").classList.add("active");
-            else document.getElementById(`pipe-${etapa.toLowerCase().replace("_", "")}`).classList.add("active");
+            if (etapa === "TODOS") {
+                document.getElementById("pipe-all").classList.add("active");
+            } else if (etapa === "HUMANA") {
+                document.getElementById("pipe-evaluacion-humana").classList.add("active");
+            } else if (etapa === "IA") {
+                document.getElementById("pipe-evaluacion-ia").classList.add("active");
+            } else {
+                document.getElementById(`pipe-${etapa.toLowerCase().replace("_", "")}`).classList.add("active");
+            }
             filtrarYRenderizarTabla();
         }
 
@@ -2588,6 +2428,7 @@ function renderizarTablaFiltrada(papeletasFiltradas) {
                 }
             });
         }
+
         function filtrarYRenderizarTabla() {
             if (!globalDashboardCache || !globalDashboardCache.dashboardData || !globalDashboardCache.dashboardData.papeletas) return;
             
@@ -2677,6 +2518,139 @@ function renderizarTablaFiltrada(papeletasFiltradas) {
             }
         }
 
+        function renderizarTablaFiltrada(papeletasFiltradas) {
+            const tbody = document.querySelector("#tabla-control-papeletas tbody");
+            tbody.innerHTML = "";
+
+            const activas = papeletasFiltradas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1);
+
+            if (activas.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;">No se encontraron papeletas activas en esta etapa.</td></tr>`;
+                return;
+            }
+
+            activas.forEach(p => {
+                let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.replace("T", " ") : "-";
+                
+                const tr = document.createElement("tr");
+                tr.className = "clickable-row";
+                tr.id = `row-${p.id_papeleta}`;
+                if (activePapeletaId === p.id_papeleta) {
+                    tr.classList.add("active-row");
+                }
+                tr.onclick = function() {
+                    document.querySelectorAll("#tabla-control-papeletas tbody tr").forEach(row => row.classList.remove("active-row"));
+                    tr.classList.add("active-row");
+                    seleccionarPapeletaParaRevision(p.id_papeleta);
+                };
+
+                let descargoBadge = "";
+                if (p.estado_semaforo === "descargo") {
+                    descargoBadge = `<span style="color:var(--success-green); font-weight:bold;">✅ Recibido</span>`;
+                } else if (p.estado_semaforo === "vencido") {
+                    descargoBadge = `<span style="color:var(--danger-red); font-weight:bold;">❌ Expirado</span>`;
+                } else {
+                    descargoBadge = `<span style="color:var(--apm-blue); font-weight:bold;">⏳ Pendiente</span>`;
+                }
+
+                // Generar de manera limpia el badge de la columna de entrega
+                let notificacionBadge = "";
+                const estEnvio = p.estado_envio ? String(p.estado_envio).trim() : "";
+                if (estEnvio === "Se envió correctamente" || estEnvio === "") {
+                    notificacionBadge = `<span style="color:var(--success-green); font-weight:bold;">🟢 Se envió correctamente</span>`;
+                } else if (estEnvio === "Problema con el envío") {
+                    notificacionBadge = `<span style="color:var(--danger-red); font-weight:bold;">🔴 Problemas con el envío</span>`;
+                } else {
+                    notificacionBadge = `<span style="color:var(--danger-red); font-weight:bold;">🔴 No se envió</span>`;
+                }
+                
+                // Renderizado completo y alineado de las 9 columnas solicitadas
+                tr.innerHTML = `
+                    <td><strong>${p.id_papeleta}</strong></td>
+                    <td>${p.infractor}</td>
+                    <td>${p.empresa}</td>
+                    <td>${p.conducta}</td>
+                    <td>${fechaFormat}</td>
+                    <td>${notificacionBadge}</td>
+                    <td><span class="badge badge-${p.estado_color}">${p.estado_texto}</span></td>
+                    <td>${descargoBadge}</td>
+                    <td><button class="btn-pdf-view" onclick="abrirVisorPDF('${p.id_papeleta}', event)">📄 PDF</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- NUEVO: RENDERIZAR TABLA DE CASOS CERRADOS ---
+        function renderizarTablaCasosCerrados(papeletasCerradas) {
+            const tbody = document.querySelector("#tabla-casos-cerrados tbody");
+            tbody.innerHTML = "";
+
+            if (papeletasCerradas.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">No hay expedientes cerrados recientemente (Máx 10 días). Use la búsqueda para casos antiguos.</td></tr>`;
+                return;
+            }
+
+            papeletasCerradas.forEach(p => {
+                let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.replace("T", " ") : "-";
+                const tr = document.createElement("tr");
+                tr.className = "clickable-row";
+
+                let driveButton = p.carpeta_drive_url 
+                    ? `<a href="${p.carpeta_drive_url}" target="_blank" class="btn-pdf-view" style="background-color:#107c41; text-decoration:none; display:inline-block; padding:4px 8px;">📂 Drive</a>`
+                    : `<span style="color:gray;">No disponible</span>`;
+
+                tr.innerHTML = `
+                    <td><strong>${p.id_papeleta}</strong></td>
+                    <td>${p.infractor}</td>
+                    <td>${p.empresa}</td>
+                    <td>${p.conducta}</td>
+                    <td>${fechaFormat}</td>
+                    <td><span class="badge badge-green">${p.estado_tramite === "CERRADO_SANCION" ? "SANCIONADO" : "AMONESTADO"}</span></td>
+                    <td>${driveButton}</td>
+                    <td><button class="btn-pdf-view" onclick="abrirVisorPDF('${p.id_papeleta}', event)">📄 PDF</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- NUEVO: EJECUTAR BÚSQUEDA AVANZADA DIRECTAMENTE DESDE LA BASE DE DATOS EXCEL ---
+        function ejecutarBusquedaDBServidor(tipo) {
+            const inputId = tipo === "activo" ? "tabla-buscador-rapido" : "buscador-casos-cerrados";
+            const query = document.getElementById(inputId).value.trim();
+            
+            // Si el campo de búsqueda está vacío, volvemos a filtrar el caché local normal
+            if (query.length === 0) {
+                if (tipo === "activo") {
+                    filtrarYRenderizarTabla();
+                } else {
+                    const cerradasDefault = globalDashboardCache.dashboardData.papeletas.filter(p => p.estado_tramite && p.estado_tramite.indexOf("CERRADO") !== -1);
+                    renderizarTablaCasosCerrados(cerradasDefault);
+                }
+                return;
+            }
+
+            // Realizamos la búsqueda avanzada en el Sheets si el término es mayor a 2 caracteres
+            if (query.length > 2) {
+                const user = sessionStorage.getItem("secure_user_initials");
+                const auth = sessionStorage.getItem("secure_auth_plain");
+
+                fetch(`${CONFIG_WEB_APP_URL}?action=busqueda_avanzada&query=${encodeURIComponent(query)}&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "success" && data.resultados) {
+                        if (tipo === "activo") {
+                            // Mostrar activos que coincidan en la bandeja de entrada
+                            const activosEncontrados = data.resultados.filter(p => p.estado_tramite.indexOf("CERRADO") === -1);
+                            renderizarTablaFiltrada(activosEncontrados);
+                        } else {
+                            // Mostrar cerrados históricos sin límite de 10 días
+                            const cerradosEncontrados = data.resultados.filter(p => p.estado_tramite.indexOf("CERRADO") !== -1);
+                            renderizarTablaCasosCerrados(cerradosEncontrados);
+                        }
+                    }
+                });
+            }
+        }
 
         function renderizarTarjetasFiltradas(papeletasFiltradas) {
             const container = document.getElementById("tarjetas-papeletas-contenedor");
@@ -3153,55 +3127,32 @@ function renderizarTablaFiltrada(papeletasFiltradas) {
 
         // --- GENERAR INFORME SEMANAL IA DE PATRONES (INTEGRACIÓN CON LOADER MODAL) ---
         function generarInformeSemanalIA() {
-    const btn = document.getElementById("btn-informe-semanal");
-    const user = sessionStorage.getItem("secure_user_initials");
-    const auth = sessionStorage.getItem("secure_auth_plain");
+            const btn = document.getElementById("btn-informe-semanal");
+            const user = sessionStorage.getItem("secure_user_initials");
+            const auth = sessionStorage.getItem("secure_auth_plain");
+            const originalText = btn.innerText;
 
-    btn.disabled = true;
-    mostrarLoaderModal("Procesando su informe de auditoría semanal con la IA de Gemini. Esto puede demorar unos segundos...");
+            btn.disabled = true;
+            mostrarLoaderModal("Procesando su informe de auditoría semanal con la IA de Gemini. Esto puede demorar unos segundos...");
 
-    fetch(`${CONFIG_WEB_APP_URL}?action=generar_informe_ia_semanal&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
-    .then(res => res.json())
-    .then(data => {
-        ocultarLoaderModal();
-        btn.disabled = false;
-        if (data.respuesta) {
-            // Direccionamos el resultado al cuerpo del nuevo modal
-            document.getElementById("modal-cuerpo-informe-semanal").innerHTML = formatearRespuestaChat(data.respuesta);
-            document.getElementById("modal-informe-semanal-ia").style.display = "flex";
-        } else {
-            alert("No se pudo generar el análisis de la IA.");
+            fetch(`${CONFIG_WEB_APP_URL}?action=generar_informe_ia_semanal&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
+            .then(res => res.json())
+            .then(data => {
+                ocultarLoaderModal();
+                btn.disabled = false;
+                if (data.respuesta) {
+                    document.getElementById("noticia-fecha").innerText = "INFORME SEMANAL IA - " + new Date().toLocaleDateString();
+                    document.getElementById("noticia-cuerpo").innerHTML = formatearRespuestaChat(data.respuesta);
+                } else {
+                    alert("No se pudo generar el análisis de la IA.");
+                }
+            })
+            .catch(err => {
+                ocultarLoaderModal();
+                btn.disabled = false;
+                alert("Error de conexión con la IA: " + err.toString());
+            });
         }
-    })
-    .catch(err => {
-        ocultarLoaderModal();
-        btn.disabled = false;
-        alert("Error de conexión con la IA: " + err.toString());
-    });
-}
-
-// Funciones para controlar la apertura, cierre y maximizado del modal
-function cerrarModalInformeSemanal() {
-    document.getElementById("modal-informe-semanal-ia").style.display = "none";
-    // Restablecer el tamaño normal por defecto al cerrar
-    const box = document.getElementById("modal-box-informe-semanal");
-    box.style.maxWidth = "800px";
-    box.style.height = "auto";
-    box.style.maxHeight = "85%";
-}
-
-function togglePantallaCompletaInforme() {
-    const box = document.getElementById("modal-box-informe-semanal");
-    if (box.style.maxWidth === "100%") {
-        box.style.maxWidth = "800px";
-        box.style.height = "auto";
-        box.style.maxHeight = "85%";
-    } else {
-        box.style.maxWidth = "100%";
-        box.style.height = "100%";
-        box.style.maxHeight = "100%";
-    }
-}
 
         // --- LINEA DE TIEMPO CHART.JS ---
         function renderizarTimelineChart(papeletas) {
@@ -3219,7 +3170,7 @@ function togglePantallaCompletaInforme() {
             
             papeletas.forEach(p => {
                 if (p.fecha_envio) {
-                    let key = String(p.fecha_envio).split("T")[0];
+                    let key = String(p.fecha_envio).split(" ")[0].split("T")[0]; // Modificación: soporte de espacios y "T"
                     if (countsByDay[key] !== undefined) {
                         countsByDay[key]++;
                     }
@@ -3263,7 +3214,7 @@ function togglePantallaCompletaInforme() {
             });
         }
 
-        // --- KPI CONTRATISTAS LÓGICA ---
+        // --- COMPLETAR: KPI CONTRATISTAS LÓGICA ---
         function renderizarKpisContratistas(papeletas) {
             const container = document.getElementById("lista-kpi-contratistas");
             container.innerHTML = "";
@@ -3356,24 +3307,75 @@ function togglePantallaCompletaInforme() {
                 areaMensajes.scrollTop = areaMensajes.scrollHeight;
             });
         }
+
+        // --- NUEVO: GUARDAR EL BORRADOR EDITADO POR LA SECRETARIA (Columna N de Sheets) ---
+        // Se ejecuta de manera asíncrona al dar clic en el botón de la sección D del panel lateral
+        function guardarBorradorResolucion() {
+            if (!activePapeletaId) return;
+            
+            const diasSancion = document.getElementById("sancion-dias-final").value;
+            const correoFinal = document.getElementById("panel-txt-correo-borrador").value;
+            
+            mostrarLoaderModal("Guardando borrador editado en el servidor...");
+            
+            const user = sessionStorage.getItem("secure_user_initials");
+            const auth = sessionStorage.getItem("secure_auth_plain");
+            
+            const payload = {
+                action: "save_draft",
+                user: user,
+                auth: auth,
+                id: activePapeletaId,
+                dias: diasSancion,
+                correo: correoFinal
+            };
+            
+            fetch(CONFIG_WEB_APP_URL + "?action=save_draft", {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                ocultarLoaderModal();
+                alert("✅ ¡Borrador guardado exitosamente en Google Sheets!");
+                // Actualizar caché local
+                const index = globalDashboardCache.dashboardData.papeletas.findIndex(p => p.id_papeleta === activePapeletaId);
+                if (index !== -1) {
+                    let cache = {};
+                    try {
+                        if (globalDashboardCache.dashboardData.papeletas[index].ia_analisis_cache) {
+                            cache = JSON.parse(globalDashboardCache.dashboardData.papeletas[index].ia_analisis_cache);
+                        }
+                    } catch(e) {}
+                    cache.dias_sugeridos = parseInt(diasSancion, 10);
+                    cache.correo_borrador = correoFinal;
+                    globalDashboardCache.dashboardData.papeletas[index].ia_analisis_cache = JSON.stringify(cache);
+                }
+            })
+            .catch(err => {
+                ocultarLoaderModal();
+                alert("Error de conexión al guardar borrador: " + err.toString());
+            });
+        }
     </script>
     <!-- MODAL PARA REPORTE SEMANAL DE PATRONES IA (PERSISTENTE Y EXPANDIBLE) -->
-<div class="modal-overlay" id="modal-informe-semanal-ia" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 4500; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;">
-    <div class="modal-box" id="modal-box-informe-semanal" style="background: var(--card-bg); color: var(--text-color); border-radius: 8px; width: 100%; max-width: 800px; max-height: 85%; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: all 0.3s ease;">
-        <div style="background-color: var(--apm-dark-blue); color: white; padding: 15px 20px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; border-top-left-radius: 8px; border-top-right-radius: 8px;">
-            <span>📰 Informe Semanal de Patrones de Seguridad (IA)</span>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <button onclick="togglePantallaCompletaInforme()" style="background: none; border: 1px solid white; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold;">⬜ Ampliar</button>
-                <span style="cursor:pointer; font-size: 20px;" onclick="cerrarModalInformeSemanal()">✕</span>
+    <div class="modal-overlay" id="modal-informe-semanal-ia" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 4500; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;">
+        <div class="modal-box" id="modal-box-informe-semanal" style="background: var(--card-bg); color: var(--text-color); border-radius: 8px; width: 100%; max-width: 800px; max-height: 85%; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: all 0.3s ease;">
+            <div style="background-color: var(--apm-dark-blue); color: white; padding: 15px 20px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; border-top-left-radius: 8px; border-top-right-radius: 8px;">
+                <span>📰 Informe Semanal de Patrones de Seguridad (IA)</span>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button onclick="togglePantallaCompletaInforme()" style="background: none; border: 1px solid white; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold;">⬜ Ampliar</button>
+                    <span style="cursor:pointer; font-size: 20px;" onclick="cerrarModalInformeSemanal()">✕</span>
+                </div>
+            </div>
+            <div style="flex: 1; padding: 20px; overflow-y: auto; font-family: Georgia, serif; font-size: 14px; line-height: 1.6; text-align: justify;" id="modal-cuerpo-informe-semanal">
+                <!-- El texto del informe se cargará aquí -->
+            </div>
+            <div style="padding: 15px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; background: var(--bg-color); border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
+                <button class="btn-pdf-view" onclick="cerrarModalInformeSemanal()" style="background-color: var(--danger-red);">Cerrar</button>
             </div>
         </div>
-        <div style="flex: 1; padding: 20px; overflow-y: auto; font-family: Georgia, serif; font-size: 14px; line-height: 1.6; text-align: justify;" id="modal-cuerpo-informe-semanal">
-            <!-- El texto del informe se cargará aquí -->
-        </div>
-        <div style="padding: 15px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; background: var(--bg-color); border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
-            <button class="btn-pdf-view" onclick="cerrarModalInformeSemanal()" style="background-color: var(--danger-red);">Cerrar</button>
-        </div>
     </div>
-</div>
 </body>
 </html>
