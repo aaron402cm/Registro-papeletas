@@ -1338,6 +1338,27 @@
             height: 50px;
             animation: spin 1s linear infinite;
         }
+        /* --- ESTILOS DE SUB-PESTAÑAS DE EXPEDIENTE RIS --- */
+        button.sub-tab-link {
+            flex: 1;
+            padding: 8px 4px;
+            font-size: 11px;
+            font-weight: bold;
+            border: none;
+            background: none;
+            border-radius: 4px;
+            color: #6c757d;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        body.dark-theme button.sub-tab-link {
+            color: #94a3b8;
+        }
+        button.sub-tab-link.active {
+            background-color: var(--card-bg) !important;
+            color: var(--apm-orange) !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        }
     </style>
 </head>
 <body>
@@ -1523,23 +1544,106 @@
                             <p>Seleccione una papeleta activa para cargar su trazabilidad e iniciar el análisis de IA.</p>
                         </div>
 
-                        <div id="panel-lateral-activo" style="display: none;">
-                            <h3 style="margin-top:0; color:var(--apm-orange); font-size: 16px; border-bottom: 2px solid var(--apm-blue); padding-bottom:6px; display: flex; justify-content: space-between;">
-                                <span>🚀 Instrucción del Expediente</span>
-                                <span id="lbl-wizard-paso-actual" style="font-size: 11px; background-color: var(--apm-blue); color: white; padding: 2px 8px; border-radius: 4px;">Paso 1/6</span>
-                            </h3>
+                        <!-- SECCIONES EN ACORDEÓN (A, B, C, D) - REDISEÑO PROFESIONAL -->
+        <div id="panel-lateral-activo" style="display: none;">
+            <h3 style="margin-top:0; color:var(--apm-orange); font-size: 16px; border-bottom: 2px solid var(--apm-blue); padding-bottom:6px; display: flex; justify-content: space-between; align-items: center;">
+                <span>🚀 Instrucción del Expediente</span>
+                <span id="lbl-estado-papeleta-badge" class="badge badge-green">-</span>
+            </h3>
 
-                            <div style="position: relative; display: flex; justify-content: space-between; align-items: center; margin: 15px 0 20px 0;">
-                                <div class="wizard-progress-bar-line">
-                                    <div class="wizard-progress-line-fill" id="wizard-progress-bar-fill"></div>
-                                </div>
-                                <div class="wizard-step-node active" id="node-step-1">1</div>
-                                <div class="wizard-step-node" id="node-step-2">2</div>
-                                <div class="wizard-step-node" id="node-step-3">3</div>
-                                <div class="wizard-step-node" id="node-step-4">4</div>
-                                <div class="wizard-step-node" id="node-step-5">5</div>
-                                <div class="wizard-step-node" id="node-step-6">6</div>
-                            </div>
+            <!-- Control de Modo Automatizado (Siempre visible al inicio del panel) -->
+            <div class="toggle-switch-container" style="display: flex; align-items: center; justify-content: space-between; background: rgba(0,75,135,0.06); padding: 10px; border-radius: 6px; border: 1px solid rgba(0,75,135,0.12); margin-bottom: 12px;">
+                <div>
+                    <strong style="font-size: 12px; color: var(--apm-blue);">Trámite Automatizado (IA)</strong>
+                    <span style="display: block; font-size: 11px; color:#6c757d;">Enviar resolución sola a las 17:00 si no se edita</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="toggle-automode-switch" onchange="cambiarModoTramiteServidor()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <!-- Botones de Sub-pestañas Navegables de un solo clic -->
+            <div style="display: flex; background: rgba(0,75,135,0.08); padding: 4px; border-radius: 6px; gap: 4px; margin-bottom: 15px;">
+                <button class="sub-tab-link active" onclick="cambiarSubTab('A', this)">A. Identificación</button>
+                <button class="sub-tab-link" onclick="cambiarSubTab('B', this)">B. Ley y Sanción</button>
+                <button class="sub-tab-link" onclick="cambiarSubTab('C', this)">C. Descargos</button>
+                <button class="sub-tab-link" onclick="cambiarSubTab('D', this)">D. Resolución</button>
+            </div>
+
+            <!-- CONTENEDORES DE SECCIONES -->
+            <div id="secciones-panes-container">
+                
+                <!-- SECCIÓN A: IDENTIFICACIÓN Y TRAZABILIDAD -->
+                <div class="wizard-step-pane active" id="pane-section-A">
+                    <div class="panel-section-title">Datos del Expediente General</div>
+                    <table class="compact-table" style="margin-bottom: 12px;">
+                        <tbody>
+                            <tr><td class="label-cell">ID Expediente:</td><td id="wiz-val-id" style="font-weight: bold;">-</td></tr>
+                            <tr><td class="label-cell">Conductor:</td><td id="wiz-val-infractor">-</td></tr>
+                            <tr><td class="label-cell">Empresa:</td><td id="wiz-val-empresa">-</td></tr>
+                            <tr><td class="label-cell">Conducta:</td><td id="wiz-val-conducta" style="font-style:italic;">-</td></tr>
+                        </tbody>
+                    </table>
+                    
+                    <a href="#" target="_blank" id="btn-abrir-carpeta-drive" class="btn-drive-link" style="margin-bottom: 15px;">
+                        📂 Abrir Carpeta del Expediente en Drive
+                    </a>
+
+                    <p style="font-weight: bold; font-size: 12px; margin-top: 15px; margin-bottom: 5px;">📍 Trazabilidad e Historial de Acciones:</p>
+                    <div class="trazabilidad-timeline" id="wiz-val-trazabilidad"></div>
+                </div>
+
+                <!-- SECCIÓN B: ANÁLISIS LEGAL E HISTORIAL APN -->
+                <div class="wizard-step-pane" id="pane-section-B">
+                    <div class="panel-section-title">Infracción APN Asociada</div>
+                    <table class="compact-table" style="margin-bottom: 12px;">
+                        <tbody>
+                            <tr><td class="label-cell" style="vertical-align: top;">Conducta RIS:</td><td id="panel-txt-conducta-ris" style="font-weight: bold; color: var(--apm-blue);">-</td></tr>
+                            <tr><td class="label-cell">Graduación:</td><td><span id="panel-txt-graduacion-ris" class="badge">-</span></td></tr>
+                        </tbody>
+                    </table>
+                    
+                    <div style="margin-bottom: 12px;">
+                        <strong>Sanción Estipulada en Reglamento APN:</strong>
+                        <span id="panel-txt-sancion-raw" style="white-space: pre-wrap; display: block; background: var(--input-bg); padding: 8px; border: 1px solid var(--border-color); border-radius:4px; margin-top:5px; line-height:1.4; font-size: 11px;">-</span>
+                    </div>
+
+                    <div class="panel-section-title">Análisis e Interpretación Legal RIS (IA)</div>
+                    <div style="background-color: var(--input-bg); padding: 10px; border-radius: 6px; border-left: 3px solid var(--apm-blue); font-size: 12px; line-height: 1.4; margin-bottom: 12px;" id="wiz-val-criterio-legal">-</div>
+
+                    <div class="panel-section-title">⚠️ Historial de Reincidencias Detectadas</div>
+                    <div class="vertical-timeline" id="wiz-val-reincidencias-timeline"></div>
+                </div>
+
+                <!-- SECCIÓN C: DESCARGOS Y EVALUACIÓN IA -->
+                <div class="wizard-step-pane" id="pane-section-C">
+                    <div class="panel-section-title">Evaluación de Descargos y Alegatos</div>
+                    <div id="wiz-val-descargos-container"></div>
+
+                    <div class="panel-section-title" style="margin-top: 15px;">Resumen Crítico de Hechos (IA)</div>
+                    <div style="background-color: var(--input-bg); padding: 10px; border-radius: 6px; border-left: 3px solid var(--apm-orange); font-size: 12px; line-height: 1.4;" id="wiz-val-resumen-infraccion">-</div>
+                </div>
+
+                <!-- SECCIÓN D: RESOLUCIÓN FINAL Y CORREO BORRADOR -->
+                <div class="wizard-step-pane" id="pane-section-D">
+                    <div class="panel-section-title">Resolución Final y Notificación</div>
+                    <div class="sancion-input-group" style="background: rgba(224, 91, 27, 0.05); padding: 10px; border-radius: 6px; border: 1px solid rgba(224, 91, 27, 0.2); margin-bottom: 12px;">
+                        <label style="font-size:12px; font-weight:bold; color: var(--apm-orange);">Suspender Acceso (Días):</label>
+                        <input type="number" id="sancion-dias-final" min="0" value="0">
+                    </div>
+                    
+                    <p style="margin:4px 0; font-size: 11px; font-weight: bold;">Borrador del Correo Formal (Editable):</p>
+                    <textarea id="panel-txt-correo-borrador" rows="10" style="width: 100%; border: 1px solid var(--border-color); background-color: var(--input-bg); color: var(--text-color); padding: 8px; font-family: inherit; font-size: 11px; border-radius: 4px; box-sizing: border-box; resize: vertical; margin-bottom: 12px;"></textarea>
+
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <button class="btn-apm" style="background-color: var(--apm-blue); flex: 1; padding: 10px;" onclick="guardarBorradorResolucion()">💾 Guardar Borrador</button>
+                        <button class="btn-apm" style="background-color: var(--success-green); flex: 1; padding: 10px;" onclick="ejecutarAprobacionYSancion()">✅ Enviar Resolución</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
 
                             <div id="wizard-panes-container">
                                 <!-- PASO 1: EXPEDIENTE Y TRAZABILIDAD -->
@@ -2578,12 +2682,34 @@
             }
         }
 
-        function seleccionarPapeletaParaRevision(id) {
+        // --- NUEVA FUNCIÓN: CONTROLAR NAVEGACIÓN LIBRE POR SUB-TABS ---
+        function cambiarSubTab(seccion, btn) {
+            // Ocultar todos los paneles de secciones del expediente
+            document.querySelectorAll("#secciones-panes-container .wizard-step-pane").forEach(pane => {
+                pane.classList.remove("active");
+            });
+            // Activar el panel de la sección seleccionada
+            const activePane = document.getElementById(`pane-section-${seccion}`);
+            if (activePane) activePane.classList.add("active");
+
+            // Desactivar todos los botones de sub-pestañas
+            document.querySelectorAll(".sub-tab-link").forEach(b => {
+                b.classList.remove("active");
+            });
+            // Activar el botón presionado
+            btn.classList.add("active");
+        }
+         function seleccionarPapeletaParaRevision(id) {
             activePapeletaId = id;
             document.getElementById("panel-lateral-vacio").style.display = "none";
             document.getElementById("panel-lateral-activo").style.display = "block";
-            wizardPasoActual = 1;
-            actualizarVistaWizard();
+            
+            // Activar automáticamente la Sección A (Identificación) por defecto al abrir un expediente
+            const subTabA = document.querySelector(".sub-tab-link");
+            if (subTabA) {
+                cambiarSubTab('A', subTabA);
+            }
+
             mostrarRobotLoader(id);
 
             const user = sessionStorage.getItem("secure_user_initials");
@@ -2593,7 +2719,7 @@
             .then(res => res.json())
             .then(data => {
                 completarYQuitarRobotLoader();
-                const localData = activeFilteredPapeletas.find(p => String(p.id_papeleta) === String(id));
+                const localData = activeFilteredP_
                 if (localData) {
                     const elInf = document.getElementById("wiz-val-infractor");
                 if (elInf) elInf.innerText = localData.infractor;
