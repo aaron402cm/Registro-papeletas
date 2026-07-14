@@ -2275,19 +2275,37 @@
         }
 
         function calcularFiltrosEtapa(papeletas) {
-            let counts = { PENDIENTE: 0, ESPERA_DESCARGOS: 0, EVALUACION: 0, CERRADO: 0 };
+            let counts = { PENDIENTE: 0, ESPERA_DESCARGOS: 0, HUMANA: 0, IA: 0, CERRADO: 0 };
             papeletas.forEach(p => {
                 const est = p.estado_tramite || "PENDIENTE";
+                const modo = p.modo_tramite || "MANUAL";
                 if (est === "PENDIENTE") counts.PENDIENTE++;
                 else if (est === "ESPERA_DESCARGOS") counts.ESPERA_DESCARGOS++;
-                else if (est === "DESCARGO_RECIBIDO" || est === "PLAZO_VENCIDO") counts.EVALUACION++;
+                else if (est === "DESCARGO_RECIBIDO" || est === "PLAZO_VENCIDO") {
+                    if (modo === "AUTOMATICO") counts.IA++;
+                    else counts.HUMANA++;
+                }
                 else if (est.indexOf("CERRADO") !== -1) counts.CERRADO++;
             });
-            document.getElementById("pipe-count-all").innerText = papeletas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1).length;
-            document.getElementById("pipe-count-pendiente").innerText = counts.PENDIENTE;
-            document.getElementById("pipe-count-descargos").innerText = counts.ESPERA_DESCARGOS;
-            document.getElementById("pipe-count-evaluacion").innerText = counts.EVALUACION;
-            document.getElementById("pipe-count-cerrados").innerText = counts.CERRADO;
+
+            // Comprobación de seguridad contra nulos (Null-Guarding)
+            const elAll = document.getElementById("pipe-count-all");
+            if (elAll) elAll.innerText = papeletas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1).length;
+            
+            const elPen = document.getElementById("pipe-count-pendiente");
+            if (elPen) elPen.innerText = counts.PENDIENTE;
+            
+            const elDes = document.getElementById("pipe-count-descargos");
+            if (elDes) elDes.innerText = counts.ESPERA_DESCARGOS;
+            
+            const elHum = document.getElementById("pipe-count-humana");
+            if (elHum) elHum.innerText = counts.HUMANA;
+            
+            const elIa = document.getElementById("pipe-count-ia");
+            if (elIa) elIa.innerText = counts.IA;
+
+            const elCer = document.getElementById("pipe-count-cerrados");
+            if (elCer) elCer.innerText = counts.CERRADO;
         }
 
         function filtrarPorEtapaTramite(etapa) {
@@ -2523,24 +2541,40 @@
         }
 
         function actualizarVistaWizard() {
-            document.getElementById("lbl-wizard-paso-actual").innerText = `Paso ${wizardPasoActual}/6`;
+            const elLbl = document.getElementById("lbl-wizard-paso-actual");
+            if (elLbl) elLbl.innerText = `Paso ${wizardPasoActual}/6`;
+            
             document.querySelectorAll(".wizard-step-pane").forEach(pane => pane.classList.remove("active"));
-            document.getElementById(`pane-step-${wizardPasoActual}`).classList.add("active");
+            
+            const elPane = document.getElementById(`pane-step-${wizardPasoActual}`);
+            if (elPane) elPane.classList.add("active");
+            
             document.querySelectorAll(".wizard-step-node").forEach((node, idx) => {
                 node.classList.remove("active", "completed");
                 if (idx + 1 === wizardPasoActual) node.classList.add("active");
                 else if (idx + 1 < wizardPasoActual) node.classList.add("completed");
             });
-            document.getElementById("wizard-progress-bar-fill").style.width = `${((wizardPasoActual - 1) / 5) * 100}%`;
-            document.getElementById("btn-wiz-prev").disabled = (wizardPasoActual === 1);
-            document.getElementById("btn-wiz-prev").style.opacity = (wizardPasoActual === 1) ? "0.5" : "1";
+            
+            const elBar = document.getElementById("wizard-progress-bar-fill");
+            if (elBar) elBar.style.width = `${((wizardPasoActual - 1) / 5) * 100}%`;
+            
+            // Si el botón de Anterior no está en el HTML, el script continúa sin tirar error
+            const elBtnPrev = document.getElementById("btn-wiz-prev");
+            if (elBtnPrev) {
+                elBtnPrev.disabled = (wizardPasoActual === 1);
+                elBtnPrev.style.opacity = (wizardPasoActual === 1) ? "0.5" : "1";
+            }
+            
+            // Si el botón de Siguiente no está en el HTML, el script continúa sin tirar error
             const btnNext = document.getElementById("btn-wiz-next");
-            if (wizardPasoActual === 6) {
-                btnNext.innerText = "Finalizar ✨";
-                btnNext.style.backgroundColor = "var(--success-green)";
-            } else {
-                btnNext.innerText = "Siguiente ➡️";
-                btnNext.style.backgroundColor = "var(--apm-blue)";
+            if (btnNext) {
+                if (wizardPasoActual === 6) {
+                    btnNext.innerText = "Finalizar ✨";
+                    btnNext.style.backgroundColor = "var(--success-green)";
+                } else {
+                    btnNext.innerText = "Siguiente ➡️";
+                    btnNext.style.backgroundColor = "var(--apm-blue)";
+                }
             }
         }
 
