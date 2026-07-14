@@ -1544,8 +1544,7 @@
                             <p>Seleccione una papeleta activa para cargar su trazabilidad e iniciar el análisis de IA.</p>
                         </div>
 
-                        
-        <!-- SECCIONES EN ACORDEÓN (A, B, C, D) - REDISEÑO PROFESIONAL LIMPIO -->
+        <!-- SECCIONES EN ACORDEÓN (A, B, C, D) - REDISEÑO PROFESIONAL SIN DUPLICADOS -->
         <div id="panel-lateral-activo" style="display: none;">
             <h3 style="margin-top:0; color:var(--apm-orange); font-size: 16px; border-bottom: 2px solid var(--apm-blue); padding-bottom:6px; display: flex; justify-content: space-between; align-items: center;">
                 <span>🚀 Instrucción del Expediente</span>
@@ -1587,7 +1586,8 @@
                         </tbody>
                     </table>
                     
-                    <a href="#" target="_blank" id="btn-abrir-carpeta-drive" class="btn-drive-link" style="margin-bottom: 15px;">
+                    <!-- Enlace dinámico a Drive (OCULTO POR DEFECTO mediante display: none) -->
+                    <a href="#" target="_blank" id="btn-abrir-carpeta-drive" class="btn-drive-link" style="margin-bottom: 15px; display: none;">
                         📂 Abrir Carpeta del Expediente en Drive
                     </a>
 
@@ -2734,7 +2734,8 @@
 
                     const btnDrive = document.getElementById("btn-abrir-carpeta-drive");
                     if (btnDrive) {
-                        if (localData.carpeta_drive_url) {
+                        // El botón solo se vuelve visible si la celda de Drive en el Excel tiene una dirección válida escrita
+                        if (localData.carpeta_drive_url && localData.carpeta_drive_url.trim() !== "") {
                             btnDrive.href = localData.carpeta_drive_url;
                             btnDrive.style.display = "flex";
                         } else {
