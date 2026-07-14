@@ -1890,6 +1890,8 @@
 
     <script>
         // CAMBIA ESTO CON LA URL DE TU PROPIO GOOGLE APPS SCRIPT IMPLEMENTADO
+        <script>
+        // URL de Google Apps Script Web App
         const CONFIG_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykGrZsjMZ3ewTIXjuPKqy-UDpOjtFPtT-ebMM_ilC6bf6qwPRcNn1KhdUhrODdYzEBKg/exec";
 
         let globalDashboardCache = null; 
@@ -1897,28 +1899,23 @@
         let timelineChartInstance = null;
         
         let activePapeletaId = null;
-        let vistaBandejaActual = "list"; // list o grid
+        let vistaBandejaActual = "list"; 
         let sortColumnaActual = "fecha_envio";
         let sortOrdenAscendente = false;
         let etapaTramiteActual = "TODOS";
         
         let prevPapeletasCount = null;
-
-        // Control de estado del Wizard
         let wizardPasoActual = 1;
 
-        // Función para dar formato visual de negrita y saltos de línea al chat de forma segura
+        // Formateador dinámico de texto para la IA
         function formatearRespuestaChat(texto) {
             if (!texto) return "";
-            
             let seguro = texto
                 .replace(/&/g, "&amp;")
                 .replace(/</g, "&lt;")
                 .replace(/>/g, "&gt;");
-            
             seguro = seguro.replace(/\n/g, "<br>");
             seguro = seguro.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-            
             return seguro;
         }
 
@@ -1933,7 +1930,6 @@
             progress.style.width = "0%";
             title.innerText = `🤖 Procesando Caso ${idExpediente}`;
 
-            // Secuencia interactiva de pasos simulando lectura en tiempo real
             setTimeout(() => { progress.style.width = "20%"; text.innerText = "🤖 Conectando de forma segura con el servidor de APM Terminals..."; }, 200);
             setTimeout(() => { progress.style.width = "45%"; text.innerText = "🔍 Escaneando la descripción del hecho de la papeleta..."; }, 900);
             setTimeout(() => { progress.style.width = "70%"; text.innerText = "⚖️ Cotejando contra el Catálogo de Sanciones de la APN..."; }, 1600);
@@ -1950,29 +1946,22 @@
             }, 600);
         }
 
-        // --- SISTEMA DE INDICADOR DE ESTADO GEMINI (DINÁMICO) ---
+        // --- INDICADOR DE ESTADO GEMINI ---
         function actualizarEstadoGemini(estado) {
             const dot = document.getElementById("gemini-status-dot");
             if (!dot) return;
-            
-            dot.className = "status-dot"; // Reiniciar clases
+            dot.className = "status-dot"; 
             if (estado === "connected") {
                 dot.classList.add("connected");
                 dot.title = "Gemini Conectado (IA Activa)";
-                localStorage.setItem("gemini_status", "connected");
             } else if (estado === "disconnected") {
                 dot.classList.add("disconnected");
-                dot.title = "Gemini Desconectado (Cuota Excedida / Sin Conexión)";
-                localStorage.setItem("gemini_status", "disconnected");
+                dot.title = "Gemini Desconectado";
             } else {
                 dot.classList.add("checking");
-                dot.title = "Verificando Conexión...";
             }
         }
-
-        // Cargar estado inicial guardado
-        const estadoInicialGemini = localStorage.getItem("gemini_status") || "connected";
-        actualizarEstadoGemini(estadoInicialGemini);
+        actualizarEstadoGemini("connected");
 
         // --- MODO OSCURO ---
         function toggleDarkMode() {
@@ -1981,37 +1970,33 @@
             localStorage.setItem("modo_oscuro", esOscuro ? "si" : "no");
             document.getElementById("btn-theme-toggle").innerText = esOscuro ? "☀️" : "🌙";
         }
-
-        // Inicializar preferencia de tema
         if (localStorage.getItem("modo_oscuro") === "si") {
             document.body.classList.add("dark-theme");
-            document.getElementById("btn-theme-toggle").innerText = "☀️";
         }
 
-        // --- SISTEMA DE AUDIO SINTETIZADO (NATIVO) ---
+        // --- AUDIO SINTETIZADO ---
         function reproducirSonidoNotificacion() {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(587.33, ctx.currentTime); // Nota Re5 (D5)
-                osc.frequency.setValueAtTime(880, ctx.currentTime + 0.15); // Nota La5 (A5)
+                osc.frequency.setValueAtTime(587.33, ctx.currentTime); 
+                osc.frequency.setValueAtTime(880, ctx.currentTime + 0.15); 
                 gain.gain.setValueAtTime(0.1, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
                 osc.connect(gain);
                 gain.connect(ctx.destination);
                 osc.start();
                 osc.stop(ctx.currentTime + 0.4);
-            } catch(e) { console.log("Fallo audio nativo: ", e); }
+            } catch(e) {}
         }
 
-        // --- NOTIFICACIONES DROPDOWN ---
         function toggleNotificationDropdown() {
             document.getElementById("notification-dropdown-box").classList.toggle("active");
         }
 
-        // --- SISTEMA DE SINCRONIZACIÓN AUTOMÁTICA (CADA 1 MINUTO) ---
+        // --- SINCRONIZACIÓN AUTOMÁTICA ---
         setInterval(function() {
             if (sessionStorage.getItem("secure_user_initials")) {
                 ejecutarSincronizacionSilenciosa();
@@ -2026,7 +2011,7 @@
             .then(data => {
                 inicializarDashboardConDatos(data);
             })
-            .catch(err => console.log("Sincronización silenciosa fallida: " + err));
+            .catch(err => console.log("Sincronización fallida: " + err));
         }
 
         function forzarSincronizacionManual() {
@@ -2037,7 +2022,7 @@
             btn.innerText = "⏳ Sincronizando...";
             btn.disabled = true;
 
-            fetch(`${CONFIG_WEB_APP_URL}?action=forzar_sincronizacion&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
+            fetch(`${CONFIG_WEB_APP_URL}?user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
             .then(res => res.json())
             .then(data => {
                 inicializarDashboardConDatos(data);
@@ -2046,25 +2031,20 @@
                 btn.disabled = false;
             })
             .catch(err => {
-                alert("Error de sincronización manual: " + err.toString());
+                alert("Error: " + err.toString());
                 btn.innerText = txtOriginal;
                 btn.disabled = false;
             });
         }
 
-        // --- FUNCIÓN DE NAVEGACIÓN ---
         function cambiarPanel(target, btn) {
             document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab-link').forEach(b => b.classList.remove('active'));
             document.getElementById('panel-' + target).classList.add('active');
             btn.classList.add('active');
-            
-            if (target === 'config') {
-                cargarReglasRISDesdeServidor();
-            }
+            if (target === 'config') cargarReglasRISDesdeServidor();
         }
 
-        // --- FUNCIÓN MOSTRAR/OCULTAR CONTRASEÑA EN LOGIN ---
         function toggleLoginPassword() {
             const passInput = document.getElementById("sec-password");
             const toggleBtn = document.getElementById("btn-toggle-password");
@@ -2077,9 +2057,8 @@
             }
         }
 
-        // --- MANEJO DEL MODAL DE PROCESAMIENTO (LOADER MODAL) ---
         function mostrarLoaderModal(texto) {
-            document.getElementById("loading-reporte-texto").innerText = texto || "Procesando su informe, por favor espere...";
+            document.getElementById("loading-reporte-texto").innerText = texto || "Procesando...";
             document.getElementById("loading-reporte-modal").style.display = "flex";
         }
 
@@ -2087,19 +2066,18 @@
             document.getElementById("loading-reporte-modal").style.display = "none";
         }
 
-        // --- ESCUCHADORES DE ENTRADA CON ENTER ---
         function detectarEnterLogin(event) {
-            if (event.key === "Enter") {
-                enviarCredentialsLogin();
-            }
+            if (event.key === "Enter") enviarCredentialsLogin();
         }
 
-        // --- CONTROL AUTOMATICO / MANUAL DE TRAMITE ---
+        function detectarEnterOTP(event) {
+            if (event.key === "Enter") verificarCodigoOTP();
+        }
+
         function cambiarModoTramiteServidor() {
             if (!activePapeletaId) return;
             const switchEl = document.getElementById("toggle-automode-switch");
             const nuevoModo = switchEl.checked ? "AUTOMATICO" : "MANUAL";
-            
             const user = sessionStorage.getItem("secure_user_initials");
             const auth = sessionStorage.getItem("secure_auth_plain");
 
@@ -2108,14 +2086,12 @@
             .then(data => {
                 if (data.status === "success") {
                     alert(`El trámite se ha configurado en modo: ${nuevoModo}`);
-                    // Actualizar en caché local
                     const index = globalDashboardCache.dashboardData.papeletas.findIndex(p => p.id_papeleta === activePapeletaId);
                     if (index !== -1) globalDashboardCache.dashboardData.papeletas[index].modo_tramite = nuevoModo;
                 }
             });
         }
 
-        // --- SISTEMA DE INGRESO SEGURO CON 2FA REAL ---
         function enviarCredentialsLogin() {
             const user = document.getElementById("sec-username").value.trim().toUpperCase();
             const pass = document.getElementById("sec-password").value.trim();
@@ -2123,7 +2099,7 @@
             const loginError = document.getElementById("login-error");
 
             if (!user || !pass) {
-                alert("Por favor, ingrese sus iniciales y contraseña.");
+                alert("Ingrese sus credenciales.");
                 return;
             }
 
@@ -2139,17 +2115,13 @@
                     document.getElementById("otp-section").style.display = "block";
                     sessionStorage.setItem("temp_user", user);
                     sessionStorage.setItem("temp_pass", pass);
-                    // Poner foco directamente en el OTP
                     setTimeout(() => document.getElementById("sec-otp").focus(), 150);
                 } else if (data.status === "success") {
-                    // INGRESO DIRECTO DE DESARROLLO (SALTANDO OTP)
                     sessionStorage.setItem("secure_user_initials", user);
                     sessionStorage.setItem("secure_auth_plain", pass);
-                    
                     document.getElementById("login-screen").style.display = "none";
                     document.getElementById("main-app").style.display = "flex";
                     document.getElementById("chat-fab-element").style.display = "flex";
-
                     inicializarDashboardConDatos(data.data);
                 } else if (data.error) {
                     loginError.innerText = data.error;
@@ -2158,81 +2130,37 @@
             })
             .catch(err => {
                 loader.style.display = "none";
-                loginError.innerText = "Error de red al solicitar OTP: " + err.toString();
+                loginError.innerText = "Error: " + err.toString();
                 loginError.style.display = "block";
             });
         }
 
-        // --- VERIFICAR OTP ---
         function verificarCodigoOTP() {
             const otp = document.getElementById("sec-otp").value.trim();
             const loader = document.getElementById("login-loader");
             const loginError = document.getElementById("login-error");
             const user = sessionStorage.getItem("temp_user");
 
-            if (otp.length < 6) {
-                alert("Por favor, ingrese el código OTP de 6 dígitos.");
-                return;
-            }
-
-            loader.style.display = "block";
-            loginError.style.display = "none";
-
             fetch(`${CONFIG_WEB_APP_URL}?action=verify_otp&user=${encodeURIComponent(user)}&otp=${encodeURIComponent(otp)}`)
             .then(res => res.json())
             .then(data => {
-                loader.style.display = "none";
                 if (data.status === "success") {
                     sessionStorage.setItem("secure_user_initials", user);
                     sessionStorage.setItem("secure_auth_plain", sessionStorage.getItem("temp_pass"));
-                    
                     document.getElementById("login-screen").style.display = "none";
                     document.getElementById("main-app").style.display = "flex";
                     document.getElementById("user-display").innerText = user;
-                    
                     document.getElementById("chat-fab-element").style.display = "flex";
-
                     inicializarDashboardConDatos(data.data);
-                } else if (data.error) {
-                    loginError.innerText = data.error;
+                } else {
+                    loginError.innerText = data.error || "Código incorrecto";
                     loginError.style.display = "block";
                 }
-            })
-            .catch(err => {
-                loader.style.display = "none";
-                loginError.innerText = "Error de red al verificar OTP: " + err.toString();
-                loginError.style.display = "block";
             });
         }
 
-        function cerrarSesionDashboard() {
-            sessionStorage.clear();
-            document.getElementById("main-app").style.display = "none";
-            document.getElementById("login-screen").style.display = "flex";
-            document.getElementById("credentials-section").style.display = "block";
-            document.getElementById("otp-section").style.display = "none";
-            document.getElementById("sec-username").value = "";
-            document.getElementById("sec-password").value = "";
-            document.getElementById("sec-otp").value = "";
-            
-            // Restablecer tipo del input de contraseña
-            document.getElementById("sec-password").type = "password";
-            document.getElementById("btn-toggle-password").innerText = "👁️";
-            
-            // Ocultar estados activos del panel lateral
-            document.getElementById("panel-lateral-activo").style.display = "none";
-            document.getElementById("panel-lateral-vacio").style.display = "block";
-            activePapeletaId = null;
-            
-            document.getElementById("chat-fab-element").style.display = "none";
-            document.getElementById("chat-flotante-ris").style.display = "none";
-        }
-
-        // --- POBLADO DINÁMICO DE PANELES ---
         function inicializarDashboardConDatos(data) {
             globalDashboardCache = data; 
-            
-            // Sonido si detecta nuevas papeletas ingresadas en el sistema
             const totalActual = data.dashboardData.papeletas.length;
             if (prevPapeletasCount !== null && totalActual > prevPapeletasCount) {
                 reproducirSonidoNotificacion();
@@ -2248,26 +2176,21 @@
             document.getElementById("kpi-mes").innerText = data.dashboardData.kpis.esteMes || 0;
             document.getElementById("kpi-absueltas").innerText = data.dashboardData.kpis.absueltas || 0;
 
-            // Calcular Días de Suspensión acumulados y Tasa de Reincidencia Crítica
             let totalDias = 0;
             let dniUnicos = new Set();
             let dnisRepetidos = new Set();
 
             data.dashboardData.papeletas.forEach(p => {
                 if (p.estado_tramite && p.estado_tramite.indexOf("CERRADO") !== -1) {
-                    totalDias += 15; // Estimado promedio por falta cerrada
+                    totalDias += 15; 
                 }
                 const dniVal = p.dni ? String(p.dni).trim() : "";
                 if (dniVal) {
-                    if (dniUnicos.has(dniVal)) {
-                        dnisRepetidos.add(dniVal);
-                    } else {
-                        dniUnicos.add(dniVal);
-                    }
+                    if (dniUnicos.has(dniVal)) dnisRepetidos.add(dniVal);
+                    else dniUnicos.add(dniVal);
                 }
             });
             document.getElementById("kpi-suspension-dias").innerText = `${totalDias} d`;
-            
             const tasaReincidencia = dniUnicos.size > 0 ? Math.round((dnisRepetidos.size / dniUnicos.size) * 100) : 0;
             document.getElementById("kpi-reincidencia-tasa").innerText = `${tasaReincidencia}%`;
 
@@ -2279,11 +2202,10 @@
                         <li class="agents-list-item">
                             <span>#${idx+1} Oficial <strong>${ag.agente}</strong></span>
                             <div><span class="agent-rank">${ag.count} papeleta${ag.count !== 1 ? 's' : ''}</span></div>
-                        </li>
-                    `;
+                        </li>`;
                 });
             } else {
-                listaAgentes.innerHTML = `<li class="agents-list-item">Sin datos de oficiales disponibles.</li>`;
+                listaAgentes.innerHTML = `<li class="agents-list-item">Sin datos.</li>`;
             }
 
             const listaConductas = document.getElementById("lista-kpi-conductas");
@@ -2293,12 +2215,9 @@
                     listaConductas.innerHTML += `
                         <li class="agents-list-item">
                             <span>${c.conducta}</span>
-                            <strong>${c.count} caso${c.count !== 1 ? 's' : ''}</strong>
-                        </li>
-                    `;
+                            <strong>${c.count} casos</strong>
+                        </li>`;
                 });
-            } else {
-                listaConductas.innerHTML = `<li class="agents-list-item">Sin estadísticas disponibles.</li>`;
             }
 
             renderizarKpisContratistas(data.dashboardData.papeletas);
@@ -2310,12 +2229,10 @@
             }
         }
 
-        // --- SISTEMA DE ALERTAS Y NOTIFICACIONES INTERNAS (CAMPANA) ---
         function calcularNotificacionesYAlertas(papeletas) {
             const container = document.getElementById("notification-items-container");
             const bellBadge = document.getElementById("bell-badge");
             container.innerHTML = "";
-
             let alertas = [];
             let vencidasCount = 0;
             let ultimoDiaCount = 0;
@@ -2327,15 +2244,9 @@
                 if (p.estado_semaforo === "descargo") descargosCount++;
             });
 
-            if (vencidasCount > 0) {
-                alertas.push(`<div class="notification-item" onclick="cambiarFiltroRapido('vencido')">⚠️ <strong>${vencidasCount} papeletas</strong> tienen el plazo de descargo vencido.</div>`);
-            }
-            if (ultimoDiaCount > 0) {
-                alertas.push(`<div class="notification-item" onclick="cambiarFiltroRapido('ultimo_dia')">⏰ <strong>${ultimoDiaCount} papeletas</strong> están en su último día de plazo de descargo.</div>`);
-            }
-            if (descargosCount > 0) {
-                alertas.push(`<div class="notification-item" onclick="cambiarFiltroRapido('descargo')">📩 Se han recibido <strong>${descargosCount} descargos</strong> pendientes de revisión.</div>`);
-            }
+            if (vencidasCount > 0) alertas.push(`<div class="notification-item" onclick="cambiarFiltroRapido('vencido')">⚠️ <strong>${vencidasCount} papeletas</strong> vencidas.</div>`);
+            if (ultimoDiaCount > 0) alertas.push(`<div class="notification-item" onclick="cambiarFiltroRapido('ultimo_dia')">⏰ <strong>${ultimoDiaCount} papeletas</strong> en último día.</div>`);
+            if (descargosCount > 0) alertas.push(`<div class="notification-item" onclick="cambiarFiltroRapido('descargo')">📩 Se recibieron <strong>${descargosCount} descargos</strong>.</div>`);
 
             if (alertas.length > 0) {
                 bellBadge.innerText = alertas.length;
@@ -2343,7 +2254,7 @@
                 container.innerHTML = alertas.join("");
             } else {
                 bellBadge.style.display = "none";
-                container.innerHTML = `<div class="notification-item">No hay alertas urgentes pendientes en la bandeja de entrada.</div>`;
+                container.innerHTML = `<div class="notification-item">Sin alertas.</div>`;
             }
         }
 
@@ -2353,25 +2264,18 @@
             filtrarYRenderizarTabla();
         }
 
-        // --- FILTROS DINÁMICOS Y BUSCADOR ---
         function poblarFiltrosDinamicos(papeletas) {
             const selectEmpresa = document.getElementById("filtro-empresa");
             selectEmpresa.innerHTML = '<option value="">Filtro Empresa</option>';
-            
             let empresas = new Set();
-            papeletas.forEach(p => {
-                if (p.empresa) empresas.add(p.empresa);
-            });
-            
+            papeletas.forEach(p => { if (p.empresa) empresas.add(p.empresa); });
             empresas.forEach(emp => {
                 const opt = document.createElement("option");
-                opt.value = emp;
-                opt.innerText = emp;
+                opt.value = emp; opt.innerText = emp;
                 selectEmpresa.appendChild(opt);
             });
         }
 
-        // --- PIPELINE FILTERS CALCULATOR ---
         function calcularFiltrosEtapa(papeletas) {
             let counts = { PENDIENTE: 0, ESPERA_DESCARGOS: 0, EVALUACION: 0, CERRADO: 0 };
             papeletas.forEach(p => {
@@ -2381,7 +2285,6 @@
                 else if (est === "DESCARGO_RECIBIDO" || est === "PLAZO_VENCIDO") counts.EVALUACION++;
                 else if (est.indexOf("CERRADO") !== -1) counts.CERRADO++;
             });
-
             document.getElementById("pipe-count-all").innerText = papeletas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1).length;
             document.getElementById("pipe-count-pendiente").innerText = counts.PENDIENTE;
             document.getElementById("pipe-count-descargos").innerText = counts.ESPERA_DESCARGOS;
@@ -2392,26 +2295,16 @@
         function filtrarPorEtapaTramite(etapa) {
             etapaTramiteActual = etapa;
             document.querySelectorAll(".pipeline-node").forEach(n => n.classList.remove("active"));
-            if (etapa === "TODOS") {
-                document.getElementById("pipe-all").classList.add("active");
-            } else if (etapa === "HUMANA") {
-                document.getElementById("pipe-evaluacion-humana").classList.add("active");
-            } else if (etapa === "IA") {
-                document.getElementById("pipe-evaluacion-ia").classList.add("active");
-            } else {
-                document.getElementById(`pipe-${etapa.toLowerCase().replace("_", "")}`).classList.add("active");
-            }
+            if (etapa === "TODOS") document.getElementById("pipe-all").classList.add("active");
+            else if (etapa === "HUMANA") document.getElementById("pipe-evaluacion-humana").classList.add("active");
+            else if (etapa === "IA") document.getElementById("pipe-evaluacion-ia").classList.add("active");
+            else document.getElementById(`pipe-${etapa.toLowerCase().replace("_", "")}`).classList.add("active");
             filtrarYRenderizarTabla();
         }
 
-        // --- SISTEMA DE ORDENADO DE TABLA ---
         function ordenarTablaPor(columna) {
-            if (sortColumnaActual === columna) {
-                sortOrdenAscendente = !sortOrdenAscendente;
-            } else {
-                sortColumnaActual = columna;
-                sortOrdenAscendente = true;
-            }
+            if (sortColumnaActual === columna) sortOrdenAscendente = !sortOrdenAscendente;
+            else { sortColumnaActual = columna; sortOrdenAscendente = true; }
             filtrarYRenderizarTabla();
         }
 
@@ -2419,24 +2312,15 @@
             const columnas = ["id_papeleta", "infractor", "empresa", "conducta", "fecha_infraccion", "estado_semaforo"];
             columnas.forEach(col => {
                 const icon = document.getElementById(`sort-icon-${col}`);
-                if (icon) {
-                    if (sortColumnaActual === col) {
-                        icon.innerText = sortOrdenAscendente ? " ▲" : " ▼";
-                    } else {
-                        icon.innerText = "";
-                    }
-                }
+                if (icon) icon.innerText = (sortColumnaActual === col) ? (sortOrdenAscendente ? " ▲" : " ▼") : "";
             });
         }
 
         function filtrarYRenderizarTabla() {
             if (!globalDashboardCache || !globalDashboardCache.dashboardData || !globalDashboardCache.dashboardData.papeletas) return;
-            
             const query = document.getElementById("tabla-buscador-rapido").value.trim().toLowerCase();
-            
             const selectEmpresa = document.getElementById("filtro-empresa");
             const empresaFiltro = selectEmpresa ? selectEmpresa.value : "";
-            
             const selectSemaforo = document.getElementById("filtro-semaforo");
             const semaforoFiltro = selectSemaforo ? selectSemaforo.value : "";
 
@@ -2452,7 +2336,6 @@
                 const cumpleEmpresa = !empresaFiltro || p.empresa === empresaFiltro;
                 const cumpleSemaforo = !semaforoFiltro || p.estado_semaforo === semaforoFiltro;
 
-                // Filtrar según Pipeline Stage
                 let cumpleEtapa = true;
                 const est = p.estado_tramite || "PENDIENTE";
                 if (etapaTramiteActual === "PENDIENTE" && est !== "PENDIENTE") cumpleEtapa = false;
@@ -2463,39 +2346,29 @@
                 return cumpleBuscador && cumpleEmpresa && cumpleSemaforo && cumpleEtapa;
             });
 
-            // Ordenamiento lógico
             activeFilteredPapeletas.sort((a, b) => {
-                let valA = a[sortColumnaActual];
-                let valB = b[sortColumnaActual];
-                
+                let valA = a[sortColumnaActual]; let valB = b[sortColumnaActual];
                 if (typeof valA === "string") valA = valA.toLowerCase();
                 if (typeof valB === "string") valB = valB.toLowerCase();
-                
                 if (valA < valB) return sortOrdenAscendente ? -1 : 1;
                 if (valA > valB) return sortOrdenAscendente ? 1 : -1;
                 return 0;
             });
             
-            // Actualizar contadores de Badge en Tab
             const totalBadge = document.getElementById("badge-total-papeletas");
             if (activeFilteredPapeletas.length > 0) {
                 totalBadge.innerText = activeFilteredPapeletas.length;
                 totalBadge.style.display = "inline-block";
-            } else {
-                totalBadge.style.display = "none";
-            }
+            } else totalBadge.style.display = "none";
 
             actualizarIconosOrdenado();
             renderizarBandejaPrincipal();
         }
 
-        // --- TOGGLE DE VISTA (LISTA / TARJETAS) ---
         function cambiarVistaBandeja(modo) {
             vistaBandejaActual = modo;
-            
             const btnList = document.getElementById("btn-view-list");
             const btnGrid = document.getElementById("btn-view-grid");
-
             if (modo === "list") {
                 btnList.style.backgroundColor = "var(--apm-blue)";
                 btnGrid.style.backgroundColor = "var(--apm-dark-blue)";
@@ -2511,60 +2384,39 @@
         }
 
         function renderizarBandejaPrincipal() {
-            if (vistaBandejaActual === "list") {
-                renderizarTablaFiltrada(activeFilteredPapeletas);
-            } else {
-                renderizarTarjetasFiltradas(activeFilteredPapeletas);
-            }
+            if (vistaBandejaActual === "list") renderizarTablaFiltrada(activeFilteredPapeletas);
+            else renderizarTarjetasFiltradas(activeFilteredPapeletas);
         }
 
         function renderizarTablaFiltrada(papeletasFiltradas) {
             const tbody = document.querySelector("#tabla-control-papeletas tbody");
             tbody.innerHTML = "";
-
             const activas = papeletasFiltradas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1);
 
             if (activas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;">No se encontraron papeletas activas en esta etapa.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;">No se encontraron papeletas en esta etapa.</td></tr>`;
                 return;
             }
 
             activas.forEach(p => {
                 let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.replace("T", " ") : "-";
-                
                 const tr = document.createElement("tr");
-                tr.className = "clickable-row";
-                tr.id = `row-${p.id_papeleta}`;
-                if (activePapeletaId === p.id_papeleta) {
-                    tr.classList.add("active-row");
-                }
+                tr.className = "clickable-row"; tr.id = `row-${p.id_papeleta}`;
+                if (activePapeletaId === p.id_papeleta) tr.classList.add("active-row");
                 tr.onclick = function() {
                     document.querySelectorAll("#tabla-control-papeletas tbody tr").forEach(row => row.classList.remove("active-row"));
                     tr.classList.add("active-row");
                     seleccionarPapeletaParaRevision(p.id_papeleta);
                 };
 
-                let descargoBadge = "";
-                if (p.estado_semaforo === "descargo") {
-                    descargoBadge = `<span style="color:var(--success-green); font-weight:bold;">✅ Recibido</span>`;
-                } else if (p.estado_semaforo === "vencido") {
-                    descargoBadge = `<span style="color:var(--danger-red); font-weight:bold;">❌ Expirado</span>`;
-                } else {
-                    descargoBadge = `<span style="color:var(--apm-blue); font-weight:bold;">⏳ Pendiente</span>`;
-                }
+                let descargoBadge = p.estado_semaforo === "descargo" 
+                    ? `<span style="color:var(--success-green); font-weight:bold;">✅ Recibido</span>`
+                    : (p.estado_semaforo === "vencido" ? `<span style="color:var(--danger-red); font-weight:bold;">❌ Expirado</span>` : `<span style="color:var(--apm-blue); font-weight:bold;">⏳ Pendiente</span>`);
 
-                // Generar de manera limpia el badge de la columna de entrega
-                let notificacionBadge = "";
-                const estEnvio = p.estado_envio ? String(p.estado_envio).trim() : "";
-                if (estEnvio === "Se envió correctamente" || estEnvio === "") {
-                    notificacionBadge = `<span style="color:var(--success-green); font-weight:bold;">🟢 Se envió correctamente</span>`;
-                } else if (estEnvio === "Problema con el envío") {
-                    notificacionBadge = `<span style="color:var(--danger-red); font-weight:bold;">🔴 Problemas con el envío</span>`;
-                } else {
-                    notificacionBadge = `<span style="color:var(--danger-red); font-weight:bold;">🔴 No se envió</span>`;
-                }
+                let notificacionBadge = (p.estado_envio === "Se envió correctamente" || !p.estado_envio)
+                    ? `<span style="color:var(--success-green); font-weight:bold;">🟢 Se envió correctamente</span>`
+                    : `<span style="color:var(--danger-red); font-weight:bold;">🔴 Problemas con el envío</span>`;
                 
-                // Renderizado completo y alineado de las 9 columnas solicitadas
                 tr.innerHTML = `
                     <td><strong>${p.id_papeleta}</strong></td>
                     <td>${p.infractor}</td>
@@ -2580,21 +2432,17 @@
             });
         }
 
-        // --- NUEVO: RENDERIZAR TABLA DE CASOS CERRADOS ---
         function renderizarTablaCasosCerrados(papeletasCerradas) {
             const tbody = document.querySelector("#tabla-casos-cerrados tbody");
             tbody.innerHTML = "";
-
             if (papeletasCerradas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">No hay expedientes cerrados recientemente (Máx 10 días). Use la búsqueda para casos antiguos.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">No hay expedientes cerrados recientemente.</td></tr>`;
                 return;
             }
-
             papeletasCerradas.forEach(p => {
                 let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.replace("T", " ") : "-";
                 const tr = document.createElement("tr");
                 tr.className = "clickable-row";
-
                 let driveButton = p.carpeta_drive_url 
                     ? `<a href="${p.carpeta_drive_url}" target="_blank" class="btn-pdf-view" style="background-color:#107c41; text-decoration:none; display:inline-block; padding:4px 8px;">📂 Drive</a>`
                     : `<span style="color:gray;">No disponible</span>`;
@@ -2613,37 +2461,28 @@
             });
         }
 
-        // --- NUEVO: EJECUTAR BÚSQUEDA AVANZADA DIRECTAMENTE DESDE LA BASE DE DATOS EXCEL ---
         function ejecutarBusquedaDBServidor(tipo) {
             const inputId = tipo === "activo" ? "tabla-buscador-rapido" : "buscador-casos-cerrados";
             const query = document.getElementById(inputId).value.trim();
-            
-            // Si el campo de búsqueda está vacío, volvemos a filtrar el caché local normal
             if (query.length === 0) {
-                if (tipo === "activo") {
-                    filtrarYRenderizarTabla();
-                } else {
+                if (tipo === "activo") filtrarYRenderizarTabla();
+                else {
                     const cerradasDefault = globalDashboardCache.dashboardData.papeletas.filter(p => p.estado_tramite && p.estado_tramite.indexOf("CERRADO") !== -1);
                     renderizarTablaCasosCerrados(cerradasDefault);
                 }
                 return;
             }
-
-            // Realizamos la búsqueda avanzada en el Sheets si el término es mayor a 2 caracteres
             if (query.length > 2) {
                 const user = sessionStorage.getItem("secure_user_initials");
                 const auth = sessionStorage.getItem("secure_auth_plain");
-
                 fetch(`${CONFIG_WEB_APP_URL}?action=busqueda_avanzada&query=${encodeURIComponent(query)}&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
                 .then(res => res.json())
                 .then(data => {
                     if (data.status === "success" && data.resultados) {
                         if (tipo === "activo") {
-                            // Mostrar activos que coincidan en la bandeja de entrada
                             const activosEncontrados = data.resultados.filter(p => p.estado_tramite.indexOf("CERRADO") === -1);
                             renderizarTablaFiltrada(activosEncontrados);
                         } else {
-                            // Mostrar cerrados históricos sin límite de 10 días
                             const cerradosEncontrados = data.resultados.filter(p => p.estado_tramite.indexOf("CERRADO") !== -1);
                             renderizarTablaCasosCerrados(cerradosEncontrados);
                         }
@@ -2655,54 +2494,28 @@
         function renderizarTarjetasFiltradas(papeletasFiltradas) {
             const container = document.getElementById("tarjetas-papeletas-contenedor");
             container.innerHTML = "";
-
-            if (papeletasFiltradas.length === 0) {
-                container.innerHTML = `<div style="text-align:center; width:100%; color:#6c757d; padding:20px;">No se encontraron papeletas en esta vista.</div>`;
-            } else {
-                papeletasFiltradas.forEach(p => {
-                    let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.split("T")[0] : "-";
-                    const card = document.createElement("div");
-                    card.className = "papeleta-card-view";
-                    if (activePapeletaId === p.id_papeleta) {
-                        card.classList.add("active-card");
-                    }
-                    card.onclick = function() {
-                        document.querySelectorAll(".papeleta-card-view").forEach(c => c.classList.remove("active-card"));
-                        document.querySelectorAll("#tabla-control-papeletas tbody tr").forEach(row => row.classList.remove("active-row"));
-                        card.classList.add("active-card");
-                        seleccionarPapeletaParaRevision(p.id_papeleta);
-                    };
-
-                    let descargoBadge = "";
-                    if (p.estado_semaforo === "descargo") {
-                        descargoBadge = `<span style="color:var(--success-green); font-size:12px; font-weight:bold;">✅ Descargo Recibido</span>`;
-                    } else if (p.estado_semaforo === "vencido") {
-                        descargoBadge = `<span style="color:var(--danger-red); font-size:12px; font-weight:bold;">❌ Plazo Expirado</span>`;
-                    } else {
-                        descargoBadge = `<span style="color:var(--apm-blue); font-size:12px; font-weight:bold;">⏳ En Espera</span>`;
-                    }
-
-                    card.innerHTML = `
-                        <div class="card-header-view">
-                            <span>ID: ${p.id_papeleta}</span>
-                            <span>${fechaFormat}</span>
-                        </div>
-                        <div class="card-title-view">${p.infractor}</div>
-                        <div style="font-size:13px; margin-bottom:10px; color:#6c757d;">🏢 ${p.empresa}</div>
-                        <div style="font-size:12px; line-height:1.4; margin-bottom:12px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; text-overflow:ellipsis;">
-                            ${p.conducta}
-                        </div>
-                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-color); padding-top:10px;">
-                            <span class="badge badge-${p.estado_color}" style="font-size:10px; padding:4px 8px;">${p.estado_texto}</span>
-                            ${descargoBadge}
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
-            }
+            papeletasFiltradas.forEach(p => {
+                let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.split("T")[0] : "-";
+                const card = document.createElement("div");
+                card.className = "papeleta-card-view";
+                if (activePapeletaId === p.id_papeleta) card.classList.add("active-card");
+                card.onclick = function() {
+                    document.querySelectorAll(".papeleta-card-view").forEach(c => c.classList.remove("active-card"));
+                    card.classList.add("active-card");
+                    seleccionarPapeletaParaRevision(p.id_papeleta);
+                };
+                let descargoBadge = p.estado_semaforo === "descargo" ? "✅ Descargo" : (p.estado_semaforo === "vencido" ? "❌ Expirado" : "⏳ Pendiente");
+                card.innerHTML = `
+                    <div class="card-header-view"><span>ID: ${p.id_papeleta}</span><span>${fechaFormat}</span></div>
+                    <div class="card-title-view">${p.infractor}</div>
+                    <div style="font-size:13px; margin-bottom:10px; color:#6c757d;">🏢 ${p.empresa}</div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="badge badge-${p.estado_color}">${p.estado_texto}</span><span>${descargoBadge}</span>
+                    </div>`;
+                container.appendChild(card);
+            });
         }
 
-        // --- SISTEMA INTERACTIVO DE EVALUACIÓN WIZARD (6 PASOS) ---
         function navegarWizard(direccion) {
             const nuevoPaso = wizardPasoActual + direccion;
             if (nuevoPaso >= 1 && nuevoPaso <= 6) {
@@ -2712,31 +2525,17 @@
         }
 
         function actualizarVistaWizard() {
-            // Actualizar indicación textual
             document.getElementById("lbl-wizard-paso-actual").innerText = `Paso ${wizardPasoActual}/6`;
-
-            // Ocultar todos los panes y activar el actual
             document.querySelectorAll(".wizard-step-pane").forEach(pane => pane.classList.remove("active"));
             document.getElementById(`pane-step-${wizardPasoActual}`).classList.add("active");
-
-            // Actualizar nodos y barra de progreso
             document.querySelectorAll(".wizard-step-node").forEach((node, idx) => {
-                const pasoNode = idx + 1;
                 node.classList.remove("active", "completed");
-                if (pasoNode === wizardPasoActual) {
-                    node.classList.add("active");
-                } else if (pasoNode < wizardPasoActual) {
-                    node.classList.add("completed");
-                }
+                if (idx + 1 === wizardPasoActual) node.classList.add("active");
+                else if (idx + 1 < wizardPasoActual) node.classList.add("completed");
             });
-
-            const fillPorcentaje = ((wizardPasoActual - 1) / 5) * 100;
-            document.getElementById("wizard-progress-bar-fill").style.width = `${fillPorcentaje}%`;
-
-            // Configurar botones
+            document.getElementById("wizard-progress-bar-fill").style.width = `${((wizardPasoActual - 1) / 5) * 100}%`;
             document.getElementById("btn-wiz-prev").disabled = (wizardPasoActual === 1);
             document.getElementById("btn-wiz-prev").style.opacity = (wizardPasoActual === 1) ? "0.5" : "1";
-
             const btnNext = document.getElementById("btn-wiz-next");
             if (wizardPasoActual === 6) {
                 btnNext.innerText = "Finalizar ✨";
@@ -2749,36 +2548,11 @@
 
         function seleccionarPapeletaParaRevision(id) {
             activePapeletaId = id;
-            
-            // Activar el panel, ocultar estado vacío
             document.getElementById("panel-lateral-vacio").style.display = "none";
             document.getElementById("panel-lateral-activo").style.display = "block";
-            
-            // Forzar volver al paso 1 del wizard para no confundir al usuario
             wizardPasoActual = 1;
             actualizarVistaWizard();
-
-            // Iniciar Robot Loader
             mostrarRobotLoader(id);
-
-            // Setear cargas
-            document.getElementById("wiz-val-id").innerText = id;
-            document.getElementById("wiz-val-infractor").innerText = "Cargando...";
-            document.getElementById("wiz-val-empresa").innerText = "Cargando...";
-            document.getElementById("wiz-val-conducta").innerText = "Cargando...";
-            document.getElementById("wiz-val-trazabilidad").innerHTML = "Generando trazabilidad...";
-
-            document.getElementById("wiz-val-resumen-infraccion").innerHTML = "Generando resumen...";
-            document.getElementById("wiz-val-criterio-legal").innerHTML = "Generando criterio legal...";
-            document.getElementById("wiz-val-reincidencias-timeline").innerHTML = "Evaluando reincidencias...";
-            document.getElementById("wiz-val-descargos-container").innerHTML = "Analizando buzón...";
-
-            document.getElementById("panel-txt-conducta-ris").innerText = "Evaluando...";
-            document.getElementById("panel-txt-graduacion-ris").innerText = "-";
-            document.getElementById("panel-txt-graduacion-ris").className = "badge";
-            document.getElementById("panel-txt-sancion-raw").innerText = "-";
-            document.getElementById("sancion-dias-final").value = 0;
-            document.getElementById("panel-txt-correo-borrador").value = "Generando borrador de resolución...";
 
             const user = sessionStorage.getItem("secure_user_initials");
             const auth = sessionStorage.getItem("secure_auth_plain");
@@ -2787,194 +2561,93 @@
             .then(res => res.json())
             .then(data => {
                 completarYQuitarRobotLoader();
-
-                if (data.error) {
-                    actualizarEstadoGemini("disconnected");
-                    document.getElementById("wiz-val-criterio-legal").innerHTML = `<span style="color:red; font-weight:bold;">Error: ${data.error}</span>`;
-                    return;
-                }
-                
-                // Si la respuesta es exitosa, verificamos si contiene el error de cuota gratuito
-                if (data.resumen_descargo && (data.resumen_descargo.includes("Error 429") || data.resumen_descargo.includes("límite de cuotas"))) {
-                    actualizarEstadoGemini("disconnected");
-                } else {
-                    actualizarEstadoGemini("connected");
-                }
-
-                // Buscar el expediente en caché local para tener los datos del Paso 1
                 const localData = activeFilteredPapeletas.find(p => String(p.id_papeleta) === String(id));
                 if (localData) {
                     document.getElementById("wiz-val-infractor").innerText = localData.infractor;
                     document.getElementById("wiz-val-empresa").innerText = localData.empresa;
                     document.getElementById("wiz-val-conducta").innerText = localData.conducta;
 
-                    // Configurar enlace dinámico a la subcarpeta de Drive
                     const btnDrive = document.getElementById("btn-abrir-carpeta-drive");
                     if (localData.carpeta_drive_url) {
                         btnDrive.href = localData.carpeta_drive_url;
                         btnDrive.style.display = "flex";
-                    } else {
-                        btnDrive.style.display = "none";
-                    }
+                    } else btnDrive.style.display = "none";
 
-                    // Construcción dinámica de trazabilidad e historial traceable
                     let tHtml = "";
-                    if (localData.fecha_infraccion) {
-                        tHtml += `<div class="trazabilidad-item"><strong>${localData.fecha_infraccion.split("T")[0]}</strong> - Suceso reportado por Oficial de Seguridad en muelle.</div>`;
-                    }
-                    if (localData.fecha_envio) {
-                        tHtml += `<div class="trazabilidad-item"><strong>${localData.fecha_envio.split("T")[0]}</strong> - Notificación de cargo generada y enviada al infractor.</div>`;
-                    }
-                    if (localData.estado_semaforo === "descargo") {
-                        tHtml += `<div class="trazabilidad-item" style="color:var(--success-green);"><strong>Vía Gmail</strong> - Descargo de justificación detectado en buzón.</div>`;
-                    } else if (localData.estado_semaforo === "vencido") {
-                        tHtml += `<div class="trazabilidad-item" style="color:var(--danger-red);"><strong>Vencido</strong> - Se agotó el plazo de 3 días hábiles sin recepción de descargos.</div>`;
-                    } else {
-                        tHtml += `<div class="trazabilidad-item"><strong>Plazo Activo</strong> - En espera de alegatos o vencimiento del plazo formal.</div>`;
-                    }
+                    if (localData.fecha_infraccion) tHtml += `<div class="trazabilidad-item"><strong>${localData.fecha_infraccion.split("T")[0]}</strong> - Reportado por Oficial.</div>`;
+                    if (localData.fecha_envio) tHtml += `<div class="trazabilidad-item"><strong>${localData.fecha_envio.split("T")[0]}</strong> - Notificación generada.</div>`;
+                    if (localData.estado_semaforo === "descargo") tHtml += `<div class="trazabilidad-item" style="color:var(--success-green);"><strong>Vía Gmail</strong> - Descargo recibido.</div>`;
                     document.getElementById("wiz-val-trazabilidad").innerHTML = tHtml;
 
-                    // Paso 5: Descargos Condicionales
                     const descargosContenedor = document.getElementById("wiz-val-descargos-container");
                     if (localData.estado_semaforo === "descargo") {
                         descargosContenedor.innerHTML = `
-                            <div class="highlight-callout urgent" style="margin-bottom: 12px;">
-                                <strong>📧 Descargo Recibido:</strong> El buzón Gmail registra correspondencia formal del infractor dentro del plazo legal.
-                            </div>
-                            <div style="background-color: var(--input-bg); padding: 12px; border-radius: 6px; border-left: 3px solid var(--apm-blue);">
-                                <strong>Análisis Crítico de la Apelación (IA):</strong>
-                                <p style="margin-top: 5px; margin-bottom: 0; font-size:12px;">${formatearRespuestaChat(data.resumen_descargo)}</p>
-                            </div>
-                        `;
+                            <div class="highlight-callout urgent" style="margin-bottom: 12px;"><strong>📧 Descargo Recibido</strong></div>
+                            <div style="background-color: var(--input-bg); padding:12px; border-radius:6px; border-left:3px solid var(--apm-blue);">
+                                <p style="font-size:12px; margin:0;">${formatearRespuestaChat(data.resumen_descargo)}</p>
+                            </div>`;
                     } else {
-                        descargosContenedor.innerHTML = `
-                            <div class="highlight-callout info" style="text-align: center; padding: 25px 15px; margin: 0;">
-                                <div style="font-size: 32px; margin-bottom: 8px;">⏳</div>
-                                <strong style="color: var(--apm-blue);">En espera de los descargos de la empresa</strong>
-                                <p style="margin: 5px 0 0 0; font-size: 12px; line-height: 1.4; color: #666;">
-                                    El plazo formal sigue vigente y no se registran descargos de oposición en el buzón Gmail de APM Terminals.
-                                </p>
-                            </div>
-                        `;
+                        descargosContenedor.innerHTML = `<div class="highlight-callout info">En espera de descargos en el buzón.</div>`;
                     }
-
-                    // Paso 6: Sincronizar el toggle switch con el modo de trámite guardado
                     const switchEl = document.getElementById("toggle-automode-switch");
                     switchEl.checked = (localData.modo_tramite === "AUTOMATICO");
                 }
+                document.getElementById("wiz-val-resumen-infraccion").innerHTML = formatearRespuestaChat(data.resumen_descargo);
+                document.getElementById("wiz-val-criterio-legal").innerHTML = formatearRespuestaChat(data.analisis_caso);
 
-                // Paso 2: Resumen e Infracción Criterio Legal RIS
-                document.getElementById("wiz-val-resumen-infraccion").innerHTML = formatearRespuestaChat(data.resumen_descargo || "Análisis preliminar de hechos completado.");
-                document.getElementById("wiz-val-criterio-legal").innerHTML = formatearRespuestaChat(data.analisis_caso || "Alineación legal completada.");
-
-                // Paso 3: Reincidencias (Timeline visual)
                 const timelineContainer = document.getElementById("wiz-val-reincidencias-timeline");
                 timelineContainer.innerHTML = "";
                 if (data.reincidencia_texto) {
                     const lineas = data.reincidencia_texto.split("\n").filter(l => l.trim().length > 0);
                     lineas.forEach((linea, index) => {
                         const item = document.createElement("div");
-                        if (linea.toLowerCase().includes("reincidente") || linea.toLowerCase().includes("alerta") || linea.toLowerCase().includes("reincidencia")) {
-                            item.className = "timeline-item-wizard danger";
-                        } else if (linea.toLowerCase().includes("limpio") || linea.toLowerCase().includes("no registra")) {
-                            item.className = "timeline-item-wizard success";
-                        } else {
-                            item.className = "timeline-item-wizard warning";
-                        }
-                        item.innerHTML = `
-                            <div class="timeline-date">Evento de Auditoría ${index + 1}</div>
-                            <div class="timeline-desc">${formatearRespuestaChat(linea)}</div>
-                        `;
+                        item.className = "timeline-item-wizard warning";
+                        item.innerHTML = `<div class="timeline-date">Evento ${index + 1}</div><div class="timeline-desc">${formatearRespuestaChat(linea)}</div>`;
                         timelineContainer.appendChild(item);
                     });
-                } else {
-                    timelineContainer.innerHTML = `
-                        <div class="timeline-item-wizard success">
-                            <div class="timeline-date">Historial Limpio</div>
-                            <div class="timeline-desc">No se encontraron antecedentes previos registrados para este conductor.</div>
-                        </div>
-                    `;
-                }
-
-                // Paso 4: APN Catalogo
-                const gradRIS = data.graduacion_tabla || "Leve";
-                const badgeRIS = document.getElementById("panel-txt-graduacion-ris");
-                badgeRIS.innerText = gradRIS;
-                if (gradRIS.toLowerCase().includes("muy grave")) {
-                    badgeRIS.className = "badge badge-red";
-                } else if (gradRIS.toLowerCase().includes("grave")) {
-                    badgeRIS.className = "badge badge-yellow";
-                } else {
-                    badgeRIS.className = "badge badge-green";
                 }
                 document.getElementById("panel-txt-conducta-ris").innerText = data.conducta_tabla || "-";
-                document.getElementById("panel-txt-sancion-raw").innerHTML = formatearRespuestaChat(data.sancion_estipulada_tabla || "-");
-                
-                // Paso 6: Sanción final
+                document.getElementById("panel-txt-sancion-raw").innerHTML = formatearRespuestaChat(data.sancion_estipulada_tabla);
                 document.getElementById("sancion-dias-final").value = data.dias_sugeridos;
                 document.getElementById("panel-txt-correo-borrador").value = data.correo_borrador;
             })
             .catch(err => {
                 document.getElementById("robot-ia-loader").style.display = "none";
-                actualizarEstadoGemini("disconnected");
             });
         }
 
         function ejecutarAprobacionYSancion() {
             const diasSancion = document.getElementById("sancion-dias-final").value;
             const correoFinal = document.getElementById("panel-txt-correo-borrador").value;
-            
-            alert(`🚀 ¡Resolución Procesada!\nSe ha aprobado y aplicado la sanción oficial de ${diasSancion} días.\n\n[Siguiente Fase de IT]: Cuando TI entregue la API de Microsoft Graph, este botón enviará directamente la resolución oficial en base a este borrador:\n\n${correoFinal.substring(0, 180)}...`);
-            
-            // Resetear panel lateral a estado vacío
+            alert(`🚀 Resolución Procesada!\nSe aplicó sanción de ${diasSancion} días.\n\nBorrador:\n${correoFinal.substring(0,100)}...`);
             document.getElementById("panel-lateral-activo").style.display = "none";
             document.getElementById("panel-lateral-vacio").style.display = "block";
             activePapeletaId = null;
             filtrarYRenderizarTabla();
         }
 
-        // --- SISTEMA CRUD DINÁMICO DE REGLAS RIS (EXCEL) ---
         function cargarReglasRISDesdeServidor() {
             const container = document.getElementById("contenedor-reglas-ris-dinamico");
-            container.innerHTML = `<p style="text-align:center;">🔄 Cargando y digitalizando reglas oficiales del Excel...</p>`;
-
+            container.innerHTML = `<p style="text-align:center;">🔄 Cargando...</p>`;
             const user = sessionStorage.getItem("secure_user_initials");
             const auth = sessionStorage.getItem("secure_auth_plain");
-
             fetch(`${CONFIG_WEB_APP_URL}?action=get_ris_rules&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
             .then(res => res.json())
             .then(data => {
                 container.innerHTML = "";
-                if (data.error) {
-                    container.innerHTML = `<p style="text-align:center; color:red; font-weight:bold;">Error al cargar: ${data.error}</p>`;
-                    return;
-                }
-
-                if (data.length === 0) {
-                    container.innerHTML = `<p style="text-align:center; color:gray;">No se encontraron reglas en la tabla del RIS de Excel.</p>`;
-                    return;
-                }
-
                 data.forEach(r => {
                     const card = document.createElement("div");
                     card.className = "ris-rule-card";
                     card.innerHTML = `
                         <h4>Conducta: ${r.conducta}</h4>
-                        <p><strong>Área:</strong> ${r.area}</p>
-                        <p><strong>Clasificación RIS:</strong> ${r.graduacion}</p>
-                        <p><strong>Sanción Estipulada:</strong><br><span style="white-space: pre-wrap; display: block; margin-top:5px; line-height:1.4;">${r.sancion}</span></p>
-                        <button class="btn-edit-rule" onclick="abrirModalEdicionRegla('${r.id}', '${escapeJS(r.area)}', '${escapeJS(r.conducta)}', '${escapeJS(r.graduacion)}', '${escapeJS(r.sancion)}')">✏️ Editar Regla</button>
-                    `;
+                        <p><strong>Sanción:</strong><br>${r.sancion}</p>`;
                     container.appendChild(card);
                 });
-            })
-            .catch(err => {
-                container.innerHTML = `<p style="text-align:center; color:red; font-weight:bold;">Error de conexión con el servidor: ${err.toString()}</p>`;
             });
         }
 
         function escapeJS(str) {
-            return str ? str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r') : '';
+            return str ? str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, '\\n') : '';
         }
 
         function abrirModalEdicionRegla(id, area, conducta, graduacion, sancion) {
@@ -2983,8 +2656,6 @@
             document.getElementById("edit-rule-conducta").value = conducta || "";
             document.getElementById("edit-rule-graduacion").value = graduacion || "Leve";
             document.getElementById("edit-rule-sancion").value = sancion || "";
-            
-            document.getElementById("modal-title").innerText = id === "nuevo" ? "➕ Agregar Nueva Regla al RIS" : "✏️ Editar Regla de Sanción RIS";
             document.getElementById("modal-edicion-regla").style.display = "flex";
         }
 
@@ -2999,66 +2670,25 @@
             const graduacion = document.getElementById("edit-rule-graduacion").value;
             const sancion = document.getElementById("edit-rule-sancion").value.trim();
 
-            if (!conducta || !sancion) {
-                alert("Por favor, complete todos los campos requeridos (Conducta y Sanciones).");
-                return;
-            }
-
             const user = sessionStorage.getItem("secure_user_initials");
             const auth = sessionStorage.getItem("secure_auth_plain");
-
-            const payload = {
-                action: "save_ris_rule",
-                user: user,
-                auth: auth,
-                id: id,
-                area: area,
-                conducta: conducta,
-                graduacion: graduacion,
-                sancion: sancion
-            };
-
-            const saveBtn = document.querySelector(".modal-box button[onclick='ejecutarGuardadoReglaRIS()']");
-            const originalText = saveBtn.innerText;
-            saveBtn.innerText = "⏳ Guardando cambios en Excel...";
-            saveBtn.disabled = true;
+            const payload = { action: "save_ris_rule", user, auth, id, area, conducta, graduacion, sancion };
 
             fetch(CONFIG_WEB_APP_URL + "?action=save_ris_rule", {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                body: JSON.stringify(payload)
-            })
-            .then(() => {
-                alert("✅ ¡Éxito!\nLa regla ha sido guardada directamente en tu base de datos de Google Sheets.");
-                cerrarModalEdicionRegla();
-                saveBtn.innerText = originalText;
-                saveBtn.disabled = false;
-                cargarReglasRISDesdeServidor();
-            })
-            .catch(err => {
-                alert("Error al intentar guardar los cambios en Excel: " + err.toString());
-                saveBtn.innerText = originalText;
-                saveBtn.disabled = false;
+                method: "POST", mode: "no-cors", body: JSON.stringify(payload)
+            }).then(() => {
+                alert("Guardado."); cerrarModalEdicionRegla(); cargarReglasRISDesdeServidor();
             });
         }
 
-        // --- SISTEMA DE VISUALIZACION DE PDF EMERGENTE ---
         function abrirVisorPDF(id, event) {
-            if (event) {
-                event.stopPropagation();
-            }
-
+            if (event) event.stopPropagation();
             const modal = document.getElementById("pdf-visor-modal");
             const iframe = document.getElementById("pdf-visor-iframe");
             const loader = document.getElementById("pdf-visor-loader");
             const titulo = document.getElementById("pdf-visor-titulo");
 
-            modal.style.display = "flex";
-            iframe.style.display = "none";
-            loader.style.display = "block";
-            titulo.innerText = `📄 Buscando Papeleta PDF: ${id}...`;
-
+            modal.style.display = "flex"; iframe.style.display = "none"; loader.style.display = "block";
             const user = sessionStorage.getItem("secure_user_initials");
             const auth = sessionStorage.getItem("secure_auth_plain");
 
@@ -3067,299 +2697,164 @@
             .then(data => {
                 loader.style.display = "none";
                 if (data.status === "success") {
-                    iframe.src = data.url;
-                    iframe.style.display = "block";
-                    titulo.innerText = `📄 Visualizando Papeleta PDF: ${id}`;
+                    iframe.src = data.url; iframe.style.display = "block";
                 } else {
-                    alert("Error: " + (data.error || "No se pudo recuperar el enlace del PDF."));
-                    cerrarVisorPDF();
+                    alert("Aún no disponible."); cerrarVisorPDF();
                 }
-            })
-            .catch(err => {
-                loader.style.display = "none";
-                alert("Error de conexión al obtener el archivo: " + err.toString());
-                cerrarVisorPDF();
             });
         }
 
-        // --- CERRAR VISOR PDF ---
         function cerrarVisorPDF() {
             document.getElementById("pdf-visor-modal").style.display = "none";
             document.getElementById("pdf-visor-iframe").src = "";
         }
 
-        // --- GENERAR REPORTE MENSUAL PDF DE GERENCIA ---
         function generarReporteMensualGerencia() {
             const textBtn = document.getElementById("kpi-reporte-btn-text");
             const user = sessionStorage.getItem("secure_user_initials");
             const auth = sessionStorage.getItem("secure_auth_plain");
-            const originalText = textBtn.innerText;
-            textBtn.innerText = "⏳ GENERANDO...";
-            
+            textBtn.innerText = "⏳...";
             fetch(`${CONFIG_WEB_APP_URL}?action=generar_reporte_mensual&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
-            .then(res => res.json())
-            .then(data => {
-                textBtn.innerText = originalText;
-                if (data.status === "success" && data.url) {
-                    abrirModalPDFGenerado(data.url);
-                } else {
-                    alert("Error: " + (data.error || "No se pudo generar el reporte mensual."));
-                }
-            })
-            .catch(err => {
-                textBtn.innerText = originalText;
-                alert("Error de conexión al generar el reporte mensual: " + err.toString());
+            .then(res => res.json()).then(data => {
+                textBtn.innerText = "📊 GENERAR";
+                if (data.status === "success") abrirModalPDFGenerado(data.url);
             });
         }
 
         function abrirModalPDFGenerado(url) {
-            const modal = document.getElementById("pdf-visor-modal");
-            const iframe = document.getElementById("pdf-visor-iframe");
-            const loader = document.getElementById("pdf-visor-loader");
-            const titulo = document.getElementById("pdf-visor-titulo");
-
-            modal.style.display = "flex";
-            iframe.style.display = "block";
-            loader.style.display = "none";
-            iframe.src = url;
-            titulo.innerText = "📄 Reporte Mensual RIS Generado";
+            document.getElementById("pdf-visor-modal").style.display = "flex";
+            document.getElementById("pdf-visor-iframe").src = url;
         }
 
-        // --- GENERAR INFORME SEMANAL IA DE PATRONES (INTEGRACIÓN CON LOADER MODAL) ---
         function generarInformeSemanalIA() {
             const btn = document.getElementById("btn-informe-semanal");
             const user = sessionStorage.getItem("secure_user_initials");
             const auth = sessionStorage.getItem("secure_auth_plain");
-            const originalText = btn.innerText;
-
-            btn.disabled = true;
-            mostrarLoaderModal("Procesando su informe de auditoría semanal con la IA de Gemini. Esto puede demorar unos segundos...");
-
+            btn.disabled = true; mostrarLoaderModal("Procesando...");
             fetch(`${CONFIG_WEB_APP_URL}?action=generar_informe_ia_semanal&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
-            .then(res => res.json())
-            .then(data => {
-                ocultarLoaderModal();
-                btn.disabled = false;
+            .then(res => res.json()).then(data => {
+                ocultarLoaderModal(); btn.disabled = false;
                 if (data.respuesta) {
-                    document.getElementById("noticia-fecha").innerText = "INFORME SEMANAL IA - " + new Date().toLocaleDateString();
-                    document.getElementById("noticia-cuerpo").innerHTML = formatearRespuestaChat(data.respuesta);
-                } else {
-                    alert("No se pudo generar el análisis de la IA.");
+                    document.getElementById("modal-cuerpo-informe-semanal").innerHTML = formatearRespuestaChat(data.respuesta);
+                    document.getElementById("modal-informe-semanal-ia").style.display = "flex";
                 }
-            })
-            .catch(err => {
-                ocultarLoaderModal();
-                btn.disabled = false;
-                alert("Error de conexión con la IA: " + err.toString());
             });
         }
 
-        // --- LINEA DE TIEMPO CHART.JS ---
+        function cerrarModalInformeSemanal() {
+            document.getElementById("modal-informe-semanal-ia").style.display = "none";
+        }
+
+        function togglePantallaCompletaInforme() {
+            const box = document.getElementById("modal-box-informe-semanal");
+            if (box.style.maxWidth === "100%") box.style.maxWidth = "800px";
+            else box.style.maxWidth = "100%";
+        }
+
         function renderizarTimelineChart(papeletas) {
             const ctx = document.getElementById("timelineChart").getContext("2d");
-            
             let countsByDay = {};
-            
             const hoy = new Date();
             for (let i = 29; i >= 0; i--) {
-                let d = new Date();
-                d.setDate(hoy.getDate() - i);
-                let key = d.toISOString().split("T")[0];
-                countsByDay[key] = 0;
+                let d = new Date(); d.setDate(hoy.getDate() - i);
+                countsByDay[d.toISOString().split("T")[0]] = 0;
             }
-            
             papeletas.forEach(p => {
                 if (p.fecha_envio) {
-                    let key = String(p.fecha_envio).split(" ")[0].split("T")[0]; // Modificación: soporte de espacios y "T"
-                    if (countsByDay[key] !== undefined) {
-                        countsByDay[key]++;
-                    }
+                    let key = String(p.fecha_envio).split(" ")[0].split("T")[0]; // Soporte unificado de formatos
+                    if (countsByDay[key] !== undefined) countsByDay[key]++;
                 }
             });
-            
-            const labels = Object.keys(countsByDay).map(dateStr => {
-                const parts = dateStr.split("-");
-                return `${parts[2]}/${parts[1]}`; 
-            });
-            const values = Object.values(countsByDay);
-            
-            if (timelineChartInstance) {
-                timelineChartInstance.destroy();
-            }
-            
+            const labels = Object.keys(countsByDay).map(k => `${k.split("-")[2]}/${k.split("-")[1]}`);
+            if (timelineChartInstance) timelineChartInstance.destroy();
             timelineChartInstance = new Chart(ctx, {
                 type: "line",
                 data: {
-                    labels: labels,
-                    datasets: [{
-                        label: "Infracciones Registradas",
-                        data: values,
-                        borderColor: "#E05B1B",
-                        backgroundColor: "rgba(224, 91, 27, 0.1)",
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.3
-                    }]
+                    labels,
+                    datasets: [{ label: "Infracciones", data: Object.values(countsByDay), borderColor: "#E05B1B" }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: { stepSize: 1 }
-                        }
-                    }
-                }
+                options: { responsive: true, maintainAspectRatio: false }
             });
         }
 
-        // --- COMPLETAR: KPI CONTRATISTAS LÓGICA ---
         function renderizarKpisContratistas(papeletas) {
             const container = document.getElementById("lista-kpi-contratistas");
             container.innerHTML = "";
-            
             let counts = {};
-            papeletas.forEach(p => {
-                if (p.empresa) {
-                    counts[p.empresa] = (counts[p.empresa] || 0) + 1;
-                }
-            });
-            
+            papeletas.forEach(p => { if (p.empresa) counts[p.empresa] = (counts[p.empresa] || 0) + 1; });
             const sortedContratistas = Object.entries(counts)
                 .map(([empresa, count]) => ({ empresa, count }))
                 .sort((a,b) => b.count - a.count);
-                
             if (sortedContratistas.length === 0) {
-                container.innerHTML = `<li class="agents-list-item">Sin infracciones registradas en contratistas.</li>`;
+                container.innerHTML = `<li class="agents-list-item">Sin infracciones.</li>`;
                 return;
             }
-            
             sortedContratistas.forEach(c => {
                 container.innerHTML += `
                     <li class="agents-list-item">
                         <span>🏢 Contratista <strong>${c.empresa}</strong></span>
-                        <div><span class="agent-rank" style="background-color: var(--danger-red);">${c.count} falta${c.count !== 1 ? 's' : ''}</span></div>
-                    </li>
-                `;
+                        <div><span class="agent-rank" style="background-color: var(--danger-red);">${c.count} faltas</span></div>
+                    </li>`;
             });
         }
 
-        // --- SISTEMA DE CHAT FLOTANTE RIS (IA) ---
         function toggleChatFlotante() {
             const chat = document.getElementById("chat-flotante-ris");
-            if (chat.style.display === "flex") {
-                chat.style.display = "none";
-            } else {
-                chat.style.display = "flex";
-                document.getElementById("chat-input-texto").focus();
-            }
+            chat.style.display = (chat.style.display === "flex") ? "none" : "flex";
         }
 
         function detectarEnterChat(event) {
-            if (event.key === "Enter") {
-                enviarConsultaChatIA();
-            }
+            if (event.key === "Enter") enviarConsultaChatIA();
         }
 
         function enviarConsultaChatIA() {
             const input = document.getElementById("chat-input-texto");
-            const query = input.value.trim();
-            if (!query) return;
-
+            const query = input.value.trim(); if (!query) return;
             const areaMensajes = document.getElementById("chat-mensajes-area");
 
             const bubbleUser = document.createElement("div");
-            bubbleUser.className = "chat-bubble chat-bubble-user";
-            bubbleUser.innerText = query;
-            areaMensajes.appendChild(bubbleUser);
-            
-            input.value = "";
-            areaMensajes.scrollTop = areaMensajes.scrollHeight;
+            bubbleUser.className = "chat-bubble chat-bubble-user"; bubbleUser.innerText = query;
+            areaMensajes.appendChild(bubbleUser); input.value = ""; areaMensajes.scrollTop = areaMensajes.scrollHeight;
 
             const bubbleAI = document.createElement("div");
-            bubbleAI.className = "chat-bubble chat-bubble-ai";
-            bubbleAI.innerHTML = "🤖 <em>Pensando y buscando en la tabla oficial de sanciones...</em>";
+            bubbleAI.className = "chat-bubble chat-bubble-ai"; bubbleAI.innerHTML = "🤖...";
             areaMensajes.appendChild(bubbleAI);
-            areaMensajes.scrollTop = areaMensajes.scrollHeight;
 
             const user = sessionStorage.getItem("secure_user_initials");
             const auth = sessionStorage.getItem("secure_auth_plain");
 
             fetch(`${CONFIG_WEB_APP_URL}?action=consultar_chat_ia&query=${encodeURIComponent(query)}&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
-            .then(res => res.json())
-            .then(data => {
-                if (data.respuesta) {
-                    if (data.respuesta.includes("Error 429") || data.respuesta.includes("excedido su límite")) {
-                        actualizarEstadoGemini("disconnected");
-                    } else {
-                        actualizarEstadoGemini("connected");
-                    }
-                    bubbleAI.innerHTML = formatearRespuestaChat(data.respuesta);
-                } else {
-                    bubbleAI.innerText = "Error: No se recibió una respuesta válida de la Inteligencia Artificial.";
-                }
-                areaMensajes.scrollTop = areaMensajes.scrollHeight;
-            })
-            .catch(err => {
-                actualizarEstadoGemini("disconnected");
-                bubbleAI.innerHTML = `<span style="color:red; font-weight:bold;">Error de conexión con la IA: ${err.toString()}</span>`;
+            .then(res => res.json()).then(data => {
+                bubbleAI.innerHTML = formatearRespuestaChat(data.respuesta);
                 areaMensajes.scrollTop = areaMensajes.scrollHeight;
             });
         }
 
-        // --- NUEVO: GUARDAR EL BORRADOR EDITADO POR LA SECRETARIA (Columna N de Sheets) ---
-        // Se ejecuta de manera asíncrona al dar clic en el botón de la sección D del panel lateral
         function guardarBorradorResolucion() {
             if (!activePapeletaId) return;
-            
             const diasSancion = document.getElementById("sancion-dias-final").value;
             const correoFinal = document.getElementById("panel-txt-correo-borrador").value;
-            
-            mostrarLoaderModal("Guardando borrador editado en el servidor...");
-            
+            mostrarLoaderModal("Guardando...");
+
             const user = sessionStorage.getItem("secure_user_initials");
             const auth = sessionStorage.getItem("secure_auth_plain");
-            
-            const payload = {
-                action: "save_draft",
-                user: user,
-                auth: auth,
-                id: activePapeletaId,
-                dias: diasSancion,
-                correo: correoFinal
-            };
-            
+            const payload = { action: "save_draft", user, auth, id: activePapeletaId, dias: diasSancion, correo: correoFinal };
+
             fetch(CONFIG_WEB_APP_URL + "?action=save_draft", {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                body: JSON.stringify(payload)
-            })
-            .then(() => {
-                ocultarLoaderModal();
-                alert("✅ ¡Borrador guardado exitosamente en Google Sheets!");
-                // Actualizar caché local
+                method: "POST", mode: "no-cors", body: JSON.stringify(payload)
+            }).then(() => {
+                ocultarLoaderModal(); alert("✅ Borrador guardado.");
                 const index = globalDashboardCache.dashboardData.papeletas.findIndex(p => p.id_papeleta === activePapeletaId);
                 if (index !== -1) {
                     let cache = {};
-                    try {
-                        if (globalDashboardCache.dashboardData.papeletas[index].ia_analisis_cache) {
-                            cache = JSON.parse(globalDashboardCache.dashboardData.papeletas[index].ia_analisis_cache);
-                        }
-                    } catch(e) {}
+                    try { if (globalDashboardCache.dashboardData.papeletas[index].ia_analisis_cache) cache = JSON.parse(globalDashboardCache.dashboardData.papeletas[index].ia_analisis_cache); } catch(e) {}
                     cache.dias_sugeridos = parseInt(diasSancion, 10);
                     cache.correo_borrador = correoFinal;
                     globalDashboardCache.dashboardData.papeletas[index].ia_analisis_cache = JSON.stringify(cache);
                 }
-            })
-            .catch(err => {
-                ocultarLoaderModal();
-                alert("Error de conexión al guardar borrador: " + err.toString());
             });
         }
     </script>
-    <!-- MODAL PARA REPORTE SEMANAL DE PATRONES IA (PERSISTENTE Y EXPANDIBLE) -->
     <div class="modal-overlay" id="modal-informe-semanal-ia" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 4500; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;">
         <div class="modal-box" id="modal-box-informe-semanal" style="background: var(--card-bg); color: var(--text-color); border-radius: 8px; width: 100%; max-width: 800px; max-height: 85%; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: all 0.3s ease;">
             <div style="background-color: var(--apm-dark-blue); color: white; padding: 15px 20px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; border-top-left-radius: 8px; border-top-right-radius: 8px;">
@@ -3369,9 +2864,7 @@
                     <span style="cursor:pointer; font-size: 20px;" onclick="cerrarModalInformeSemanal()">✕</span>
                 </div>
             </div>
-            <div style="flex: 1; padding: 20px; overflow-y: auto; font-family: Georgia, serif; font-size: 14px; line-height: 1.6; text-align: justify;" id="modal-cuerpo-informe-semanal">
-                <!-- El texto del informe se cargará aquí -->
-            </div>
+            <div style="flex: 1; padding: 20px; overflow-y: auto; font-family: Georgia, serif; font-size: 14px; line-height: 1.6; text-align: justify;" id="modal-cuerpo-informe-semanal"></div>
             <div style="padding: 15px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; background: var(--bg-color); border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
                 <button class="btn-pdf-view" onclick="cerrarModalInformeSemanal()" style="background-color: var(--danger-red);">Cerrar</button>
             </div>
