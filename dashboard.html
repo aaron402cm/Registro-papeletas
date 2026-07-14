@@ -1929,61 +1929,68 @@
         }
 
         // --- MODIFICADO: RENDERIZAR BANDEJA DE ENTRADA EXCLUYENDO CASOS CERRADOS ---
-        function renderizarTablaFiltrada(papeletasFiltradas) {
-            const tbody = document.querySelector("#tabla-control-papeletas tbody");
-            tbody.innerHTML = "";
+        // BUSQUE Y REEMPLACE LA FUNCIÓN 'renderizarTablaFiltrada' POR ESTA:
+function renderizarTablaFiltrada(papeletasFiltradas) {
+    const tbody = document.querySelector("#tabla-control-papeletas tbody");
+    tbody.innerHTML = "";
 
-            // Ojo: Filtramos para que NO se muestren elementos CERRADOS en la bandeja de activos
-            const activas = papeletasFiltradas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1);
+    const activas = papeletasFiltradas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1);
 
-            if (activas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;">No se encontraron papeletas activas en esta etapa.</td></tr>`;
-                return;
-            }
+    if (activas.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;">No se encontraron papeletas activas en esta etapa.</td></tr>`;
+        return;
+    }
 
-            activas.forEach(p => {
-                let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.replace("T", " ") : "-";
-                
-                const tr = document.createElement("tr");
-                tr.className = "clickable-row";
-                tr.id = `row-${p.id_papeleta}`;
-                if (activePapeletaId === p.id_papeleta) {
-                    tr.classList.add("active-row");
-                }
-                tr.onclick = function() {
-                    document.querySelectorAll("#tabla-control-papeletas tbody tr").forEach(row => row.classList.remove("active-row"));
-                    tr.classList.add("active-row");
-                    seleccionarPapeletaParaRevision(p.id_papeleta);
-                };
-
-                let descargoBadge = "";
-                if (p.estado_semaforo === "descargo") {
-                    descargoBadge = `<span style="color:var(--success-green); font-weight:bold;">✅ Recibido</span>`;
-                } else if (p.estado_semaforo === "vencido") {
-                    descargoBadge = `<span style="color:var(--danger-red); font-weight:bold;">❌ Expirado</span>`;
-                } else {
-                    descargoBadge = `<span style="color:var(--apm-blue); font-weight:bold;">⏳ Pendiente</span>`;
-                }
-
-                // Definición visual de la columna de éxito de envío inicial
-                let notificacionBadge = p.estado_envio === "Se envió correctamente" 
-                    ? `<span style="color:var(--success-green); font-weight:bold;">🟢 Se envió correctamente</span>`
-                    : `<span style="color:var(--danger-red); font-weight:bold;">🔴 Problema con el envío</span>`;
-                
-                tr.innerHTML = `
-                    <td><strong>${p.id_papeleta}</strong></td>
-                    <td>${p.infractor}</td>
-                    <td>${p.empresa}</td>
-                    <td>${p.conducta}</td>
-                    <td>${fechaFormat}</td>
-                    <td>${notificacionBadge}</td>
-                    <td><span class="badge badge-${p.estado_color}">${p.estado_texto}</span></td>
-                    <td>${descargoBadge}</td>
-                    <td><button class="btn-pdf-view" onclick="abrirVisorPDF('${p.id_papeleta}', event)">📄 PDF</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
+    activas.forEach(p => {
+        let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.replace("T", " ") : "-";
+        
+        const tr = document.createElement("tr");
+        tr.className = "clickable-row";
+        tr.id = `row-${p.id_papeleta}`;
+        if (activePapeletaId === p.id_papeleta) {
+            tr.classList.add("active-row");
         }
+        tr.onclick = function() {
+            document.querySelectorAll("#tabla-control-papeletas tbody tr").forEach(row => row.classList.remove("active-row"));
+            tr.classList.add("active-row");
+            seleccionarPapeletaParaRevision(p.id_papeleta);
+        };
+
+        let descargoBadge = "";
+        if (p.estado_semaforo === "descargo") {
+            descargoBadge = `<span style="color:var(--success-green); font-weight:bold;">✅ Recibido</span>`;
+        } else if (p.estado_semaforo === "vencido") {
+            descargoBadge = `<span style="color:var(--danger-red); font-weight:bold;">❌ Expirado</span>`;
+        } else {
+            descargoBadge = `<span style="color:var(--apm-blue); font-weight:bold;">⏳ Pendiente</span>`;
+        }
+
+        // Definición de las 3 opciones para la columna de envío inicial
+        let notificacionBadge = "";
+        const estEnvio = p.estado_envio ? String(p.estado_envio).trim() : "";
+        if (estEnvio === "Se envió correctamente" || estEnvio === "") {
+            notificacionBadge = `<span style="color:var(--success-green); font-weight:bold;">🟢 Se envió correctamente</span>`;
+        } else if (estEnvio === "Problema con el envío") {
+            notificacionBadge = `<span style="color:var(--danger-red); font-weight:bold;">🔴 Problemas con el envío</span>`;
+        } else {
+            notificacionBadge = `<span style="color:var(--danger-red); font-weight:bold;">🔴 No se envió</span>`;
+        }
+        
+        // Dibujado alineado de las 9 columnas
+        tr.innerHTML = `
+            <td><strong>${p.id_papeleta}</strong></td>
+            <td>${p.infractor}</td>
+            <td>${p.empresa}</td>
+            <td>${p.conducta}</td>
+            <td>${fechaFormat}</td>
+            <td>${notificacionBadge}</td>
+            <td><span class="badge badge-${p.estado_color}">${p.estado_texto}</span></td>
+            <td>${descargoBadge}</td>
+            <td><button class="btn-pdf-view" onclick="abrirVisorPDF('${p.id_papeleta}', event)">📄 PDF</button></td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
 
         // --- NUEVO: RENDERIZAR TABLA DE CASOS CERRADOS ---
         function renderizarTablaCasosCerrados(papeletasCerradas) {
@@ -2670,55 +2677,6 @@
             }
         }
 
-        function renderizarTablaFiltrada(papeletasFiltradas) {
-            const tbody = document.querySelector("#tabla-control-papeletas tbody");
-            tbody.innerHTML = "";
-
-            if (papeletasFiltradas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">No se encontraron papeletas con los filtros seleccionados.</td></tr>`;
-            } else {
-                papeletasFiltradas.forEach(p => {
-                    let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.replace("T", " ") : "-";
-                    
-                    const tr = document.createElement("tr");
-                    tr.className = "clickable-row";
-                    tr.id = `row-${p.id_papeleta}`;
-                    if (activePapeletaId === p.id_papeleta) {
-                        tr.classList.add("active-row");
-                    }
-                    tr.onclick = function() {
-                        document.querySelectorAll("#tabla-control-papeletas tbody tr").forEach(row => row.classList.remove("active-row"));
-                        document.querySelectorAll(".papeleta-card-view").forEach(card => card.classList.remove("active-card"));
-                        tr.classList.add("active-row");
-                        seleccionarPapeletaParaRevision(p.id_papeleta);
-                    };
-
-                    // Columna con indicador de descargo de un vistazo
-                    let descargoBadge = "";
-                    if (p.estado_semaforo === "descargo") {
-                        descargoBadge = `<span style="color:var(--success-green); font-weight:bold;">✅ Recibido</span>`;
-                    } else if (p.estado_semaforo === "vencido") {
-                        descargoBadge = `<span style="color:var(--danger-red); font-weight:bold;">❌ Expirado</span>`;
-                    } else if (p.estado_semaforo === "ultimo_dia") {
-                        descargoBadge = `<span style="color:var(--warning-yellow); font-weight:bold;">⏳ Último Día</span>`;
-                    } else {
-                        descargoBadge = `<span style="color:var(--apm-blue); font-weight:bold;">⏳ Pendiente</span>`;
-                    }
-                    
-                    tr.innerHTML = `
-                        <td><strong>${p.id_papeleta}</strong></td>
-                        <td>${p.infractor}</td>
-                        <td>${p.empresa}</td>
-                        <td>${p.conducta}</td>
-                        <td>${fechaFormat}</td>
-                        <td><span class="badge badge-${p.estado_color}">${p.estado_text_completo || p.estado_texto}</span></td>
-                        <td>${descargoBadge}</td>
-                        <td><button class="btn-pdf-view" onclick="abrirVisorPDF('${p.id_papeleta}', event)">📄 PDF</button></td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            }
-        }
 
         function renderizarTarjetasFiltradas(papeletasFiltradas) {
             const container = document.getElementById("tarjetas-papeletas-contenedor");
