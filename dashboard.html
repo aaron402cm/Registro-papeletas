@@ -2581,18 +2581,16 @@
                 }
             });
         }
-
         function filtrarYRenderizarTabla() {
             if (!globalDashboardCache || !globalDashboardCache.dashboardData || !globalDashboardCache.dashboardData.papeletas) return;
             
             const query = document.getElementById("tabla-buscador-rapido").value.trim().toLowerCase();
-            const empresaFiltro = document.getElementById("filtro-empresa").value;
-            const graduacionFiltro = document.getElementById("filtro-graduacion").value;
-            const semaforoFiltro = document.getElementById("filtro-semaforo").value;
             
-            // Fechas rango
-            const fDesde = document.getElementById("filtro-fecha-desde").value;
-            const fHasta = document.getElementById("filtro-fecha-hasta").value;
+            const selectEmpresa = document.getElementById("filtro-empresa");
+            const empresaFiltro = selectEmpresa ? selectEmpresa.value : "";
+            
+            const selectSemaforo = document.getElementById("filtro-semaforo");
+            const semaforoFiltro = selectSemaforo ? selectSemaforo.value : "";
 
             const papeletas = globalDashboardCache.dashboardData.papeletas;
             activeFilteredPapeletas = papeletas.filter(p => {
@@ -2604,18 +2602,7 @@
                     String(p.conducta).toLowerCase().includes(query);
                 
                 const cumpleEmpresa = !empresaFiltro || p.empresa === empresaFiltro;
-                
-                const cumpleGraduacion = !graduacionFiltro || String(p.conducta).toLowerCase().includes(graduacionFiltro.toLowerCase()) || String(p.estado_texto).toLowerCase().includes(graduacionFiltro.toLowerCase());
-                
                 const cumpleSemaforo = !semaforoFiltro || p.estado_semaforo === semaforoFiltro;
-                
-                // Rango de fechas
-                let cumpleFecha = true;
-                if (p.fecha_infraccion) {
-                    const fReg = p.fecha_infraccion.split("T")[0];
-                    if (fDesde && fReg < fDesde) cumpleFecha = false;
-                    if (fHasta && fReg > fHasta) cumpleFecha = false;
-                }
 
                 // Filtrar según Pipeline Stage
                 let cumpleEtapa = true;
@@ -2625,7 +2612,7 @@
                 else if (etapaTramiteActual === "EVALUACION" && est !== "DESCARGO_RECIBIDO" && est !== "PLAZO_VENCIDO") cumpleEtapa = false;
                 else if (etapaTramiteActual === "CERRADO" && est.indexOf("CERRADO") === -1) cumpleEtapa = false;
                 
-                return cumpleBuscador && cumpleEmpresa && cumpleGraduacion && cumpleSemaforo && cumpleFecha && cumpleEtapa;
+                return cumpleBuscador && cumpleEmpresa && cumpleSemaforo && cumpleEtapa;
             });
 
             // Ordenamiento lógico
