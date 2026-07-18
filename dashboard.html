@@ -655,28 +655,31 @@ body.light-theme .tab-link.active {
 
         /* --- MODAL DE INSTRUCCIÓN (GRIS CORTE INDUSTRIAL ELEGANTE) --- */
         #modal-instruccion-expediente .modal-box {
-            /* Gris carbón táctico elegante con efecto esmerilado de vidrio */
-            background: rgba(30, 41, 59, 0.72) !important; /* Gris pizarra elegante */
-            border: 1px solid rgba(255, 255, 255, 0.25) !important;
-            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(25px) saturate(180%);
-            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            /* Gris mineral oscuro sólido (evita que el fondo azul marino se trasluzca) */
+            background: #1e222b !important; /* Gris acero neutro premium */
+            border: 1px solid rgba(255, 255, 255, 0.18) !important;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.1);
             border-radius: 16px;
-            width: 95%; /* Adaptable a pantallas medianas */
-            max-width: 950px !important; /* Incrementado para máxima comodidad */
-            min-width: 950px !important;
-            max-height: 90%;
+            width: 95%;
+            max-width: 950px !important; /* Espacioso y cómodo */
+            max-height: 85%;
             overflow-y: auto;
             position: relative;
-            padding: 30px; /* Más holgura interna */
+            padding: 30px;
             border-top: 4px solid var(--apm-orange) !important;
+            
+            /* Desactivamos la transparencia del cuadro de contenido para que no se mezcle el azul */
+            backdrop-filter: none !important; 
+            -webkit-backdrop-filter: none !important;
         }
 
-        /* Adaptación del fondo gris elegante en modo diurno (Light Theme) */
+        /* Adaptación en modo diurno (Gris platino claro neutro y pulcro) */
         body.light-theme #modal-instruccion-expediente .modal-box {
-            background: rgba(241, 245, 249, 0.92) !important; /* Gris claro/marfil premium de alto contraste */
+            background: #f4f5f7 !important; /* Gris claro satinado */
             border: 1px solid rgba(0, 31, 63, 0.15) !important;
-            box-shadow: 0 15px 35px rgba(0, 31, 63, 0.1) !important;
+            box-shadow: 0 15px 35px rgba(0, 31, 63, 0.08) !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
         }
 
         /* --- BOTÓN DE CIERRE EXCLUSIVO PARA EL MODAL (ESQUINA SUPERIOR DERECHA) --- */
@@ -1348,7 +1351,7 @@ body.light-theme .tab-link.active {
             overflow: hidden;
         }
         .pdf-modal-header {
-            background-color: #000c18;
+            background-color: #dde6f0;
             color: white;
             border-bottom: 1px solid var(--border-color);
             padding: 15px 20px;
