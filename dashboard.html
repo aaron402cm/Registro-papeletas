@@ -47,44 +47,89 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
-        /* --- PANTALLA DE LOGIN CON 2FA --- */
+        /* --- PANTALLA DE LOGIN CON LIQUID GLASS Y FONDO PUERTO --- */
         #login-screen {
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            background-color: var(--apm-dark-blue);
+            /* Fondo con imagen de terminal portuario de alta calidad y superposición oscura para contraste */
+            background: linear-gradient(135deg, rgba(0, 34, 68, 0.8), rgba(0, 15, 30, 0.95)), 
+                        url('https://images.unsplash.com/photo-1578575437130-527eed3abbec?q=80&w=1920') no-repeat center center/cover;
             padding: 20px;
             box-sizing: border-box;
         }
 
         .login-box {
-            background: var(--card-bg);
-            color: var(--text-color);
+            /* Efecto Liquid Glassmorphism */
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(15px) saturate(180%);
+            -webkit-backdrop-filter: blur(15px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 16px;
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
             padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
             width: 100%;
             max-width: 420px;
             text-align: center;
-            transition: background-color 0.3s;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .login-box:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 45px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        /* Modificaciones internas en Login para legibilidad sobre el vidrio */
+        .login-box h2 {
+            color: #ffffff;
+            margin-top: 0;
+            margin-bottom: 8px;
+            font-size: 24px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-box p {
+            color: rgba(255, 255, 255, 0.8) !important;
+            font-size: 14px;
+            margin-bottom: 25px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .login-box .form-group label {
+            color: rgba(255, 255, 255, 0.95) !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            font-size: 13px;
+        }
+
+        .login-box .form-group input, 
+        .login-box .form-group select {
+            background-color: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+            backdrop-filter: blur(5px);
+            transition: all 0.25s ease;
+        }
+
+        .login-box .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .login-box .form-group input:focus, 
+        .login-box .form-group select:focus {
+            background-color: rgba(255, 255, 255, 0.25);
+            border-color: var(--apm-orange);
+            box-shadow: 0 0 8px rgba(224, 91, 27, 0.4);
+            outline: none;
+        }
+
+        .login-box .toggle-password-btn {
+            color: rgba(255, 255, 255, 0.8);
         }
 
         .login-logo {
             margin-bottom: 20px;
-        }
-
-        .login-box h2 {
-            color: var(--apm-orange);
-            margin-top: 0;
-            margin-bottom: 10px;
-            font-size: 24px;
-        }
-
-        .login-box p {
-            color: #6c757d;
-            font-size: 14px;
-            margin-bottom: 25px;
+            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.25));
         }
 
         .form-group {
@@ -159,11 +204,12 @@
         }
 
         #login-error {
-            color: var(--danger-red);
+            color: #ff6b6b;
             font-weight: bold;
             margin-top: 15px;
             display: none;
             font-size: 14px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
 
         /* --- CONTENEDOR PRINCIPAL DEL DASHBOARD --- */
@@ -1363,6 +1409,18 @@
 </head>
 <body>
 
+    <!-- CONTENEDOR DE LA INTRO DE VIDEO (PANTALLA COMPLETA Y CON TRANSICIÓN SUAVE) -->
+    <div id="intro-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #002244; z-index: 99999; align-items: center; justify-content: center; overflow: hidden; opacity: 1; transition: opacity 0.8s ease;">
+        <video id="intro-video" style="width: 100%; height: 100%; object-fit: cover;" muted playsinline>
+            <source src="intro.mp4" type="video/mp4">
+            Tu navegador no soporta el formato de video.
+        </video>
+        <!-- Botón sutil para omitir la introducción -->
+        <button onclick="omitirIntroVideo()" style="position: absolute; bottom: 30px; right: 30px; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.3); color: white; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-size: 12px; font-weight: bold; backdrop-filter: blur(5px); transition: background 0.2s;">
+            Omitir Intro ⏭️
+        </button>
+    </div>
+
     <!-- PANTALLA DE INGRESO SEGURO CON 2FA REAL -->
     <div id="login-screen">
         <div class="login-box">
@@ -1372,7 +1430,8 @@
                     <polygon points="5,28 115,28 95,42 -15,42" fill="#E05B1B" />
                 </g>
                 <text x="125" y="28" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="18" fill="#E05B1B">Lifting Global Trade</text>
-                <text x="125" y="68" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="34" fill="#002244" letter-spacing="0.5">APM TERMINALS</text>
+                <!-- Modificado fill a blanco para contraste perfecto con Liquid Glass -->
+                <text x="125" y="68" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="34" fill="#FFFFFF" letter-spacing="0.5">APM TERMINALS</text>
             </svg>
             
             <h2>🔒 Acceso Secretaria</h2>
@@ -1399,7 +1458,7 @@
                 <div class="form-group">
                     <label>Código de Seguridad OTP</label>
                     <input type="text" id="sec-otp" placeholder="XXXXXX" maxlength="6" style="text-align: center; font-size: 24px; letter-spacing: 4px;" onkeydown="detectarEnterOTP(event)">
-                    <p style="font-size:12px; color:#6c757d; margin-top:8px; margin-bottom:0;">Se ha enviado un código a su correo de APM Terminals procesos.ris@apmterminals.com.</p>
+                    <p style="font-size:12px; color:#ffffff; margin-top:8px; margin-bottom:0;">Se ha enviado un código a su correo de APM Terminals procesos.ris@apmterminals.com.</p>
                 </div>
                 <button class="btn-apm" onclick="verificarCodigoOTP()">Verificar e Ingresar</button>
             </div>
@@ -1586,7 +1645,7 @@
                         </tbody>
                     </table>
                     
-                    <!-- Enlace dinámico a Drive (Inicia oculto por CSS para evitar fantasmas) -->
+                    <!-- Enlace dinámico a Drive -->
                     <a href="#" target="_blank" id="btn-abrir-carpeta-drive" class="btn-drive-link" style="margin-bottom: 15px; display: none;">
                         📂 Abrir Carpeta del Expediente en Drive
                     </a>
@@ -1646,103 +1705,12 @@
             </div>
         </div>
 
-                            <div id="wizard-panes-container">
-                                        
-                                        <!-- Enlace dinámico a la subcarpeta de Drive -->
-                                        <a href="#" target="_blank" id="btn-abrir-carpeta-drive" class="btn-drive-link">
-                                            📂 Abrir Carpeta del Expediente en Drive
-                                        </a>
-
-                                        <p style="font-weight: bold; font-size: 12px; margin-top: 15px; margin-bottom: 5px;">📍 Trazabilidad e Historial de Acciones:</p>
-                                        <div class="trazabilidad-timeline" id="wiz-val-trazabilidad"></div>
-                                    </div>
-                                </div>
-
-                                <!-- PASO 2: RESUMEN Y CRITERIO LEGAL RIS -->
-                                <div class="wizard-step-pane" id="pane-step-2">
-                                    <div class="panel-section-title">Paso 2: Análisis e Interpretación Legal RIS</div>
-                                    <div class="panel-section-content">
-                                        <div style="background-color: var(--input-bg); padding: 12px; border-radius: 6px; border-left: 3px solid var(--apm-orange); margin-bottom: 12px;">
-                                            <strong>Resumen de la Infracción (IA):</strong>
-                                            <p id="wiz-val-resumen-infraccion" style="margin-top: 5px; margin-bottom: 0;">-</p>
-                                        </div>
-                                        <div style="background-color: var(--input-bg); padding: 12px; border-radius: 6px; border-left: 3px solid var(--apm-blue);">
-                                            <strong>Criterio Legal RIS (IA):</strong>
-                                            <p id="wiz-val-criterio-legal" style="margin-top: 5px; margin-bottom: 0;">-</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- PASO 3: REINCIDENCIAS -->
-                                <div class="wizard-step-pane" id="pane-step-3">
-                                    <div class="panel-section-title">Paso 3: Historial de Reincidencias Recurrentes</div>
-                                    <div class="panel-section-content">
-                                        <div class="vertical-timeline" id="wiz-val-reincidencias-timeline"></div>
-                                    </div>
-                                </div>
-
-                                <!-- PASO 4: INFRACCIÓN APN -->
-                                <div class="wizard-step-pane" id="pane-step-4">
-                                    <div class="panel-section-title">Paso 4: Infracción APN y Catálogo de Sanciones</div>
-                                    <div class="panel-section-content">
-                                        <table class="compact-table" style="margin-bottom: 15px;">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="label-cell" style="vertical-align: top;">Conducta RIS:</td>
-                                                    <td id="panel-txt-conducta-ris" style="font-weight: bold; color: var(--apm-blue);">-</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="label-cell">Graduación:</td>
-                                                    <td><span id="panel-txt-graduacion-ris" class="badge">-</span></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                        <div>
-                                            <strong>Sanción Estipulada en Reglamento APN:</strong>
-                                            <span id="panel-txt-sancion-raw" style="white-space: pre-wrap; display: block; background: var(--input-bg); padding: 10px; border: 1px solid var(--border-color); border-radius:4px; margin-top:5px; line-height:1.4; font-size: 11px;">-</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- PASO 5: DESCARGOS -->
-                                <div class="wizard-step-pane" id="pane-step-5">
-                                    <div class="panel-section-title">Paso 5: Evaluación de Descargos Gmail</div>
-                                    <div class="panel-section-content" id="wiz-val-descargos-container"></div>
-                                </div>
-
-                                <!-- PASO 6: RESOLUCIÓN -->
-                                <div class="wizard-step-pane" id="pane-step-6">
-                                    <div class="panel-section-title">Paso 6: Resolución Final y Notificación</div>
-                                    <div class="panel-section-content">
-                                        <!-- Switch de Trámite Automatizado -->
-                                        <div class="toggle-switch-container">
-                                            <div>
-                                                <strong style="font-size: 13px;">Trámite Automatizado (IA)</strong>
-                                                <span style="display: block; font-size: 11px; color:#6c757d;">Enviar resolución automáticamente a las 17:00</span>
-                                            </div>
-                                            <label class="switch">
-                                                <input type="checkbox" id="toggle-automode-switch" onchange="cambiarModoTramiteServidor()">
-                                                <span class="slider"></span>
-                                            </label>
-                                        </div>
-
-                                        <div class="sancion-input-group" style="background: rgba(224, 91, 27, 0.05); padding: 10px; border-radius: 6px; border: 1px solid rgba(224, 91, 27, 0.2); margin-bottom: 15px;">
-                                            <label style="font-size:12px; font-weight:bold; color: var(--apm-orange);">Suspender Acceso (Días):</label>
-                                            <input type="number" id="sancion-dias-final" min="0" value="0">
-                                        </div>
-                                        
-                                        <p style="margin:4px 0; font-size: 11px; font-weight: bold;">Borrador del Correo Formal (Editable):</p>
-                                        <textarea id="panel-txt-correo-borrador" rows="8" style="width: 100%; border: 1px solid var(--border-color); background-color: var(--input-bg); color: var(--text-color); padding: 8px; font-family: inherit; font-size: 11px; border-radius: 4px; box-sizing: border-box; resize: vertical; margin-bottom: 15px;"></textarea>
-
-                                        <button class="btn-apm" style="background-color:var(--success-green);" onclick="ejecutarAprobacionYSancion()">✅ Enviar Resolución Oficial</button>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         </div>
                         </div>
                        
-                             <!-- NUEVA PESTAÑA: CASOS CERRADOS (HISTORIAL RECIENTE Y BÚSQUEDA AVANZADA) -->
+            <!-- NUEVA PESTAÑA: CASOS CERRADOS (HISTORIAL RECIENTE Y BÚSQUEDA AVANZADA) -->
             <div id="panel-cerradas-panel" class="tab-panel">
                 <div class="card" style="margin-bottom: 15px; padding: 15px;">
                     <div style="display: flex; gap: 10px; align-items: center;">
@@ -1849,7 +1817,7 @@
                             ✨ Generar Análisis de Patrones Semanal (IA)
                         </button>
                     </div>
-                    <p style="font-size:14px; color:#6c757d; margin-top:0;">Esta auditoría procesa de forma heurística el consolidado de infracciones mediante Inteligencia Artificial para identificar áreas críticas o conductas peligrosas recurrentes en la terminal.</p>
+                    <p style="font-size:14px; color:#6c757d; margin-top:0;">Esta auditoría procesa de forma heurística el consolidado de infracciones mediante Inteligencia Artificial para identificar áreas críticas o conductas conductas recurrentes en la terminal.</p>
                     
                     <div class="newspaper-container" style="margin-top: 20px;">
                         <div class="newspaper-header">
@@ -1997,6 +1965,9 @@
         
         let prevPapeletasCount = null;
         let wizardPasoActual = 1;
+
+        // Caché temporal para pasar los datos de inicialización tras finalizar el video
+        let tempTransitionData = null;
 
         // Formateador dinámico de texto para la IA
         function formatearRespuestaChat(texto) {
@@ -2183,6 +2154,66 @@
             });
         }
 
+        // --- GESTIÓN DE TRANSICIÓN CON INTRO DE VIDEO ---
+        function iniciarIntroYAcceder(data) {
+            tempTransitionData = data;
+            const loginScreen = document.getElementById("login-screen");
+            const introScreen = document.getElementById("intro-screen");
+            const introVideo = document.getElementById("intro-video");
+
+            // Ocultar login y preparar la intro
+            loginScreen.style.display = "none";
+            introScreen.style.display = "flex";
+            introScreen.style.opacity = "1";
+
+            // Iniciar reproducción
+            introVideo.currentTime = 0;
+            const playPromise = introVideo.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    // Reproducción exitosa
+                }).catch(error => {
+                    console.log("No se pudo auto-reproducir el video, omitiendo intro...", error);
+                    finalizarIntroVideo();
+                });
+            }
+
+            // Al finalizar el video pasamos al Dashboard
+            introVideo.onended = function() {
+                finalizarIntroVideo();
+            };
+        }
+
+        function omitirIntroVideo() {
+            finalizarIntroVideo();
+        }
+
+        function finalizarIntroVideo() {
+            const introScreen = document.getElementById("intro-screen");
+            const introVideo = document.getElementById("intro-video");
+            const mainApp = document.getElementById("main-app");
+
+            try { introVideo.pause(); } catch(e){}
+
+            // Desvanecimiento progresivo de la intro
+            introScreen.style.opacity = "0";
+
+            setTimeout(() => {
+                introScreen.style.display = "none";
+                mainApp.style.display = "flex";
+
+                // Habilitar chat flotante
+                const chatFab = document.getElementById("chat-fab-element");
+                if (chatFab) chatFab.style.display = "flex";
+
+                if (tempTransitionData) {
+                    inicializarDashboardConDatos(tempTransitionData);
+                    tempTransitionData = null; // Liberar memoria
+                }
+            }, 800); // Sincronizado con la duración de la transición en el estilo CSS (0.8s)
+        }
+
         function enviarCredentialsLogin() {
             const user = document.getElementById("sec-username").value.trim().toUpperCase();
             const pass = document.getElementById("sec-password").value.trim();
@@ -2210,10 +2241,7 @@
                 } else if (data.status === "success") {
                     sessionStorage.setItem("secure_user_initials", user);
                     sessionStorage.setItem("secure_auth_plain", pass);
-                    document.getElementById("login-screen").style.display = "none";
-                    document.getElementById("main-app").style.display = "flex";
-                    document.getElementById("chat-fab-element").style.display = "flex";
-                    inicializarDashboardConDatos(data.data);
+                    iniciarIntroYAcceder(data.data);
                 } else if (data.error) {
                     loginError.innerText = data.error;
                     loginError.style.display = "block";
@@ -2238,11 +2266,8 @@
                 if (data.status === "success") {
                     sessionStorage.setItem("secure_user_initials", user);
                     sessionStorage.setItem("secure_auth_plain", sessionStorage.getItem("temp_pass"));
-                    document.getElementById("login-screen").style.display = "none";
-                    document.getElementById("main-app").style.display = "flex";
                     document.getElementById("user-display").innerText = user;
-                    document.getElementById("chat-fab-element").style.display = "flex";
-                    inicializarDashboardConDatos(data.data);
+                    iniciarIntroYAcceder(data.data);
                 } else {
                     loginError.innerText = data.error || "Código incorrecto";
                     loginError.style.display = "block";
@@ -2381,7 +2406,6 @@
                 else if (est.indexOf("CERRADO") !== -1) counts.CERRADO++;
             });
 
-            // Comprobación de seguridad contra nulos (Null-Guarding)
             const elAll = document.getElementById("pipe-count-all");
             if (elAll) elAll.innerText = papeletas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1).length;
             
@@ -2396,9 +2420,6 @@
             
             const elIa = document.getElementById("pipe-count-ia");
             if (elIa) elIa.innerText = counts.IA;
-
-            const elCer = document.getElementById("pipe-count-cerrados");
-            if (elCer) elCer.innerText = counts.CERRADO;
         }
 
         function filtrarPorEtapaTramite(etapa) {
@@ -2625,76 +2646,24 @@
             });
         }
 
-        function navegarWizard(direccion) {
-            const nuevoPaso = wizardPasoActual + direccion;
-            if (nuevoPaso >= 1 && nuevoPaso <= 6) {
-                wizardPasoActual = nuevoPaso;
-                actualizarVistaWizard();
-            }
-        }
-
-        function actualizarVistaWizard() {
-            const elLbl = document.getElementById("lbl-wizard-paso-actual");
-            if (elLbl) elLbl.innerText = `Paso ${wizardPasoActual}/6`;
-            
-            document.querySelectorAll(".wizard-step-pane").forEach(pane => pane.classList.remove("active"));
-            
-            const elPane = document.getElementById(`pane-step-${wizardPasoActual}`);
-            if (elPane) elPane.classList.add("active");
-            
-            document.querySelectorAll(".wizard-step-node").forEach((node, idx) => {
-                node.classList.remove("active", "completed");
-                if (idx + 1 === wizardPasoActual) node.classList.add("active");
-                else if (idx + 1 < wizardPasoActual) node.classList.add("completed");
-            });
-            
-            const elBar = document.getElementById("wizard-progress-bar-fill");
-            if (elBar) elBar.style.width = `${((wizardPasoActual - 1) / 5) * 100}%`;
-            
-            // Si el botón de Anterior no está en el HTML, el script continúa sin tirar error
-            const elBtnPrev = document.getElementById("btn-wiz-prev");
-            if (elBtnPrev) {
-                elBtnPrev.disabled = (wizardPasoActual === 1);
-                elBtnPrev.style.opacity = (wizardPasoActual === 1) ? "0.5" : "1";
-            }
-            
-            // Si el botón de Siguiente no está en el HTML, el script continúa sin tirar error
-            const btnNext = document.getElementById("btn-wiz-next");
-            if (btnNext) {
-                if (wizardPasoActual === 6) {
-                    btnNext.innerText = "Finalizar ✨";
-                    btnNext.style.backgroundColor = "var(--success-green)";
-                } else {
-                    btnNext.innerText = "Siguiente ➡️";
-                    btnNext.style.backgroundColor = "var(--apm-blue)";
-                }
-            }
-        }
-
-        // --- NUEVA FUNCIÓN: CONTROLAR NAVEGACIÓN LIBRE POR SUB-TABS ---
         function cambiarSubTab(seccion, btn) {
-            // Ocultar todos los paneles de secciones del expediente
             document.querySelectorAll("#secciones-panes-container .wizard-step-pane").forEach(pane => {
                 pane.classList.remove("active");
             });
-            // Activar el panel de la sección seleccionada
             const activePane = document.getElementById(`pane-section-${seccion}`);
             if (activePane) activePane.classList.add("active");
 
-            // Desactivar todos los botones de sub-pestañas
             document.querySelectorAll(".sub-tab-link").forEach(b => {
                 b.classList.remove("active");
             });
-            // Activar el botón presionado
             btn.classList.add("active");
         }
-         // REEMPLACE LA FUNCIÓN 'seleccionarPapeletaParaRevision' EN SU JS POR ESTA:
+
         function seleccionarPapeletaParaRevision(id) {
             activePapeletaId = id;
             document.getElementById("panel-lateral-vacio").style.display = "none";
             document.getElementById("panel-lateral-activo").style.display = "block";
             
-            // Activar automáticamente la Sección A (Identificación) por defecto al abrir un expediente
             const subTabA = document.querySelector(".sub-tab-link");
             if (subTabA) {
                 cambiarSubTab('A', subTabA);
@@ -2710,7 +2679,6 @@
             .then(data => {
                 completarYQuitarRobotLoader();
                 
-                // Búsqueda en la caché local del navegador
                 const localData = activeFilteredPapeletas.find(p => String(p.id_papeleta) === String(id));
                 
                 if (localData) {
@@ -2734,7 +2702,6 @@
 
                     const btnDrive = document.getElementById("btn-abrir-carpeta-drive");
                     if (btnDrive) {
-                        // El botón solo se vuelve visible si la celda de Drive en el Excel tiene una dirección válida escrita
                         if (localData.carpeta_drive_url && localData.carpeta_drive_url.trim() !== "") {
                             btnDrive.href = localData.carpeta_drive_url;
                             btnDrive.style.display = "flex";
@@ -2743,7 +2710,6 @@
                         }
                     }
 
-                    // Trazabilidad temporal
                     let tHtml = "";
                     if (localData.fecha_infraccion) tHtml += `<div class="trazabilidad-item"><strong>${localData.fecha_infraccion.split("T")[0]}</strong> - Reportado por Oficial.</div>`;
                     if (localData.fecha_envio) tHtml += `<div class="trazabilidad-item"><strong>${localData.fecha_envio.split("T")[0]}</strong> - Notificación generada.</div>`;
@@ -2752,7 +2718,6 @@
                     const elTraz = document.getElementById("wiz-val-trazabilidad");
                     if (elTraz) elTraz.innerHTML = tHtml;
 
-                    // Sección C: Descargos
                     const descargosContenedor = document.getElementById("wiz-val-descargos-container");
                     if (descargosContenedor) {
                         if (localData.estado_semaforo === "descargo") {
@@ -2769,7 +2734,6 @@
                     if (switchEl) switchEl.checked = (localData.modo_tramite === "AUTOMATICO");
                 }
                 
-                // Sección B: Análisis Legal
                 const elRes = document.getElementById("wiz-val-resumen-infraccion");
                 if (elRes) elRes.innerHTML = formatearRespuestaChat(data.resumen_descargo);
                 
@@ -2796,7 +2760,6 @@
                 const elSancR = document.getElementById("panel-txt-sancion-raw");
                 if (elSancR) elSancR.innerHTML = formatearRespuestaChat(data.sancion_estipulada_tabla);
                 
-                // Sección D: Resolución
                 const elDiasF = document.getElementById("sancion-dias-final");
                 if (elDiasF) elDiasF.value = data.dias_sugeridos;
                 
@@ -2954,7 +2917,7 @@
             }
             papeletas.forEach(p => {
                 if (p.fecha_envio) {
-                    let key = String(p.fecha_envio).split(" ")[0].split("T")[0]; // Soporte unificado de formatos
+                    let key = String(p.fecha_envio).split(" ")[0].split("T")[0]; 
                     if (countsByDay[key] !== undefined) countsByDay[key]++;
                 }
             });
@@ -3047,33 +3010,38 @@
                 }
             });
         }
-        // --- NUEVO: AUTO-LOGIN AL REFRESCAR LA PÁGINA (Ctrl + F5 o F5) ---
-// Detecta si ya hay una sesión activa guardada y la restaura de inmediato sin pedir OTP de nuevo
-window.addEventListener("DOMContentLoaded", function() {
-    const user = sessionStorage.getItem("secure_user_initials");
-    const auth = sessionStorage.getItem("secure_auth_plain");
 
-    if (user && auth) {
-        // Ocultar pantalla de login y mostrar el panel de control directamente
-        document.getElementById("login-screen").style.display = "none";
-        document.getElementById("main-app").style.display = "flex";
-        
-        const elChat = document.getElementById("chat-fab-element");
-        if (elChat) elChat.style.display = "flex";
-        
-        const elUser = document.getElementById("user-display");
-        if (elUser) elUser.innerText = user;
+        function cerrarSesionDashboard() {
+            sessionStorage.clear();
+            location.reload();
+        }
 
-        // Descargar de forma silenciosa la base de datos actualizada del Excel
-        ejecutarSincronizacionSilenciosa();
-    }
-});
+        // --- AUTO-LOGIN AL REFRESCAR LA PÁGINA (F5) ---
+        window.addEventListener("DOMContentLoaded", function() {
+            const user = sessionStorage.getItem("secure_user_initials");
+            const auth = sessionStorage.getItem("secure_auth_plain");
 
-// Función de alias para evitar errores de cierre de sesión según la nomenclatura del botón
-function finalizarSesion() {
-    cerrarSesionDashboard();
-}
+            if (user && auth) {
+                // Restauración directa para no forzar la reproducción de la intro en cada refresh
+                document.getElementById("login-screen").style.display = "none";
+                document.getElementById("main-app").style.display = "flex";
+                
+                const elChat = document.getElementById("chat-fab-element");
+                if (elChat) elChat.style.display = "flex";
+                
+                const elUser = document.getElementById("user-display");
+                if (elUser) elUser.innerText = user;
+
+                ejecutarSincronizacionSilenciosa();
+            }
+        });
+
+        function finalizarSesion() {
+            cerrarSesionDashboard();
+        }
     </script>
+
+    <!-- MODAL INFORME SEMANAL IA -->
     <div class="modal-overlay" id="modal-informe-semanal-ia" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 4500; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;">
         <div class="modal-box" id="modal-box-informe-semanal" style="background: var(--card-bg); color: var(--text-color); border-radius: 8px; width: 100%; max-width: 800px; max-height: 85%; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: all 0.3s ease;">
             <div style="background-color: var(--apm-dark-blue); color: white; padding: 15px 20px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; border-top-left-radius: 8px; border-top-right-radius: 8px;">
