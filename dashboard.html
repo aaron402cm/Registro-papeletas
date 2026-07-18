@@ -576,22 +576,6 @@
         .badge-red { background-color: #fce4d6; color: var(--danger-red); }
         .badge-blue { background-color: #e8f1f5; color: var(--apm-blue); }
 
-        .btn-pdf-view {
-            background-color: var(--apm-blue);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: bold;
-            transition: background-color 0.2s;
-        }
-
-        .btn-pdf-view:hover {
-            background-color: var(--apm-dark-blue);
-        }
-
         /* --- BOTÓN DE ENLACE DE DRIVE --- */
         .btn-drive-link {
             display: flex;
@@ -1409,16 +1393,12 @@
 </head>
 <body>
 
-    <!-- CONTENEDOR DE LA INTRO DE VIDEO (PANTALLA COMPLETA Y CON TRANSICIÓN SUAVE) -->
-    <div id="intro-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #002244; z-index: 99999; align-items: center; justify-content: center; overflow: hidden; opacity: 1; transition: opacity 0.8s ease;">
-        <video id="intro-video" style="width: 100%; height: 100%; object-fit: cover;" muted playsinline>
+    <!-- PANTALLA DE INTRO (SÓLO EL VIDEO COMPLETO CON AUDIO Y MÁXIMA CALIDAD) -->
+    <div id="intro-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000000; z-index: 99999; align-items: center; justify-content: center; overflow: hidden; opacity: 1; transition: opacity 0.8s ease;">
+        <!-- Video en resolución nativa sin zoom (object-fit: contain) -->
+        <video id="intro-video" style="width: 100%; height: 100%; object-fit: contain; display: block;" playsinline>
             <source src="intro.mp4" type="video/mp4">
-            Tu navegador no soporta el formato de video.
         </video>
-        <!-- Botón sutil para omitir la introducción -->
-        <button onclick="omitirIntroVideo()" style="position: absolute; bottom: 30px; right: 30px; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.3); color: white; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-size: 12px; font-weight: bold; backdrop-filter: blur(5px); transition: background 0.2s;">
-            Omitir Intro ⏭️
-        </button>
     </div>
 
     <!-- PANTALLA DE INGRESO SEGURO CON 2FA REAL -->
@@ -2154,64 +2134,60 @@
             });
         }
 
-        // --- GESTIÓN DE TRANSICIÓN CON INTRO DE VIDEO ---
+        // --- GESTIÓN DE LA PANTALLA DE INICIALIZACIÓN SÓLO VIDEO --- [1]
         function iniciarIntroYAcceder(data) {
             tempTransitionData = data;
             const loginScreen = document.getElementById("login-screen");
             const introScreen = document.getElementById("intro-screen");
             const introVideo = document.getElementById("intro-video");
 
-            // Ocultar login y preparar la intro
+            // Ocultar Login y presentar Consola de Carga
             loginScreen.style.display = "none";
             introScreen.style.display = "flex";
             introScreen.style.opacity = "1";
 
-            // Iniciar reproducción
-            introVideo.currentTime = 0;
-            const playPromise = introVideo.play();
+            // Ejecutar y desmutar el video nativamente (permitido tras el clic del login)
+            if (introVideo) {
+                introVideo.muted = false; // Desmutar el audio del propio video para reproducirlo con audio
+                introVideo.volume = 0.7;  // Ajustar un volumen moderado y profesional (70%)
+                introVideo.currentTime = 0;
+                
+                const playPromise = introVideo.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(err => {
+                        console.log("Auto-play de video bloqueado por restricciones del navegador, ingresando directamente.", err);
+                        finalizarIntroVideo();
+                    });
+                }
 
-            if (playPromise !== undefined) {
-                playPromise.then(_ => {
-                    // Reproducción exitosa
-                }).catch(error => {
-                    console.log("No se pudo auto-reproducir el video, omitiendo intro...", error);
+                // Al terminar el video de forma natural, finaliza la intro y carga el Dashboard
+                introVideo.onended = function() {
                     finalizarIntroVideo();
-                });
-            }
-
-            // Al finalizar el video pasamos al Dashboard
-            introVideo.onended = function() {
+                };
+            } else {
                 finalizarIntroVideo();
-            };
-        }
-
-        function omitirIntroVideo() {
-            finalizarIntroVideo();
+            }
         }
 
         function finalizarIntroVideo() {
             const introScreen = document.getElementById("intro-screen");
-            const introVideo = document.getElementById("intro-video");
             const mainApp = document.getElementById("main-app");
 
-            try { introVideo.pause(); } catch(e){}
-
-            // Desvanecimiento progresivo de la intro
             introScreen.style.opacity = "0";
 
             setTimeout(() => {
                 introScreen.style.display = "none";
                 mainApp.style.display = "flex";
 
-                // Habilitar chat flotante
+                // Visualizar chat flotante
                 const chatFab = document.getElementById("chat-fab-element");
                 if (chatFab) chatFab.style.display = "flex";
 
                 if (tempTransitionData) {
                     inicializarDashboardConDatos(tempTransitionData);
-                    tempTransitionData = null; // Liberar memoria
+                    tempTransitionData = null; // Liberar datos de caché temporales
                 }
-            }, 800); // Sincronizado con la duración de la transición en el estilo CSS (0.8s)
+            }, 800); // Sincronizado con la transición de opacidad (0.8s)
         }
 
         function enviarCredentialsLogin() {
@@ -2646,6 +2622,7 @@
             });
         }
 
+        // --- NAVEGACIÓN LIBRE POR SUB-TABS ---
         function cambiarSubTab(seccion, btn) {
             document.querySelectorAll("#secciones-panes-container .wizard-step-pane").forEach(pane => {
                 pane.classList.remove("active");
@@ -2860,6 +2837,7 @@
             });
         }
 
+        // Función de alias para evitar errores de cierre de sesión según la nomenclatura del botón
         function cerrarVisorPDF() {
             document.getElementById("pdf-visor-modal").style.display = "none";
             document.getElementById("pdf-visor-iframe").src = "";
@@ -2873,7 +2851,7 @@
             fetch(`${CONFIG_WEB_APP_URL}?action=generar_reporte_mensual&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
             .then(res => res.json()).then(data => {
                 textBtn.innerText = "📊 GENERAR";
-                if (data.status === "success") abrirModalPDFGenerado(data.url);
+                if (data.status === "success") abrirModalPDFGenerated(data.url);
             });
         }
 
