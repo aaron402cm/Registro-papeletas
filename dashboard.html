@@ -212,94 +212,93 @@
             text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
 
-        /* --- ESTILOS DE LA PANTALLA DE INICIALIZACIÓN REAL --- */
-        .boot-container {
+        /* --- ESTILOS DEL HUD DE CARGA CORPORATIVO --- */
+        .hud-container {
             width: 100%;
-            max-width: 460px;
-            background: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            padding: 30px;
+            max-width: 380px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 20px;
+            padding: 35px;
             text-align: center;
-            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+            color: #ffffff;
             box-sizing: border-box;
+            transition: transform 0.3s ease;
         }
 
-        .loader-ring-wrapper {
+        .hud-circle-wrapper {
             position: relative;
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 20px auto;
+            width: 110px;
+            height: 110px;
+            margin: 0 auto;
         }
 
-        .ring-outer {
-            position: absolute;
+        .hud-svg-ring {
             width: 100%;
             height: 100%;
-            border: 3px solid transparent;
-            border-top-color: var(--apm-orange);
-            border-bottom-color: var(--apm-orange);
-            border-radius: 50%;
-            animation: spin-clockwise 1.8s linear infinite;
+            transform: rotate(-90deg); /* Rota el SVG para iniciar la carga arriba (12 en punto) */
         }
 
-        .ring-inner {
+        .hud-ring-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 4;
+        }
+
+        .hud-ring-active {
+            fill: none;
+            stroke: var(--apm-orange);
+            stroke-width: 4;
+            stroke-dasharray: 283; /* 2 * PI * radio (45) */
+            stroke-dashoffset: 283;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.1s linear;
+        }
+
+        .hud-percentage {
             position: absolute;
-            top: 12px; left: 12px;
-            width: 50px;
-            height: 50px;
-            border: 2px solid transparent;
-            border-left-color: rgba(255,255,255,0.4);
-            border-right-color: rgba(255,255,255,0.4);
-            border-radius: 50%;
-            animation: spin-counter 1.2s linear infinite;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+            font-weight: 800;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
-        .boot-terminal {
-            background: rgba(0, 15, 30, 0.65);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 6px;
-            padding: 12px;
+        .hud-steps-box {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
             text-align: left;
-            font-family: 'Consolas', 'Courier New', monospace;
-            font-size: 11px;
-            color: #81c784; /* Verde suave de diagnóstico */
-            height: 95px;
-            overflow-y: hidden;
-            margin-bottom: 20px;
-            line-height: 1.5;
-            box-sizing: border-box;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            padding-top: 20px;
         }
 
-        .boot-terminal-line {
-            margin: 2px 0;
-            opacity: 0.9;
+        .hud-step-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.4);
+            transition: color 0.3s ease, font-weight 0.3s ease;
         }
 
-        .boot-progress-bar {
-            width: 100%;
-            background-color: rgba(255, 255, 255, 0.1);
-            height: 3px;
-            border-radius: 10px;
-            overflow: hidden;
+        .hud-step-item.active {
+            color: #ffffff;
+            font-weight: bold;
         }
 
-        .boot-progress-fill {
-            width: 0%;
-            background-color: var(--apm-orange);
-            height: 100%;
-            transition: width 0.1s linear;
+        .hud-step-item.completed {
+            color: #a5d6a7; /* Verde de éxito suave */
         }
 
-        @keyframes spin-clockwise {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        @keyframes spin-counter {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(-360deg); }
+        .hud-step-icon {
+            display: inline-block;
+            font-size: 14px;
         }
 
         /* --- CONTENEDOR PRINCIPAL DEL DASHBOARD --- */
@@ -665,22 +664,6 @@
         .badge-yellow { background-color: #fff2cc; color: #b28900; }
         .badge-red { background-color: #fce4d6; color: var(--danger-red); }
         .badge-blue { background-color: #e8f1f5; color: var(--apm-blue); }
-
-        .btn-pdf-view {
-            background-color: var(--apm-blue);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: bold;
-            transition: background-color 0.2s;
-        }
-
-        .btn-pdf-view:hover {
-            background-color: var(--apm-dark-blue);
-        }
 
         /* --- BOTÓN DE ENLACE DE DRIVE --- */
         .btn-drive-link {
@@ -1499,22 +1482,42 @@
 </head>
 <body>
 
-    <!-- PANTALLA DE INICIALIZACIÓN REAL DEL SISTEMA (NATIVO CSS/JS) -->
-    <div id="intro-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(0, 34, 68, 0.92), rgba(0, 15, 30, 0.98)), url('https://images.unsplash.com/photo-1578575437130-527eed3abbec?q=80&w=1920') no-repeat center center/cover; z-index: 99999; align-items: center; justify-content: center; opacity: 1; transition: opacity 0.8s ease; box-sizing: border-box; padding: 20px;">
-        <div class="boot-container">
-            <div class="loader-ring-wrapper">
-                <div class="ring-outer"></div>
-                <div class="ring-inner"></div>
+    <!-- PANTALLA DE INICIALIZACIÓN CON TU VIDEO + HUD DE CARGA PROFESIONAL -->
+    <div id="intro-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #002244; z-index: 99999; align-items: center; justify-content: center; overflow: hidden; opacity: 1; transition: opacity 0.8s ease;">
+        
+        <!-- Tu video de fondo corporativo -->
+        <video id="intro-video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;" muted playsinline>
+            <source src="intro.mp4" type="video/mp4">
+        </video>
+        
+        <!-- Capa de contraste oscuro translúcido -->
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 15, 30, 0.65); z-index: 2;"></div>
+        
+        <!-- Contenedor HUD de Inicialización (Liquid Glass) -->
+        <div class="hud-container" style="position: relative; z-index: 3;">
+            <div class="hud-circle-wrapper">
+                <!-- Anillo de progreso SVG dinámico -->
+                <svg viewBox="0 0 100 100" class="hud-svg-ring">
+                    <circle cx="50" cy="50" r="45" class="hud-ring-bg" />
+                    <circle cx="50" cy="50" r="45" class="hud-ring-active" id="hud-progress-circle" />
+                </svg>
+                <div class="hud-percentage" id="hud-percentage-text">0%</div>
             </div>
-            <h3 style="margin: 0 0 5px 0; color: #ffffff; font-size: 16px; font-weight: bold; letter-spacing: 1px;">SISTEMA INSTRUCCIÓN RIS</h3>
-            <p style="margin: 0 0 15px 0; font-size: 11px; color: #a0aec0;">APM TERMINALS - LIFTING GLOBAL TRADE</p>
             
-            <!-- Terminal de logs interactivos -->
-            <div class="boot-terminal" id="boot-terminal-box"></div>
+            <h3 id="hud-status-title" style="margin: 20px 0 5px 0; color: #ffffff; font-size: 15px; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase;">Iniciando Entorno</h3>
+            <p id="hud-status-subtitle" style="margin: 0 0 25px 0; font-size: 12px; color: rgba(255, 255, 255, 0.7); min-height: 18px;">Comprobando firmas digitales...</p>
             
-            <!-- Barra de progreso -->
-            <div class="boot-progress-bar">
-                <div class="boot-progress-fill" id="boot-progress-fill"></div>
+            <!-- Pasos de Validación Visuales -->
+            <div class="hud-steps-box">
+                <div class="hud-step-item" id="step-auth">
+                    <span class="hud-step-icon">🔒</span> Autenticación Segura
+                </div>
+                <div class="hud-step-item" id="step-db">
+                    <span class="hud-step-icon">⚡</span> Enlace Base de Datos APM
+                </div>
+                <div class="hud-step-item" id="step-ia">
+                    <span class="hud-step-icon">🤖</span> Calibración Asistente IA
+                </div>
             </div>
         </div>
     </div>
@@ -2253,24 +2256,23 @@
         }
 
         // --- SINTETIZACIÓN DIGITAL DE AUDIO NATIVO (WEB AUDIO API) ---
-        // Genera tonos futuristas limpios para simular sistemas avanzados de computación de forma interactiva
         function playBootSound() {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
                 const now = ctx.currentTime;
                 
-                // Nota 1 (Ascendente rápida)
+                // Nota 1 (Subida armónica limpia)
                 const osc1 = ctx.createOscillator();
                 const gain1 = ctx.createGain();
                 osc1.type = 'sine';
                 osc1.frequency.setValueAtTime(440, now); // La4
                 gain1.gain.setValueAtTime(0, now);
-                gain1.gain.linearRampToValueAtTime(0.06, now + 0.05);
-                gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                gain1.gain.linearRampToValueAtTime(0.12, now + 0.05); // Subida de ganancia para mejor audición
+                gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
                 osc1.connect(gain1);
                 gain1.connect(ctx.destination);
                 osc1.start(now);
-                osc1.stop(now + 0.25);
+                osc1.stop(now + 0.3);
 
                 // Nota 2
                 const osc2 = ctx.createOscillator();
@@ -2278,12 +2280,12 @@
                 osc2.type = 'sine';
                 osc2.frequency.setValueAtTime(554.37, now + 0.08); // Do#5
                 gain2.gain.setValueAtTime(0, now + 0.08);
-                gain2.gain.linearRampToValueAtTime(0.06, now + 0.12);
-                gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                gain2.gain.linearRampToValueAtTime(0.12, now + 0.12);
+                gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
                 osc2.connect(gain2);
                 gain2.connect(ctx.destination);
                 osc2.start(now + 0.08);
-                osc2.stop(now + 0.35);
+                osc2.stop(now + 0.4);
 
                 // Nota 3
                 const osc3 = ctx.createOscillator();
@@ -2291,34 +2293,34 @@
                 osc3.type = 'sine';
                 osc3.frequency.setValueAtTime(659.25, now + 0.16); // Mi5
                 gain3.gain.setValueAtTime(0, now + 0.16);
-                gain3.gain.linearRampToValueAtTime(0.08, now + 0.2);
-                gain3.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+                gain3.gain.linearRampToValueAtTime(0.15, now + 0.2);
+                gain3.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
                 osc3.connect(gain3);
                 gain3.connect(ctx.destination);
                 osc3.start(now + 0.16);
-                osc3.stop(now + 0.5);
+                osc3.stop(now + 0.65);
 
-                // Zumbido de fondo sutil (Procesamiento de datos)
+                // Zumbido tecnológico de fondo sutil
                 const humOsc = ctx.createOscillator();
                 const humGain = ctx.createGain();
                 humOsc.type = 'triangle';
-                humOsc.frequency.setValueAtTime(55, now); // Frecuencia baja suave
+                humOsc.frequency.setValueAtTime(55, now);
                 
                 const filter = ctx.createBiquadFilter();
                 filter.type = 'lowpass';
-                filter.frequency.setValueAtTime(100, now);
+                filter.frequency.setValueAtTime(90, now);
                 
-                humGain.gain.setValueAtTime(0.015, now);
-                humGain.gain.exponentialRampToValueAtTime(0.001, now + 2.5);
+                humGain.gain.setValueAtTime(0.02, now);
+                humGain.gain.exponentialRampToValueAtTime(0.001, now + 2.8);
                 
                 humOsc.connect(filter);
                 filter.connect(humGain);
                 humGain.connect(ctx.destination);
                 
                 humOsc.start(now);
-                humOsc.stop(now + 2.5);
+                humOsc.stop(now + 2.8);
             } catch(e) {
-                console.log("Web Audio API no soportado:", e);
+                console.log("AudioContext bloqueado o no soportado:", e);
             }
         }
 
@@ -2331,88 +2333,114 @@
                 const gain1 = ctx.createGain();
                 osc1.type = 'sine';
                 osc1.frequency.setValueAtTime(587.33, now); // Re5
-                gain1.gain.setValueAtTime(0.06, now);
-                gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+                gain1.gain.setValueAtTime(0.1, now);
+                gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
                 osc1.connect(gain1);
                 gain1.connect(ctx.destination);
                 osc1.start(now);
-                osc1.stop(now + 0.15);
+                osc1.stop(now + 0.2);
                 
                 const osc2 = ctx.createOscillator();
                 const gain2 = ctx.createGain();
                 osc2.type = 'sine';
                 osc2.frequency.setValueAtTime(880, now + 0.08); // La5
-                gain2.gain.setValueAtTime(0.08, now + 0.08);
-                gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                gain2.gain.setValueAtTime(0.15, now + 0.08);
+                gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
                 osc2.connect(gain2);
                 gain2.connect(ctx.destination);
                 osc2.start(now + 0.08);
-                osc2.stop(now + 0.35);
+                osc2.stop(now + 0.4);
             } catch(e) {}
         }
 
-        // --- GESTIÓN DE LA PANTALLA DE INICIALIZACIÓN DINÁMICA ---
+        // --- GESTIÓN DE LA PANTALLA DE INICIALIZACIÓN DINÁMICA CON VIDEO + HUD ---
         function iniciarIntroYAcceder(data) {
             tempTransitionData = data;
             const loginScreen = document.getElementById("login-screen");
             const introScreen = document.getElementById("intro-screen");
-            const progressFill = document.getElementById("boot-progress-fill");
-            const terminal = document.getElementById("boot-terminal-box");
+            const introVideo = document.getElementById("intro-video");
+            
+            const circleProgress = document.getElementById("hud-progress-circle");
+            const percentageText = document.getElementById("hud-percentage-text");
+            const statusTitle = document.getElementById("hud-status-title");
+            const statusSubtitle = document.getElementById("hud-status-subtitle");
+            
+            const stepAuth = document.getElementById("step-auth");
+            const stepDb = document.getElementById("step-db");
+            const stepIa = document.getElementById("step-ia");
 
-            // 1. Activar efectos de audio nativos de forma inmediata (autorizado por el clic previo)
+            // 1. Activar el sonido de inicio (Web Audio API)
             playBootSound();
 
-            // 2. Transición hacia la consola de carga
+            // 2. Transicionar hacia la consola de carga
             loginScreen.style.display = "none";
             introScreen.style.display = "flex";
             introScreen.style.opacity = "1";
 
-            // 3. Cadena secuencial de verificación del sistema
-            const logs = [
-                "[BOOT] Iniciando kernel de instrucción RIS...",
-                "[ENCRYPT] Estableciendo canal TLS con APM Cloud...",
-                "[SYNC] Consultando registros activos en Google Drive...",
-                "[RIS-DB] Sincronizando tabla de reincidencias APN...",
-                "[HEURISTICS] Inicializando motores heurísticos de IA...",
-                "[SYSTEM] Validación e integridad completada con éxito.",
-                "[SUCCESS] Entorno seguro verificado. Abriendo Panel..."
-            ];
+            // 3. Reproducir el video en segundo plano de manera fluida
+            if (introVideo) {
+                introVideo.currentTime = 0;
+                const playPromise = introVideo.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(err => {
+                        console.log("Auto-play de video omitido, usando HUD de respaldo.", err);
+                    });
+                }
+            }
 
-            let currentLogIndex = 0;
-            let progressPercent = 0;
-            terminal.innerHTML = ""; // Limpiar consola
+            // 4. Lógica de incremento y animación del HUD circular
+            let progress = 0;
+            const maxOffset = 283; // 2 * PI * r (45)
+            
+            const duration = 2800; // Duración total de la simulación de carga (2.8 segundos)
+            const stepTime = 30; // ms por ciclo
+            const totalSteps = duration / stepTime;
+            const progressIncrement = 100 / totalSteps;
 
-            const intervalTime = 300; // ms por cada iteración
-            const totalDuration = 2400; // Duración total aproximada (2.4 segundos)
-            const steps = totalDuration / intervalTime;
-            const progressIncrement = 100 / steps;
+            const interval = setInterval(() => {
+                progress = Math.min(progress + progressIncrement, 100);
+                
+                // Actualizar contorno del arco del círculo (stroke-dashoffset)
+                const offset = maxOffset - (progress / 100) * maxOffset;
+                circleProgress.style.strokeDashoffset = offset;
+                
+                // Actualizar porcentaje de carga
+                percentageText.innerText = `${Math.round(progress)}%`;
 
-            const bootTimer = setInterval(() => {
-                // Incrementar barra de progreso
-                progressPercent = Math.min(progressPercent + progressIncrement, 100);
-                progressFill.style.width = `${progressPercent}%`;
-
-                // Escribir logs en consola secuencialmente
-                if (currentLogIndex < logs.length) {
-                    const line = document.createElement("div");
-                    line.className = "boot-terminal-line";
-                    line.innerText = logs[currentLogIndex];
-                    terminal.appendChild(line);
-                    terminal.scrollTop = terminal.scrollHeight; // Auto-scroll hacia abajo
-                    currentLogIndex++;
+                // Cambiar títulos y activar pasos secuencialmente
+                if (progress < 35) {
+                    statusTitle.innerText = "Inicializando Entorno";
+                    statusSubtitle.innerText = "Verificando firmas de APM Terminals...";
+                    stepAuth.classList.add("active");
+                } else if (progress >= 35 && progress < 70) {
+                    statusTitle.innerText = "Sincronizando Base de Datos";
+                    statusSubtitle.innerText = "Conectando con repositorios seguros RIS...";
+                    stepAuth.classList.remove("active");
+                    stepAuth.classList.add("completed");
+                    stepDb.classList.add("active");
+                } else if (progress >= 70 && progress < 95) {
+                    statusTitle.innerText = "Optimizando Módulos";
+                    statusSubtitle.innerText = "Cargando asistente cognitivo de IA...";
+                    stepDb.classList.remove("active");
+                    stepDb.classList.add("completed");
+                    stepIa.classList.add("active");
+                } else if (progress >= 95) {
+                    statusTitle.innerText = "Acceso Autorizado";
+                    statusSubtitle.innerText = "Abriendo Panel de Control RIS...";
+                    stepIa.classList.remove("active");
+                    stepIa.classList.add("completed");
                 }
 
-                // Finalización y acceso al Dashboard
-                if (progressPercent >= 100) {
-                    clearInterval(bootTimer);
-                    playAccessGrantedSound(); // Tono armónico de acceso concedido
+                // Carga completada
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    playAccessGrantedSound(); // Tono final de validación exitosa
                     finalizarIntroVideo();
                 }
-            }, intervalTime);
+            }, stepTime);
         }
 
         function omitirIntroVideo() {
-            // El usuario puede omitir el proceso e ingresar al dashboard inmediatamente
             finalizarIntroVideo();
         }
 
@@ -2603,272 +2631,7 @@
             filtrarYRenderizarTabla();
         }
 
-        function poblarFiltrosDinamicos(papeletas) {
-            const selectEmpresa = document.getElementById("filtro-empresa");
-            selectEmpresa.innerHTML = '<option value="">Filtro Empresa</option>';
-            let empresas = new Set();
-            papeletas.forEach(p => { if (p.empresa) empresas.add(p.empresa); });
-            empresas.forEach(emp => {
-                const opt = document.createElement("option");
-                opt.value = emp; opt.innerText = emp;
-                selectEmpresa.appendChild(opt);
-            });
-        }
-
-        function calcularFiltrosEtapa(papeletas) {
-            let counts = { PENDIENTE: 0, ESPERA_DESCARGOS: 0, HUMANA: 0, IA: 0, CERRADO: 0 };
-            papeletas.forEach(p => {
-                const est = p.estado_tramite || "PENDIENTE";
-                const modo = p.modo_tramite || "MANUAL";
-                if (est === "PENDIENTE") counts.PENDIENTE++;
-                else if (est === "ESPERA_DESCARGOS") counts.ESPERA_DESCARGOS++;
-                else if (est === "DESCARGO_RECIBIDO" || est === "PLAZO_VENCIDO") {
-                    if (modo === "AUTOMATICO") counts.IA++;
-                    else counts.HUMANA++;
-                }
-                else if (est.indexOf("CERRADO") !== -1) counts.CERRADO++;
-            });
-
-            const elAll = document.getElementById("pipe-count-all");
-            if (elAll) elAll.innerText = papeletas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1).length;
-            
-            const elPen = document.getElementById("pipe-count-pendiente");
-            if (elPen) elPen.innerText = counts.PENDIENTE;
-            
-            const elDes = document.getElementById("pipe-count-descargos");
-            if (elDes) elDes.innerText = counts.ESPERA_DESCARGOS;
-            
-            const elHum = document.getElementById("pipe-count-humana");
-            if (elHum) elHum.innerText = counts.HUMANA;
-            
-            const elIa = document.getElementById("pipe-count-ia");
-            if (elIa) elIa.innerText = counts.IA;
-        }
-
-        function filtrarPorEtapaTramite(etapa) {
-            etapaTramiteActual = etapa;
-            document.querySelectorAll(".pipeline-node").forEach(n => n.classList.remove("active"));
-            if (etapa === "TODOS") document.getElementById("pipe-all").classList.add("active");
-            else if (etapa === "HUMANA") document.getElementById("pipe-evaluacion-humana").classList.add("active");
-            else if (etapa === "IA") document.getElementById("pipe-evaluacion-ia").classList.add("active");
-            else document.getElementById(`pipe-${etapa.toLowerCase().replace("_", "")}`).classList.add("active");
-            filtrarYRenderizarTabla();
-        }
-
-        function ordenarTablaPor(columna) {
-            if (sortColumnaActual === columna) sortOrdenAscendente = !sortOrdenAscendente;
-            else { sortColumnaActual = columna; sortOrdenAscendente = true; }
-            filtrarYRenderizarTabla();
-        }
-
-        function actualizarIconosOrdenado() {
-            const columnas = ["id_papeleta", "infractor", "empresa", "conducta", "fecha_infraccion", "estado_semaforo"];
-            columnas.forEach(col => {
-                const icon = document.getElementById(`sort-icon-${col}`);
-                if (icon) icon.innerText = (sortColumnaActual === col) ? (sortOrdenAscendente ? " ▲" : " ▼") : "";
-            });
-        }
-
-        function filtrarYRenderizarTabla() {
-            if (!globalDashboardCache || !globalDashboardCache.dashboardData || !globalDashboardCache.dashboardData.papeletas) return;
-            const query = document.getElementById("tabla-buscador-rapido").value.trim().toLowerCase();
-            const selectEmpresa = document.getElementById("filtro-empresa");
-            const empresaFiltro = selectEmpresa ? selectEmpresa.value : "";
-            const selectSemaforo = document.getElementById("filtro-semaforo");
-            const semaforoFiltro = selectSemaforo ? selectSemaforo.value : "";
-
-            const papeletas = globalDashboardCache.dashboardData.papeletas;
-            activeFilteredPapeletas = papeletas.filter(p => {
-                const cumpleBuscador = !query || 
-                    String(p.id_papeleta).toLowerCase().includes(query) ||
-                    String(p.infractor).toLowerCase().includes(query) ||
-                    String(p.dni).toLowerCase().includes(query) ||
-                    String(p.empresa).toLowerCase().includes(query) ||
-                    String(p.conducta).toLowerCase().includes(query);
-                
-                const cumpleEmpresa = !empresaFiltro || p.empresa === empresaFiltro;
-                const cumpleSemaforo = !semaforoFiltro || p.estado_semaforo === semaforoFiltro;
-
-                let cumpleEtapa = true;
-                const est = p.estado_tramite || "PENDIENTE";
-                if (etapaTramiteActual === "PENDIENTE" && est !== "PENDIENTE") cumpleEtapa = false;
-                else if (etapaTramiteActual === "ESPERA_DESCARGOS" && est !== "ESPERA_DESCARGOS") cumpleEtapa = false;
-                else if (etapaTramiteActual === "EVALUACION" && est !== "DESCARGO_RECIBIDO" && est !== "PLAZO_VENCIDO") cumpleEtapa = false;
-                else if (etapaTramiteActual === "CERRADO" && est.indexOf("CERRADO") === -1) cumpleEtapa = false;
-                
-                return cumpleBuscador && cumpleEmpresa && cumpleSemaforo && cumpleEtapa;
-            });
-
-            activeFilteredPapeletas.sort((a, b) => {
-                let valA = a[sortColumnaActual]; let valB = b[sortColumnaActual];
-                if (typeof valA === "string") valA = valA.toLowerCase();
-                if (typeof valB === "string") valB = valB.toLowerCase();
-                if (valA < valB) return sortOrdenAscendente ? -1 : 1;
-                if (valA > valB) return sortOrdenAscendente ? 1 : -1;
-                return 0;
-            });
-            
-            const totalBadge = document.getElementById("badge-total-papeletas");
-            if (activeFilteredPapeletas.length > 0) {
-                totalBadge.innerText = activeFilteredPapeletas.length;
-                totalBadge.style.display = "inline-block";
-            } else totalBadge.style.display = "none";
-
-            actualizarIconosOrdenado();
-            renderizarBandejaPrincipal();
-        }
-
-        function cambiarVistaBandeja(modo) {
-            vistaBandejaActual = modo;
-            const btnList = document.getElementById("btn-view-list");
-            const btnGrid = document.getElementById("btn-view-grid");
-            if (modo === "list") {
-                btnList.style.backgroundColor = "var(--apm-blue)";
-                btnGrid.style.backgroundColor = "var(--apm-dark-blue)";
-                document.getElementById("bandeja-tabla-container").style.display = "block";
-                document.getElementById("bandeja-tarjetas-container").style.display = "none";
-            } else {
-                btnList.style.backgroundColor = "var(--apm-dark-blue)";
-                btnGrid.style.backgroundColor = "var(--apm-blue)";
-                document.getElementById("bandeja-tabla-container").style.display = "none";
-                document.getElementById("bandeja-tarjetas-container").style.display = "block";
-            }
-            renderizarBandejaPrincipal();
-        }
-
-        function renderizarBandejaPrincipal() {
-            if (vistaBandejaActual === "list") renderizarTablaFiltrada(activeFilteredPapeletas);
-            else renderizarTarjetasFiltradas(activeFilteredPapeletas);
-        }
-
-        function renderizarTablaFiltrada(papeletasFiltradas) {
-            const tbody = document.querySelector("#tabla-control-papeletas tbody");
-            tbody.innerHTML = "";
-            const activas = papeletasFiltradas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1);
-
-            if (activas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;">No se encontraron papeletas en esta etapa.</td></tr>`;
-                return;
-            }
-
-            activas.forEach(p => {
-                let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.replace("T", " ") : "-";
-                const tr = document.createElement("tr");
-                tr.className = "clickable-row"; tr.id = `row-${p.id_papeleta}`;
-                if (activePapeletaId === p.id_papeleta) tr.classList.add("active-row");
-                tr.onclick = function() {
-                    document.querySelectorAll("#tabla-control-papeletas tbody tr").forEach(row => row.classList.remove("active-row"));
-                    tr.classList.add("active-row");
-                    seleccionarPapeletaParaRevision(p.id_papeleta);
-                };
-
-                let descargoBadge = p.estado_semaforo === "descargo" 
-                    ? `<span style="color:var(--success-green); font-weight:bold;">✅ Recibido</span>`
-                    : (p.estado_semaforo === "vencido" ? `<span style="color:var(--danger-red); font-weight:bold;">❌ Expirado</span>` : `<span style="color:var(--apm-blue); font-weight:bold;">⏳ Pendiente</span>`);
-
-                let notificacionBadge = (p.estado_envio === "Se envió correctamente" || !p.estado_envio)
-                    ? `<span style="color:var(--success-green); font-weight:bold;">🟢 Se envió correctamente</span>`
-                    : `<span style="color:var(--danger-red); font-weight:bold;">🔴 Problemas con el envío</span>`;
-                
-                tr.innerHTML = `
-                    <td><strong>${p.id_papeleta}</strong></td>
-                    <td>${p.infractor}</td>
-                    <td>${p.empresa}</td>
-                    <td>${p.conducta}</td>
-                    <td>${fechaFormat}</td>
-                    <td>${notificacionBadge}</td>
-                    <td><span class="badge badge-${p.estado_color}">${p.estado_texto}</span></td>
-                    <td>${descargoBadge}</td>
-                    <td><button class="btn-pdf-view" onclick="abrirVisorPDF('${p.id_papeleta}', event)">📄 PDF</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function renderizarTablaCasosCerrados(papeletasCerradas) {
-            const tbody = document.querySelector("#tabla-casos-cerrados tbody");
-            tbody.innerHTML = "";
-            if (papeletasCerradas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">No hay expedientes cerrados recientemente.</td></tr>`;
-                return;
-            }
-            papeletasCerradas.forEach(p => {
-                let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.replace("T", " ") : "-";
-                const tr = document.createElement("tr");
-                tr.className = "clickable-row";
-                let driveButton = p.carpeta_drive_url 
-                    ? `<a href="${p.carpeta_drive_url}" target="_blank" class="btn-pdf-view" style="background-color:#107c41; text-decoration:none; display:inline-block; padding:4px 8px;">📂 Drive</a>`
-                    : `<span style="color:gray;">No disponible</span>`;
-
-                tr.innerHTML = `
-                    <td><strong>${p.id_papeleta}</strong></td>
-                    <td>${p.infractor}</td>
-                    <td>${p.empresa}</td>
-                    <td>${p.conducta}</td>
-                    <td>${fechaFormat}</td>
-                    <td><span class="badge badge-green">${p.estado_tramite === "CERRADO_SANCION" ? "SANCIONADO" : "AMONESTADO"}</span></td>
-                    <td>${driveButton}</td>
-                    <td><button class="btn-pdf-view" onclick="abrirVisorPDF('${p.id_papeleta}', event)">📄 PDF</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function ejecutarBusquedaDBServidor(tipo) {
-            const inputId = tipo === "activo" ? "tabla-buscador-rapido" : "buscador-casos-cerrados";
-            const query = document.getElementById(inputId).value.trim();
-            if (query.length === 0) {
-                if (tipo === "activo") filtrarYRenderizarTabla();
-                else {
-                    const cerradasDefault = globalDashboardCache.dashboardData.papeletas.filter(p => p.estado_tramite && p.estado_tramite.indexOf("CERRADO") !== -1);
-                    renderizarTablaCasosCerrados(cerradasDefault);
-                }
-                return;
-            }
-            if (query.length > 2) {
-                const user = sessionStorage.getItem("secure_user_initials");
-                const auth = sessionStorage.getItem("secure_auth_plain");
-                fetch(`${CONFIG_WEB_APP_URL}?action=busqueda_avanzada&query=${encodeURIComponent(query)}&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === "success" && data.resultados) {
-                        if (tipo === "activo") {
-                            const activosEncontrados = data.resultados.filter(p => p.estado_tramite.indexOf("CERRADO") === -1);
-                            renderizarTablaFiltrada(activosEncontrados);
-                        } else {
-                            const cerradosEncontrados = data.resultados.filter(p => p.estado_tramite.indexOf("CERRADO") !== -1);
-                            renderizarTablaCasosCerrados(cerradosEncontrados);
-                        }
-                    }
-                });
-            }
-        }
-
-        function renderizarTarjetasFiltradas(papeletasFiltradas) {
-            const container = document.getElementById("tarjetas-papeletas-contenedor");
-            container.innerHTML = "";
-            papeletasFiltradas.forEach(p => {
-                let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.split("T")[0] : "-";
-                const card = document.createElement("div");
-                card.className = "papeleta-card-view";
-                if (activePapeletaId === p.id_papeleta) card.classList.add("active-card");
-                card.onclick = function() {
-                    document.querySelectorAll(".papeleta-card-view").forEach(c => c.classList.remove("active-card"));
-                    card.classList.add("active-card");
-                    seleccionarPapeletaParaRevision(p.id_papeleta);
-                };
-                let descargoBadge = p.estado_semaforo === "descargo" ? "✅ Descargo" : (p.estado_semaforo === "vencido" ? "❌ Expirado" : "⏳ Pendiente");
-                card.innerHTML = `
-                    <div class="card-header-view"><span>ID: ${p.id_papeleta}</span><span>${fechaFormat}</span></div>
-                    <div class="card-title-view">${p.infractor}</div>
-                    <div style="font-size:13px; margin-bottom:10px; color:#6c757d;">🏢 ${p.empresa}</div>
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span class="badge badge-${p.estado_color}">${p.estado_texto}</span><span>${descargoBadge}</span>
-                    </div>`;
-                container.appendChild(card);
-            });
-        }
-
+        // --- NAVEGACIÓN LIBRE POR SUB-TABS ---
         function cambiarSubTab(seccion, btn) {
             document.querySelectorAll("#secciones-panes-container .wizard-step-pane").forEach(pane => {
                 pane.classList.remove("active");
