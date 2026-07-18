@@ -1323,46 +1323,78 @@ body.light-theme .tab-link.active {
             border: none;
         }
 
-        /* ROBOT IA LOADER (PROGRESIVO) */
+        /* --- MODAL DE CARGA DE ROBOT IA CON EFECTO LÍQUIDO (MAREA EN ASCENSO) --- */
         .robot-modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 12, 24, 0.95);
+            background: rgba(0, 12, 24, 0.92); /* Fondo oscuro base */
             z-index: 5000;
             justify-content: center;
             align-items: center;
             color: white;
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden; /* Evita desborde de las ondas */
         }
+
+        /* Agua de fondo que sube en base a la variable --water-height */
+        .robot-modal-overlay::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: var(--water-height, 0%);
+            background: linear-gradient(180deg, rgba(0, 240, 255, 0.15) 0%, rgba(0, 75, 135, 0.3) 100%);
+            z-index: 1;
+            transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        /* Ondas de marea en la superficie del agua */
+        .robot-modal-overlay::after {
+            content: '';
+            position: absolute;
+            bottom: var(--water-height, 0%);
+            left: 0;
+            width: 200%;
+            height: 28px;
+            /* Vector de onda líquida */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,0 C150,90 350,-40 500,40 C650,120 850,10 1000,60 C1150,110 1250,30 1300,50 L1300,120 L0,120 Z' fill='rgba(0, 240, 255, 0.25)'/%3E%3C/svg%3E");
+            background-size: 50% 100%;
+            background-repeat: repeat-x;
+            z-index: 2;
+            transition: bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            animation: waveFlow 4s linear infinite;
+            transform: translateY(14px);
+        }
+
+        @keyframes waveFlow {
+            from { transform: translateX(0) translateY(14px); }
+            to { transform: translateX(-50%) translateY(14px); }
+        }
+
         .robot-modal-box {
             text-align: center;
             max-width: 450px;
             padding: 30px;
-        }
-        .robot-anim {
-            font-size: 70px;
-            animation: pulse 1.5s infinite;
-            margin-bottom: 20px;
-        }
-        .robot-loader-bar {
-            width: 100%;
-            background-color: rgba(0, 240, 255, 0.1);
-            height: 6px;
-            border-radius: 10px;
-            margin: 20px 0;
-            overflow: hidden;
             position: relative;
+            z-index: 10; /* Mantiene la interfaz y el robot siempre legibles por encima del agua */
         }
-        .robot-loader-progress {
-            width: 0%;
-            background-color: var(--apm-orange);
-            height: 100%;
-            transition: width 0.3s;
+
+        /* Contenedor del nuevo Robot SVG */
+        .robot-anim {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 20px auto;
+            animation: floatRobot 3s ease-in-out infinite;
         }
-        @keyframes pulse {
-            0% { transform: scale(0.95); text-shadow: 0 0 10px rgba(0, 240, 255, 0.5); }
-            50% { transform: scale(1.05); text-shadow: 0 0 25px rgba(0, 240, 255, 0.8); }
-            100% { transform: scale(0.95); text-shadow: 0 0 10px rgba(0, 240, 255, 0.5); }
+
+        @keyframes floatRobot {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(1deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
         }
 
         /* --- WIZARD EN PANEL LATERAL (6 PASOS) --- */
@@ -2270,7 +2302,42 @@ body.light-theme .tab-link.active {
     <!-- ROBOT IA LOADER (PROGRESIVO E INTERACTIVO) -->
     <div class="robot-modal-overlay" id="robot-ia-loader">
         <div class="robot-modal-box">
-            <div class="robot-anim">🤖</div>
+            
+            <!-- NUEVO ROBOT VECTORIAL PROFESIONAL -->
+            <div class="robot-anim">
+                <svg viewBox="0 0 100 100" style="width: 100%; height: 100%; display: block;">
+                    <defs>
+                        <linearGradient id="robotGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#00f0ff" />
+                            <stop offset="100%" stop-color="#ff5500" />
+                        </linearGradient>
+                        <filter id="neonBlue">
+                            <feGaussianBlur stdDeviation="2.5" result="blur"/>
+                            <feMerge>
+                                <feMergeNode in="blur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    <!-- Antenas / Orejas -->
+                    <rect x="15" y="42" width="7" height="16" rx="3.5" fill="#ff5500" />
+                    <rect x="78" y="42" width="7" height="16" rx="3.5" fill="#ff5500" />
+                    <!-- Cuello -->
+                    <rect x="43" y="74" width="14" height="12" rx="3" fill="#000c18" stroke="#00f0ff" stroke-width="2" />
+                    <!-- Cuerpo/Placa de la cara -->
+                    <rect x="24" y="26" width="52" height="50" rx="14" fill="#00152b" stroke="url(#robotGrad)" stroke-width="2.5" filter="url(#neonBlue)" />
+                    <!-- Línea decorativa frente -->
+                    <line x1="36" y1="36" x2="64" y2="36" stroke="rgba(0, 240, 255, 0.4)" stroke-width="2" stroke-linecap="round" />
+                    <!-- Ojos Neón Cian -->
+                    <circle cx="41" cy="48" r="4.5" fill="#00f0ff" filter="url(#neonBlue)" />
+                    <circle cx="59" cy="48" r="4.5" fill="#00f0ff" filter="url(#neonBlue)" />
+                    <circle cx="41" cy="48" r="1.5" fill="#ffffff" />
+                    <circle cx="59" cy="48" r="1.5" fill="#ffffff" />
+                    <!-- Boca con onda de voz -->
+                    <path d="M37 62 Q50 67 63 62" stroke="#ff5500" stroke-width="2.5" fill="none" stroke-linecap="round" filter="url(#neonBlue)" />
+                </svg>
+            </div>
+
             <h3 style="margin-top:0; color:var(--apm-orange);" id="robot-loader-title">Inteligencia Artificial</h3>
             <p style="font-size:14px; line-height:1.5;" id="robot-loader-text">Iniciando análisis del expediente...</p>
             <div class="robot-loader-bar">
@@ -2278,7 +2345,6 @@ body.light-theme .tab-link.active {
             </div>
         </div>
     </div>
-
     <!-- MODAL DEL VISOR DE PDF EMERGENte -->
     <div class="pdf-modal-overlay" id="pdf-visor-modal">
         <div class="pdf-modal-box">
