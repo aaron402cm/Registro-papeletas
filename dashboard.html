@@ -14,11 +14,11 @@
             --apm-dark-blue: #00152b; /* Azul marino corporativo oscuro */
             --apm-blue: #00f0ff; /* Azul cian de visualización táctica */
             --bg-color: #000c18; /* Fondo marino profundo */
-            --card-bg: rgba(0, 24, 48, 0.85); /* Vidrio marino translúcido */
+            --card-bg: rgba(0, 24, 48, 0.9); /* Vidrio marino translúcido de alta densidad */
             --text-color: #f1f8ff; /* Blanco frío para legibilidad óptima */
-            --border-color: rgba(0, 240, 255, 0.2); /* Rejilla digital de cian suave */
+            --border-color: rgba(0, 240, 255, 0.25); /* Rejilla digital de cian suave */
             --table-row-hover: rgba(0, 240, 255, 0.08); /* Hover cian en tablas */
-            --input-bg: #001122; /* Fondo de inputs oscuro con contraste */
+            --input-bg: #001a33; /* Fondo de inputs oscuro de alta visibilidad */
             --success-green: #00ff66;
             --warning-yellow: #ffb700;
             --danger-red: #ff0055;
@@ -27,12 +27,12 @@
         /* --- VARIABLES DE MODO OSCURO (ESTILO ÁMBAR HOLOGRAMA) --- */
         body.dark-theme {
             --bg-color: #0c0802;
-            --card-bg: rgba(22, 14, 5, 0.85);
+            --card-bg: rgba(22, 14, 5, 0.9);
             --text-color: #ffe8cc;
-            --border-color: rgba(224, 91, 27, 0.25);
+            --border-color: rgba(224, 91, 27, 0.3);
             --apm-dark-blue: #050200;
             --table-row-hover: rgba(224, 91, 27, 0.1);
-            --input-bg: rgba(14, 8, 3, 0.9);
+            --input-bg: rgba(25, 14, 5, 0.9);
             --apm-blue: #ff8800;
             --apm-orange: #00f0ff;
         }
@@ -40,7 +40,7 @@
         body {
             font-family: 'Segoe UI', -apple-system, Roboto, sans-serif;
             background-color: var(--bg-color);
-            /* Patrón de cuadrícula futurista muy sutil */
+            /* Patrón de cuadrícula de control táctico */
             background-image: 
                 linear-gradient(rgba(0, 240, 255, 0.015) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 240, 255, 0.015) 1px, transparent 1px);
@@ -129,18 +129,6 @@
             color: #ffffff;
             backdrop-filter: blur(5px);
             transition: all 0.25s ease;
-        }
-
-        .login-box .form-group input::placeholder {
-            color: rgba(0, 240, 255, 0.4);
-        }
-
-        .login-box .form-group input:focus, 
-        .login-box .form-group select:focus {
-            background-color: rgba(0, 12, 24, 0.95);
-            border-color: var(--apm-orange);
-            box-shadow: 0 0 12px rgba(224, 91, 27, 0.6);
-            outline: none;
         }
 
         .login-logo {
@@ -391,7 +379,7 @@
         .nav-tabs {
             width: 290px;
             min-width: 290px;
-            background-color: #001224; /* Color corporativo sólido y profesional */
+            background-color: #001224; 
             border-right: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
@@ -416,9 +404,9 @@
             background: rgba(0, 75, 135, 0.1);
             border: 1px solid rgba(0, 240, 255, 0.12);
             padding: 16px 20px;
-            font-size: 14px; /* Incrementado para facilitar la lectura */
+            font-size: 14px; 
             font-weight: 700;
-            color: #b0cddd; /* Plateado con tinte marino de alta legibilidad */
+            color: #b0cddd; 
             cursor: pointer;
             border-left: 4px solid transparent;
             display: flex;
@@ -428,7 +416,6 @@
             border-radius: 8px;
             position: relative;
             transform-origin: left center;
-            /* Transición fluida con resorte físico (Bouncing Elastic Transition) */
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
                         box-shadow 0.4s ease, 
                         background-color 0.3s ease, 
@@ -436,7 +423,7 @@
                         border-color 0.3s ease;
         }
 
-        /* --- LUZ DE FONDO (BACKLIGHT GLOW) --- */
+        /* LUZ DE FONDO (BACKLIGHT GLOW) */
         .tab-link::before {
             content: '';
             position: absolute;
@@ -454,9 +441,7 @@
             background-color: rgba(0, 75, 135, 0.3);
             border-color: var(--apm-blue);
             border-left-color: var(--apm-blue);
-            /* Ojo de Pez: Amplía un 5% y desplaza 8px en el eje X */
             transform: scale(1.05) translateX(8px);
-            /* Luz de fondo en Hover (Cian) */
             box-shadow: 0 0 20px rgba(0, 240, 255, 0.3), inset 0 0 10px rgba(0, 240, 255, 0.15);
         }
 
@@ -470,9 +455,7 @@
             background-color: rgba(224, 91, 27, 0.12);
             border-color: var(--apm-orange);
             border-left: 5px solid var(--apm-orange);
-            /* Mantener Ojo de Pez con mayor destaque de desplazamiento */
             transform: scale(1.05) translateX(12px);
-            /* Luz de fondo activa intensa (Naranja APM) */
             box-shadow: 0 0 25px rgba(224, 91, 27, 0.4), inset 0 0 12px rgba(224, 91, 27, 0.2);
         }
 
@@ -523,7 +506,7 @@
             }
         }
 
-        /* --- EFECTO DE PANEL MARINO FUTURISTA EN TARJETAS --- */
+        /* --- EFECTO DE PANEL MARINO EN TARJETAS --- */
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -540,7 +523,7 @@
             margin-top: 0;
             margin-bottom: 15px;
             color: #ffffff;
-            font-size: 18px; /* Incrementado para facilitar lectura de jerarquía */
+            font-size: 18px; 
             font-weight: bold;
             letter-spacing: 0.5px;
             text-transform: uppercase;
@@ -582,33 +565,42 @@
             display: flex;
             gap: 10px;
             margin-bottom: 15px;
-            background: rgba(0, 20, 40, 0.8);
+            background: rgba(0, 15, 30, 0.9); /* Mayor contraste en el contenedor */
             padding: 10px;
             border-radius: 6px;
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(0, 240, 255, 0.35);
             overflow-x: auto;
         }
 
+        /* Nodos del pipeline modificados para eliminar el color negro */
         .pipeline-node {
             flex: 1;
             min-width: 160px;
             padding: 10px 15px;
             border-radius: 4px;
-            border: 1px solid var(--border-color);
-            background: rgba(255,255,255,0.01);
-            color: #b0cddd;
+            border: 1px solid rgba(0, 240, 255, 0.35); /* Borde cian táctico de contraste */
+            background: rgba(0, 34, 68, 0.4); /* Fondo azul marino corporativo de alta visibilidad */
+            color: #e2f1ff; /* Plateado claro brillante */
             text-align: center;
             cursor: pointer;
             font-weight: bold;
             font-size: 12px;
-            transition: all 0.2s;
+            box-shadow: inset 0 0 8px rgba(0, 240, 255, 0.1);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .pipeline-node:hover {
+            background: rgba(0, 75, 135, 0.6);
+            border-color: var(--apm-blue);
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
         }
 
         .pipeline-node.active {
             border-color: var(--apm-orange);
-            background: rgba(224, 91, 27, 0.15);
+            background: rgba(224, 91, 27, 0.25); /* Naranja corporativo con brillo */
             color: #ffffff;
-            box-shadow: 0 0 10px rgba(224, 91, 27, 0.25);
+            box-shadow: 0 0 15px rgba(224, 91, 27, 0.35), inset 0 0 10px rgba(224, 91, 27, 0.25);
         }
 
         .pipeline-counter {
@@ -655,14 +647,14 @@
             width: 100%;
             border-collapse: collapse;
             background: transparent;
-            font-size: 14px; /* Incrementado para facilitar lectura */
+            font-size: 14px; 
         }
 
         th, td {
-            padding: 14px 12px; /* Más espacio y respiro entre filas */
+            padding: 14px 12px; 
             border-bottom: 1px solid rgba(0, 240, 255, 0.1);
             text-align: left;
-            color: #f1f8ff; /* Blanco brillante para un contraste impecable */
+            color: #f1f8ff; 
         }
 
         th {
@@ -701,6 +693,25 @@
             background-color: rgba(0, 240, 255, 0.08) !important;
             font-weight: bold;
             border-left: 4px solid var(--apm-blue);
+        }
+
+        /* --- CAMPOS DE BÚSQUEDA Y SELECTS MEJORADOS --- */
+        #tabla-buscador-rapido, #buscador-casos-cerrados {
+            background-color: #001f3f !important; /* Azul marino táctico de alta visibilidad */
+            border: 2px solid rgba(0, 240, 255, 0.4) !important; /* Definición de borde clara */
+            color: #ffffff !important;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        #tabla-buscador-rapido::placeholder, #buscador-casos-cerrados::placeholder {
+            color: rgba(255, 255, 255, 0.6) !important; /* Placeholder brillante */
+        }
+        #filtro-empresa, #filtro-semaforo {
+            background-color: #001f3f !important;
+            border: 2px solid rgba(0, 240, 255, 0.4) !important;
+            color: #ffffff !important;
+            font-weight: 600;
         }
 
         /* --- BADGES FUTURISTAS --- */
@@ -1364,7 +1375,22 @@
             color: #d1f7ff;
         }
 
-        /* --- ASISTENTE FLOTANTE CHAT IA --- */
+        /* --- ANIMACIÓN HOLOGRÁFICA DE RESPIRACIÓN (CHAT BOT FAB) --- */
+        @keyframes breathingGlow {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 12px rgba(224, 91, 27, 0.6);
+            }
+            50% {
+                transform: scale(1.08);
+                box-shadow: 0 0 30px rgba(224, 91, 27, 0.95), 0 0 15px rgba(0, 240, 255, 0.4);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 12px rgba(224, 91, 27, 0.6);
+            }
+        }
+
         .chat-fab {
             position: fixed;
             bottom: 25px;
@@ -1378,29 +1404,28 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            box-shadow: 0 6px 20px rgba(224, 91, 27, 0.4);
             z-index: 9999;
             font-size: 28px;
             transition: transform 0.2s, box-shadow 0.2s;
+            animation: breathingGlow 3s ease-in-out infinite; /* Respiración dinámica */
         }
 
         .chat-fab:hover {
-            transform: scale(1.08);
-            box-shadow: 0 6px 25px rgba(224, 91, 27, 0.6);
+            transform: scale(1.12);
         }
 
+        /* --- VENTANA DEL CHATBOT MEJORADA CON NARANJA APM --- */
         .chat-panel {
             position: fixed;
             bottom: 95px;
             right: 25px;
             width: 380px;
             height: 480px;
-            background-color: var(--apm-dark-blue);
+            background-color: #0d0600; /* Fondo carbón cálido de alto contraste */
             color: var(--text-color);
             border-radius: 12px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-            border-top: 4px solid var(--apm-orange);
-            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px rgba(224, 91, 27, 0.45); /* Luz de respaldo naranja */
+            border: 2px solid var(--apm-orange); /* Borde naranja brillante */
             display: none;
             flex-direction: column;
             overflow: hidden;
@@ -1409,15 +1434,15 @@
         }
 
         .chat-header {
-            background-color: #000c18;
-            color: white;
+            background: linear-gradient(135deg, var(--apm-orange) 0%, #b23a0e 100%); /* Gradiente oficial APM */
+            color: #ffffff;
             padding: 12px 15px;
             font-weight: bold;
             font-size: 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid rgba(255,255,255,0.25);
         }
 
         .chat-messages {
@@ -1427,7 +1452,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            background-color: rgba(0, 12, 24, 0.95);
+            background-color: rgba(13, 6, 0, 0.98); /* Fondo de mensajes con contraste cálido */
         }
 
         .chat-bubble {
@@ -1439,17 +1464,17 @@
         }
 
         .chat-bubble-ai {
-            background-color: rgba(0, 240, 255, 0.1);
+            background-color: rgba(224, 91, 27, 0.15); /* Tinte naranja táctico */
             color: #ffffff;
-            border: 1px solid rgba(0, 240, 255, 0.2);
+            border: 1px solid rgba(224, 91, 27, 0.3);
             align-self: flex-start;
             border-top-left-radius: 1px;
             white-space: pre-wrap;
         }
 
         .chat-bubble-user {
-            background-color: rgba(224, 91, 27, 0.2);
-            border: 1px solid rgba(224, 91, 27, 0.4);
+            background-color: rgba(0, 240, 255, 0.15); /* Tinte cian táctico */
+            border: 1px solid rgba(0, 240, 255, 0.3);
             color: white;
             align-self: flex-end;
             border-top-right-radius: 1px;
@@ -1460,7 +1485,7 @@
             border-top: 1px solid var(--border-color);
             display: flex;
             gap: 8px;
-            background: #000c18;
+            background: #0d0600;
         }
 
         .chat-input-area input {
@@ -2004,7 +2029,7 @@
                                 ➕ Agregar Nueva Regla
                             </button>
                         </div>
-                        <p style="font-size:14px; color:#6c757d; margin-top:0;">Este catálogo de reglas es leído dinámicamente por la Inteligencia Artificial en el servidor de Google para analizar los casos y recomendar las sanciones oficiales.</p>
+                        <p style="font-size:14px; color:#6c757d; margin-top:0;">Este catálogo de reglas es leído dinámicamente por la Inteligencia Artificial en el servidor de Google para analizar los casi y recomendar las sanciones oficiales.</p>
                         
                         <div id="contenedor-reglas-ris-dinamico">
                             <p style="text-align:center;">Cargando reglas del RIS de la base de datos de Excel...</p>
@@ -2531,6 +2556,7 @@
             });
         }
 
+        // --- SISTEMA DE CONTROL DE FLUJO DEL PIPELINE ---
         function calcularFiltrosEtapa(papeletas) {
             let counts = { PENDIENTE: 0, ESPERA_DESCARGOS: 0, HUMANA: 0, IA: 0, CERRADO: 0 };
             papeletas.forEach(p => {
