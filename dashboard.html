@@ -653,21 +653,29 @@ body.light-theme .tab-link.active {
             box-sizing: border-box;
         }
 
-        /* --- MODAL DE INSTRUCCIÓN (ANCHO INCREMENTADO Y MÁS AMPLIO) --- */
+        /* --- MODAL DE INSTRUCCIÓN (GRIS CORTE INDUSTRIAL ELEGANTE) --- */
         #modal-instruccion-expediente .modal-box {
-            background: rgba(0, 15, 30, 0.45) !important;
-            border: 1px solid rgba(255, 255, 255, 0.22) !important;
+            /* Gris carbón táctico elegante con efecto esmerilado de vidrio */
+            background: rgba(30, 41, 59, 0.72) !important; /* Gris pizarra elegante */
+            border: 1px solid rgba(255, 255, 255, 0.25) !important;
             box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(25px) saturate(180%);
             -webkit-backdrop-filter: blur(25px) saturate(180%);
             border-radius: 16px;
             width: 95%; /* Adaptable a pantallas medianas */
-            max-width: 950px !important; /* Incrementado de 650px a 950px para máxima comodidad */
-            max-height: 85%;
+            max-width: 950px !important; /* Incrementado para máxima comodidad */
+            max-height: 90%;
             overflow-y: auto;
             position: relative;
             padding: 30px; /* Más holgura interna */
             border-top: 4px solid var(--apm-orange) !important;
+        }
+
+        /* Adaptación del fondo gris elegante en modo diurno (Light Theme) */
+        body.light-theme #modal-instruccion-expediente .modal-box {
+            background: rgba(241, 245, 249, 0.92) !important; /* Gris claro/marfil premium de alto contraste */
+            border: 1px solid rgba(0, 31, 63, 0.15) !important;
+            box-shadow: 0 15px 35px rgba(0, 31, 63, 0.1) !important;
         }
 
         /* --- BOTÓN DE CIERRE EXCLUSIVO PARA EL MODAL (ESQUINA SUPERIOR DERECHA) --- */
@@ -1956,25 +1964,7 @@ body.light-theme .tab-link.active {
         body.light-theme .text-fecha {
             color: #4b6584 !important;
         }
-        // --- FUNCIÓN PARA CERRAR EL MODAL DE INSTRUCCIÓN ---
-        function cerrarModalInstruccion() {
-            document.getElementById("modal-instruccion-expediente").style.display = "none";
-            activePapeletaId = null;
-            // Remover el sombreado de la fila activa
-            document.querySelectorAll("#tabla-control-papeletas tbody tr").forEach(row => row.classList.remove("active-row"));
-        }
-    
-window.cerrarModalInstruccion = function() {
-    const modal = document.getElementById("modal-instruccion-expediente");
-    if (modal) {
-        modal.style.display = "none";
-    }
-    window.activePapeletaId = null;
-    // Remueve de forma segura el sombreado de la fila seleccionada
-    document.querySelectorAll("#tabla-control-papeletas tbody tr").forEach(row => {
-        row.classList.remove("active-row");
-    });
-};
+        
     </style>
 </head>
 <body>
@@ -3648,7 +3638,18 @@ window.cerrarModalInstruccion = function() {
         function finalizarSesion() {
             cerrarSesionDashboard();
         }
-    
+    // --- FUNCIÓN PARA CERRAR EL MODAL DE INSTRUCCIÓN ---
+window.cerrarModalInstruccion = function() {
+    const modal = document.getElementById("modal-instruccion-expediente");
+    if (modal) {
+        modal.style.display = "none";
+    }
+    window.activePapeletaId = null;
+    // Remueve de forma segura el sombreado de la fila seleccionada en la tabla
+    document.querySelectorAll("#tabla-control-papeletas tbody tr").forEach(row => {
+        row.classList.remove("active-row");
+    });
+};
     </script>
 
     <!-- MODAL INFORME SEMANAL IA -->
