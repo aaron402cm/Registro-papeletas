@@ -434,56 +434,90 @@
             overflow: hidden;
         }
 
-        /* --- COLUMNA DE NAVEGACIÓN LATERAL EN AZUL OSCURO/NEGRO MATE --- */
-        .nav-tabs {
-            width: 290px;
-            min-width: 290px;
-            /* Retornamos al elegante tono oscuro de la interfaz */
-            background-color: #000c18 !important; 
-            border-right: 1px solid var(--border-color) !important;
-            display: flex;
-            flex-direction: column;
-            box-sizing: border-box;
-            z-index: 100;
-            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.4);
-            transition: all 0.3s ease;
-        }
+        /* --- COLUMNA DE NAVEGACIÓN LATERAL EN NARANJA --- */
+.nav-tabs {
+    width: 290px;
+    min-width: 290px;
+    background-color: #f27329 !important;
+    border-right: 1px solid rgba(0, 0, 0, 0.15) !important;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    z-index: 100;
+    box-shadow: 5px 0 25px rgba(0, 0, 0, 0.25);
+    transition: all 0.3s ease;
+}
 
-        /* En modo diurno pasará a un blanco marfil limpio */
-        body.light-theme .nav-tabs {
-            background-color: #ffffff !important;
-            border-right: 1px solid rgba(0, 31, 63, 0.1) !important;
-        }
+/* En modo diurno mantiene el mismo color */
+body.light-theme .nav-tabs {
+    background-color: #f27329 !important;
+    border-right: 1px solid rgba(0, 0, 0, 0.15) !important;
+}
 
-        /* --- ESTILO DE LOS BOTONES DE PESTAÑA --- */
-        .tab-link {
-            background: rgba(0, 75, 135, 0.05);
-            border: 1px solid rgba(0, 240, 255, 0.08);
-            padding: 16px 20px;
-            font-size: 14px; 
-            font-weight: 700;
-            color: #b0cddd; /* Plateado de alta legibilidad */
-            cursor: pointer;
-            border-left: 4px solid transparent;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 12px;
-            border-radius: 8px;
-            position: relative;
-            transform-origin: left center;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
-                        box-shadow 0.4s ease, 
-                        background-color 0.3s ease, 
-                        color 0.3s ease,
-                        border-color 0.3s ease;
-        }
+/* --- ESTILO DE LOS BOTONES DE PESTAÑA --- */
+.tab-link {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 16px 20px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    cursor: pointer;
+    border-left: 4px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    border-radius: 8px;
+    position: relative;
+    transform-origin: left center;
+    transition:
+        transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+        box-shadow 0.4s ease,
+        background-color 0.3s ease,
+        color 0.3s ease,
+        border-color 0.3s ease;
+}
 
-        body.light-theme .tab-link {
-            background: rgba(0, 31, 63, 0.03);
-            border-color: rgba(0, 31, 63, 0.1);
-            color: #4b6584;
-        }
+body.light-theme .tab-link {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+}
+
+/* Efecto al pasar el mouse */
+.tab-link:hover {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.18);
+    border-color: #ffffff;
+    transform: scale(1.05) translateX(8px);
+    box-shadow: 0 0 18px rgba(255, 255, 255, 0.25);
+}
+
+body.light-theme .tab-link:hover {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+}
+
+/* Pestaña seleccionada */
+.tab-link.active {
+    color: #ffffff !important;
+    background-color: #d95f18 !important;
+    border-color: #ffffff !important;
+    border-left: 5px solid #ffffff !important;
+    transform: scale(1.05) translateX(12px);
+    box-shadow:
+        0 0 20px rgba(0, 0, 0, 0.25),
+        inset 0 0 12px rgba(255, 255, 255, 0.15);
+}
+
+body.light-theme .tab-link.active {
+    color: #ffffff !important;
+    background-color: #d95f18 !important;
+    border-color: #ffffff !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
 
         /* Efecto de aumento tipo ojo de pez en hover */
         .tab-link:hover {
@@ -502,10 +536,10 @@
 
         /* Pestaña seleccionada: Se resalta con el borde naranja de instrucción */
         .tab-link.active {
-            color: #ffffff !important;
-            background-color: rgba(224, 91, 27, 0.12) !important;
+            color: #d95f18 !important;
+            background-color: rgba(255, 255, 255, 0.15) !important;
             border-color: var(--apm-orange) !important;
-            border-left: 5px solid var(--apm-orange) !important;
+            border-left: 5px solid #ffffff !important;
             transform: scale(1.05) translateX(12px);
             box-shadow: 0 0 25px rgba(224, 91, 27, 0.3), inset 0 0 12px rgba(224, 91, 27, 0.1);
         }
