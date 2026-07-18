@@ -11,40 +11,40 @@
     <style>
         :root {
             --apm-orange: #ff5500;
-            --apm-dark-blue: #020713;
-            --apm-blue: #00f0ff;
-            --bg-color: #030811;
-            --card-bg: rgba(6, 12, 26, 0.85);
-            --text-color: #d1f4ff;
-            --border-color: rgba(0, 240, 255, 0.15);
-            --table-row-hover: rgba(0, 240, 255, 0.05);
-            --input-bg: rgba(2, 6, 15, 0.9);
+            --apm-dark-blue: #00152b; /* Azul marino corporativo oscuro */
+            --apm-blue: #00f0ff; /* Azul cian de visualización táctica */
+            --bg-color: #000c18; /* Fondo marino profundo */
+            --card-bg: rgba(0, 24, 48, 0.85); /* Vidrio marino translúcido */
+            --text-color: #f1f8ff; /* Blanco frío para legibilidad óptima */
+            --border-color: rgba(0, 240, 255, 0.2); /* Rejilla digital de cian suave */
+            --table-row-hover: rgba(0, 240, 255, 0.08); /* Hover cian en tablas */
+            --input-bg: #001122; /* Fondo de inputs oscuro con contraste */
             --success-green: #00ff66;
             --warning-yellow: #ffb700;
             --danger-red: #ff0055;
         }
 
-        /* --- VARIABLES DE MODO OSCURO (ESTILO HOLOGRAMA ÁMBAR) --- */
+        /* --- VARIABLES DE MODO OSCURO (ESTILO ÁMBAR HOLOGRAMA) --- */
         body.dark-theme {
             --bg-color: #0c0802;
             --card-bg: rgba(22, 14, 5, 0.85);
             --text-color: #ffe8cc;
-            --border-color: rgba(224, 91, 27, 0.2);
+            --border-color: rgba(224, 91, 27, 0.25);
             --apm-dark-blue: #050200;
-            --table-row-hover: rgba(224, 91, 27, 0.08);
+            --table-row-hover: rgba(224, 91, 27, 0.1);
             --input-bg: rgba(14, 8, 3, 0.9);
             --apm-blue: #ff8800;
             --apm-orange: #00f0ff;
         }
 
         body {
-            font-family: 'Segoe UI', -apple-system, Roboto, monospace, sans-serif;
+            font-family: 'Segoe UI', -apple-system, Roboto, sans-serif;
             background-color: var(--bg-color);
-            /* Patrón de cuadrícula futurista */
+            /* Patrón de cuadrícula futurista muy sutil */
             background-image: 
                 linear-gradient(rgba(0, 240, 255, 0.015) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 240, 255, 0.015) 1px, transparent 1px);
-            background-size: 30px 30px;
+            background-size: 35px 35px;
             color: var(--text-color);
             margin: 0;
             padding: 0;
@@ -56,18 +56,19 @@
 
         /* --- BARRA DE DESPLAZAMIENTO FUTURISTA --- */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
         }
         ::-webkit-scrollbar-thumb {
-            background: rgba(0, 240, 255, 0.2);
-            border-radius: 3px;
+            background: rgba(0, 240, 255, 0.25);
+            border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb:hover {
             background: var(--apm-orange);
+            box-shadow: 0 0 10px var(--apm-orange);
         }
 
         /* --- PANTALLA DE LOGIN CON LIQUID GLASS Y FONDO PUERTO --- */
@@ -76,16 +77,16 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, rgba(2, 7, 18, 0.9), rgba(1, 4, 10, 0.98)), 
+            background: linear-gradient(135deg, rgba(0, 12, 24, 0.9), rgba(0, 6, 12, 0.98)), 
                         url('https://images.unsplash.com/photo-1578575437130-527eed3abbec?q=80&w=1920') no-repeat center center/cover;
             padding: 20px;
             box-sizing: border-box;
         }
 
         .login-box {
-            background: rgba(6, 12, 26, 0.8);
+            background: rgba(0, 20, 40, 0.8);
             border: 1px solid rgba(0, 240, 255, 0.3);
-            box-shadow: 0 0 30px rgba(0, 240, 255, 0.15);
+            box-shadow: 0 0 35px rgba(0, 240, 255, 0.2);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-radius: 16px;
@@ -98,19 +99,20 @@
 
         .login-box:hover {
             transform: translateY(-4px);
-            box-shadow: 0 16px 45px 0 rgba(0, 240, 255, 0.25);
+            box-shadow: 0 16px 45px 0 rgba(0, 240, 255, 0.3);
         }
 
         .login-box h2 {
             color: #ffffff;
             margin-top: 0;
             margin-bottom: 8px;
-            font-size: 24px;
+            font-size: 26px;
             text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+            letter-spacing: 0.5px;
         }
 
         .login-box p {
-            color: rgba(209, 244, 255, 0.8) !important;
+            color: rgba(209, 244, 255, 0.85) !important;
             font-size: 14px;
             margin-bottom: 25px;
         }
@@ -122,7 +124,7 @@
 
         .login-box .form-group input, 
         .login-box .form-group select {
-            background-color: rgba(2, 6, 15, 0.8);
+            background-color: rgba(0, 12, 24, 0.85);
             border: 1px solid rgba(0, 240, 255, 0.3);
             color: #ffffff;
             backdrop-filter: blur(5px);
@@ -130,24 +132,20 @@
         }
 
         .login-box .form-group input::placeholder {
-            color: rgba(0, 240, 255, 0.35);
+            color: rgba(0, 240, 255, 0.4);
         }
 
         .login-box .form-group input:focus, 
         .login-box .form-group select:focus {
-            background-color: rgba(2, 6, 15, 0.95);
+            background-color: rgba(0, 12, 24, 0.95);
             border-color: var(--apm-orange);
             box-shadow: 0 0 12px rgba(224, 91, 27, 0.6);
             outline: none;
         }
 
-        .login-box .toggle-password-btn {
-            color: rgba(0, 240, 255, 0.8);
-        }
-
         .login-logo {
             margin-bottom: 20px;
-            filter: drop-shadow(0 0 8px rgba(224, 91, 27, 0.3));
+            filter: drop-shadow(0 0 8px rgba(224, 91, 27, 0.35));
         }
 
         .form-group {
@@ -159,8 +157,8 @@
         .form-group label {
             display: block;
             font-weight: bold;
-            font-size: 13px;
-            margin-bottom: 6px;
+            font-size: 14px;
+            margin-bottom: 8px;
             color: var(--text-color);
             letter-spacing: 0.5px;
         }
@@ -173,14 +171,14 @@
             border-radius: 6px;
             box-sizing: border-box;
             background-color: var(--input-bg);
-            color: var(--text-color);
+            color: #ffffff;
             font-family: inherit;
             transition: border-color 0.2s, background-color 0.3s, color 0.3s, box-shadow 0.2s;
         }
 
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             border-color: var(--apm-blue);
-            box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.35);
             outline: none;
         }
 
@@ -192,7 +190,7 @@
             background: none;
             border: none;
             cursor: pointer;
-            color: #6c757d;
+            color: rgba(0, 240, 255, 0.8);
             font-size: 18px;
             padding: 0;
             display: flex;
@@ -244,7 +242,7 @@
             background-color: var(--apm-dark-blue);
             color: white;
             border-bottom: 2px solid var(--apm-orange);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.6);
             z-index: 101;
         }
 
@@ -252,7 +250,7 @@
             width: 100%;
             max-width: 100%;
             margin: 0;
-            padding: 12px 24px;
+            padding: 14px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -267,7 +265,7 @@
 
         .header-brand h1 {
             margin: 0;
-            font-size: 18px;
+            font-size: 19px;
             font-weight: 900;
             letter-spacing: 0.5px;
         }
@@ -280,7 +278,7 @@
         }
 
         .header-user-info {
-            font-size: 13px;
+            font-size: 14px;
             display: flex;
             align-items: center;
             gap: 15px;
@@ -288,7 +286,7 @@
 
         .icon-btn {
             background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(0, 240, 255, 0.15);
+            border: 1px solid rgba(0, 240, 255, 0.2);
             color: white;
             font-size: 16px;
             cursor: pointer;
@@ -303,7 +301,7 @@
 
         .icon-btn:hover {
             background-color: rgba(0, 240, 255, 0.1);
-            box-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
         }
 
         .notification-badge {
@@ -380,7 +378,7 @@
             border-color: var(--danger-red);
         }
 
-        /* --- NUEVO LAYOUT DE CUERPO CON NAVEGACIÓN LATERAL VERTICAL --- */
+        /* --- LAYOUT DEL CUERPO CON NAVEGACIÓN LATERAL VERTICAL --- */
         .app-body-wrapper {
             display: flex;
             flex-direction: row;
@@ -389,85 +387,97 @@
             overflow: hidden;
         }
 
-        /* BARRA LATERAL (TABS VERTICALES) */
+        /* BARRA LATERAL (TABS VERTICALES EN AZUL MARINO CORP) */
         .nav-tabs {
-            width: 280px;
-            min-width: 280px;
-            background-color: rgba(2, 7, 18, 0.95);
+            width: 290px;
+            min-width: 290px;
+            background-color: #001224; /* Color corporativo sólido y profesional */
             border-right: 1px solid var(--border-color);
-            border-bottom: none;
             display: flex;
             flex-direction: column;
             box-sizing: border-box;
             z-index: 100;
             backdrop-filter: blur(10px);
+            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.4);
         }
 
         .nav-tabs-inner {
             display: flex;
             flex-direction: column;
             width: 100%;
-            padding: 20px 15px;
-            gap: 10px;
+            padding: 24px 16px;
+            gap: 14px;
             box-sizing: border-box;
             margin: 0;
         }
 
-        /* BOTONES DE PESTAÑA LATERAL CON EFECTOS HOLOGRÁFICOS */
+        /* BOTONES DE PESTAÑA LATERAL CON EFECTO DE OJO DE PEZ (SCALE / MAGNIFICATION) */
         .tab-link {
-            background: rgba(255, 255, 255, 0.01);
-            border: 1px solid rgba(0, 240, 255, 0.05);
-            padding: 14px 18px;
-            font-size: 13px;
-            font-weight: bold;
-            color: #8fa3b7;
+            background: rgba(0, 75, 135, 0.1);
+            border: 1px solid rgba(0, 240, 255, 0.12);
+            padding: 16px 20px;
+            font-size: 14px; /* Incrementado para facilitar la lectura */
+            font-weight: 700;
+            color: #b0cddd; /* Plateado con tinte marino de alta legibilidad */
             cursor: pointer;
-            border-left: 3px solid transparent;
+            border-left: 4px solid transparent;
             display: flex;
             align-items: center;
             justify-content: flex-start;
             gap: 12px;
-            border-radius: 6px;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border-radius: 8px;
             position: relative;
-            overflow: hidden;
-            text-align: left;
+            transform-origin: left center;
+            /* Transición fluida con resorte físico (Bouncing Elastic Transition) */
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                        box-shadow 0.4s ease, 
+                        background-color 0.3s ease, 
+                        color 0.3s ease,
+                        border-color 0.3s ease;
         }
 
+        /* --- LUZ DE FONDO (BACKLIGHT GLOW) --- */
         .tab-link::before {
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(90deg, rgba(0, 240, 255, 0.08) 0%, transparent 100%);
+            background: linear-gradient(90deg, rgba(0, 240, 255, 0.1) 0%, transparent 100%);
             opacity: 0;
             transition: opacity 0.3s ease;
             z-index: -1;
+            border-radius: 8px;
         }
 
-        /* EFECTO HOVER EN PESTAÑAS (CENTRO DE MANDO) */
+        /* EFECTO DE OJO DE PEZ EN HOVER (AMPLIACIÓN Y DESPLAZAMIENTO HACIA LA DERECHA) */
         .tab-link:hover {
             color: #ffffff;
-            border-color: rgba(0, 240, 255, 0.3);
+            background-color: rgba(0, 75, 135, 0.3);
+            border-color: var(--apm-blue);
             border-left-color: var(--apm-blue);
-            transform: translateX(5px);
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
+            /* Ojo de Pez: Amplía un 5% y desplaza 8px en el eje X */
+            transform: scale(1.05) translateX(8px);
+            /* Luz de fondo en Hover (Cian) */
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3), inset 0 0 10px rgba(0, 240, 255, 0.15);
         }
 
         .tab-link:hover::before {
             opacity: 1;
         }
 
-        /* ESTADO ACTIVO */
+        /* ESTADO SELECCIONADO (CON LUZ DE RESPALDO EN NARANJA CORPORATIVO APM) */
         .tab-link.active {
             color: #ffffff;
-            background: rgba(224, 91, 27, 0.08);
-            border-color: rgba(224, 91, 27, 0.3);
-            border-left: 4px solid var(--apm-orange);
-            box-shadow: 0 0 15px rgba(224, 91, 27, 0.15);
+            background-color: rgba(224, 91, 27, 0.12);
+            border-color: var(--apm-orange);
+            border-left: 5px solid var(--apm-orange);
+            /* Mantener Ojo de Pez con mayor destaque de desplazamiento */
+            transform: scale(1.05) translateX(12px);
+            /* Luz de fondo activa intensa (Naranja APM) */
+            box-shadow: 0 0 25px rgba(224, 91, 27, 0.4), inset 0 0 12px rgba(224, 91, 27, 0.2);
         }
 
         .tab-link.active::before {
-            background: linear-gradient(90deg, rgba(224, 91, 27, 0.12) 0%, transparent 100%);
+            background: linear-gradient(90deg, rgba(224, 91, 27, 0.15) 0%, transparent 100%);
             opacity: 1;
         }
 
@@ -476,10 +486,10 @@
             color: white;
             border-radius: 50px;
             font-size: 10px;
-            padding: 2px 6px;
+            padding: 2px 7px;
             font-weight: bold;
             margin-left: auto;
-            box-shadow: 0 0 8px rgba(255, 0, 85, 0.4);
+            box-shadow: 0 0 8px rgba(255, 0, 85, 0.5);
         }
 
         /* --- CONTENIDO --- */
@@ -487,20 +497,33 @@
             flex: 1;
             padding: 25px 30px;
             box-sizing: border-box;
-            width: calc(100% - 280px);
+            width: calc(100% - 290px);
             overflow-y: auto;
             height: calc(100vh - 60px);
         }
 
+        /* --- TRANSICIÓN SUAVE EN CAMBIO DE PESTAÑAS (FADE IN + ZOOM SCALE) --- */
         .tab-panel {
             display: none;
         }
 
         .tab-panel.active {
             display: block;
+            animation: panelFadeIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
 
-        /* --- EFECTO VIDRIO FUTURISTA EN TARJETAS --- */
+        @keyframes panelFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.98) translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* --- EFECTO DE PANEL MARINO FUTURISTA EN TARJETAS --- */
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -517,12 +540,12 @@
             margin-top: 0;
             margin-bottom: 15px;
             color: #ffffff;
-            font-size: 16px;
+            font-size: 18px; /* Incrementado para facilitar lectura de jerarquía */
             font-weight: bold;
             letter-spacing: 0.5px;
             text-transform: uppercase;
             border-bottom: 1px solid rgba(0, 240, 255, 0.2);
-            padding-bottom: 10px;
+            padding-bottom: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -533,6 +556,7 @@
             color: var(--apm-orange);
             margin-right: 8px;
             font-family: monospace;
+            text-shadow: 0 0 4px var(--apm-orange);
         }
 
         /* --- REJILLA OPTIMIZADA --- */
@@ -558,7 +582,7 @@
             display: flex;
             gap: 10px;
             margin-bottom: 15px;
-            background: rgba(2, 7, 18, 0.8);
+            background: rgba(0, 20, 40, 0.8);
             padding: 10px;
             border-radius: 6px;
             border: 1px solid var(--border-color);
@@ -572,11 +596,11 @@
             border-radius: 4px;
             border: 1px solid var(--border-color);
             background: rgba(255,255,255,0.01);
-            color: #a0c0d5;
+            color: #b0cddd;
             text-align: center;
             cursor: pointer;
             font-weight: bold;
-            font-size: 11px;
+            font-size: 12px;
             transition: all 0.2s;
         }
 
@@ -588,7 +612,7 @@
         }
 
         .pipeline-counter {
-            font-size: 16px;
+            font-size: 18px;
             display: block;
             margin-top: 4px;
             font-family: monospace;
@@ -612,7 +636,7 @@
             position: sticky;
             top: 0;
             z-index: 10;
-            background-color: #020713;
+            background-color: #001224;
             cursor: pointer;
             user-select: none;
         }
@@ -631,23 +655,29 @@
             width: 100%;
             border-collapse: collapse;
             background: transparent;
-            font-size: 13px;
+            font-size: 14px; /* Incrementado para facilitar lectura */
         }
 
         th, td {
-            padding: 12px;
+            padding: 14px 12px; /* Más espacio y respiro entre filas */
             border-bottom: 1px solid rgba(0, 240, 255, 0.1);
             text-align: left;
-            color: var(--text-color);
+            color: #f1f8ff; /* Blanco brillante para un contraste impecable */
         }
 
         th {
-            background-color: #020713;
+            background-color: #001224;
             color: var(--apm-blue);
             font-family: monospace;
             text-transform: uppercase;
-            font-size: 11px;
-            letter-spacing: 0.5px;
+            font-size: 12px;
+            letter-spacing: 0.8px;
+            font-weight: 700;
+        }
+
+        /* Fila de tabla con fondo alterno para mejor legibilidad */
+        tr.clickable-row:nth-child(even) {
+            background-color: rgba(0, 24, 48, 0.3);
         }
 
         #tabla-control-papeletas td:nth-child(1),
@@ -673,7 +703,7 @@
             border-left: 4px solid var(--apm-blue);
         }
 
-        /* --- MEJORAS DE BADGES FUTURISTAS --- */
+        /* --- BADGES FUTURISTAS --- */
         .badge {
             display: inline-block;
             padding: 4px 10px;
@@ -1024,7 +1054,7 @@
             border-radius: 6px;
             padding: 15px;
             margin-bottom: 15px;
-            background-color: rgba(2, 7, 18, 0.4);
+            background-color: rgba(0, 12, 24, 0.4);
             position: relative;
         }
 
@@ -1103,7 +1133,7 @@
             overflow: hidden;
         }
         .pdf-modal-header {
-            background-color: #020713;
+            background-color: #000c18;
             color: white;
             border-bottom: 1px solid var(--border-color);
             padding: 15px 20px;
@@ -1128,7 +1158,7 @@
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(2, 7, 18, 0.95);
+            background: rgba(0, 12, 24, 0.95);
             z-index: 5000;
             justify-content: center;
             align-items: center;
@@ -1379,7 +1409,7 @@
         }
 
         .chat-header {
-            background-color: #020713;
+            background-color: #000c18;
             color: white;
             padding: 12px 15px;
             font-weight: bold;
@@ -1397,7 +1427,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            background-color: rgba(2, 7, 18, 0.95);
+            background-color: rgba(0, 12, 24, 0.95);
         }
 
         .chat-bubble {
@@ -1430,7 +1460,7 @@
             border-top: 1px solid var(--border-color);
             display: flex;
             gap: 8px;
-            background: #020713;
+            background: #000c18;
         }
 
         .chat-input-area input {
@@ -1634,7 +1664,7 @@
         <!-- ESTRUCTURA PARA AGRUPAR LA NAVEGACIÓN LATERAL Y EL CONTENIDO -->
         <div class="app-body-wrapper">
 
-            <!-- MENU PESTAÑAS (Vertical Lado Izquierdo) -->
+            <!-- MENU PESTAÑAS (Vertical Lado Izquierdo) con Animaciones de Alta Fidelidad -->
             <nav class="nav-tabs">
                 <div class="nav-tabs-inner">
                     <button class="tab-link active" onclick="cambiarPanel('control', this)">
@@ -1689,11 +1719,11 @@
                     <!-- BARRA DE BÚSQUEDA DEL PANEL DE ACTIVOS -->
                     <div class="card" style="margin-bottom: 15px; padding: 15px;">
                         <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-                            <input type="text" id="tabla-buscador-rapido" placeholder="🔎 Buscar por DNI, ID, Nombre o Empresa..." style="flex: 1; min-width: 250px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px;" oninput="ejecutarBusquedaDBServidor('activo')">
-                            <select id="filtro-empresa" style="width: 150px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px;" onchange="filtrarYRenderizarTabla()">
+                            <input type="text" id="tabla-buscador-rapido" placeholder="🔎 Buscar por DNI, ID, Nombre o Empresa..." style="flex: 1; min-width: 250px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: #ffffff;" oninput="ejecutarBusquedaDBServidor('activo')">
+                            <select id="filtro-empresa" style="width: 150px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: #ffffff;" onchange="filtrarYRenderizarTabla()">
                                 <option value="">Filtro Empresa</option>
                             </select>
-                            <select id="filtro-semaforo" style="width: 150px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px;" onchange="filtrarYRenderizarTabla()">
+                            <select id="filtro-semaforo" style="width: 150px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: #ffffff;" onchange="filtrarYRenderizarTabla()">
                                 <option value="">Filtro Semáforo</option>
                                 <option value="vigente">Plazo Vigente</option>
                                 <option value="ultimo_dia">Último Día</option>
@@ -1848,7 +1878,7 @@
                 <div id="panel-cerradas-panel" class="tab-panel">
                     <div class="card" style="margin-bottom: 15px; padding: 15px;">
                         <div style="display: flex; gap: 10px; align-items: center;">
-                            <input type="text" id="buscador-casos-cerrados" placeholder="🔎 Búsqueda Histórica Avanzada en Base de Datos (ID, DNI, Nombre, Empresa)..." style="flex: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: var(--text-color);" oninput="ejecutarBusquedaDBServidor('cerrado')">
+                            <input type="text" id="buscador-casos-cerrados" placeholder="🔎 Búsqueda Histórica Avanzada en Base de Datos (ID, DNI, Nombre, Empresa)..." style="flex: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: #ffffff;" oninput="ejecutarBusquedaDBServidor('cerrado')">
                             <button class="btn-apm" style="width: auto; padding: 10px 20px; background-color: var(--apm-blue); color: black;" onclick="forzarSincronizacionManual()">🔄 Sincronizar</button>
                         </div>
                     </div>
@@ -2054,7 +2084,7 @@
     </div>
 
     <!-- VENTANA EMERGENTE DE PROCESAMIENTO (LOADER MODAL REPORTES IA) -->
-    <div class="modal-overlay" id="loading-reporte-modal" style="display: none; z-index: 4000; background: rgba(2, 7, 18, 0.95); align-items: center; justify-content: center;">
+    <div class="modal-overlay" id="loading-reporte-modal" style="display: none; z-index: 4000; background: rgba(0, 12, 24, 0.95); align-items: center; justify-content: center;">
         <div class="modal-box" style="text-align: center; max-width: 400px; padding: 40px 25px;">
             <div class="spinner" style="margin: 0 auto 20px auto;"></div>
             <h3 style="margin-top: 0; color: var(--apm-blue);">🤖 Inteligencia Artificial</h3>
@@ -2269,24 +2299,6 @@
 
         function detectarEnterOTP(event) {
             if (event.key === "Enter") verificarCodigoOTP();
-        }
-
-        function cambiarModoTramiteServidor() {
-            if (!activePapeletaId) return;
-            const switchEl = document.getElementById("toggle-automode-switch");
-            const nuevoModo = switchEl.checked ? "AUTOMATICO" : "MANUAL";
-            const user = sessionStorage.getItem("secure_user_initials");
-            const auth = sessionStorage.getItem("secure_auth_plain");
-
-            fetch(`${CONFIG_WEB_APP_URL}?action=toggle_modo_tramite&id=${encodeURIComponent(activePapeletaId)}&modo=${nuevoModo}&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === "success") {
-                    alert(`El trámite se ha configurado en modo: ${nuevoModo}`);
-                    const index = globalDashboardCache.dashboardData.papeletas.findIndex(p => p.id_papeleta === activePapeletaId);
-                    if (index !== -1) globalDashboardCache.dashboardData.papeletas[index].modo_tramite = nuevoModo;
-                }
-            });
         }
 
         // --- GESTIÓN DE LA PANTALLA DE INICIALIZACIÓN SÓLO VIDEO ---
@@ -3171,7 +3183,7 @@
     <!-- MODAL INFORME SEMANAL IA -->
     <div class="modal-overlay" id="modal-informe-semanal-ia" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 4500; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;">
         <div class="modal-box" id="modal-box-informe-semanal" style="background: var(--apm-dark-blue); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 8px; width: 100%; max-width: 800px; max-height: 85%; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: all 0.3s ease;">
-            <div style="background-color: #020713; color: white; padding: 15px 20px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; border-top-left-radius: 8px; border-top-right-radius: 8px;">
+            <div style="background-color: #000c18; color: white; padding: 15px 20px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; border-top-left-radius: 8px; border-top-right-radius: 8px;">
                 <span>📰 Informe Semanal de Patrones de Seguridad (IA)</span>
                 <div style="display: flex; gap: 10px; align-items: center;">
                     <button onclick="togglePantallaCompletaInforme()" style="background: none; border: 1px solid var(--border-color); color: var(--apm-blue); padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold;">⬜ Ampliar</button>
@@ -3179,7 +3191,7 @@
                 </div>
             </div>
             <div style="flex: 1; padding: 20px; overflow-y: auto; font-family: Georgia, serif; font-size: 14px; line-height: 1.6; text-align: justify;" id="modal-cuerpo-informe-semanal"></div>
-            <div style="padding: 15px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; background: #020713; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
+            <div style="padding: 15px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; background: #000c18; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
                 <button class="btn-pdf-view" onclick="cerrarModalInformeSemanal()" style="background-color: var(--danger-red); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold;">Cerrar</button>
             </div>
         </div>
