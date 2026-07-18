@@ -2995,7 +2995,7 @@ body.light-theme .tab-link.active {
             else renderizarTarjetasFiltradas(activeFilteredPapeletas);
         }
 
-        function renderTablaFiltrada(papeletasFiltradas) {
+        function renderizarTablaFiltrada(papeletasFiltradas) {
             const tbody = document.querySelector("#tabla-control-papeletas tbody");
             tbody.innerHTML = "";
             const activas = papeletasFiltradas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1);
@@ -3016,7 +3016,7 @@ body.light-theme .tab-link.active {
                     seleccionarPapeletaParaRevision(p.id_papeleta);
                 };
 
-                // Chips estilizados con fondo oscuro y borde fino usando las clases badge existentes
+                // Chips estilizados con fondo oscuro y borde fino usando las clases badge de su hoja de estilos
                 let descargoBadge = p.estado_semaforo === "descargo" 
                     ? `<span class="badge badge-green">Recibido</span>`
                     : (p.estado_semaforo === "vencido" ? `<span class="badge badge-red">Expirado</span>` : `<span class="badge badge-blue">Pendiente</span>`);
