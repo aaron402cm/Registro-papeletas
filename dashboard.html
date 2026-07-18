@@ -530,22 +530,22 @@ body.light-theme .tab-link.active {
 
         /* Pestaña seleccionada: Se resalta con el borde naranja de instrucción */
         .tab-link.active {
-    color: #ffffff !important;
-    background-color: #d95f18 !important;
-    border-color: #ffffff !important;
-    border-left: 5px solid #ffffff !important;
+    color: #ffd700 !important;
+    background-color: rgba(212, 175, 55, 0.12) !important;
+    border-color: #ffd700  !important;
+    border-left: 5px solid #ffd700  !important;
     transform: scale(1.05) translateX(12px);
     box-shadow:
-        0 0 25px rgba(224, 91, 27, 0.3),
-        inset 0 0 12px rgba(255, 255, 255, 0.15);
+        0 0 25px rgba(212, 175, 55, 0.35),
+        inset 0 0 12px rgba(212, 175, 55, 0.1);
 
         }
 
         body.light-theme .tab-link.active {
             color: #ffffff !important;
-            background-color: var(--apm-orange) !important;
-            border-color: var(--apm-orange) !important;
-            box-shadow: 0 8px 20px rgba(224, 91, 27, 0.25);
+            background-color: #d4af37 !important; /* Fondo oro metálico sólido en modo diurno */
+            border-color: #d4af37 !important;
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
         }
 
         .tab-link.active::before {
@@ -1660,6 +1660,36 @@ body.light-theme .tab-link.active {
             font-size: 13px;
         }
 
+        /* --- CABECERA DEL CHATBOT CON FONDO MARINO CRISPADO (ELEVADO CONTRASTE) --- */
+        .chat-header {
+            background: #00152b !important; /* Forzar fondo azul marino muy oscuro en cualquier modo */
+            color: #ffffff !important; /* Forzar letras en blanco brillante */
+            padding: 14px 45px 14px 15px !important; /* Espacio reservado a la derecha para la X */
+            font-weight: bold;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            position: relative; /* Permite posicionamiento absoluto del botón de cierre */
+        }
+
+        /* --- BOTÓN DE CIERRE "X" ABSOLUTO EN LA ESQUINA SUPERIOR DERECHA --- */
+        .chat-close-btn {
+            position: absolute !important;
+            top: 50% !important;
+            right: 15px !important;
+            transform: translateY(-50%) !important;
+            cursor: pointer !important;
+            font-size: 18px !important;
+            color: #ffffff !important; /* Asegurar contraste impecable */
+            transition: color 0.2s ease;
+            z-index: 10;
+        }
+
+        .chat-close-btn:hover {
+            color: var(--apm-orange) !important;
+        }
+        
         /* --- INDICADOR DE ESTADO GEMINI --- */
         .status-dot {
             width: 10px;
@@ -2282,7 +2312,7 @@ body.light-theme .tab-link.active {
                 <span>🤖 Asistente de Consulta RIS (IA)</span>
                 <span class="status-dot connected" id="gemini-status-dot" title="Gemini Conectado"></span>
             </div>
-            <span style="cursor:pointer;" onclick="toggleChatFlotante()">✕</span>
+            <span class="chat-close-btn" onclick="toggleChatFlotante()">✕</span>
         </div>
         <div class="chat-messages" id="chat-mensajes-area">
             <div class="chat-bubble chat-bubble-ai">
