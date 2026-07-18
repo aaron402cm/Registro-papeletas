@@ -1853,6 +1853,26 @@ body.light-theme .tab-link.active {
             border-color: #c38bf7 !important;
             box-shadow: 0 0 12px rgba(0, 240, 255, 0.25) !important;
         }
+        /* --- TARJETA DE BÚSQUEDA EN COLOR MARFIL ELEGANTE Y ALTO CONTRASTE --- */
+        .search-filter-card {
+            background-color: #f5f2eb !important; /* Color marfil cálido de alta gama */
+            border: 1px solid rgba(0, 31, 63, 0.18) !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        /* Ajustar inputs y selectores internos para que armonicen y contrasten sobre el marfil */
+        .search-filter-card input, 
+        .search-filter-card select {
+            background-color: #ffffff !important; /* Blanco limpio para las cajas de texto */
+            border: 2px solid rgba(0, 31, 63, 0.3) !important; /* Borde oscuro definido */
+            color: #001f3f !important; /* Texto marino profundo de alto contraste */
+            font-weight: 600;
+        }
+
+        /* Texto de sugerencia (placeholder) en color oscuro legible */
+        .search-filter-card input::placeholder {
+            color: #556677 !important;
+        }
     </style>
 </head>
 <body>
@@ -2015,7 +2035,7 @@ body.light-theme .tab-link.active {
                     </div>
 
                     <!-- BARRA DE BÚSQUEDA DEL PANEL DE ACTIVOS -->
-                    <div class="card" style="margin-bottom: 15px; padding: 15px;">
+                    <div class="card search-filter-card" style="margin-bottom: 15px; padding: 15px;">
                         <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
                             <input type="text" id="tabla-buscador-rapido" placeholder="🔎 Buscar por DNI, ID, Nombre o Empresa..." style="flex: 1; min-width: 250px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: var(--text-color);" oninput="ejecutarBusquedaDBServidor('activo')">
                             <select id="filtro-empresa" style="width: 150px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: var(--text-color);" onchange="filtrarYRenderizarTabla()">
