@@ -1328,16 +1328,17 @@ body.light-theme .tab-link.active {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 12, 24, 0.92); /* Fondo oscuro base */
+            background: rgba(0, 8, 16, 0.94); /* Fondo más oscuro para que resalte el agua */
             z-index: 5000;
             justify-content: center;
             align-items: center;
             color: white;
             font-family: 'Segoe UI', sans-serif;
-            overflow: hidden; /* Evita desborde de las ondas */
+            overflow: hidden;
+            --water-height: 0%; /* Inicialización obligatoria para rastreo de marea */
         }
 
-        /* Agua de fondo que sube en base a la variable --water-height */
+        /* Vaso de agua en ascenso (Cuerpo líquido con brillo de neón superior) */
         .robot-modal-overlay::before {
             content: '';
             position: absolute;
@@ -1345,29 +1346,34 @@ body.light-theme .tab-link.active {
             left: 0;
             width: 100%;
             height: var(--water-height, 0%);
-            background: linear-gradient(180deg, rgba(0, 240, 255, 0.15) 0%, rgba(0, 75, 135, 0.3) 100%);
+            /* Incremento drástico de opacidad con gradiente cian de neón a azul APM */
+            background: linear-gradient(180deg, rgba(0, 240, 255, 0.55) 0%, rgba(0, 31, 63, 0.85) 100%);
             z-index: 1;
-            transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: height 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
             pointer-events: none;
+            
+            /* Cresta de luz de neón (Simula el borde del agua llenando el vaso) */
+            border-top: 3px solid #00f0ff;
+            box-shadow: 0 -8px 25px rgba(0, 240, 255, 0.95), inset 0 12px 20px rgba(0, 240, 255, 0.5);
         }
 
-        /* Ondas de marea en la superficie del agua */
+        /* Oleaje en movimiento continuo */
         .robot-modal-overlay::after {
             content: '';
             position: absolute;
             bottom: var(--water-height, 0%);
             left: 0;
             width: 200%;
-            height: 28px;
-            /* Vector de onda líquida */
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,0 C150,90 350,-40 500,40 C650,120 850,10 1000,60 C1150,110 1250,30 1300,50 L1300,120 L0,120 Z' fill='rgba(0, 240, 255, 0.25)'/%3E%3C/svg%3E");
+            height: 38px; /* Onda más visible y pronunciada */
+            /* Vector con color cian eléctrico de alta opacidad (0.65) */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,0 C150,90 350,-40 500,40 C650,120 850,10 1000,60 C1150,110 1250,30 1300,50 L1300,120 L0,120 Z' fill='rgba(0, 240, 255, 0.65)'/%3E%3C/svg%3E");
             background-size: 50% 100%;
             background-repeat: repeat-x;
             z-index: 2;
-            transition: bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: bottom 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
             pointer-events: none;
-            animation: waveFlow 4s linear infinite;
-            transform: translateY(14px);
+            animation: waveFlow 2.4s linear infinite; /* Movimiento de marea más dinámico y rápido */
+            transform: translateY(18px);
         }
 
         @keyframes waveFlow {
