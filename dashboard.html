@@ -655,21 +655,30 @@ body.light-theme .tab-link.active {
 
         /* --- MODAL DE INSTRUCCIÓN (GRIS CORTE INDUSTRIAL ELEGANTE) --- */
         #modal-instruccion-expediente .modal-box {
-            /* Gris mineral oscuro sólido (evita que el fondo azul marino se trasluzca) */
-            background: #1e222b !important; /* Gris acero neutro premium */
-            border: 1px solid rgba(255, 255, 255, 0.18) !important;
-            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            /* Gris acero medio (claramente diferenciable del fondo oscuro de la app) */
+            background: #383e4a !important; 
+            border: 2px solid rgba(255, 255, 255, 0.3) !important; /* Borde de aluminio brillante */
+            box-shadow: 0 25px 65px rgba(0, 0, 0, 0.85), inset 0 1px 1px rgba(255, 255, 255, 0.2);
             border-radius: 16px;
             width: 95%;
-            max-width: 950px !important; /* Espacioso y cómodo */
+            max-width: 950px !important;
             max-height: 85%;
             overflow-y: auto;
             position: relative;
             padding: 30px;
             border-top: 4px solid var(--apm-orange) !important;
             
-            /* Desactivamos la transparencia del cuadro de contenido para que no se mezcle el azul */
-            backdrop-filter: none !important; 
+            /* Desactivamos filtros para asegurar un color gris puro y sólido */
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
+
+        /* Ajuste en modo diurno (Gris platino claro neutro y pulcro) */
+        body.light-theme #modal-instruccion-expediente .modal-box {
+            background: #f4f5f7 !important; 
+            border: 1px solid rgba(0, 31, 63, 0.15) !important;
+            box-shadow: 0 15px 35px rgba(0, 31, 63, 0.08) !important;
+            backdrop-filter: none !important;
             -webkit-backdrop-filter: none !important;
         }
 
