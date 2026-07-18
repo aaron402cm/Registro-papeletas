@@ -13,7 +13,7 @@
             --apm-orange: #ff5500;
             --apm-dark-blue: #00152b; /* Azul marino corporativo oscuro */
             --apm-blue: #00f0ff; /* Azul cian de visualización táctica */
-            --bg-color: #000c18; /* Fondo marino profundo */
+            --bg-color: #000c18; /* Fondo marino profundo nocturno por defecto */
             --card-bg: rgba(0, 24, 48, 0.9); /* Vidrio marino translúcido de alta densidad */
             --text-color: #f1f8ff; /* Blanco frío para legibilidad óptima */
             --border-color: rgba(0, 240, 255, 0.25); /* Rejilla digital de cian suave */
@@ -22,19 +22,23 @@
             --success-green: #00ff66;
             --warning-yellow: #ffb700;
             --danger-red: #ff0055;
+            --text-muted: #b0cddd;
         }
 
-        /* --- VARIABLES DE MODO OSCURO (ESTILO ÁMBAR HOLOGRAMA) --- */
-        body.dark-theme {
-            --bg-color: #0c0802;
-            --card-bg: rgba(22, 14, 5, 0.9);
-            --text-color: #ffe8cc;
-            --border-color: rgba(224, 91, 27, 0.3);
-            --apm-dark-blue: #050200;
-            --table-row-hover: rgba(224, 91, 27, 0.1);
-            --input-bg: rgba(25, 14, 5, 0.9);
-            --apm-blue: #ff8800;
-            --apm-orange: #00f0ff;
+        /* --- NUEVO MODO DIURNO (ELEGANTE FONDO CREMA/MARFIL CON ALTO CONTRASTE) --- */
+        body.light-theme {
+            --bg-color: #f7f5ee; /* Fondo crema refinado de alta categoría */
+            --card-bg: #ffffff; /* Ventanas y cajas en blanco puro elegante */
+            --text-color: #001f3f; /* Azul marino profundo para máxima lectura */
+            --text-muted: #4b6584; /* Contraste secundario sofisticado */
+            --border-color: rgba(0, 31, 63, 0.15); /* Bordes sutiles en tono marino */
+            --table-row-hover: rgba(0, 75, 135, 0.05); /* Desplazamiento de filas sutil */
+            --input-bg: #fcfcfc; /* Cajas de texto limpias */
+            --apm-dark-blue: #001f3f; /* Encabezado unificado */
+            --apm-blue: #005f9e; /* Azul activo para links y botones */
+            --success-green: #0e8a43;
+            --warning-yellow: #a17000;
+            --danger-red: #c01c40;
         }
 
         body {
@@ -51,7 +55,14 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            transition: background-color 0.3s, color 0.3s;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Reconfiguración de cuadrícula sutil en Modo Diurno */
+        body.light-theme {
+            background-image: 
+                linear-gradient(rgba(0, 31, 63, 0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 31, 63, 0.012) 1px, transparent 1px);
         }
 
         /* --- BARRA DE DESPLAZAMIENTO FUTURISTA --- */
@@ -71,25 +82,27 @@
             box-shadow: 0 0 10px var(--apm-orange);
         }
 
-        /* --- PANTALLA DE LOGIN CON LIQUID GLASS Y FONDO PUERTO --- */
+        /* --- PANTALLA DE LOGIN CON LIQUID GLASS Y FONDO DE BUQUE PORTACONTENEDORES ELEGANTE --- */
         #login-screen {
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, rgba(0, 12, 24, 0.9), rgba(0, 6, 12, 0.98)), 
-                        url('https://images.unsplash.com/photo-1578575437130-527eed3abbec?q=80&w=1920') no-repeat center center/cover;
+            /* Fondo elegante de alta definición de un buque portacontenedores en terminal */
+            background: linear-gradient(135deg, rgba(0, 12, 24, 0.75), rgba(0, 6, 12, 0.9)), 
+                        url('https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=1920') no-repeat center center/cover;
             padding: 20px;
             box-sizing: border-box;
         }
 
         .login-box {
-            background: rgba(0, 20, 40, 0.8);
-            border: 1px solid rgba(0, 240, 255, 0.3);
-            box-shadow: 0 0 35px rgba(0, 240, 255, 0.2);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 16px;
+            /* Efecto Liquid Glassmorphism Premium */
+            background: rgba(255, 255, 255, 0.08); 
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border-radius: 20px;
             padding: 40px;
             width: 100%;
             max-width: 420px;
@@ -131,6 +144,18 @@
             transition: all 0.25s ease;
         }
 
+        .login-box .form-group input::placeholder {
+            color: rgba(0, 240, 255, 0.4);
+        }
+
+        .login-box .form-group input:focus, 
+        .login-box .form-group select:focus {
+            background-color: rgba(0, 12, 24, 0.95);
+            border-color: var(--apm-orange);
+            box-shadow: 0 0 12px rgba(224, 91, 27, 0.6);
+            outline: none;
+        }
+
         .login-logo {
             margin-bottom: 20px;
             filter: drop-shadow(0 0 8px rgba(224, 91, 27, 0.35));
@@ -159,9 +184,16 @@
             border-radius: 6px;
             box-sizing: border-box;
             background-color: var(--input-bg);
-            color: #ffffff;
+            color: var(--text-color);
             font-family: inherit;
             transition: border-color 0.2s, background-color 0.3s, color 0.3s, box-shadow 0.2s;
+        }
+
+        /* Inputs específicos en Modo Diurno */
+        body.light-theme .form-group input,
+        body.light-theme .form-group select,
+        body.light-theme .form-group textarea {
+            color: #001f3f;
         }
 
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
@@ -219,6 +251,32 @@
             text-shadow: 0 0 8px rgba(255, 0, 85, 0.4);
         }
 
+        /* --- ANIMACIÓN INTERACTIVA DE PUNTOS CARGANDO (DOTS JUMPING LOADER) --- */
+        .login-dots-loader {
+            display: none; /* Controlado dinámicamente */
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .login-dots-loader .dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background-color: var(--apm-orange);
+            border-radius: 50%;
+            margin: 0 4px;
+            animation: jumpDot 1.4s infinite ease-in-out both;
+            box-shadow: 0 0 8px var(--apm-orange);
+        }
+
+        .login-dots-loader .dot:nth-child(1) { animation-delay: -0.32s; }
+        .login-dots-loader .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes jumpDot {
+            0%, 80%, 100% { transform: scale(0.3); opacity: 0.3; }
+            40% { transform: scale(1.1); opacity: 1; }
+        }
+
         /* --- CONTENEDOR PRINCIPAL DEL DASHBOARD --- */
         #main-app {
             display: none;
@@ -232,6 +290,7 @@
             border-bottom: 2px solid var(--apm-orange);
             box-shadow: 0 4px 25px rgba(0, 0, 0, 0.6);
             z-index: 101;
+            transition: background-color 0.3s ease;
         }
 
         .header-inner {
@@ -387,6 +446,12 @@
             z-index: 100;
             backdrop-filter: blur(10px);
             box-shadow: 5px 0 25px rgba(0, 0, 0, 0.4);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body.light-theme .nav-tabs {
+            background-color: #ffffff;
+            border-right: 1px solid rgba(0, 31, 63, 0.1);
         }
 
         .nav-tabs-inner {
@@ -406,7 +471,7 @@
             padding: 16px 20px;
             font-size: 14px; 
             font-weight: 700;
-            color: #b0cddd; 
+            color: var(--text-muted); 
             cursor: pointer;
             border-left: 4px solid transparent;
             display: flex;
@@ -423,6 +488,11 @@
                         border-color 0.3s ease;
         }
 
+        body.light-theme .tab-link {
+            background: rgba(0, 31, 63, 0.03);
+            border-color: rgba(0, 31, 63, 0.1);
+        }
+
         /* LUZ DE FONDO (BACKLIGHT GLOW) */
         .tab-link::before {
             content: '';
@@ -435,6 +505,10 @@
             border-radius: 8px;
         }
 
+        body.light-theme .tab-link::before {
+            background: linear-gradient(90deg, rgba(0, 75, 135, 0.06) 0%, transparent 100%);
+        }
+
         /* EFECTO DE OJO DE PEZ EN HOVER (AMPLIACIÓN Y DESPLAZAMIENTO HACIA LA DERECHA) */
         .tab-link:hover {
             color: #ffffff;
@@ -443,6 +517,13 @@
             border-left-color: var(--apm-blue);
             transform: scale(1.05) translateX(8px);
             box-shadow: 0 0 20px rgba(0, 240, 255, 0.3), inset 0 0 10px rgba(0, 240, 255, 0.15);
+        }
+
+        body.light-theme .tab-link:hover {
+            color: #001f3f;
+            background-color: rgba(0, 75, 135, 0.08);
+            border-color: var(--apm-blue);
+            box-shadow: 0 4px 15px rgba(0, 75, 135, 0.1);
         }
 
         .tab-link:hover::before {
@@ -457,6 +538,13 @@
             border-left: 5px solid var(--apm-orange);
             transform: scale(1.05) translateX(12px);
             box-shadow: 0 0 25px rgba(224, 91, 27, 0.4), inset 0 0 12px rgba(224, 91, 27, 0.2);
+        }
+
+        body.light-theme .tab-link.active {
+            color: #ffffff;
+            background-color: var(--apm-orange);
+            border-color: var(--apm-orange);
+            box-shadow: 0 8px 20px rgba(224, 91, 27, 0.25);
         }
 
         .tab-link.active::before {
@@ -516,18 +604,22 @@
             border-radius: 8px;
             padding: 20px;
             margin-bottom: 25px;
-            transition: background-color 0.3s, border-color 0.3s;
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        body.light-theme .card {
+            box-shadow: 0 4px 15px rgba(0, 31, 63, 0.05);
         }
 
         .card-title {
             margin-top: 0;
             margin-bottom: 15px;
-            color: #ffffff;
+            color: var(--text-color);
             font-size: 18px; 
             font-weight: bold;
             letter-spacing: 0.5px;
             text-transform: uppercase;
-            border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+            border-bottom: 1px solid var(--border-color);
             padding-bottom: 12px;
             display: flex;
             justify-content: space-between;
@@ -565,11 +657,17 @@
             display: flex;
             gap: 10px;
             margin-bottom: 15px;
-            background: rgba(0, 15, 30, 0.9); /* Mayor contraste en el contenedor */
+            background: rgba(0, 15, 30, 0.9); 
             padding: 10px;
             border-radius: 6px;
-            border: 1px solid rgba(0, 240, 255, 0.35);
+            border: 1px solid var(--border-color);
             overflow-x: auto;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body.light-theme .pipeline-bar {
+            background: #ffffff;
+            border-color: rgba(0, 31, 63, 0.15);
         }
 
         /* Nodos del pipeline modificados para eliminar el color negro */
@@ -578,15 +676,22 @@
             min-width: 160px;
             padding: 10px 15px;
             border-radius: 4px;
-            border: 1px solid rgba(0, 240, 255, 0.35); /* Borde cian táctico de contraste */
-            background: rgba(0, 34, 68, 0.4); /* Fondo azul marino corporativo de alta visibilidad */
-            color: #e2f1ff; /* Plateado claro brillante */
+            border: 1px solid var(--border-color); 
+            background: rgba(0, 34, 68, 0.4); 
+            color: var(--text-color); 
             text-align: center;
             cursor: pointer;
             font-weight: bold;
             font-size: 12px;
             box-shadow: inset 0 0 8px rgba(0, 240, 255, 0.1);
             transition: all 0.2s ease-in-out;
+        }
+
+        body.light-theme .pipeline-node {
+            background: #fdfbf7;
+            border-color: rgba(0, 31, 63, 0.15);
+            color: #001f3f;
+            box-shadow: none;
         }
 
         .pipeline-node:hover {
@@ -596,11 +701,25 @@
             box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
         }
 
+        body.light-theme .pipeline-node:hover {
+            background: rgba(0, 75, 135, 0.05);
+            border-color: var(--apm-blue);
+            color: #001f3f;
+            box-shadow: none;
+        }
+
         .pipeline-node.active {
             border-color: var(--apm-orange);
-            background: rgba(224, 91, 27, 0.25); /* Naranja corporativo con brillo */
+            background: rgba(224, 91, 27, 0.25); 
             color: #ffffff;
             box-shadow: 0 0 15px rgba(224, 91, 27, 0.35), inset 0 0 10px rgba(224, 91, 27, 0.25);
+        }
+
+        body.light-theme .pipeline-node.active {
+            background: rgba(224, 91, 27, 0.08);
+            border-color: var(--apm-orange);
+            color: var(--apm-orange);
+            box-shadow: 0 4px 10px rgba(224, 91, 27, 0.15);
         }
 
         .pipeline-counter {
@@ -628,9 +747,10 @@
             position: sticky;
             top: 0;
             z-index: 10;
-            background-color: #001224;
+            background-color: var(--apm-dark-blue);
             cursor: pointer;
             user-select: none;
+            transition: background-color 0.3s ease;
         }
 
         .table-scroll-container thead th:hover {
@@ -652,13 +772,13 @@
 
         th, td {
             padding: 14px 12px; 
-            border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+            border-bottom: 1px solid var(--border-color);
             text-align: left;
-            color: #f1f8ff; 
+            color: var(--text-color);
         }
 
         th {
-            background-color: #001224;
+            background-color: var(--apm-dark-blue);
             color: var(--apm-blue);
             font-family: monospace;
             text-transform: uppercase;
@@ -667,9 +787,18 @@
             font-weight: 700;
         }
 
+        body.light-theme th {
+            color: #ffffff;
+            background-color: #001f3f; /* Azul marino profundo para encabezados */
+        }
+
         /* Fila de tabla con fondo alterno para mejor legibilidad */
         tr.clickable-row:nth-child(even) {
             background-color: rgba(0, 24, 48, 0.3);
+        }
+
+        body.light-theme tr.clickable-row:nth-child(even) {
+            background-color: rgba(0, 31, 63, 0.02);
         }
 
         #tabla-control-papeletas td:nth-child(1),
@@ -695,22 +824,33 @@
             border-left: 4px solid var(--apm-blue);
         }
 
+        body.light-theme tr.active-row {
+            background-color: rgba(0, 95, 158, 0.06) !important;
+            border-left-color: var(--apm-blue);
+        }
+
         /* --- CAMPOS DE BÚSQUEDA Y SELECTS MEJORADOS --- */
         #tabla-buscador-rapido, #buscador-casos-cerrados {
-            background-color: #001f3f !important; /* Azul marino táctico de alta visibilidad */
-            border: 2px solid rgba(0, 240, 255, 0.4) !important; /* Definición de borde clara */
-            color: #ffffff !important;
+            background-color: var(--input-bg) !important; 
+            border: 2px solid var(--border-color) !important; 
+            color: var(--text-color) !important;
             font-size: 14px;
             font-weight: 600;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
+
+        body.light-theme #tabla-buscador-rapido, 
+        body.light-theme #buscador-casos-cerrados {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
         #tabla-buscador-rapido::placeholder, #buscador-casos-cerrados::placeholder {
-            color: rgba(255, 255, 255, 0.6) !important; /* Placeholder brillante */
+            color: var(--text-muted) !important; 
         }
         #filtro-empresa, #filtro-semaforo {
-            background-color: #001f3f !important;
-            border: 2px solid rgba(0, 240, 255, 0.4) !important;
-            color: #ffffff !important;
+            background-color: var(--input-bg) !important;
+            border: 2px solid var(--border-color) !important;
+            color: var(--text-color) !important;
             font-weight: 600;
         }
 
@@ -967,15 +1107,20 @@
         .kpi-value {
             font-size: 36px;
             font-weight: 900;
-            color: #ffffff;
+            color: var(--text-color);
             margin-bottom: 5px;
             font-family: monospace;
             text-shadow: 0 0 10px currentColor;
         }
 
+        body.light-theme .kpi-value {
+            color: #001f3f;
+            text-shadow: none;
+        }
+
         .kpi-label {
             font-size: 11px;
-            color: #a0c0d5;
+            color: var(--text-muted);
             font-weight: bold;
             letter-spacing: 1px;
         }
@@ -985,7 +1130,7 @@
             display: flex;
             justify-content: space-between;
             padding: 12px 15px;
-            border-bottom: 1px solid rgba(0, 240, 255, 0.08);
+            border-bottom: 1px solid var(--border-color);
             font-size: 14px;
         }
         .agents-list-item:last-child { border-bottom: none; }
@@ -998,6 +1143,12 @@
             font-size: 11px;
             font-weight: bold;
             font-family: monospace;
+        }
+
+        body.light-theme .agent-rank {
+            color: #ffffff;
+            background-color: #001f3f;
+            border-color: #001f3f;
         }
 
         /* --- EL NOTICIERO DE SEGURIDAD --- */
@@ -1069,11 +1220,19 @@
             position: relative;
         }
 
+        body.light-theme .ris-rule-card {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
         .ris-rule-card h4 {
             margin-top: 0;
             margin-bottom: 8px;
             color: var(--apm-blue);
             max-width: 80%;
+        }
+
+        body.light-theme .ris-rule-card h4 {
+            color: #005f9e;
         }
 
         .ris-rule-card p {
@@ -1330,7 +1489,7 @@
         }
 
         .compact-table tr {
-            border-bottom: 1px solid rgba(0, 240, 255, 0.08);
+            border-bottom: 1px solid var(--border-color);
         }
 
         .compact-table tr:last-child {
@@ -1407,7 +1566,7 @@
             z-index: 9999;
             font-size: 28px;
             transition: transform 0.2s, box-shadow 0.2s;
-            animation: breathingGlow 3s ease-in-out infinite; /* Respiración dinámica */
+            animation: breathingGlow 3s ease-in-out infinite; 
         }
 
         .chat-fab:hover {
@@ -1421,11 +1580,11 @@
             right: 25px;
             width: 380px;
             height: 480px;
-            background-color: #0d0600; /* Fondo carbón cálido de alto contraste */
+            background-color: #0d0600; 
             color: var(--text-color);
             border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(224, 91, 27, 0.45); /* Luz de respaldo naranja */
-            border: 2px solid var(--apm-orange); /* Borde naranja brillante */
+            box-shadow: 0 8px 32px rgba(224, 91, 27, 0.45); 
+            border: 2px solid var(--apm-orange); 
             display: none;
             flex-direction: column;
             overflow: hidden;
@@ -1434,7 +1593,7 @@
         }
 
         .chat-header {
-            background: linear-gradient(135deg, var(--apm-orange) 0%, #b23a0e 100%); /* Gradiente oficial APM */
+            background: linear-gradient(135deg, var(--apm-orange) 0%, #b23a0e 100%); 
             color: #ffffff;
             padding: 12px 15px;
             font-weight: bold;
@@ -1452,7 +1611,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            background-color: rgba(13, 6, 0, 0.98); /* Fondo de mensajes con contraste cálido */
+            background-color: rgba(13, 6, 0, 0.98); 
         }
 
         .chat-bubble {
@@ -1464,7 +1623,7 @@
         }
 
         .chat-bubble-ai {
-            background-color: rgba(224, 91, 27, 0.15); /* Tinte naranja táctico */
+            background-color: rgba(224, 91, 27, 0.15); 
             color: #ffffff;
             border: 1px solid rgba(224, 91, 27, 0.3);
             align-self: flex-start;
@@ -1473,7 +1632,7 @@
         }
 
         .chat-bubble-user {
-            background-color: rgba(0, 240, 255, 0.15); /* Tinte cian táctico */
+            background-color: rgba(0, 240, 255, 0.15); 
             border: 1px solid rgba(0, 240, 255, 0.3);
             color: white;
             align-self: flex-end;
@@ -1639,7 +1798,12 @@
                 <button class="btn-apm" onclick="verificarCodigoOTP()">Verificar e Ingresar</button>
             </div>
 
-            <div class="loader" id="login-loader"></div>
+            <!-- CARGADOR INTERACTIVO CON TRES PUNTOS EN ACCIÓN -->
+            <div id="login-loader" class="login-dots-loader">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
             <p id="login-error">Credenciales incorrectas</p>
         </div>
     </div>
@@ -1664,7 +1828,7 @@
                 </div>
                 
                 <div class="header-user-info">
-                    <!-- Toggle Modo Oscuro -->
+                    <!-- Toggle Modo Oscuro / Claro interactivo -->
                     <button class="icon-btn" onclick="toggleDarkMode()" title="Cambiar tema" id="btn-theme-toggle">🌙</button>
                     
                     <!-- Campana de Alertas -->
@@ -1744,11 +1908,11 @@
                     <!-- BARRA DE BÚSQUEDA DEL PANEL DE ACTIVOS -->
                     <div class="card" style="margin-bottom: 15px; padding: 15px;">
                         <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-                            <input type="text" id="tabla-buscador-rapido" placeholder="🔎 Buscar por DNI, ID, Nombre o Empresa..." style="flex: 1; min-width: 250px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: #ffffff;" oninput="ejecutarBusquedaDBServidor('activo')">
-                            <select id="filtro-empresa" style="width: 150px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: #ffffff;" onchange="filtrarYRenderizarTabla()">
+                            <input type="text" id="tabla-buscador-rapido" placeholder="🔎 Buscar por DNI, ID, Nombre o Empresa..." style="flex: 1; min-width: 250px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: var(--text-color);" oninput="ejecutarBusquedaDBServidor('activo')">
+                            <select id="filtro-empresa" style="width: 150px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: var(--text-color);" onchange="filtrarYRenderizarTabla()">
                                 <option value="">Filtro Empresa</option>
                             </select>
-                            <select id="filtro-semaforo" style="width: 150px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: #ffffff;" onchange="filtrarYRenderizarTabla()">
+                            <select id="filtro-semaforo" style="width: 150px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: var(--text-color);" onchange="filtrarYRenderizarTabla()">
                                 <option value="">Filtro Semáforo</option>
                                 <option value="vigente">Plazo Vigente</option>
                                 <option value="ultimo_dia">Último Día</option>
@@ -1903,7 +2067,7 @@
                 <div id="panel-cerradas-panel" class="tab-panel">
                     <div class="card" style="margin-bottom: 15px; padding: 15px;">
                         <div style="display: flex; gap: 10px; align-items: center;">
-                            <input type="text" id="buscador-casos-cerrados" placeholder="🔎 Búsqueda Histórica Avanzada en Base de Datos (ID, DNI, Nombre, Empresa)..." style="flex: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: #ffffff;" oninput="ejecutarBusquedaDBServidor('cerrado')">
+                            <input type="text" id="buscador-casos-cerrados" placeholder="🔎 Búsqueda Histórica Avanzada en Base de Datos (ID, DNI, Nombre, Empresa)..." style="flex: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: var(--text-color);" oninput="ejecutarBusquedaDBServidor('cerrado')">
                             <button class="btn-apm" style="width: auto; padding: 10px 20px; background-color: var(--apm-blue); color: black;" onclick="forzarSincronizacionManual()">🔄 Sincronizar</button>
                         </div>
                     </div>
@@ -2029,7 +2193,7 @@
                                 ➕ Agregar Nueva Regla
                             </button>
                         </div>
-                        <p style="font-size:14px; color:#6c757d; margin-top:0;">Este catálogo de reglas es leído dinámicamente por la Inteligencia Artificial en el servidor de Google para analizar los casi y recomendar las sanciones oficiales.</p>
+                        <p style="font-size:14px; color:#6c757d; margin-top:0;">Este catálogo de reglas es leído dinámicamente por la Inteligencia Artificial en el servidor de Google para analizar los casos y recomendar las sanciones oficiales.</p>
                         
                         <div id="contenedor-reglas-ris-dinamico">
                             <p style="text-align:center;">Cargando reglas del RIS de la base de datos de Excel...</p>
@@ -2215,15 +2379,12 @@
         }
         actualizarEstadoGemini("connected");
 
-        // --- MODO OSCURO ---
+        // --- MANEJO DE CAMBIO DE TEMA DIURNO / NOCTURNO ---
         function toggleDarkMode() {
-            document.body.classList.toggle("dark-theme");
-            const esOscuro = document.body.classList.contains("dark-theme");
-            localStorage.setItem("modo_oscuro", esOscuro ? "si" : "no");
-            document.getElementById("btn-theme-toggle").innerText = esOscuro ? "☀️" : "🌙";
-        }
-        if (localStorage.getItem("modo_oscuro") === "si") {
-            document.body.classList.add("dark-theme");
+            document.body.classList.toggle("light-theme");
+            const esDiurno = document.body.classList.contains("light-theme");
+            localStorage.setItem("modo_diurno", esDiurno ? "si" : "no");
+            document.getElementById("btn-theme-toggle").innerText = esDiurno ? "☀️" : "🌙";
         }
 
         // --- AUDIO SINTETIZADO ---
@@ -2389,7 +2550,7 @@
                 return;
             }
 
-            loader.style.display = "block";
+            loader.style.display = "block"; // Activará el jumping dots container
             loginError.style.display = "none";
 
             fetch(`${CONFIG_WEB_APP_URL}?action=request_otp&user=${encodeURIComponent(user)}&pass=${encodeURIComponent(pass)}`)
@@ -2424,9 +2585,13 @@
             const loginError = document.getElementById("login-error");
             const user = sessionStorage.getItem("temp_user");
 
+            loader.style.display = "block";
+            loginError.style.display = "none";
+
             fetch(`${CONFIG_WEB_APP_URL}?action=verify_otp&user=${encodeURIComponent(user)}&otp=${encodeURIComponent(otp)}`)
             .then(res => res.json())
             .then(data => {
+                loader.style.display = "none";
                 if (data.status === "success") {
                     sessionStorage.setItem("secure_user_initials", user);
                     sessionStorage.setItem("secure_auth_plain", sessionStorage.getItem("temp_pass"));
@@ -2436,6 +2601,11 @@
                     loginError.innerText = data.error || "Código incorrecto";
                     loginError.style.display = "block";
                 }
+            })
+            .catch(err => {
+                loader.style.display = "none";
+                loginError.innerText = "Error de validación.";
+                loginError.style.display = "block";
             });
         }
 
@@ -2556,7 +2726,6 @@
             });
         }
 
-        // --- SISTEMA DE CONTROL DE FLUJO DEL PIPELINE ---
         function calcularFiltrosEtapa(papeletas) {
             let counts = { PENDIENTE: 0, ESPERA_DESCARGOS: 0, HUMANA: 0, IA: 0, CERRADO: 0 };
             papeletas.forEach(p => {
@@ -3124,6 +3293,18 @@
             const chat = document.getElementById("chat-flotante-ris");
             chat.style.display = (chat.style.display === "flex") ? "none" : "flex";
         }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // Comprobación de estado diurno guardada en localStorage
+            const diurno = localStorage.getItem("modo_diurno");
+            if (diurno === "si") {
+                document.body.classList.add("light-theme");
+                document.getElementById("btn-theme-toggle").innerText = "☀️";
+            } else {
+                document.body.classList.remove("light-theme");
+                document.getElementById("btn-theme-toggle").innerText = "🌙";
+            }
+        });
 
         function detectarEnterChat(event) {
             if (event.key === "Enter") enviarConsultaChatIA();
