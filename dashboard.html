@@ -434,44 +434,35 @@
             overflow: hidden;
         }
 
-        /* BARRA LATERAL (TABS VERTICALES EN AZUL MARINO CORP) */
+        /* --- COLUMNA DE NAVEGACIÓN LATERAL EN NARANJA ELEGANTE --- */
         .nav-tabs {
             width: 290px;
             min-width: 290px;
-            background-color: #001224; 
-            border-right: 1px solid var(--border-color);
+            /* Degradado naranja profundo de APM */
+            background: linear-gradient(180deg, #993300 0%, #662200 100%) !important; 
+            border-right: 2px solid rgba(255, 255, 255, 0.15) !important;
             display: flex;
             flex-direction: column;
             box-sizing: border-box;
             z-index: 100;
-            backdrop-filter: blur(10px);
-            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.4);
-            transition: background-color 0.3s ease, border-color 0.3s ease;
+            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
         }
 
+        /* Forzar que se mantenga naranja también en modo diurno para conservar identidad */
         body.light-theme .nav-tabs {
-            background-color: #ffffff;
-            border-right: 1px solid rgba(0, 31, 63, 0.1);
+            background: linear-gradient(180deg, #993300 0%, #662200 100%) !important;
+            border-right: 2px solid rgba(255, 255, 255, 0.15) !important;
         }
 
-        .nav-tabs-inner {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            padding: 24px 16px;
-            gap: 14px;
-            box-sizing: border-box;
-            margin: 0;
-        }
-
-        /* BOTONES DE PESTAÑA LATERAL CON EFECTO DE OJO DE PEZ (SCALE / MAGNIFICATION) */
+        /* --- AJUSTE DE CONTRASTE DE LOS BOTONES DE PESTAÑA --- */
         .tab-link {
-            background: rgba(0, 75, 135, 0.1);
-            border: 1px solid rgba(0, 240, 255, 0.12);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             padding: 16px 20px;
             font-size: 14px; 
             font-weight: 700;
-            color: var(--text-muted); 
+            color: #ffe8d6; /* Texto crema de alta legibilidad sobre naranja */
             cursor: pointer;
             border-left: 4px solid transparent;
             display: flex;
@@ -488,25 +479,30 @@
                         border-color 0.3s ease;
         }
 
+        /* Compatibilidad de color de texto de botones en modo diurno */
         body.light-theme .tab-link {
-            background: rgba(0, 31, 63, 0.03);
-            border-color: rgba(0, 31, 63, 0.1);
+            color: #ffe8d6;
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.12);
         }
 
-        /* LUZ DE FONDO (BACKLIGHT GLOW) */
-        .tab-link::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(90deg, rgba(0, 240, 255, 0.1) 0%, transparent 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: -1;
-            border-radius: 8px;
+        /* Efecto Hover */
+        .tab-link:hover {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: scale(1.05) translateX(8px);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
         }
 
-        body.light-theme .tab-link::before {
-            background: linear-gradient(90deg, rgba(0, 75, 135, 0.06) 0%, transparent 100%);
+        /* Pestaña Activa: Pasa a blanco brillante con texto naranja para un gran contraste */
+        .tab-link.active {
+            color: #993300 !important;
+            background-color: #ffffff !important;
+            border-color: #ffffff !important;
+            border-left: 5px solid var(--apm-orange) !important;
+            transform: scale(1.05) translateX(12px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
         }
 
         /* EFECTO DE OJO DE PEZ EN HOVER (AMPLIACIÓN Y DESPLAZAMIENTO HACIA LA DERECHA) */
@@ -1573,14 +1569,16 @@
             transform: scale(1.12);
         }
 
-        /* --- VENTANA DEL CHATBOT MEJORADA CON NARANJA APM --- */
+        /* --- VENTANA DEL CHATBOT CON LIQUID GLASS Y FONDO PUERTO --- */
         .chat-panel {
             position: fixed;
             bottom: 95px;
             right: 25px;
             width: 380px;
             height: 480px;
-            background-color: #0d0600; 
+            /* Fondo con imagen de terminal portuario de alta calidad y filtro oscuro */
+            background: linear-gradient(135deg, rgba(13, 6, 0, 0.82), rgba(0, 12, 24, 0.88)), 
+                        url('https://images.unsplash.com/photo-1578575437130-527eed3abbec?q=80&w=600') no-repeat center center/cover;
             color: var(--text-color);
             border-radius: 12px;
             box-shadow: 0 8px 32px rgba(224, 91, 27, 0.45); 
@@ -1590,18 +1588,8 @@
             overflow: hidden;
             z-index: 9999;
             transition: background-color 0.3s;
-        }
-
-        .chat-header {
-            background: linear-gradient(135deg, var(--apm-orange) 0%, #b23a0e 100%); 
-            color: #ffffff;
-            padding: 12px 15px;
-            font-weight: bold;
-            font-size: 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.25);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
         }
 
         .chat-messages {
@@ -1611,7 +1599,10 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            background-color: rgba(13, 6, 0, 0.98); 
+            /* Capa traslúcida que permite ver el puerto con efecto esmerilado */
+            background-color: rgba(13, 6, 0, 0.25); 
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
         }
 
         .chat-bubble {
