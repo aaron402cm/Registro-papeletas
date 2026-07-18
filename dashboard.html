@@ -212,23 +212,6 @@
             text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
 
-        /* --- ESTILOS COMPACTOS DEL HUD MINIMALISTA --- */
-        .hud-spinner-minimal {
-            width: 22px;
-            height: 22px;
-            border: 2px solid rgba(255, 255, 255, 0.15);
-            border-top-color: var(--apm-orange);
-            border-radius: 50%;
-            animation: spin 0.85s linear infinite;
-        }
-
-        .hud-minimal-bar {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
-
         /* --- CONTENEDOR PRINCIPAL DEL DASHBOARD --- */
         #main-app {
             display: none;
@@ -592,6 +575,22 @@
         .badge-yellow { background-color: #fff2cc; color: #b28900; }
         .badge-red { background-color: #fce4d6; color: var(--danger-red); }
         .badge-blue { background-color: #e8f1f5; color: var(--apm-blue); }
+
+        .btn-pdf-view {
+            background-color: var(--apm-blue);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        .btn-pdf-view:hover {
+            background-color: var(--apm-dark-blue);
+        }
 
         /* --- BOTÓN DE ENLACE DE DRIVE --- */
         .btn-drive-link {
@@ -1406,58 +1405,20 @@
             color: var(--apm-orange) !important;
             box-shadow: 0 2px 4px rgba(0,0,0,0.08);
         }
-
-        /* --- ESTILOS COMPACTOS DEL HUD MINIMALISTA --- */
-        .hud-spinner-minimal {
-            width: 22px;
-            height: 22px;
-            border: 2px solid rgba(255, 255, 255, 0.15);
-            border-top-color: var(--apm-orange);
-            border-radius: 50%;
-            animation: spin 0.85s linear infinite;
-        }
-
-        .hud-minimal-bar {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
     </style>
 </head>
 <body>
 
-    <!-- PANTALLA DE INICIALIZACIÓN CON VIDEO NATIVO (SIN RECORTE) Y AUDIO ACTIVO -->
-    <div id="intro-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000000; z-index: 99999; align-items: center; justify-content: center; overflow: hidden; opacity: 1; transition: opacity 0.8s ease;">
-        
-        <!-- Tu video de fondo corporativo - Sin Zoom (object-fit: contain) -->
-        <video id="intro-video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1;" playsinline>
+    <!-- CONTENEDOR DE LA INTRO DE VIDEO (PANTALLA COMPLETA Y CON TRANSICIÓN SUAVE) -->
+    <div id="intro-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #002244; z-index: 99999; align-items: center; justify-content: center; overflow: hidden; opacity: 1; transition: opacity 0.8s ease;">
+        <video id="intro-video" style="width: 100%; height: 100%; object-fit: cover;" muted playsinline>
             <source src="intro.mp4" type="video/mp4">
+            Tu navegador no soporta el formato de video.
         </video>
-        
-        <!-- Sutil capa de sombra inferior para asegurar legibilidad del estado -->
-        <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 180px; background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0)); z-index: 2; pointer-events: none;"></div>
-        
-        <!-- HUD Ultra-Minimalista Inferior para dejar libre la pantalla -->
-        <div class="hud-minimal-bar" style="position: absolute; bottom: 0; left: 0; width: 100%; z-index: 3; padding: 25px 40px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; color: #ffffff;">
-            
-            <!-- Estado en texto fluido -->
-            <div style="text-align: left;">
-                <h4 id="hud-status-title" style="margin: 0 0 4px 0; font-size: 13px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: #ffffff;">Iniciando Sistema</h4>
-                <p id="hud-status-subtitle" style="margin: 0; font-size: 11px; color: rgba(255, 255, 255, 0.7); min-height: 15px;">Estableciendo conexión segura...</p>
-            </div>
-            
-            <!-- Indicador de Carga Circular e Indicador de Porcentaje -->
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <div class="hud-spinner-minimal"></div>
-                <div style="font-size: 26px; font-weight: 900; letter-spacing: 1px;" id="hud-percentage-text">0%</div>
-            </div>
-            
-            <!-- Barra de progreso lineal sutil en el borde superior del HUD inferior -->
-            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: rgba(255, 255, 255, 0.1);">
-                <div id="hud-progress-line" style="width: 0%; height: 100%; background: var(--apm-orange); transition: width 0.1s linear; box-shadow: 0 0 8px var(--apm-orange);"></div>
-            </div>
-        </div>
+        <!-- Botón sutil para omitir la introducción -->
+        <button onclick="omitirIntroVideo()" style="position: absolute; bottom: 30px; right: 30px; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.3); color: white; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-size: 12px; font-weight: bold; backdrop-filter: blur(5px); transition: background 0.2s;">
+            Omitir Intro ⏭️
+        </button>
     </div>
 
     <!-- PANTALLA DE INGRESO SEGURO CON 2FA REAL -->
@@ -2034,7 +1995,7 @@
             setTimeout(() => { progress.style.width = "20%"; text.innerText = "🤖 Conectando de forma segura con el servidor de APM Terminals..."; }, 200);
             setTimeout(() => { progress.style.width = "45%"; text.innerText = "🔍 Escaneando la descripción del hecho de la papeleta..."; }, 900);
             setTimeout(() => { progress.style.width = "70%"; text.innerText = "⚖️ Cotejando contra el Catálogo de Sanciones de la APN..."; }, 1600);
-            setTimeout(() => { progress.style.width = "90%"; text.innerText = "⏳ Calcular reincidencias en el historial de Excel..."; }, 2300);
+            setTimeout(() => { progress.style.width = "90%"; text.innerText = "⏳ Calculando reincidencias en el historial de Excel..."; }, 2300);
         }
 
         function completarYQuitarRobotLoader() {
@@ -2193,174 +2154,35 @@
             });
         }
 
-        // --- SINTETIZACIÓN DIGITAL DE AUDIO NATIVO (WEB AUDIO API) ---
-        function playBootSound() {
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const now = ctx.currentTime;
-                
-                // Nota 1 (Subida armónica limpia)
-                const osc1 = ctx.createOscillator();
-                const gain1 = ctx.createGain();
-                osc1.type = 'sine';
-                osc1.frequency.setValueAtTime(440, now); // La4
-                gain1.gain.setValueAtTime(0, now);
-                gain1.gain.linearRampToValueAtTime(0.12, now + 0.05); // Subida de ganancia para mejor audición
-                gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-                osc1.connect(gain1);
-                gain1.connect(ctx.destination);
-                osc1.start(now);
-                osc1.stop(now + 0.3);
-
-                // Nota 2
-                const osc2 = ctx.createOscillator();
-                const gain2 = ctx.createGain();
-                osc2.type = 'sine';
-                osc2.frequency.setValueAtTime(554.37, now + 0.08); // Do#5
-                gain2.gain.setValueAtTime(0, now + 0.08);
-                gain2.gain.linearRampToValueAtTime(0.12, now + 0.12);
-                gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
-                osc2.connect(gain2);
-                gain2.connect(ctx.destination);
-                osc2.start(now + 0.08);
-                osc2.stop(now + 0.4);
-
-                // Nota 3
-                const osc3 = ctx.createOscillator();
-                const gain3 = ctx.createGain();
-                osc3.type = 'sine';
-                osc3.frequency.setValueAtTime(659.25, now + 0.16); // Mi5
-                gain3.gain.setValueAtTime(0, now + 0.16);
-                gain3.gain.linearRampToValueAtTime(0.15, now + 0.2);
-                gain3.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
-                osc3.connect(gain3);
-                gain3.connect(ctx.destination);
-                osc3.start(now + 0.16);
-                osc3.stop(now + 0.65);
-
-                // Zumbido tecnológico de fondo sutil
-                const humOsc = ctx.createOscillator();
-                const humGain = ctx.createGain();
-                humOsc.type = 'triangle';
-                humOsc.frequency.setValueAtTime(55, now);
-                
-                const filter = ctx.createBiquadFilter();
-                filter.type = 'lowpass';
-                filter.frequency.setValueAtTime(90, now);
-                
-                humGain.gain.setValueAtTime(0.02, now);
-                humGain.gain.exponentialRampToValueAtTime(0.001, now + 2.8);
-                
-                humOsc.connect(filter);
-                filter.connect(humGain);
-                humGain.connect(ctx.destination);
-                
-                humOsc.start(now);
-                humOsc.stop(now + 2.8);
-            } catch(e) {
-                console.log("AudioContext bloqueado o no soportado:", e);
-            }
-        }
-
-        function playAccessGrantedSound() {
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const now = ctx.currentTime;
-                
-                const osc1 = ctx.createOscillator();
-                const gain1 = ctx.createGain();
-                osc1.type = 'sine';
-                osc1.frequency.setValueAtTime(587.33, now); // Re5
-                gain1.gain.setValueAtTime(0.1, now);
-                gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-                osc1.connect(gain1);
-                gain1.connect(ctx.destination);
-                osc1.start(now);
-                osc1.stop(now + 0.2);
-                
-                const osc2 = ctx.createOscillator();
-                const gain2 = ctx.createGain();
-                osc2.type = 'sine';
-                osc2.frequency.setValueAtTime(880, now + 0.08); // La5
-                gain2.gain.setValueAtTime(0.15, now + 0.08);
-                gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
-                osc2.connect(gain2);
-                gain2.connect(ctx.destination);
-                osc2.start(now + 0.08);
-                osc2.stop(now + 0.4);
-            } catch(e) {}
-        }
-
-        // --- GESTIÓN DE LA PANTALLA DE INICIALIZACIÓN CON VIDEO ORIGINAL Y AUDIO ACTIVO ---
+        // --- GESTIÓN DE TRANSICIÓN CON INTRO DE VIDEO ---
         function iniciarIntroYAcceder(data) {
             tempTransitionData = data;
             const loginScreen = document.getElementById("login-screen");
             const introScreen = document.getElementById("intro-screen");
             const introVideo = document.getElementById("intro-video");
-            
-            const progressLine = document.getElementById("hud-progress-line");
-            const percentageText = document.getElementById("hud-percentage-text");
-            const statusTitle = document.getElementById("hud-status-title");
-            const statusSubtitle = document.getElementById("hud-status-subtitle");
 
-            // 1. Ocultar Login y presentar Consola de Carga
+            // Ocultar login y preparar la intro
             loginScreen.style.display = "none";
             introScreen.style.display = "flex";
             introScreen.style.opacity = "1";
 
-            // 2. Ejecutar y desmutar el video nativamente (permitido tras el clic del login) [1]
-            if (introVideo) {
-                introVideo.muted = false; // Desmutar el audio del propio video
-                introVideo.volume = 0.5;  // Volumen moderado y profesional (50%)
-                introVideo.currentTime = 0;
-                const playPromise = introVideo.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(err => {
-                        console.log("Auto-play bloqueado, reproduciendo audio sintético adicional.", err);
-                        playBootSound();
-                    });
-                }
-            } else {
-                playBootSound();
+            // Iniciar reproducción
+            introVideo.currentTime = 0;
+            const playPromise = introVideo.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    // Reproducción exitosa
+                }).catch(error => {
+                    console.log("No se pudo auto-reproducir el video, omitiendo intro...", error);
+                    finalizarIntroVideo();
+                });
             }
 
-            // 3. Lógica de incremento y sincronización del HUD minimalista inferior
-            let progress = 0;
-            const duration = 2800; // Duración total en milisegundos (2.8s)
-            const stepTime = 30; // ms por ciclo
-            const totalSteps = duration / stepTime;
-            const progressIncrement = 100 / totalSteps;
-
-            const interval = setInterval(() => {
-                progress = Math.min(progress + progressIncrement, 100);
-                
-                // Actualizar barra de progreso inferior
-                progressLine.style.width = `${progress}%`;
-                
-                // Actualizar porcentaje numérico
-                percentageText.innerText = `${Math.round(progress)}%`;
-
-                // Cambiar leyendas según el avance
-                if (progress < 30) {
-                    statusTitle.innerText = "Inicializando Entorno";
-                    statusSubtitle.innerText = "Verificando firmas de APM Terminals...";
-                } else if (progress >= 30 && progress < 65) {
-                    statusTitle.innerText = "Sincronizando Base de Datos";
-                    statusSubtitle.innerText = "Conectando con repositorios seguros RIS...";
-                } else if (progress >= 65 && progress < 90) {
-                    statusTitle.innerText = "Optimizando Módulos";
-                    statusSubtitle.innerText = "Cargando asistente cognitivo de IA...";
-                } else if (progress >= 90) {
-                    statusTitle.innerText = "Acceso Autorizado";
-                    statusSubtitle.innerText = "Abriendo Panel de Control RIS...";
-                }
-
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    playAccessGrantedSound(); // Sonido adicional armónico de éxito
-                    finalizarIntroVideo();
-                }
-            }, stepTime);
+            // Al finalizar el video pasamos al Dashboard
+            introVideo.onended = function() {
+                finalizarIntroVideo();
+            };
         }
 
         function omitirIntroVideo() {
@@ -2369,23 +2191,27 @@
 
         function finalizarIntroVideo() {
             const introScreen = document.getElementById("intro-screen");
+            const introVideo = document.getElementById("intro-video");
             const mainApp = document.getElementById("main-app");
 
+            try { introVideo.pause(); } catch(e){}
+
+            // Desvanecimiento progresivo de la intro
             introScreen.style.opacity = "0";
 
             setTimeout(() => {
                 introScreen.style.display = "none";
                 mainApp.style.display = "flex";
 
-                // Visualizar chat flotante
+                // Habilitar chat flotante
                 const chatFab = document.getElementById("chat-fab-element");
                 if (chatFab) chatFab.style.display = "flex";
 
                 if (tempTransitionData) {
                     inicializarDashboardConDatos(tempTransitionData);
-                    tempTransitionData = null; // Liberar datos de caché temporales
+                    tempTransitionData = null; // Liberar memoria
                 }
-            }, 800); // Duración coordinada con la transición de opacidad (0.8s)
+            }, 800); // Sincronizado con la duración de la transición en el estilo CSS (0.8s)
         }
 
         function enviarCredentialsLogin() {
@@ -2820,7 +2646,6 @@
             });
         }
 
-        // --- NAVEGACIÓN LIBRE POR SUB-TABS ---
         function cambiarSubTab(seccion, btn) {
             document.querySelectorAll("#secciones-panes-container .wizard-step-pane").forEach(pane => {
                 pane.classList.remove("active");
@@ -3035,7 +2860,6 @@
             });
         }
 
-        // Función de alias para evitar errores de cierre de sesión según la nomenclatura del botón
         function cerrarVisorPDF() {
             document.getElementById("pdf-visor-modal").style.display = "none";
             document.getElementById("pdf-visor-iframe").src = "";
