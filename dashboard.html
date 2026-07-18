@@ -1803,6 +1803,56 @@ body.light-theme .tab-link.active {
             color: var(--apm-orange) !important;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
+        /* --- COLORES SEMÁNTICOS PARA LAS TARJETAS DEL PIPELINE --- */
+        #pipe-all {
+            border-color: rgba(0, 240, 255, 0.25) !important;
+            color: #00f0ff !important;
+        }
+        #pipe-all.active {
+            background: rgba(0, 240, 255, 0.08) !important;
+            border-color: #00f0ff !important;
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.25) !important;
+        }
+
+        #pipe-pendiente {
+            border-color: rgba(0, 230, 118, 0.25) !important;
+            color: #00e676 !important;
+        }
+        #pipe-pendiente.active {
+            background: rgba(0, 230, 118, 0.08) !important;
+            border-color: #00e676 !important;
+            box-shadow: 0 0 12px rgba(0, 230, 118, 0.25) !important;
+        }
+
+        #pipe-descargos {
+            border-color: rgba(255, 214, 0, 0.25) !important;
+            color: #ffd600 !important;
+        }
+        #pipe-descargos.active {
+            background: rgba(255, 214, 0, 0.08) !important;
+            border-color: #ffd600 !important;
+            box-shadow: 0 0 12px rgba(255, 214, 0, 0.25) !important;
+        }
+
+        #pipe-evaluacion-humana {
+            border-color: rgba(255, 145, 0, 0.25) !important;
+            color: #ff9100 !important;
+        }
+        #pipe-evaluacion-humana.active {
+            background: rgba(255, 145, 0, 0.08) !important;
+            border-color: #ff9100 !important;
+            box-shadow: 0 0 12px rgba(255, 145, 0, 0.25) !important;
+        }
+
+        #pipe-evaluacion-ia {
+            border-color: rgba(0, 240, 255, 0.25) !important;
+            color: #00f0ff !important;
+        }
+        #pipe-evaluacion-ia.active {
+            background: rgba(0, 240, 255, 0.08) !important;
+            border-color: #00f0ff !important;
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.25) !important;
+        }
     </style>
 </head>
 <body>
@@ -2127,7 +2177,7 @@ body.light-theme .tab-link.active {
                     <div class="card" style="margin-bottom: 15px; padding: 15px;">
                         <div style="display: flex; gap: 10px; align-items: center;">
                             <input type="text" id="buscador-casos-cerrados" placeholder="🔎 Búsqueda Histórica Avanzada en Base de Datos (ID, DNI, Nombre, Empresa)..." style="flex: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: var(--text-color);" oninput="ejecutarBusquedaDBServidor('cerrado')">
-                            <button class="btn-apm" style="width: auto; padding: 10px 20px; background-color: var(--apm-blue); color: black;" onclick="forzarSincronizacionManual()">🔄 Sincronizar</button>
+                            <button class="btn-apm" style="width: auto; padding: 10px 15px; background-color: var(--apm-orange); color: white; font-weight: bold; box-shadow: 0 4px 10px rgba(224, 91, 27, 0.3);" onclick="forzarSincronizacionManual()">🔄 Sincronizar</button>
                         </div>
                     </div>
 
@@ -2945,7 +2995,7 @@ body.light-theme .tab-link.active {
             else renderizarTarjetasFiltradas(activeFilteredPapeletas);
         }
 
-        function renderizarTablaFiltrada(papeletasFiltradas) {
+        function renderTablaFiltrada(papeletasFiltradas) {
             const tbody = document.querySelector("#tabla-control-papeletas tbody");
             tbody.innerHTML = "";
             const activas = papeletasFiltradas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1);
@@ -2966,20 +3016,22 @@ body.light-theme .tab-link.active {
                     seleccionarPapeletaParaRevision(p.id_papeleta);
                 };
 
+                // Chips estilizados con fondo oscuro y borde fino usando las clases badge existentes
                 let descargoBadge = p.estado_semaforo === "descargo" 
-                    ? `<span style="color:var(--success-green); font-weight:bold;">✅ Recibido</span>`
-                    : (p.estado_semaforo === "vencido" ? `<span style="color:var(--danger-red); font-weight:bold;">❌ Expirado</span>` : `<span style="color:var(--apm-blue); font-weight:bold;">⏳ Pendiente</span>`);
+                    ? `<span class="badge badge-green">Recibido</span>`
+                    : (p.estado_semaforo === "vencido" ? `<span class="badge badge-red">Expirado</span>` : `<span class="badge badge-blue">Pendiente</span>`);
 
                 let notificacionBadge = (p.estado_envio === "Se envió correctamente" || !p.estado_envio)
-                    ? `<span style="color:var(--success-green); font-weight:bold;">🟢 Se envió correctamente</span>`
-                    : `<span style="color:var(--danger-red); font-weight:bold;">🔴 Problemas con el envío</span>`;
+                    ? `<span class="badge badge-green">🟢 Enviado</span>`
+                    : `<span class="badge badge-red">🔴 Problema</span>`;
                 
+                // Jerarquía visual en la fila (ID en blanco brillante, resto en escalas de grises)
                 tr.innerHTML = `
-                    <td><strong>${p.id_papeleta}</strong></td>
-                    <td>${p.infractor}</td>
-                    <td>${p.empresa}</td>
-                    <td>${p.conducta}</td>
-                    <td>${fechaFormat}</td>
+                    <td><strong style="color: #ffffff; text-shadow: 0 0 4px rgba(255,255,255,0.15);">${p.id_papeleta}</strong></td>
+                    <td style="color: #e2f1ff; font-weight: 600;">${p.infractor}</td>
+                    <td style="color: #a0c0d5;">${p.empresa}</td>
+                    <td style="color: #cbd5e1; font-style: italic;">${p.conducta}</td>
+                    <td style="color: #cbd5e1;">${fechaFormat}</td>
                     <td>${notificacionBadge}</td>
                     <td><span class="badge badge-${p.estado_color}">${p.estado_texto}</span></td>
                     <td>${descargoBadge}</td>
