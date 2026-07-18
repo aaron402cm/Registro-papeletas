@@ -24,7 +24,7 @@
             --danger-red: #ff1744; /* Alertas Críticas en Neón */
         }
 
-        /* --- VARIABLES DE MODO OSCURO (Mantenidas para coherencia del botón) --- */
+        /* --- VARIABLES DE MODO OSCURO (Mantenidas para coherencia) --- */
         body.dark-theme {
             --bg-color: #030712;
             --card-bg: #090f1d;
@@ -52,19 +52,21 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, rgba(4, 9, 20, 0.8), rgba(6, 11, 22, 0.98)), 
+            /* Fondo con imagen de terminal portuario de alta calidad y superposición oscura para contraste */
+            background: linear-gradient(135deg, rgba(0, 34, 68, 0.8), rgba(0, 15, 30, 0.95)), 
                         url('https://images.unsplash.com/photo-1578575437130-527eed3abbec?q=80&w=1920') no-repeat center center/cover;
             padding: 20px;
             box-sizing: border-box;
         }
 
         .login-box {
+            /* Efecto Liquid Glassmorphism */
             background: rgba(11, 19, 37, 0.85);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            backdrop-filter: blur(15px) saturate(180%);
+            -webkit-backdrop-filter: blur(15px) saturate(180%);
             border: 1px solid rgba(0, 229, 255, 0.25);
             border-radius: 16px;
-            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(0, 229, 255, 0.05);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
             padding: 40px;
             width: 100%;
             max-width: 420px;
@@ -77,12 +79,13 @@
             box-shadow: 0 16px 45px 0 rgba(0, 229, 255, 0.25);
         }
 
+        /* Modificaciones internas en Login para legibilidad sobre el vidrio */
         .login-box h2 {
             color: #ffffff;
             margin-top: 0;
             margin-bottom: 8px;
             font-size: 24px;
-            text-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .login-box p {
@@ -94,27 +97,28 @@
 
         .login-box .form-group label {
             color: rgba(255, 255, 255, 0.95) !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
             font-size: 13px;
         }
 
         .login-box .form-group input, 
         .login-box .form-group select {
             background-color: rgba(3, 7, 18, 0.6);
-            border: 1px solid rgba(0, 229, 255, 0.2);
+            border: 1px solid rgba(0, 229, 255, 0.25);
             color: #ffffff;
             backdrop-filter: blur(5px);
             transition: all 0.25s ease;
         }
 
         .login-box .form-group input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
+            color: rgba(255, 255, 255, 0.5);
         }
 
         .login-box .form-group input:focus, 
         .login-box .form-group select:focus {
             background-color: rgba(3, 7, 18, 0.85);
             border-color: var(--apm-orange);
-            box-shadow: 0 0 12px rgba(255, 102, 0, 0.4);
+            box-shadow: 0 0 8px rgba(224, 91, 27, 0.4);
             outline: none;
         }
 
@@ -156,7 +160,6 @@
 
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             border-color: var(--apm-blue);
-            box-shadow: 0 0 8px rgba(0, 229, 255, 0.25);
             outline: none;
         }
 
@@ -187,13 +190,12 @@
             font-weight: bold;
             border-radius: 6px;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(255, 102, 0, 0.25);
-            transition: background-color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.2s;
         }
 
         .btn-apm:hover {
-            background-color: #d15200;
-            box-shadow: 0 4px 16px rgba(255, 102, 0, 0.45);
+            background-color: #c74d15;
         }
 
         #otp-section {
@@ -227,51 +229,39 @@
         }
 
         /* ==========================================================================
-           --- CONFIGURACIÓN DE GRID AVANZADO DEL CENTRO DE MANDO (TOS INTERNACIONAL) ---
+           --- SISTEMA INDESTRUCTIBLE DE POSICIONAMIENTO FIJO (MANDO TOS) ---
            ========================================================================== */
-        #main-app {
-            display: none;
-            grid-template-areas: 
-                "sidebar header"
-                "sidebar content";
-            grid-template-columns: 270px 1fr;
-            grid-template-rows: 75px 1fr;
-            min-height: 100vh;
-        }
 
-        /* Forzamos el display de grid en caso que JS aplique display: flex en el login */
-        body #main-app[style*="display: flex"], 
-        body #main-app[style*="display: block"] {
-            display: grid !important;
-        }
-
-        /* --- CABECERA SUPERIOR --- */
+        /* --- CABECERA GLOBAL INTEGRADA A LA DERECHA --- */
         .app-header {
-            grid-area: header;
-            background-color: rgba(4, 9, 20, 0.8) !important;
-            backdrop-filter: blur(10px);
+            position: fixed !important;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 75px;
+            background-color: var(--apm-dark-blue) !important;
             border-bottom: 1px solid var(--border-color) !important;
             color: white;
-            z-index: 10;
+            z-index: 101;
+            box-sizing: border-box;
+            backdrop-filter: blur(10px);
         }
 
         .header-inner {
             max-width: 100% !important;
             width: 98% !important;
             margin: 0 auto;
-            padding: 10px 15px !important;
+            padding: 10px 20px !important;
             box-sizing: border-box;
         }
 
-        .header-brand h1 {
-            font-size: 18px !important;
-            letter-spacing: 1px;
-            text-shadow: 0 0 10px rgba(0, 229, 255, 0.25);
-        }
-
-        /* --- BARRA DE NAVEGACIÓN LATERAL IZQUIERDA (SIDEBAR DE CONTROL) --- */
+        /* --- BARRA LATERAL FIJA DE CONTROL (VERTICAL NAVEGACIÓN) --- */
         .nav-tabs {
-            grid-area: sidebar;
+            position: fixed !important;
+            top: 75px;
+            left: 0;
+            width: 260px;
+            height: calc(100vh - 75px);
             background-color: #040914 !important;
             border-right: 1px solid var(--border-color) !important;
             border-bottom: none !important;
@@ -279,11 +269,8 @@
             flex-direction: column;
             padding: 20px 0;
             box-sizing: border-box;
-            z-index: 20;
-            box-shadow: 4px 0 25px rgba(0, 0, 0, 0.4);
-            height: 100vh;
-            position: sticky;
-            top: 0;
+            z-index: 100;
+            box-shadow: 4px 0 25px rgba(0, 0, 0, 0.5);
         }
 
         .nav-tabs-inner {
@@ -296,12 +283,12 @@
             box-sizing: border-box;
         }
 
-        /* Transformación de los botones de pestañas horizontales a verticales */
+        /* Transformación perfecta de los enlaces de horizontal a vertical */
         .tab-link {
-            width: 100%;
+            width: 100% !important;
             text-align: left;
             border-bottom: none !important;
-            border-left: 3px solid transparent;
+            border-left: 3px solid transparent !important;
             border-radius: 6px;
             padding: 14px 15px !important;
             background: rgba(255,255,255,0.01) !important;
@@ -325,17 +312,18 @@
             box-shadow: 0 0 15px rgba(255, 102, 0, 0.1);
         }
 
-        /* --- ÁREA DE TRABAJO PRINCIPAL --- */
+        /* --- CONTENEDOR DE TRABAJO DESPLAZADO --- */
         .content-area {
-            grid-area: content;
-            padding: 20px !important;
+            margin-left: 260px !important;
+            margin-top: 75px !important;
+            padding: 25px !important;
             box-sizing: border-box;
-            max-width: 100% !important;
-            width: 100% !important;
+            width: calc(100% - 260px) !important;
+            min-height: calc(100vh - 75px);
             overflow-y: auto;
         }
 
-        /* --- TARJETAS ESTILO PANALES TOS --- */
+        /* --- TARJETAS CRISTAL OPERACIONES --- */
         .card {
             background: rgba(11, 19, 37, 0.6) !important;
             border: 1px solid var(--border-color) !important;
@@ -361,7 +349,7 @@
         }
 
         /* ==========================================================================
-           --- REDISEÑO DE PIPELINE: KPIS VERTICALES EN EL LATERAL (COMO EL BOCETO) ---
+           --- REDISEÑO DE PIPELINE EN COLUMNA VERTICAL INTERNA (TAB 1) ---
            ========================================================================== */
         #panel-control {
             display: grid;
@@ -371,18 +359,18 @@
             align-items: start;
         }
 
-        #panel-control > .card { /* Barra de búsqueda superior derecha */
+        #panel-control > .card { /* Buscador */
             grid-column: 2;
             grid-row: 1;
             margin-bottom: 0 !important;
         }
 
-        #panel-control > .dashboard-layout { /* Contenedor tabla y panel lateral */
+        #panel-control > .dashboard-layout { /* Grilla de casos y side-panel */
             grid-column: 2;
             grid-row: 2;
         }
 
-        /* Reubicación y estructuración vertical de la pipeline-bar */
+        /* Estilo verticalizado para la barra de control */
         .pipeline-bar {
             grid-column: 1;
             grid-row: 1 / span 2;
@@ -400,7 +388,7 @@
             overflow-x: hidden !important;
         }
 
-        /* Nodos individuales del pipeline convertidos en Tarjetas de Control TOS */
+        /* Nodos del pipeline estilo TOS Widgets */
         .pipeline-node {
             width: 100% !important;
             text-align: left !important;
@@ -435,7 +423,7 @@
             text-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
         }
 
-        /* --- DATAGRID ESTILO SISTEMA DE PUERTO (TABLA) --- */
+        /* --- DATAGRID ESTILO SISTEMA DE PUERTO --- */
         .table-scroll-container {
             border: 1px solid var(--border-color) !important;
             border-radius: 8px;
@@ -626,10 +614,10 @@
         </div>
     </div>
 
-    <!-- CONTENEDOR PRINCIPAL DEL DASHBOARD (REDISEÑADO CON CSS GRID) -->
+    <!-- CONTENEDOR PRINCIPAL DEL DASHBOARD -->
     <div id="main-app">
         
-        <!-- CABECERA (Alineada a la derecha de la columna lateral) -->
+        <!-- CABECERA -->
         <header class="app-header">
             <div class="header-inner">
                 <div class="header-brand">
@@ -1190,6 +1178,9 @@
             localStorage.setItem("modo_oscuro", esOscuro ? "si" : "no");
             document.getElementById("btn-theme-toggle").innerText = esOscuro ? "☀️" : "🌙";
         }
+        if (localStorage.getItem("modo_oscuro") === "si") {
+            document.body.classList.add("dark-theme");
+        }
 
         // --- AUDIO SINTETIZADO ---
         function reproducirSonidoNotificacion() {
@@ -1213,6 +1204,13 @@
             document.getElementById("notification-dropdown-box").classList.toggle("active");
         }
 
+        // --- SINCRONIZACIÓN AUTOMÁTICA ---
+        setInterval(function() {
+            if (sessionStorage.getItem("secure_user_initials")) {
+                ejecutarSincronizacionSilenciosa();
+            }
+        }, 60000);
+
         function ejecutarSincronizacionSilenciosa() {
             const user = sessionStorage.getItem("secure_user_initials");
             const auth = sessionStorage.getItem("secure_auth_plain");
@@ -1232,7 +1230,7 @@
             btn.innerText = "⏳ Sincronizando...";
             btn.disabled = true;
 
-            fetch(`${CONFIG_WEB_APP_URL}?user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
+            fetch(`${CONFIG_WEB_APP_URL}?action=forzar_sincronizacion_manual&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
             .then(res => res.json())
             .then(data => {
                 inicializarDashboardConDatos(data);
@@ -1484,7 +1482,7 @@
 
             setTimeout(() => {
                 introScreen.style.display = "none";
-                mainApp.style.display = "grid"; // Forzamos grid para el TOS Layout
+                mainApp.style.display = "flex";
 
                 // Visualizar chat flotante
                 const chatFab = document.getElementById("chat-fab-element");
@@ -2308,7 +2306,7 @@
             if (user && auth) {
                 // Restauración directa para no forzar la reproducción de la intro en cada refresh
                 document.getElementById("login-screen").style.display = "none";
-                document.getElementById("main-app").style.display = "grid"; // Forzamos grid para el TOS Layout
+                document.getElementById("main-app").style.display = "flex";
                 
                 const elChat = document.getElementById("chat-fab-element");
                 if (elChat) elChat.style.display = "flex";
