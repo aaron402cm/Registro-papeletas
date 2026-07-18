@@ -434,35 +434,35 @@
             overflow: hidden;
         }
 
-        /* --- COLUMNA DE NAVEGACIÓN LATERAL EN NARANJA ELEGANTE --- */
+        /* --- COLUMNA DE NAVEGACIÓN LATERAL EN AZUL OSCURO/NEGRO MATE --- */
         .nav-tabs {
             width: 290px;
             min-width: 290px;
-            /* Degradado naranja profundo de APM */
-            background: linear-gradient(180deg, #993300 0%, #662200 100%) !important; 
-            border-right: 2px solid rgba(255, 255, 255, 0.15) !important;
+            /* Retornamos al elegante tono oscuro de la interfaz */
+            background-color: #000c18 !important; 
+            border-right: 1px solid var(--border-color) !important;
             display: flex;
             flex-direction: column;
             box-sizing: border-box;
             z-index: 100;
-            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.5);
+            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.4);
             transition: all 0.3s ease;
         }
 
-        /* Forzar que se mantenga naranja también en modo diurno para conservar identidad */
+        /* En modo diurno pasará a un blanco marfil limpio */
         body.light-theme .nav-tabs {
-            background: linear-gradient(180deg, #993300 0%, #662200 100%) !important;
-            border-right: 2px solid rgba(255, 255, 255, 0.15) !important;
+            background-color: #ffffff !important;
+            border-right: 1px solid rgba(0, 31, 63, 0.1) !important;
         }
 
-        /* --- AJUSTE DE CONTRASTE DE LOS BOTONES DE PESTAÑA --- */
+        /* --- ESTILO DE LOS BOTONES DE PESTAÑA --- */
         .tab-link {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(0, 75, 135, 0.05);
+            border: 1px solid rgba(0, 240, 255, 0.08);
             padding: 16px 20px;
             font-size: 14px; 
             font-weight: 700;
-            color: #ffe8d6; /* Texto crema de alta legibilidad sobre naranja */
+            color: #b0cddd; /* Plateado de alta legibilidad */
             cursor: pointer;
             border-left: 4px solid transparent;
             display: flex;
@@ -479,67 +479,41 @@
                         border-color 0.3s ease;
         }
 
-        /* Compatibilidad de color de texto de botones en modo diurno */
         body.light-theme .tab-link {
-            color: #ffe8d6;
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.12);
+            background: rgba(0, 31, 63, 0.03);
+            border-color: rgba(0, 31, 63, 0.1);
+            color: #4b6584;
         }
 
-        /* Efecto Hover */
+        /* Efecto de aumento tipo ojo de pez en hover */
         .tab-link:hover {
             color: #ffffff;
-            background-color: rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.4);
-            transform: scale(1.05) translateX(8px);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-        }
-
-        /* Pestaña Activa: Pasa a blanco brillante con texto naranja para un gran contraste */
-        .tab-link.active {
-            color: #993300 !important;
-            background-color: #ffffff !important;
-            border-color: #ffffff !important;
-            border-left: 5px solid var(--apm-orange) !important;
-            transform: scale(1.05) translateX(12px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-        }
-
-        /* EFECTO DE OJO DE PEZ EN HOVER (AMPLIACIÓN Y DESPLAZAMIENTO HACIA LA DERECHA) */
-        .tab-link:hover {
-            color: #ffffff;
-            background-color: rgba(0, 75, 135, 0.3);
+            background-color: rgba(0, 75, 135, 0.2);
             border-color: var(--apm-blue);
-            border-left-color: var(--apm-blue);
             transform: scale(1.05) translateX(8px);
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3), inset 0 0 10px rgba(0, 240, 255, 0.15);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
         }
 
         body.light-theme .tab-link:hover {
             color: #001f3f;
             background-color: rgba(0, 75, 135, 0.08);
-            border-color: var(--apm-blue);
             box-shadow: 0 4px 15px rgba(0, 75, 135, 0.1);
         }
 
-        .tab-link:hover::before {
-            opacity: 1;
-        }
-
-        /* ESTADO SELECCIONADO (CON LUZ DE RESPALDO EN NARANJA CORPORATIVO APM) */
+        /* Pestaña seleccionada: Se resalta con el borde naranja de instrucción */
         .tab-link.active {
-            color: #ffffff;
-            background-color: rgba(224, 91, 27, 0.12);
-            border-color: var(--apm-orange);
-            border-left: 5px solid var(--apm-orange);
+            color: #ffffff !important;
+            background-color: rgba(224, 91, 27, 0.12) !important;
+            border-color: var(--apm-orange) !important;
+            border-left: 5px solid var(--apm-orange) !important;
             transform: scale(1.05) translateX(12px);
-            box-shadow: 0 0 25px rgba(224, 91, 27, 0.4), inset 0 0 12px rgba(224, 91, 27, 0.2);
+            box-shadow: 0 0 25px rgba(224, 91, 27, 0.3), inset 0 0 12px rgba(224, 91, 27, 0.1);
         }
 
         body.light-theme .tab-link.active {
-            color: #ffffff;
-            background-color: var(--apm-orange);
-            border-color: var(--apm-orange);
+            color: #ffffff !important;
+            background-color: var(--apm-orange) !important;
+            border-color: var(--apm-orange) !important;
             box-shadow: 0 8px 20px rgba(224, 91, 27, 0.25);
         }
 
@@ -1569,29 +1543,26 @@
             transform: scale(1.12);
         }
 
-        /* --- VENTANA DEL CHATBOT CON LIQUID GLASS Y FONDO PUERTO --- */
+        /* --- CONTENEDOR FLOTANTE DEL CHATBOT --- */
         .chat-panel {
             position: fixed;
             bottom: 95px;
             right: 25px;
             width: 380px;
             height: 480px;
-            /* Fondo con imagen de terminal portuario de alta calidad y filtro oscuro */
-            background: linear-gradient(135deg, rgba(13, 6, 0, 0.82), rgba(0, 12, 24, 0.88)), 
-                        url('https://images.unsplash.com/photo-1578575437130-527eed3abbec?q=80&w=600') no-repeat center center/cover;
+            background-color: #000c18; 
             color: var(--text-color);
             border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(224, 91, 27, 0.45); 
+            box-shadow: 0 8px 32px rgba(224, 91, 27, 0.35); 
             border: 2px solid var(--apm-orange); 
             display: none;
             flex-direction: column;
             overflow: hidden;
             z-index: 9999;
             transition: background-color 0.3s;
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
         }
 
+        /* --- ÁREA DE MENSAJES (ESTILO WHATSAPP CON IMAGEN DE FONDO LOCAL) --- */
         .chat-messages {
             flex: 1;
             padding: 15px;
@@ -1599,10 +1570,9 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            /* Capa traslúcida que permite ver el puerto con efecto esmerilado */
-            background-color: rgba(13, 6, 0, 0.25); 
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
+            /* Vinculamos su imagen descargada directamente en el cuerpo del chat */
+            background: linear-gradient(rgba(0, 12, 24, 0.4), rgba(0, 12, 24, 0.4)), 
+                        url('fondo_chatbot.jpg') no-repeat center center/cover;
         }
 
         .chat-bubble {
