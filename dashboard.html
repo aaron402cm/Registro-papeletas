@@ -3045,13 +3045,13 @@ body.light-theme .tab-link.active {
                     ? `<span class="badge badge-green">🟢 Enviado</span>`
                     : `<span class="badge badge-red">🔴 Problema</span>`;
                 
-                // Jerarquía visual en la fila (ID en blanco brillante, resto en escalas de grises)
+                // Jerarquía visual en la fila mediante clases CSS adaptables
                 tr.innerHTML = `
-                    <td><strong style="color: #ffffff; text-shadow: 0 0 4px rgba(255,255,255,0.15);">${p.id_papeleta}</strong></td>
-                    <td style="color: #e2f1ff; font-weight: 600;">${p.infractor}</td>
-                    <td style="color: #a0c0d5;">${p.empresa}</td>
-                    <td style="color: #cbd5e1; font-style: italic;">${p.conducta}</td>
-                    <td style="color: #cbd5e1;">${fechaFormat}</td>
+                    <td><strong class="text-id">${p.id_papeleta}</strong></td>
+                    <td class="text-infractor">${p.infractor}</td>
+                    <td class="text-empresa">${p.empresa}</td>
+                    <td class="text-conducta">${p.conducta}</td>
+                    <td class="text-fecha">${fechaFormat}</td>
                     <td>${notificacionBadge}</td>
                     <td><span class="badge badge-${p.estado_color}">${p.estado_texto}</span></td>
                     <td>${descargoBadge}</td>
@@ -3549,6 +3549,45 @@ body.light-theme .tab-link.active {
 
         function finalizarSesion() {
             cerrarSesionDashboard();
+        }
+        /* --- JERARQUÍA EN TABLAS (MODO NOCTURNO POR DEFECTO) --- */
+        .text-id {
+            color: #ffffff;
+            text-shadow: 0 0 4px rgba(255, 255, 255, 0.15);
+            font-weight: 700;
+        }
+        .text-infractor {
+            color: #e2f1ff;
+            font-weight: 600;
+        }
+        .text-empresa {
+            color: #a0c0d5;
+            font-weight: 500;
+        }
+        .text-conducta {
+            color: #cbd5e1;
+            font-style: italic;
+        }
+        .text-fecha {
+            color: #cbd5e1;
+        }
+
+        /* --- ADAPTACIÓN DE TABLAS EN MODO DIURNO (LIGHT THEME) --- */
+        body.light-theme .text-id {
+            color: #001f3f !important;
+            text-shadow: none !important;
+        }
+        body.light-theme .text-infractor {
+            color: #0a1128 !important;
+        }
+        body.light-theme .text-empresa {
+            color: #4b6584 !important;
+        }
+        body.light-theme .text-conducta {
+            color: #576574 !important;
+        }
+        body.light-theme .text-fecha {
+            color: #4b6584 !important;
         }
     </script>
 
