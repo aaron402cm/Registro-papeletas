@@ -1853,7 +1853,7 @@ body.light-theme .tab-link.active {
             border-color: #c38bf7 !important;
             box-shadow: 0 0 12px rgba(0, 240, 255, 0.25) !important;
         }
-        /* --- TARJETA DE BÚSQUEDA EN COLOR MARFIL ELEGANTE Y ALTO CONTRASTE --- */
+        /* --- TARJETAS DE BÚSQUEDA EN COLOR MARFIL ELEGANTE Y ALTO CONTRASTE --- */
         .search-filter-card {
             background-color: #f5f2eb !important; /* Color marfil cálido de alta gama */
             border: 1px solid rgba(0, 31, 63, 0.18) !important;
@@ -1872,6 +1872,53 @@ body.light-theme .tab-link.active {
         /* Texto de sugerencia (placeholder) en color oscuro legible */
         .search-filter-card input::placeholder {
             color: #556677 !important;
+        }
+
+        /* Fuerza a que los botones "Sincronizar" dentro de estas tarjetas sean naranja sólido con texto blanco */
+        .search-filter-card .btn-apm {
+            background-color: var(--apm-orange) !important;
+            color: #ffffff !important;
+            font-weight: bold !important;
+            box-shadow: 0 4px 10px rgba(224, 91, 27, 0.25) !important;
+        }
+        /* --- JERARQUÍA EN TABLAS (MODO NOCTURNO POR DEFECTO) --- */
+        .text-id {
+            color: #ffffff;
+            text-shadow: 0 0 4px rgba(255, 255, 255, 0.15);
+            font-weight: 700;
+        }
+        .text-infractor {
+            color: #e2f1ff;
+            font-weight: 600;
+        }
+        .text-empresa {
+            color: #a0c0d5;
+            font-weight: 500;
+        }
+        .text-conducta {
+            color: #cbd5e1;
+            font-style: italic;
+        }
+        .text-fecha {
+            color: #cbd5e1;
+        }
+
+        /* --- ADAPTACIÓN DE TABLAS EN MODO DIURNO (LIGHT THEME) --- */
+        body.light-theme .text-id {
+            color: #001f3f !important;
+            text-shadow: none !important;
+        }
+        body.light-theme .text-infractor {
+            color: #0a1128 !important;
+        }
+        body.light-theme .text-empresa {
+            color: #4b6584 !important;
+        }
+        body.light-theme .text-conducta {
+            color: #576574 !important;
+        }
+        body.light-theme .text-fecha {
+            color: #4b6584 !important;
         }
     </style>
 </head>
@@ -2193,8 +2240,8 @@ body.light-theme .tab-link.active {
                 </div>
                            
                 <!-- NUEVA PESTAÑA: CASOS CERRADOS (HISTORIAL RECIENTE Y BÚSQUEDA AVANZADA) -->
-                <div id="panel-cerradas-panel" class="tab-panel">
-                    <div class="card" style="margin-bottom: 15px; padding: 15px;">
+            <div id="panel-cerradas-panel" class="tab-panel">
+                <div class="card search-filter-card" style="margin-bottom: 15px; padding: 15px;">
                         <div style="display: flex; gap: 10px; align-items: center;">
                             <input type="text" id="buscador-casos-cerrados" placeholder="🔎 Búsqueda Histórica Avanzada en Base de Datos (ID, DNI, Nombre, Empresa)..." style="flex: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: var(--text-color);" oninput="ejecutarBusquedaDBServidor('cerrado')">
                             <button class="btn-apm" style="width: auto; padding: 10px 15px; background-color: var(--apm-orange); color: white; font-weight: bold; box-shadow: 0 4px 10px rgba(224, 91, 27, 0.3);" onclick="forzarSincronizacionManual()">🔄 Sincronizar</button>
@@ -3550,45 +3597,7 @@ body.light-theme .tab-link.active {
         function finalizarSesion() {
             cerrarSesionDashboard();
         }
-        /* --- JERARQUÍA EN TABLAS (MODO NOCTURNO POR DEFECTO) --- */
-        .text-id {
-            color: #ffffff;
-            text-shadow: 0 0 4px rgba(255, 255, 255, 0.15);
-            font-weight: 700;
-        }
-        .text-infractor {
-            color: #e2f1ff;
-            font-weight: 600;
-        }
-        .text-empresa {
-            color: #a0c0d5;
-            font-weight: 500;
-        }
-        .text-conducta {
-            color: #cbd5e1;
-            font-style: italic;
-        }
-        .text-fecha {
-            color: #cbd5e1;
-        }
-
-        /* --- ADAPTACIÓN DE TABLAS EN MODO DIURNO (LIGHT THEME) --- */
-        body.light-theme .text-id {
-            color: #001f3f !important;
-            text-shadow: none !important;
-        }
-        body.light-theme .text-infractor {
-            color: #0a1128 !important;
-        }
-        body.light-theme .text-empresa {
-            color: #4b6584 !important;
-        }
-        body.light-theme .text-conducta {
-            color: #576574 !important;
-        }
-        body.light-theme .text-fecha {
-            color: #4b6584 !important;
-        }
+    
     </script>
 
     <!-- MODAL INFORME SEMANAL IA -->
