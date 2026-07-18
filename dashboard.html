@@ -1190,9 +1190,6 @@
             localStorage.setItem("modo_oscuro", esOscuro ? "si" : "no");
             document.getElementById("btn-theme-toggle").innerText = esOscuro ? "☀️" : "🌙";
         }
-        if (localStorage.getItem("modo_oscuro") === "si") {
-            document.body.classList.add("dark-theme");
-        }
 
         // --- AUDIO SINTETIZADO ---
         function reproducirSonidoNotificacion() {
@@ -1215,13 +1212,6 @@
         function toggleNotificationDropdown() {
             document.getElementById("notification-dropdown-box").classList.toggle("active");
         }
-
-        // --- SINCRONIZACIÓN AUTOMÁTICA ---
-        setInterval(function() {
-            if (sessionStorage.getItem("secure_user_initials")) {
-                ejecutarSincronizacionSilenciosa();
-            }
-        }, 60000);
 
         function ejecutarSincronizacionSilenciosa() {
             const user = sessionStorage.getItem("secure_user_initials");
