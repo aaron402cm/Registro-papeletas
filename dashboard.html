@@ -2099,6 +2099,28 @@ body.light-theme .tab-link.active {
             color: #4b6584 !important;
         }
         
+        /* --- BOTÓN VER PDF: GRADO CARPETA MOSTAZA DE ALTO CONTRASTE --- */
+        .btn-pdf-view {
+            background-color: #dca124 !important; /* Color mostaza/carpeta formal */
+            color: #000000 !important; /* Letras negras nítidas */
+            border: none !important;
+            padding: 6px 12px !important;
+            border-radius: 4px !important;
+            font-weight: bold !important;
+            cursor: pointer !important;
+            font-size: 12px !important;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-pdf-view:hover {
+            background-color: #c28f1e !important; /* Tono mostaza un poco más oscuro al pasar el mouse */
+            box-shadow: 0 4px 12px rgba(220, 161, 36, 0.25) !important;
+            transform: translateY(-1px);
+        }
+        
     </style>
 </head>
 <body>
@@ -3261,7 +3283,8 @@ body.light-theme .tab-link.active {
             }
 
             activas.forEach(p => {
-                let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.replace("T", " ") : "-";
+                // Extrae únicamente la fecha (AAAA-MM-DD), eliminando la hora y milisegundos
+                let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.split(/[T ]/)[0] : "-";
                 const tr = document.createElement("tr");
                 tr.className = "clickable-row"; tr.id = `row-${p.id_papeleta}`;
                 if (activePapeletaId === p.id_papeleta) tr.classList.add("active-row");
@@ -3290,7 +3313,7 @@ body.light-theme .tab-link.active {
                     <td>${notificacionBadge}</td>
                     <td><span class="badge badge-${p.estado_color}">${p.estado_texto}</span></td>
                     <td>${descargoBadge}</td>
-                    <td><button class="btn-pdf-view" style="background-color: var(--apm-blue); border: none; padding: 4px 8px; border-radius: 4px; color: black; font-weight: bold; cursor: pointer;" onclick="abrirVisorPDF('${p.id_papeleta}', event)">📄 PDF</button></td>
+                    <td><button class="btn-pdf-view" onclick="abrirVisorPDF('${p.id_papeleta}', event)">📄 PDF</button></td>
                 `;
                 tbody.appendChild(tr);
             });
