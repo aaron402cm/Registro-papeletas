@@ -3078,6 +3078,12 @@ body.light-theme .tab-link.active {
                     inicializarDashboardConDatos(tempTransitionData);
                     tempTransitionData = null; 
                 }
+
+                // Disparador de voz de inicialización (espera 800ms para una entrada limpia)
+                setTimeout(() => {
+                    anunciarBienvenidaSistema();
+                }, 800);
+
             }, 800); 
         }
 
@@ -3953,41 +3959,38 @@ body.light-theme .tab-link.active {
         }
         // --- SÍNTESIS DE VOZ ROBÓTICA FEMENINA DE ALERTA DE INFRACCIÓN ---
         function anunciarPapeletaPorVoz(inspector, id) {
-            if (!('speechSynthesis' in window)) {
-                console.log("SpeechSynthesis no soportado por este navegador.");
-                return;
-            }
+            if (!('speechSynthesis' in window)) return;
 
-            // Deletrear el ID (separar cada letra por espacios y traducir guiones bajos)
+            // Deletrear el ID para que Siri lo dicte con claridad
             const idDeletreado = id.split('').map(char => {
                 if (char === '_') return ' guion bajo ';
                 if (char === '-') return ' guion ';
                 return char + ' ';
             }).join('');
 
-            // Construir el mensaje hablado formal
-            const texto = `Se recibió la papeleta de, ${inspector}, con Identificación, ${idDeletreado}`;
+            const texto = `Se recibió la papeleta de ${inspector}, con Identificación, ${idDeletreado}`;
             
             const utterance = new SpeechSynthesisUtterance(texto);
-            utterance.lang = 'es-ES'; // Idioma español
-            utterance.rate = 1.05;    // Cadencia técnica sutilmente rápida
-            utterance.pitch = 1.2;     // Tono agudo metálico/robótico femenino
-            utterance.volume = 0.85;   // Volumen de transmisión
+            utterance.lang = 'es-ES';
+            utterance.rate = 0.98; // Cadencia natural de Siri (pausada y humana)
+            utterance.pitch = 1.0;  // Tono natural humano (sin distorsión robótica)
+            utterance.volume = 0.9;
 
-            // Intentar seleccionar una voz femenina en español disponible en el sistema del usuario
             const voices = window.speechSynthesis.getVoices();
-            const vozFemeninaEspanol = voices.find(v => 
+            
+            // FILTRO DE VOCES: Prioriza estrictamente la voz oficial de Siri del sistema Apple
+            const vozSiri = voices.find(v => 
                 v.lang.startsWith('es') && 
-                (v.name.toLowerCase().includes('female') || 
+                (v.name.toLowerCase().includes('siri') || 
+                 v.name.toLowerCase().includes('samantha') || 
+                 v.name.toLowerCase().includes('paulina') || 
                  v.name.toLowerCase().includes('helena') || 
-                 v.name.toLowerCase().includes('sabina') || 
-                 v.name.toLowerCase().includes('monica') || 
-                 v.name.toLowerCase().includes('zira') || 
-                 v.name.toLowerCase().includes('google'))
-            ) || voices.find(v => v.lang.startsWith('es')); // Fallback a cualquier voz en español si no hay una femenina específica
+                 v.name.toLowerCase().includes('google') ||
+                 v.name.toLowerCase().includes('elvira'))
+            ) || voices.find(v => v.lang.startsWith('es'));
 
-            if (vozFemeninaEspanol) {
-                utterance.voice = vozFemeninaEspanol;
+            if (vozSiri) {
+                utterance.voice = vozSiri;
             }
 
             window.speechSynthesis.speak(utterance);
@@ -3996,6 +3999,67 @@ body.light-theme .tab-link.active {
         // Cargar voces preventivamente en navegadores basados en Chromium (Chrome/Edge)
         if ('speechSynthesis' in window) {
             window.speechSynthesis.getVoices();
+        }
+        // --- CALCULA EL SALUDO SEGÚN LA HORA DEL SISTEMA ---
+        function obtenerSaludoHorario() {
+            const horas = new Date().getHours();
+            if (horas >= 6 && horas < 12) return "Buenos días";
+            if (horas >= 12 && horas < 19) return "Buenas tardes";
+            return "Buenas noches";
+        }
+
+        // --- ANUNCIO DE BIENVENIDA E INICIALIZACIÓN AUDITIVA (SITUACIÓN INICIAL) ---
+        function anunciarBienvenidaSistema() {
+            if (!('speechSynthesis' in window) || !globalDashboardCache) return;
+
+            const papeletas = globalDashboardCache.dashboardData.papeletas || [];
+            const totalActivas = papeletas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1).length;
+            const enEsperaDescargos = papeletas.filter(p => p.estado_tramite === "ESPERA_DESCARGOS").length;
+            const enEvaluacion = papeletas.filter(p => p.estado_tramite === "DESCARGO_RECIBIDO" || p.estado_tramite === "PLAZO_VENCIDO").length;
+
+            const saludo = obtenerSaludoHorario();
+            
+            let texto = `${saludo}, Estrellita. El panel de control R I S de APM Terminals se ha inicializado de forma correcta. `;
+            texto += `Al momento, registramos un total de ${totalActivas} expedientes activos en el sistema. `;
+            
+            if (enEsperaDescargos > 0) {
+                texto += `${enEsperaDescargos} de ellos se encuentran en espera de descargos en el buzón. `;
+            } else {
+                texto += `No registramos casos pendientes de descargos en el buzón. `;
+            }
+
+            if (enEvaluacion > 0) {
+                texto += `Y contamos con ${enEvaluacion} casos listos para su evaluación o resolución final. `;
+            } else {
+                texto += `No hay casos pendientes de evaluación o resolución en este momento. `;
+            }
+
+            texto += "Tenga un excelente turno de trabajo.";
+
+            const utterance = new SpeechSynthesisUtterance(texto);
+            utterance.lang = 'es-ES';
+            utterance.rate = 0.98; // Cadencia natural conversacional de Siri
+            utterance.pitch = 1.0;  // Tono de voz humana estándar
+            utterance.volume = 0.9;
+
+            const voices = window.speechSynthesis.getVoices();
+            
+            // Busca las mismas voces premium de Siri/Apple o equivalentes naturales
+            const vozSiri = voices.find(v => 
+                v.lang.startsWith('es') && 
+                (v.name.toLowerCase().includes('siri') || 
+                 v.name.toLowerCase().includes('samantha') || 
+                 v.name.toLowerCase().includes('paulina') || 
+                 v.name.toLowerCase().includes('helena') || 
+                 v.name.toLowerCase().includes('google') ||
+                 v.name.toLowerCase().includes('elvira'))
+            ) || voices.find(v => v.lang.startsWith('es'));
+
+            if (vozSiri) {
+                utterance.voice = vozSiri;
+            }
+
+            window.speechSynthesis.speak(utterance);
         }
     // --- FUNCIÓN PARA CERRAR EL MODAL DE INSTRUCCIÓN ---
 window.cerrarModalInstruccion = function() {
