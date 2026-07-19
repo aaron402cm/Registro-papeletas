@@ -2120,7 +2120,91 @@ body.light-theme .tab-link.active {
             box-shadow: 0 4px 12px rgba(220, 161, 36, 0.25) !important;
             transform: translateY(-1px);
         }
+     /* ================================================================= */
+        /* --- ADAPTACIÓN DEL MODAL 2.0 EN MODO DIURNO (ALTO CONTRASTE) ---  */
+        /* ================================================================= */
         
+        /* 1. Caja Principal del Modal en Modo Diurno */
+        body.light-theme #modal-instruccion-expediente .modal-box {
+            background: #f8fafc !important; /* Base gris claro satinada */
+            border: 1px solid rgba(0, 31, 63, 0.15) !important;
+            box-shadow: 0 25px 65px rgba(0, 31, 63, 0.12) !important;
+        }
+
+        /* 2. Cabecera Fija de Identificación */
+        body.light-theme .modal-header-fijo {
+            background-color: #f1f5f9 !important; /* Gris marfil sedoso */
+            border-bottom: 2px solid rgba(0, 31, 63, 0.1);
+        }
+        body.light-theme .modal-header-fijo .field-label {
+            color: #005f9e !important; /* Azul de contraste táctico */
+        }
+        body.light-theme .modal-header-fijo .field-value {
+            color: #001f3f !important; /* Texto en azul marino profundo */
+        }
+
+        /* 3. Cuerpo del Área de Trabajo */
+        body.light-theme .modal-cuerpo-trabajo {
+            background-color: #ffffff !important; /* Blanco puro de alta claridad */
+        }
+
+        /* 4. Sub-Pestañas del Modal (Navegación Interna) */
+        body.light-theme .modal-cuerpo-trabajo .sub-tab-link {
+            color: #475569 !important;
+            background: rgba(0, 31, 63, 0.04);
+            border: 1px solid rgba(0, 31, 63, 0.08);
+        }
+        body.light-theme .modal-cuerpo-trabajo .sub-tab-link.active {
+            background-color: #ffffff !important;
+            color: var(--apm-orange) !important;
+            border-bottom: 2.5px solid var(--apm-orange) !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 5. Cajas de Datos (Criterio legal, Sanciones, etc.) */
+        body.light-theme #panel-txt-sancion-raw,
+        body.light-theme #wiz-val-criterio-legal,
+        body.light-theme #wiz-val-resumen-infraccion,
+        body.light-theme #wiz-val-descargos-container div {
+            background-color: #f1f5f9 !important; /* Cajas gris claro neutro */
+            border-color: #cbd5e1 !important;
+            color: #0f172a !important; /* Carbón oscuro de alta visibilidad */
+        }
+
+        /* 6. Textos de Trazabilidad e Historial */
+        body.light-theme .timeline-desc,
+        body.light-theme .trazabilidad-item {
+            color: #334155 !important;
+        }
+
+        /* 7. Área de Edición de Correo (Borrador) */
+        body.light-theme #panel-txt-correo-borrador {
+            background-color: #ffffff !important;
+            border: 2px solid rgba(0, 95, 158, 0.25) !important;
+            color: #0f172a !important;
+        }
+        body.light-theme #panel-txt-correo-borrador:focus {
+            border-color: var(--apm-blue) !important;
+            box-shadow: 0 0 10px rgba(0, 95, 158, 0.15);
+        }
+
+        /* 8. Botón Guardar Borrador (Cian adaptativo de bajo contraste invasivo) */
+        body.light-theme .btn-save-draft {
+            background-color: #f1f5f9 !important;
+            border: 1.5px solid #0A84C6 !important;
+            color: #0A84C6 !important;
+        }
+        body.light-theme .btn-save-draft:hover {
+            background-color: rgba(10, 132, 198, 0.08) !important;
+        }
+
+        /* 9. Botón de Cerrar Ventana "X" */
+        body.light-theme .modal-close-btn {
+            color: #475569 !important; /* Gris oscuro para resaltar en el fondo claro */
+        }
+        body.light-theme .modal-close-btn:hover {
+            color: var(--apm-orange) !important;
+        }   
     </style>
 </head>
 <body>
