@@ -2426,7 +2426,7 @@ body.light-theme .tab-link.active {
         </div>
     </div>
     </div>                 
-                           
+    </div>                         
                 <!-- NUEVA PESTAÑA: CASOS CERRADOS (HISTORIAL RECIENTE Y BÚSQUEDA AVANZADA) -->
             <div id="panel-cerradas-panel" class="tab-panel">
                 <div class="card search-filter-card" style="margin-bottom: 15px; padding: 15px;">
@@ -3447,7 +3447,7 @@ body.light-theme .tab-link.active {
                     }
 
                     let tHtml = "";
-                    if (localData.fecha_infraccion) tHtml += `<div class="trazabilidad-item"><strong>${localData.fecha_infraccion.split("T")[0]}</strong> - Reportado por Oficial.</div>`;
+                    if (localData.fecha_infraccion) tHtml += `<div class="trazabilidad-item"><strong>${localData.fecha_infraccion.split("T")[0]}</strong> - Reportado por Security.</div>`;
                     if (localData.fecha_envio) tHtml += `<div class="trazabilidad-item"><strong>${localData.fecha_envio.split("T")[0]}</strong> - Notificación generada.</div>`;
                     if (localData.estado_semaforo === "descargo") tHtml += `<div class="trazabilidad-item" style="color:var(--success-green);"><strong>Vía Gmail</strong> - Descargo recibido.</div>`;
                     
