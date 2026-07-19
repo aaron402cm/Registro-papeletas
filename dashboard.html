@@ -2125,10 +2125,10 @@ body.light-theme .tab-link.active {
 </head>
 <body>
 
-    <!-- PANTALLA DE INTRO (SÓLO EL VIDEO COMPLETO CON AUDIO Y MÁXIMA CALIDAD) -->
-    <div id="intro-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000000; z-index: 99999; align-items: center; justify-content: center; overflow: hidden; opacity: 1; transition: opacity 0.8s ease;">
-        <!-- Video en resolución nativa sin zoom (object-fit: contain) -->
-        <video id="intro-video" style="width: 100%; height: 100%; object-fit: contain; display: block;" playsinline>
+    <!-- PANTALLA DE INTRO CON PRECARGA Y OMISIÓN POR DOBLE CLIC -->
+    <div id="intro-screen" ondblclick="omitirIntroSeguro()" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000000; z-index: 99999; align-items: center; justify-content: center; overflow: hidden; opacity: 1; transition: opacity 0.8s ease; cursor: pointer;" title="Doble clic para omitir">
+        <!-- Video optimizado con preload="auto" para descargarse en segundo plano durante el login -->
+        <video id="intro-video" style="width: 100%; height: 100%; object-fit: contain; display: block;" playsinline preload="auto">
             <source src="intro.mp4" type="video/mp4">
         </video>
     </div>
@@ -2907,7 +2907,10 @@ body.light-theme .tab-link.active {
             if (event.key === "Enter") verificarCodigoOTP();
         }
 
-        // --- GESTIÓN DE LA PANTALLA DE INICIALIZACIÓN SÓLO VIDEO ---
+        // Variable global para controlar el temporizador de respaldo de la intro
+        let safetyIntroTimeout = null;
+
+        // --- GESTIÓN DE LA PANTALLA DE INICIALIZACIÓN CON INTRO OPTIMIZADA ---
         function iniciarIntroYAcceder(data) {
             tempTransitionData = data;
             const loginScreen = document.getElementById("login-screen");
@@ -2918,6 +2921,13 @@ body.light-theme .tab-link.active {
             introScreen.style.display = "flex";
             introScreen.style.opacity = "1";
 
+            // RESPALDO DE SEGURIDAD: Si el video se congela o no carga tras 6 segundos,
+            // ingresa automáticamente al sistema para evitar bloquear al usuario.
+            safetyIntroTimeout = setTimeout(() => {
+                console.log("Respaldo activado: El video tardó en responder. Omitiendo intro.");
+                omitirIntroSeguro();
+            }, 6000); 
+
             if (introVideo) {
                 introVideo.muted = false; 
                 introVideo.volume = 0.7;  
@@ -2925,19 +2935,47 @@ body.light-theme .tab-link.active {
                 
                 const playPromise = introVideo.play();
                 if (playPromise !== undefined) {
-                    playPromise.catch(err => {
-                        console.log("Auto-play de video bloqueado por restricciones del navegador, ingresando directamente.", err);
-                        finalizarIntroVideo();
+                    playPromise.then(() => {
+                        // El video comenzó a reproducirse sin problemas
+                    }).catch(err => {
+                        console.log("Autoplay bloqueado o error en el descodificador:", err);
+                        omitirIntroSeguro();
                     });
                 }
 
+                // Si el video termina de forma natural
                 introVideo.onended = function() {
-                    finalizarIntroVideo();
+                    omitirIntroSeguro();
+                };
+
+                // Si hay un error de red o formato
+                introVideo.onerror = function() {
+                    console.log("Error detectado en la reproducción del archivo de video.");
+                    omitirIntroSeguro();
+                };
+
+                // Si el video entra en pausa o buffer infinito por congelamiento
+                introVideo.onstalled = function() {
+                    console.log("La reproducción se estancó. Cargando panel.");
+                    omitirIntroSeguro();
                 };
             } else {
-                finalizarIntroVideo();
+                omitirIntroSeguro();
             }
         }
+
+        // --- FUNCIÓN DE OMISIÓN SEGURA E INSTANTÁNEA ---
+        window.omitirIntroSeguro = function() {
+            if (safetyIntroTimeout) {
+                clearTimeout(safetyIntroTimeout);
+                safetyIntroTimeout = null;
+            }
+            const introVideo = document.getElementById("intro-video");
+            if (introVideo) {
+                introVideo.pause(); // Detiene el video para liberar memoria del procesador
+            }
+            finalizarIntroVideo(); // Carga de inmediato el dashboard principal
+        };
 
         function finalizarIntroVideo() {
             const introScreen = document.getElementById("intro-screen");
