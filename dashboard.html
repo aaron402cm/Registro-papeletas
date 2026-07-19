@@ -3068,11 +3068,33 @@ body.light-theme .tab-link.active {
         }
 
         function inicializarDashboardConDatos(data) {
-            globalDashboardCache = data; 
             const totalActual = data.dashboardData.papeletas.length;
+            
+            // Si la aplicación ya está abierta y llega una papeleta nueva en tiempo real
             if (prevPapeletasCount !== null && totalActual > prevPapeletasCount) {
-                reproducirSonidoNotificacion();
+                reproducirSonidoNotificacion(); // Campana física
+                
+                try {
+                    // Encontrar cuál es la papeleta nueva comparando IDs contra la caché anterior
+                    const viejosIds = new Set(globalDashboardCache.dashboardData.papeletas.map(p => String(p.id_papeleta)));
+                    const nuevasPapeletas = data.dashboardData.papeletas.filter(p => !viejosIds.has(String(p.id_papeleta)));
+                    
+                    if (nuevasPapeletas.length > 0) {
+                        const nueva = nuevasPapeletas[0];
+                        const inspector = nueva.agente || nueva.oficial || "Oficial de Turno";
+                        const id = nueva.id_papeleta || "Sin Identificador";
+                        
+                        // Esperar 800 milisegundos para que la voz no se cruce con el sonido de la campana
+                        setTimeout(() => {
+                            anunciarPapeletaPorVoz(inspector, id);
+                        }, 800);
+                    }
+                } catch (e) {
+                    console.log("Error al procesar el anuncio por voz: ", e);
+                }
             }
+            
+            globalDashboardCache = data; 
             prevPapeletasCount = totalActual;
 
             poblarFiltrosDinamicos(data.dashboardData.papeletas);
@@ -3844,6 +3866,52 @@ body.light-theme .tab-link.active {
 
         function finalizarSesion() {
             cerrarSesionDashboard();
+        }
+        // --- SÍNTESIS DE VOZ ROBÓTICA FEMENINA DE ALERTA DE INFRACCIÓN ---
+        function anunciarPapeletaPorVoz(inspector, id) {
+            if (!('speechSynthesis' in window)) {
+                console.log("SpeechSynthesis no soportado por este navegador.");
+                return;
+            }
+
+            // Deletrear el ID (separar cada letra por espacios y traducir guiones bajos)
+            const idDeletreado = id.split('').map(char => {
+                if (char === '_') return ' guion bajo ';
+                if (char === '-') return ' guion ';
+                return char + ' ';
+            }).join('');
+
+            // Construir el mensaje hablado formal
+            const texto = `Se recibió la papeleta de, ${inspector}, con Identificación, ${idDeletreado}`;
+            
+            const utterance = new SpeechSynthesisUtterance(texto);
+            utterance.lang = 'es-ES'; // Idioma español
+            utterance.rate = 1.05;    // Cadencia técnica sutilmente rápida
+            utterance.pitch = 1.2;     // Tono agudo metálico/robótico femenino
+            utterance.volume = 0.85;   // Volumen de transmisión
+
+            // Intentar seleccionar una voz femenina en español disponible en el sistema del usuario
+            const voices = window.speechSynthesis.getVoices();
+            const vozFemeninaEspanol = voices.find(v => 
+                v.lang.startsWith('es') && 
+                (v.name.toLowerCase().includes('female') || 
+                 v.name.toLowerCase().includes('helena') || 
+                 v.name.toLowerCase().includes('sabina') || 
+                 v.name.toLowerCase().includes('monica') || 
+                 v.name.toLowerCase().includes('zira') || 
+                 v.name.toLowerCase().includes('google'))
+            ) || voices.find(v => v.lang.startsWith('es')); // Fallback a cualquier voz en español si no hay una femenina específica
+
+            if (vozFemeninaEspanol) {
+                utterance.voice = vozFemeninaEspanol;
+            }
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Cargar voces preventivamente en navegadores basados en Chromium (Chrome/Edge)
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.getVoices();
         }
     // --- FUNCIÓN PARA CERRAR EL MODAL DE INSTRUCCIÓN ---
 window.cerrarModalInstruccion = function() {
