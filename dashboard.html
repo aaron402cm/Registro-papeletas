@@ -990,12 +990,6 @@
             background-color: var(--table-row-hover) !important;
         }
 
-        tr.active-row {
-            background-color: rgba(0, 240, 255, 0.08) !important;
-            font-weight: bold;
-            border-left: 4px solid var(--apm-blue);
-        }
-
         body.light-theme tr.active-row {
             background-color: rgba(0, 95, 158, 0.06) !important;
             border-left-color: var(--apm-blue);
@@ -4007,18 +4001,6 @@
             chat.style.display = (chat.style.display === "flex") ? "none" : "flex";
         }
 
-        document.addEventListener("DOMContentLoaded", function() {
-            // Comprobación de estado diurno guardada en localStorage
-            const diurno = localStorage.getItem("modo_diurno");
-            if (diurno === "si") {
-                document.body.classList.add("light-theme");
-                document.getElementById("btn-theme-toggle").innerText = "☀️";
-            } else {
-                document.body.classList.remove("light-theme");
-                document.getElementById("btn-theme-toggle").innerText = "🌙";
-            }
-        });
-
         function detectarEnterChat(event) {
             if (event.key === "Enter") enviarConsultaChatIA();
         }
@@ -4078,22 +4060,33 @@
 
         // --- AUTO-LOGIN AL REFRESCAR LA PÁGINA (F5) ---
         window.addEventListener("DOMContentLoaded", function() {
-            const user = sessionStorage.getItem("secure_user_initials");
-            const auth = sessionStorage.getItem("secure_auth_plain");
+    // 1. Restaurar Tema guardado (Modo Diurno / Nocturno)
+    const diurno = localStorage.getItem("modo_diurno");
+    if (diurno === "si") {
+        document.body.classList.add("light-theme");
+        document.getElementById("btn-theme-toggle").innerText = "☀️";
+    } else {
+        document.body.classList.remove("light-theme");
+        document.getElementById("btn-theme-toggle").innerText = "🌙";
+    }
 
-            if (user && auth) {
-                document.getElementById("login-screen").style.display = "none";
-                document.getElementById("main-app").style.display = "flex";
-                
-                const elChat = document.getElementById("chat-fab-element");
-                if (elChat) elChat.style.display = "flex";
-                
-                const elUser = document.getElementById("user-display");
-                if (elUser) elUser.innerText = user;
+    // 2. Restaurar Sesión Activa de forma segura
+    const user = sessionStorage.getItem("secure_user_initials");
+    const auth = sessionStorage.getItem("secure_auth_plain");
 
-                ejecutarSincronizacionSilenciosa();
-            }
-        });
+    if (user && auth) {
+        document.getElementById("login-screen").style.display = "none";
+        document.getElementById("main-app").style.display = "flex";
+        
+        const elChat = document.getElementById("chat-fab-element");
+        if (elChat) elChat.style.display = "flex";
+        
+        const elUser = document.getElementById("user-display");
+        if (elUser) elUser.innerText = user;
+
+        ejecutarSincronizacionSilenciosa();
+    }
+});
 
         function finalizarSesion() {
             cerrarSesionDashboard();
