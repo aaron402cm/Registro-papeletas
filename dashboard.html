@@ -2322,6 +2322,50 @@
             border: 1px solid rgba(0, 95, 158, 0.22) !important;
             text-shadow: none !important;
         }
+        /* --- CHIPS DE VISTA PREVIA DE SANCIÓN SUGERIDA (IA) --- */
+        .badge-sancion-dias {
+            background-color: rgba(255, 170, 0, 0.08) !important;
+            color: #ffa100 !important; /* Dorado cálido de advertencia */
+            border: 1px solid rgba(255, 170, 0, 0.25) !important;
+            font-family: monospace;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 4px;
+            text-shadow: 0 0 4px rgba(255, 161, 0, 0.2);
+        }
+        body.light-theme .badge-sancion-dias {
+            background-color: #fef7e0 !important;
+            color: #b25d00 !important;
+            border: 1px solid rgba(178, 93, 0, 0.25) !important;
+        }
+
+        .badge-sancion-amonesta {
+            background-color: rgba(0, 240, 255, 0.08) !important;
+            color: #00f0ff !important;
+            border: 1px solid rgba(0, 240, 255, 0.25) !important;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+        body.light-theme .badge-sancion-amonesta {
+            background-color: #e8f1f5 !important;
+            color: #005f9e !important;
+            border: 1px solid rgba(0, 95, 158, 0.25) !important;
+        }
+
+        .badge-sancion-pendiente {
+            background-color: rgba(255, 255, 255, 0.02) !important;
+            color: #64748b !important;
+            border: 1px dashed rgba(255, 255, 255, 0.15) !important;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+        body.light-theme .badge-sancion-pendiente {
+            background-color: #f1f5f9 !important;
+            color: #64748b !important;
+            border: 1px dashed rgba(100, 116, 139, 0.25) !important;
+        }
     </style>
 </head>
 <body>
@@ -2513,6 +2557,7 @@
                                             <th onclick="ordenarTablaPor('infractor')">Infractor / Empresa <span id="sort-icon-infractor"></span></th>
                                             <th onclick="ordenarTablaPor('conducta')">Conducta Infractora <span id="sort-icon-conducta"></span></th>
                                             <th onclick="ordenarTablaPor('fecha_infraccion')">Fecha Suceso <span id="sort-icon-fecha_infraccion"></span></th>
+                                            <th onclick="ordenarTablaPor('ia_analisis_cache')">Sanción Sugerida (IA) <span id="sort-icon-ia_analisis_cache"></span></th>
                                             <th onclick="ordenarTablaPor('estado_semaforo')">Estado del Trámite <span id="sort-icon-estado_semaforo"></span></th>
                                             <th>Acción</th>
                                         </tr>
@@ -3542,7 +3587,7 @@
             const activas = papeletasFiltradas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1);
 
             if (activas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No se encontraron papeletas en esta etapa.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">No se encontraron papeletas en esta etapa.</td></tr>`;
                 return;
             }
 
@@ -3568,7 +3613,29 @@
                     `;
                 }
 
-                // 3. Lógica de negocio unificada para "ESTADO DEL TRÁMITE"
+                // 3. Extracción inteligente de días sugeridos de la caché de la IA (Google Sheets)
+                let badgeSancionSugerida = "";
+                try {
+                    if (p.ia_analisis_cache && p.ia_analisis_cache.trim() !== "") {
+                        const cache = JSON.parse(p.ia_analisis_cache);
+                        if (cache.dias_sugeridos !== undefined) {
+                            const dias = parseInt(cache.dias_sugeridos, 10);
+                            if (dias === 0) {
+                                badgeSancionSugerida = `<span class="badge-sancion-amonesta">Amonestación</span>`;
+                            } else {
+                                badgeSancionSugerida = `<span class="badge-sancion-dias">${dias} días</span>`;
+                            }
+                        } else {
+                            badgeSancionSugerida = `<span class="badge-sancion-pendiente">Pendiente IA</span>`;
+                        }
+                    } else {
+                        badgeSancionSugerida = `<span class="badge-sancion-pendiente">Pendiente IA</span>`;
+                    }
+                } catch (e) {
+                    badgeSancionSugerida = `<span class="badge-sancion-pendiente">Pendiente IA</span>`;
+                }
+
+                // 4. Lógica de negocio unificada para "ESTADO DEL TRÁMITE"
                 let estadoTramiteBadge = "";
                 if (p.estado_semaforo === "vigente" || p.estado_semaforo === "ultimo_dia") {
                     estadoTramiteBadge = `<span class="badge badge-blue">Plazo Vigente (Pendiente Descargos)</span>`;
@@ -3589,7 +3656,7 @@
                     seleccionarPapeletaParaRevision(p.id_papeleta);
                 };
 
-                // Renderizado limpio de la rejilla compacta de 6 columnas
+                // Renderizado limpio de la rejilla compacta de 7 columnas
                 tr.innerHTML = `
                     <td>
                         <strong class="text-id">${p.id_papeleta}</strong>
@@ -3603,6 +3670,7 @@
                     </td>
                     <td class="text-conducta">${p.conducta}</td>
                     <td class="text-fecha" style="font-family: 'Courier New', Courier, monospace; font-weight: bold; letter-spacing: -0.5px;">${fechaFormat}</td>
+                    <td>${badgeSancionSugerida}</td>
                     <td>${estadoTramiteBadge}</td>
                     <td><button class="btn-pdf-view" onclick="abrirVisorPDF('${p.id_papeleta}', event)">📄 PDF</button></td>
                 `;
