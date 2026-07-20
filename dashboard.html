@@ -456,10 +456,10 @@
         .tab-link {
             background: transparent !important;
             border: 1px solid transparent !important;
-            padding: 12px 14px !important; /* Relleno más compacto */
-            font-size: 13px !important; /* Tamaño de letra compacto y sofisticado */
+            padding: 12px 14px !important; 
+            font-size: 13px !important; 
             font-weight: 600;
-            color: #64748b !important; 
+            color: #64748b !important; /* Gris slate monocromático por defecto */
             cursor: pointer;
             border-left: 2px solid transparent !important; 
             display: flex;
@@ -467,41 +467,46 @@
             justify-content: flex-start;
             gap: 10px;
             border-radius: 4px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            /* Curva bezier de rebote físico (Elastic spring transition) para el efecto Ojo de Pez */
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                        color 0.3s ease, 
+                        background-color 0.3s ease, 
+                        border-color 0.3s ease;
         }
 
+        /* Corrección de color de botones inactivos en Modo Diurno (Evita letras blancas invisibles) */
         body.light-theme .tab-link {
-            background: transparent !important;
-            color: #64748b !important;
+            color: #475569 !important; /* Gris oscuro muy visible en fondo blanco */
         }
 
-        /* Hover: Transición sutil con un tono naranja translúcido */
+        /* Efecto Ojo de Pez (Ampliación táctica progresiva) */
         .tab-link:hover {
             color: #ffffff !important;
             background-color: rgba(255, 96, 0, 0.05) !important;
             border-left-color: rgba(255, 96, 0, 0.4) !important;
-            transform: translateX(4px);
+            transform: scale(1.05) translateX(8px); /* Sutil aumento tridimensional hacia la derecha */
         }
 
         body.light-theme .tab-link:hover {
-            color: #001f3f !important;
-            background-color: rgba(0, 75, 135, 0.05) !important;
+            color: #ff6000 !important;
+            background-color: rgba(255, 96, 0, 0.05) !important;
+            border-left-color: rgba(255, 96, 0, 0.4) !important;
         }
 
-        /* Pestaña seleccionada: Borde láser y degradado sutil */
+        /* Pestaña seleccionada activa: Efecto Ojo de Pez expandido */
         .tab-link.active {
             color: #ffffff !important;
             background: linear-gradient(90deg, rgba(255, 96, 0, 0.08) 0%, rgba(255, 96, 0, 0) 100%) !important;
             border-color: transparent !important;
-            border-left: 3px solid #ff6000 !important; /* Línea láser naranja corporativo */
-            transform: scale(1.02) translateX(6px);
+            border-left: 3px solid #ff6000 !important;
+            transform: scale(1.05) translateX(12px); /* Mayor proyección visual activa */
             box-shadow: none !important;
         }
 
         body.light-theme .tab-link.active {
-            color: #ffffff !important;
-            background: linear-gradient(90deg, rgba(224, 91, 27, 0.1) 0%, rgba(224, 91, 27, 0) 100%) !important;
-            border-left-color: #d4af37 !important;
+            color: #ff6000 !important;
+            background: linear-gradient(90deg, rgba(255, 96, 0, 0.08) 0%, rgba(255, 96, 0, 0) 100%) !important;
+            border-left-color: #ff6000 !important;
             box-shadow: none !important;
         }
 
@@ -2031,6 +2036,32 @@
         .text-empresa {
             color: #a0c0d5;
             font-weight: 500;
+        }
+        .text-conducta {
+            color: #cbd5e1;
+            font-style: normal !important; /* Sin cursiva para mejorar lectura rápida */
+            font-family: 'Segoe UI', -apple-system, sans-serif;
+        }
+        .text-fecha {
+            color: #cbd5e1;
+        }
+
+        /* --- CORRECCIÓN DE CONTRASTE EN MODO DIURNO (LIGHT THEME) --- */
+        body.light-theme .text-id {
+            color: #001f3f !important; /* Azul marino profundo */
+            text-shadow: none !important;
+        }
+        body.light-theme .text-infractor {
+            color: #0a1128 !important; /* Gris oscuro para nombres */
+        }
+        body.light-theme .text-empresa {
+            color: #4b6584 !important; /* Gris medio elegante para empresas */
+        }
+        body.light-theme .text-conducta {
+            color: #576574 !important; /* Gris medio sin cursiva */
+        }
+        body.light-theme .text-fecha {
+            color: #4b6584 !important;
         }
         /* --- ELIMINACIÓN DE CURSIVA EN CONDUCTAS --- */
         .text-conducta {
