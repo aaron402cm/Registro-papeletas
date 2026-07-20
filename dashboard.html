@@ -947,13 +947,18 @@
         }
 
         th {
-            background-color: #020713 !important;
-            color: var(--apm-blue);
+            background-color: #020713 !important; /* Fondo negro profundo en nocturno */
+            color: #00f0ff !important; /* Letras cian de alta visibilidad en nocturno */
             font-family: monospace;
             text-transform: uppercase;
             font-size: 12px;
             letter-spacing: 0.8px;
             font-weight: 700;
+        }
+
+        body.light-theme th {
+            background-color: #001f3f !important; /* Azul marino corporativo de alta gama */
+            color: #ffffff !important; /* Letras blancas brillantes de alto contraste */
         }
 
         /* --- PRESERVAR EFECTO DE LUMINOSIDAD/GLOW EN LAS FILAS AL PASAR EL CURSOR --- */
