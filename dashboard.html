@@ -905,19 +905,19 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            background: transparent;
-            font-size: 14px; 
+            background: #0A0E17 !important; /* Fondo general de la tabla */
+            font-size: 14px;
         }
 
         th, td {
-            padding: 14px 12px; 
-            border-bottom: 1px solid var(--border-color);
+            padding: 20px 14px !important; /* Espaciado cómodo py-5 para que los datos respiren */
+            border-bottom: 1px solid #1E293B !important; /* Bordes finos de celdas */
             text-align: left;
             color: var(--text-color);
         }
 
         th {
-            background-color: var(--apm-dark-blue);
+            background-color: #020713 !important;
             color: var(--apm-blue);
             font-family: monospace;
             text-transform: uppercase;
@@ -926,19 +926,22 @@
             font-weight: 700;
         }
 
-        body.light-theme th {
-            color: #ffffff;
-            background-color: #001f3f; /* Azul marino profundo para encabezados */
+        /* --- PRESERVAR EFECTO DE LUMINOSIDAD/GLOW EN LAS FILAS AL PASAR EL CURSOR --- */
+        tr.clickable-row {
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
         }
 
-        /* Fila de tabla con fondo alterno para mejor legibilidad */
-        tr.clickable-row:nth-child(even) {
-            background-color: rgba(0, 24, 48, 0.3);
+        tr.clickable-row:hover {
+            background-color: rgba(0, 240, 255, 0.04) !important; /* Luz sutil cian de fondo */
+            box-shadow: inset 0 0 12px rgba(0, 240, 255, 0.08) !important; /* Resplandor interno de celda */
         }
 
-        body.light-theme tr.clickable-row:nth-child(even) {
-            background-color: rgba(0, 31, 63, 0.02);
+        tr.active-row {
+            background-color: rgba(0, 240, 255, 0.08) !important;
+            border-left: 4px solid var(--apm-blue) !important;
         }
+
 
         #tabla-control-papeletas td:nth-child(1),
         #tabla-control-papeletas td:nth-child(5),
@@ -2104,7 +2107,7 @@
 
         /* --- BOTÓN VER PDF: DISEÑO MINIMALISTA OSCURO CON HOVER EN NARANJA --- */
         .btn-pdf-view {
-            background-color: rgba(30, 41, 59, 0.6) !important; /* Gris oscuro elegante */
+            background-color: rgba(30, 41, 59, 0.65) !important; /* Gris oscuro elegante */
             color: #94a3b8 !important; /* Texto e icono en gris slate suave */
             border: 1px solid rgba(255, 255, 255, 0.08) !important;
             padding: 6px 12px !important;
@@ -2478,14 +2481,11 @@
                                     <thead>
                                         <tr>
                                             <th onclick="ordenarTablaPor('id_papeleta')">ID Papeleta <span id="sort-icon-id_papeleta"></span></th>
-                                            <th onclick="ordenarTablaPor('infractor')">Infractor <span id="sort-icon-infractor"></span></th>
-                                            <th onclick="ordenarTablaPor('empresa')">Empresa <span id="sort-icon-empresa"></span></th>
+                                            <th onclick="ordenarTablaPor('infractor')">Infractor / Empresa <span id="sort-icon-infractor"></span></th>
                                             <th onclick="ordenarTablaPor('conducta')">Conducta Infractora <span id="sort-icon-conducta"></span></th>
                                             <th onclick="ordenarTablaPor('fecha_infraccion')">Fecha Suceso <span id="sort-icon-fecha_infraccion"></span></th>
-                                            <th>Envio a Empresa</th>
-                                            <th onclick="ordenarTablaPor('estado_semaforo')">Semáforo RIS <span id="sort-icon-estado_semaforo"></span></th>
-                                            <th>Descargo</th>
-                                            <th>Ver PDF</th>
+                                            <th onclick="ordenarTablaPor('estado_semaforo')">Estado del Trámite <span id="sort-icon-estado_semaforo"></span></th>
+                                            <th>Acción</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -3513,13 +3513,44 @@
             const activas = papeletasFiltradas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1);
 
             if (activas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;">No se encontraron papeletas en esta etapa.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No se encontraron papeletas en esta etapa.</td></tr>`;
                 return;
             }
 
             activas.forEach(p => {
-                // Extrae únicamente la fecha (AAAA-MM-DD), eliminando la hora y milisegundos
+                // 1. Limpieza de Fecha (solo el día)
                 let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.split(/[T ]/)[0] : "-";
+                
+                // 2. Lógica visual del LED de envío justo debajo del ID Papeleta
+                let ledMarkup = "";
+                if (p.estado_envio === "Se envió correctamente" || !p.estado_envio) {
+                    ledMarkup = `
+                        <div style="display: flex; align-items: center; gap: 6px; margin-top: 5px;">
+                            <span style="display: inline-block; width: 8px; height: 8px; background-color: #10B981; border-radius: 50%; box-shadow: 0 0 8px #10B981; animation: pulseLed 2s infinite;"></span>
+                            <span style="font-size: 11px; color: #10B981; font-weight: bold; font-family: sans-serif;">Enviado</span>
+                        </div>
+                    `;
+                } else {
+                    ledMarkup = `
+                        <div style="display: flex; align-items: center; gap: 6px; margin-top: 5px;">
+                            <span style="display: inline-block; width: 8px; height: 8px; background-color: #F43F5E; border-radius: 50%; box-shadow: 0 0 0 2px rgba(244, 63, 94, 0.25);"></span>
+                            <span style="font-size: 11px; color: #F43F5E; font-weight: bold; font-family: sans-serif;">Fallo de Envío</span>
+                        </div>
+                    `;
+                }
+
+                // 3. Lógica de negocio unificada para "ESTADO DEL TRÁMITE"
+                let estadoTramiteBadge = "";
+                if (p.estado_semaforo === "vigente" || p.estado_semaforo === "ultimo_dia") {
+                    estadoTramiteBadge = `<span class="badge badge-blue">Plazo Vigente (Pendiente Descargos)</span>`;
+                } else if (p.estado_semaforo === "vencido") {
+                    estadoTramiteBadge = `<span class="badge badge-red">Expirado (Sin Descargo)</span>`;
+                } else if (p.estado_semaforo === "descargo") {
+                    estadoTramiteBadge = `<span class="badge badge-green">Descargo Recibido</span>`;
+                } else {
+                    estadoTramiteBadge = `<span class="badge badge-blue">En Proceso</span>`;
+                }
+
                 const tr = document.createElement("tr");
                 tr.className = "clickable-row"; tr.id = `row-${p.id_papeleta}`;
                 if (activePapeletaId === p.id_papeleta) tr.classList.add("active-row");
@@ -3529,31 +3560,26 @@
                     seleccionarPapeletaParaRevision(p.id_papeleta);
                 };
 
-                // Chips estilizados con fondo oscuro y borde fino usando las clases badge de su hoja de estilos
-                let descargoBadge = p.estado_semaforo === "descargo" 
-                    ? `<span class="badge badge-green">Recibido</span>`
-                    : (p.estado_semaforo === "vencido" ? `<span class="badge badge-red">Expirado</span>` : `<span class="badge badge-blue">Pendiente</span>`);
-
-                let notificacionBadge = (p.estado_envio === "Se envió correctamente" || !p.estado_envio)
-                    ? `<span class="badge badge-green">🟢 Enviado</span>`
-                    : `<span class="badge badge-red">🔴 Problema</span>`;
-                
-                // Jerarquía visual en la fila mediante clases CSS adaptables
+                // Renderizado limpio de la rejilla compacta de 6 columnas
                 tr.innerHTML = `
-                    <td><strong class="text-id">${p.id_papeleta}</strong></td>
-                    <td class="text-infractor">${p.infractor}</td>
-                    <td class="text-empresa">${p.empresa}</td>
+                    <td>
+                        <strong class="text-id">${p.id_papeleta}</strong>
+                        ${ledMarkup}
+                    </td>
+                    <td>
+                        <div style="display: flex; flex-direction: column; gap: 3px;">
+                            <span class="text-infractor">${p.infractor}</span>
+                            <span class="text-empresa" style="font-size: 12px; opacity: 0.85;">${p.empresa}</span>
+                        </div>
+                    </td>
                     <td class="text-conducta">${p.conducta}</td>
-                    <td class="text-fecha">${fechaFormat}</td>
-                    <td>${notificacionBadge}</td>
-                    <td><span class="badge badge-${p.estado_color}">${p.estado_texto}</span></td>
-                    <td>${descargoBadge}</td>
+                    <td class="text-fecha" style="font-family: 'Courier New', Courier, monospace; font-weight: bold; letter-spacing: -0.5px;">${fechaFormat}</td>
+                    <td>${estadoTramiteBadge}</td>
                     <td><button class="btn-pdf-view" onclick="abrirVisorPDF('${p.id_papeleta}', event)">📄 PDF</button></td>
                 `;
                 tbody.appendChild(tr);
             });
         }
-
         function renderizarTablaCasosCerrados(papeletasCerradas) {
             const tbody = document.querySelector("#tabla-casos-cerrados tbody");
             tbody.innerHTML = "";
