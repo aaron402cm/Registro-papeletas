@@ -905,8 +905,38 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            background: #0A0E17 !important; /* Fondo general de la tabla */
+            background: transparent !important; /* Transparente para heredar el color de la tarjeta (card) */
             font-size: 14px;
+        }
+
+        /* --- CONTENEDORES DE TABLAS: AZUL NOCHE EN NOCTURNO, BLANCO EN DIURNO --- */
+        .table-container.card {
+            background-color: #051224 !important; /* Azul Noche Táctico en modo nocturno */
+            border: 1px solid rgba(0, 240, 255, 0.12) !important;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0, 240, 255, 0.03);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        /* Ajuste de contenedores de tablas en Modo Diurno (Light Theme) */
+        body.light-theme .table-container.card {
+            background-color: #ffffff !important; /* Fondo blanco limpio */
+            border: 1px solid rgba(0, 31, 63, 0.12) !important;
+            box-shadow: 0 4px 15px rgba(0, 31, 63, 0.05) !important;
+        }
+
+        /* --- FILAS CON FONDO ALTERNO ADAPTABLE --- */
+        tr.clickable-row:nth-child(even) {
+            background-color: rgba(0, 24, 48, 0.3) !important; /* Azul sutil en modo nocturno */
+        }
+
+        body.light-theme tr.clickable-row:nth-child(even) {
+            background-color: rgba(0, 31, 63, 0.02) !important; /* Gris ultra suave en modo diurno */
+        }
+
+        /* --- AJUSTE DE HOVER EN FILAS PARA MODO DIURNO --- */
+        body.light-theme tr.clickable-row:hover {
+            background-color: rgba(0, 75, 135, 0.04) !important; /* Sutil hover celeste grisáceo */
+            box-shadow: none !important;
         }
 
         th, td {
