@@ -2252,6 +2252,42 @@
             border: 1px solid rgba(0, 31, 63, 0.12) !important;
             box-shadow: 0 4px 15px rgba(0, 31, 63, 0.05);
         }
+        
+        /* ================================================================= */
+        /* --- ADAPTACIÓN DE BADGES EN MODO DIURNO (EVITA NEÓN EN BLANCO) --- */
+        /* ================================================================= */
+        
+        /* Badges de Alerta / Peligro (Rojos) */
+        body.light-theme .badge-red {
+            background-color: #fce8e6 !important; /* Fondo pastel suave sólido */
+            color: #c01c40 !important; /* Carmesí oscuro de alto contraste */
+            border: 1px solid rgba(192, 28, 64, 0.22) !important;
+            text-shadow: none !important;
+        }
+
+        /* Badges de Éxito / Proceso (Verdes) */
+        body.light-theme .badge-green {
+            background-color: #e6f4ea !important; /* Verde pastel suave sólido */
+            color: #0e8a43 !important; /* Verde bosque de alto contraste */
+            border: 1px solid rgba(14, 138, 67, 0.22) !important;
+            text-shadow: none !important;
+        }
+
+        /* Badges de Advertencia / Precaución (Amarillos) */
+        body.light-theme .badge-yellow {
+            background-color: #fef7e0 !important; /* Amarillo pastel suave sólido */
+            color: #a17000 !important; /* Ocre/Marrón de alto contraste */
+            border: 1px solid rgba(161, 112, 0, 0.22) !important;
+            text-shadow: none !important;
+        }
+
+        /* Badges de Información / Pendientes (Azules) */
+        body.light-theme .badge-blue {
+            background-color: #e8f1f5 !important; /* Azul pastel suave sólido */
+            color: #005f9e !important; /* Azul marino profundo de alto contraste */
+            border: 1px solid rgba(0, 95, 158, 0.22) !important;
+            text-shadow: none !important;
+        }
     </style>
 </head>
 <body>
