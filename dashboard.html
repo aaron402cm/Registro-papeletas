@@ -436,9 +436,9 @@
 
         /* --- COLUMNA DE NAVEGACIÓN LATERAL IZQUIERDO--- */
         .nav-tabs {
-            width: 290px;
-            min-width: 290px;
-            background-color: #050912 !important; /* Tono oscuro profundo táctico */
+            width: 230px !important;
+            min-width: 230px !important;
+            background-color: #050912 !important; 
             border-right: 1px solid rgba(0, 240, 255, 0.08) !important;
             display: flex;
             flex-direction: column;
@@ -448,7 +448,6 @@
             transition: all 0.3s ease;
         }
 
-        /* Mantener consistencia en modo diurno */
         body.light-theme .nav-tabs {
             background-color: #ffffff !important;
             border-right: 1px solid rgba(0, 31, 63, 0.1) !important;
@@ -457,16 +456,16 @@
         .tab-link {
             background: transparent !important;
             border: 1px solid transparent !important;
-            padding: 16px 20px;
-            font-size: 14px;
+            padding: 12px 14px !important; /* Relleno más compacto */
+            font-size: 13px !important; /* Tamaño de letra compacto y sofisticado */
             font-weight: 600;
-            color: #64748b !important; /* Gris slate monocromático por defecto */
+            color: #64748b !important; 
             cursor: pointer;
-            border-left: 2px solid transparent !important; /* Borde láser oculto inicialmente */
+            border-left: 2px solid transparent !important; 
             display: flex;
             align-items: center;
             justify-content: flex-start;
-            gap: 12px;
+            gap: 10px;
             border-radius: 4px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -2179,22 +2178,48 @@
             color: var(--apm-orange) !important;
         }   
         
-        /* --- LÍNEA LED DE ILUMINACIÓN AMBIENTAL PREMIUM --- */
+        /* --- LÍNEA LED DE ILUMINACIÓN AMBIENTAL PREMIUM (BARRIDO METÁLICO) --- */
         .ambient-led-bar {
-            height: 1.5px;
+            height: 2px;
             width: 100%;
-            background: linear-gradient(90deg, #FF6000 0%, #ff8c00 50%, #FF6000 100%);
-            background-size: 200% auto;
-            box-shadow: 0 1px 12px rgba(255, 96, 0, 0.8), 0 0 4px rgba(255, 96, 0, 0.4);
-            animation: ledSweep 4s ease-in-out infinite;
+            /* Gradiente con núcleo blanco reflectivo en el centro para simular el destello */
+            background: linear-gradient(90deg, 
+                rgba(255, 96, 0, 0.1) 0%, 
+                rgba(255, 96, 0, 0.1) 35%, 
+                #FF6000 46%, 
+                #ffffff 50%, /* Destello de luz blanca brillante (núcleo del barrido) */
+                #FF6000 54%, 
+                rgba(255, 96, 0, 0.1) 65%, 
+                rgba(255, 96, 0, 0.1) 100%
+            );
+            background-size: 200% 100%;
             position: relative;
             z-index: 102;
+            box-shadow: 0 2px 10px rgba(255, 96, 0, 0.6), 0 0 4px rgba(255, 96, 0, 0.3);
+            /* Curva bezier de entrada/salida para suavizar el destello al pasar */
+            animation: ledSweep 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
 
         @keyframes ledSweep {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 150% 0;
+            }
+            100% {
+                background-position: -50% 0;
+            }
+        }
+        /* --- TARJETA DE LA TABLA: AZUL NOCHE TÁCTICO CON DELICADO GLOW --- */
+        #bandeja-tabla-container.card {
+            background-color: #051224 !important; /* Color azul noche profundo */
+            border: 1px solid rgba(0, 240, 255, 0.12) !important; /* Sutil borde cian de radar */
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0, 240, 255, 0.03);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body.light-theme #bandeja-tabla-container.card {
+            background-color: #ffffff !important;
+            border: 1px solid rgba(0, 31, 63, 0.12) !important;
+            box-shadow: 0 4px 15px rgba(0, 31, 63, 0.05);
         }
     </style>
 </head>
