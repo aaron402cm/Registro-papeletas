@@ -2366,6 +2366,175 @@
             color: #64748b !important;
             border: 1px dashed rgba(100, 116, 139, 0.25) !important;
         }
+        /* ================================================================= */
+        /* --- ADAPTACIÓN DE PIPELINE NODES EN MODO DIURNO (EVITA NEÓN) ---  */
+        /* ================================================================= */
+        body.light-theme #pipe-all {
+            border-color: rgba(0, 95, 158, 0.18) !important;
+            color: #005f9e !important; /* Azul marino de alto contraste */
+            background: #f8fafc !important;
+        }
+        body.light-theme #pipe-all.active {
+            background-color: #e8f1f5 !important; /* Celeste marfil suave */
+            border-color: #005f9e !important;
+            box-shadow: 0 4px 10px rgba(0, 95, 158, 0.12) !important;
+        }
+
+        body.light-theme #pipe-pendiente {
+            border-color: rgba(14, 138, 67, 0.18) !important;
+            color: #0e8a43 !important; /* Verde bosque */
+            background: #f8fafc !important;
+        }
+        body.light-theme #pipe-pendiente.active {
+            background-color: #e6f4ea !important; /* Verde pastel suave */
+            border-color: #0e8a43 !important;
+            box-shadow: 0 4px 10px rgba(14, 138, 67, 0.12) !important;
+        }
+
+        body.light-theme #pipe-descargos {
+            border-color: rgba(161, 112, 0, 0.18) !important;
+            color: #a17000 !important; /* Ámbar/Ocre */
+            background: #fdfbf7 !important;
+        }
+        body.light-theme #pipe-descargos.active {
+            background-color: #fef7e0 !important; /* Amarillo pastel suave */
+            border-color: #a17000 !important;
+            box-shadow: 0 4px 10px rgba(161, 112, 0, 0.12) !important;
+        }
+
+        body.light-theme #pipe-evaluacion-humana {
+            border-color: rgba(178, 93, 0, 0.18) !important;
+            color: #b25d00 !important; /* Naranja/Ámbar oscuro */
+            background: #fdfbf7 !important;
+        }
+        body.light-theme #pipe-evaluacion-humana.active {
+            background-color: #fff3e0 !important; /* Naranja pastel suave */
+            border-color: #b25d00 !important;
+            box-shadow: 0 4px 10px rgba(178, 93, 0, 0.12) !important;
+        }
+
+        body.light-theme #pipe-evaluacion-ia {
+            border-color: rgba(0, 95, 158, 0.18) !important;
+            color: #005f9e !important;
+            background: #f8fafc !important;
+        }
+        body.light-theme #pipe-evaluacion-ia.active {
+            background-color: #e8f1f5 !important;
+            border-color: #005f9e !important;
+            box-shadow: 0 4px 10px rgba(0, 95, 158, 0.12) !important;
+        }
+
+        /* ================================================================= */
+        /* --- ADAPTACIÓN DE TARJETAS KPI EN MODO DIURNO (HIGH CONTRAST) --- */
+        /* ================================================================= */
+        body.light-theme .kpi-card {
+            background: #ffffff !important; /* Blanco limpio para eliminar el bloque gris oscuro */
+            border: 1px solid rgba(0, 31, 63, 0.12) !important; /* Borde gris sutil de alta definición */
+            box-shadow: 0 4px 15px rgba(0, 31, 63, 0.05) !important;
+        }
+
+        /* Tarjeta seleccionada de KPIs */
+        body.light-theme .kpi-card.accent-orange {
+            border: 1px solid rgba(255, 96, 0, 0.35) !important;
+            background: #fffcf9 !important; /* Sutil fondo cálido naranja/crema */
+            box-shadow: 0 4px 15px rgba(255, 96, 0, 0.06) !important;
+        }
+
+        /* Color de las etiquetas internas de los KPIs */
+        body.light-theme .kpi-label {
+            color: #475569 !important; /* Gris oscuro muy legible */
+            font-weight: 700;
+        }
+
+        /* Color del contador de los KPIs (Garantiza letras de alto contraste) */
+        body.light-theme .kpi-value {
+            color: #001f3f !important; /* Azul marino profundo */
+            text-shadow: none !important;
+        }/* ================================================================= */
+        /* --- ADAPTACIÓN DE PIPELINE NODES EN MODO DIURNO (EVITA NEÓN) ---  */
+        /* ================================================================= */
+        body.light-theme #pipe-all {
+            border-color: rgba(0, 95, 158, 0.18) !important;
+            color: #005f9e !important; /* Azul marino de alto contraste */
+            background: #f8fafc !important;
+        }
+        body.light-theme #pipe-all.active {
+            background-color: #e8f1f5 !important; /* Celeste marfil suave */
+            border-color: #005f9e !important;
+            box-shadow: 0 4px 10px rgba(0, 95, 158, 0.12) !important;
+        }
+
+        body.light-theme #pipe-pendiente {
+            border-color: rgba(14, 138, 67, 0.18) !important;
+            color: #0e8a43 !important; /* Verde bosque */
+            background: #f8fafc !important;
+        }
+        body.light-theme #pipe-pendiente.active {
+            background-color: #e6f4ea !important; /* Verde pastel suave */
+            border-color: #0e8a43 !important;
+            box-shadow: 0 4px 10px rgba(14, 138, 67, 0.12) !important;
+        }
+
+        body.light-theme #pipe-descargos {
+            border-color: rgba(161, 112, 0, 0.18) !important;
+            color: #a17000 !important; /* Ámbar/Ocre */
+            background: #fdfbf7 !important;
+        }
+        body.light-theme #pipe-descargos.active {
+            background-color: #fef7e0 !important; /* Amarillo pastel suave */
+            border-color: #a17000 !important;
+            box-shadow: 0 4px 10px rgba(161, 112, 0, 0.12) !important;
+        }
+
+        body.light-theme #pipe-evaluacion-humana {
+            border-color: rgba(178, 93, 0, 0.18) !important;
+            color: #b25d00 !important; /* Naranja/Ámbar oscuro */
+            background: #fdfbf7 !important;
+        }
+        body.light-theme #pipe-evaluacion-humana.active {
+            background-color: #fff3e0 !important; /* Naranja pastel suave */
+            border-color: #b25d00 !important;
+            box-shadow: 0 4px 10px rgba(178, 93, 0, 0.12) !important;
+        }
+
+        body.light-theme #pipe-evaluacion-ia {
+            border-color: rgba(0, 95, 158, 0.18) !important;
+            color: #005f9e !important;
+            background: #f8fafc !important;
+        }
+        body.light-theme #pipe-evaluacion-ia.active {
+            background-color: #e8f1f5 !important;
+            border-color: #005f9e !important;
+            box-shadow: 0 4px 10px rgba(0, 95, 158, 0.12) !important;
+        }
+
+        /* ================================================================= */
+        /* --- ADAPTACIÓN DE TARJETAS KPI EN MODO DIURNO (HIGH CONTRAST) --- */
+        /* ================================================================= */
+        body.light-theme .kpi-card {
+            background: #ffffff !important; /* Blanco limpio para eliminar el bloque gris oscuro */
+            border: 1px solid rgba(0, 31, 63, 0.12) !important; /* Borde gris sutil de alta definición */
+            box-shadow: 0 4px 15px rgba(0, 31, 63, 0.05) !important;
+        }
+
+        /* Tarjeta seleccionada de KPIs */
+        body.light-theme .kpi-card.accent-orange {
+            border: 1px solid rgba(255, 96, 0, 0.35) !important;
+            background: #fffcf9 !important; /* Sutil fondo cálido naranja/crema */
+            box-shadow: 0 4px 15px rgba(255, 96, 0, 0.06) !important;
+        }
+
+        /* Color de las etiquetas internas de los KPIs */
+        body.light-theme .kpi-label {
+            color: #475569 !important; /* Gris oscuro muy legible */
+            font-weight: 700;
+        }
+
+        /* Color del contador de los KPIs (Garantiza letras de alto contraste) */
+        body.light-theme .kpi-value {
+            color: #001f3f !important; /* Azul marino profundo */
+            text-shadow: none !important;
+        }
     </style>
 </head>
 <body>
