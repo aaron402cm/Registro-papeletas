@@ -2754,26 +2754,29 @@
                         <div style="background-color: #061424; padding: 12px; border-radius: 6px; border-left: 3px solid var(--apm-orange); font-size: 12px; line-height: 1.4; color: #ffffff;" id="wiz-val-resumen-infraccion">-</div>
                     </div>
 
-                    <!-- PESTAÑA D: RESOLUCIÓN FINAL (MAXIMIZADA Y REDISEÑADA) -->
-                    <div class="wizard-step-pane" id="pane-section-D">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                            <span class="panel-section-title" style="margin-bottom: 0;">Resolución Final y Notificación</span>
-                            <div class="sancion-input-group" style="margin-top: 0; background: rgba(224, 91, 27, 0.08); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(224, 91, 27, 0.3);">
-                                <label style="font-size:11px; font-weight:bold; color: var(--apm-orange); margin-bottom: 0; margin-right: 8px;">Suspender Acceso (Días):</label>
-                                <input type="number" id="sancion-dias-final" min="0" value="0" style="width: 55px; padding: 4px; font-size: 12px; background: #061424; border: 1px solid var(--border-color); color: #ffffff;">
-                            </div>
-                        </div>
-                        
-                        <div style="flex: 1; display: flex; flex-direction: column; margin-bottom: 15px;">
-                            <label style="font-size: 11px; font-weight: bold; margin-bottom: 4px; color: var(--text-muted);">Borrador del Correo Formal (Editable):</label>
-                            <textarea id="panel-txt-correo-borrador" style="flex: 1; min-height: 280px; width: 100%; border: 1px solid rgba(0, 240, 255, 0.3); background-color: #061424; color: #ffffff; padding: 12px; font-family: inherit; font-size: 12px; line-height: 1.5; border-radius: 6px; box-sizing: border-box; resize: none;"></textarea>
-                        </div>
+                   <!-- PESTAÑA D: RESOLUCIÓN FINAL -->
+                   <div class="wizard-step-pane" id="pane-section-D">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                  <span class="panel-section-title" style="margin-bottom: 0;">Resolución Final y Notificación</span>
+                  <div class="sancion-input-group" style="margin-top: 0; background: rgba(224, 91, 27, 0.08); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(224, 91, 27, 0.3);">
+                  <label style="font-size:11px; font-weight:bold; color: var(--apm-orange); margin-bottom: 0; margin-right: 8px;">Suspender Acceso (Días):</label>
+                  <input type="number" id="sancion-dias-final" min="0" value="0" style="width: 55px; padding: 4px; font-size: 12px; background: #061424; border: 1px solid var(--border-color); color: #ffffff;">
+                </div>
+               </div>
+    
+               <div style="flex: 1; display: flex; flex-direction: column; margin-bottom: 15px;">
+              <label style="font-size: 11px; font-weight: bold; margin-bottom: 4px; color: var(--text-muted);">Borrador del Correo Formal (Editable):</label>
+              <textarea id="panel-txt-correo-borrador" style="flex: 1; min-height: 250px; width: 100%; border: 1px solid rgba(0, 240, 255, 0.3); background-color: #061424; color: #ffffff; padding: 12px; font-family: inherit; font-size: 12px; line-height: 1.5; border-radius: 6px; box-sizing: border-box; resize: none;"></textarea>
+              </div>
 
-                        <div style="display: flex; gap: 15px;">
-                            <button class="btn-save-draft" onclick="guardarBorradorResolucion()">💾 Guardar Borrador</button>
-                            <button class="btn-send-resolution" onclick="ejecutarAprobacionYSancion()">✉️ Enviar Resolución</button>
-                        </div>
-                    </div>
+                <!-- MENSAJE DE ADVERTENCIA DINÁMICO SEGÚN ESTADO Y MODO -->
+              <div id="contenedor-alerta-resolucion" style="margin-bottom: 15px;"></div>
+
+                  <div style="display: flex; gap: 15px;">
+                 <button class="btn-save-draft" onclick="guardarBorradorResolucion()">💾 Guardar Borrador</button>
+                <button class="btn-send-resolution" id="btn-enviar-resolucion-manual" onclick="ejecutarAprobacionYSancion()">✉️ Enviar Resolución</button>
+                      </div>
+                   </div>
                  </div>
             </div>
         </div>
@@ -3946,6 +3949,8 @@
                         } else {
                             btnDrive.style.display = "none";
                         }
+                        evaluarVisibilidadBotonEnviar(localData);
+                        }
                     }
 
                     let tHtml = "";
@@ -4475,6 +4480,42 @@ function actualizarPlantillaAutoSave(conducta, campo, valor) {
     }).catch(err => {
         console.error("Error en Auto-save: ", err);
     });
+}
+        function evaluarVisibilidadBotonEnviar(localData) {
+    const btnEnviar = document.getElementById("btn-enviar-resolucion-manual");
+    const contenedorAlerta = document.getElementById("contenedor-alerta-resolucion");
+
+    if (!localData || !btnEnviar || !contenedorAlerta) return;
+
+    const modo = String(localData.modo_tramite || "MANUAL").toUpperCase();
+    const est = String(localData.estado_tramite || "").toUpperCase();
+    const semaforo = String(localData.estado_semaforo || "").toLowerCase();
+
+    // Determinar si la papeleta ya pasó los 3 días o si ya llegó descargo
+    const estaListoParaResolver = (est === "DESCARGO_RECIBIDO" || est === "PLAZO_VENCIDO" || semaforo === "descargo" || semaforo === "vencido");
+
+    if (modo === "AUTOMATICO") {
+        // CASO 1: MODO AUTOMÁTICO -> Oculta botón de envío
+        btnEnviar.style.display = "none";
+        contenedorAlerta.innerHTML = `
+            <div class="highlight-callout success" style="margin:0;">
+                🤖 <strong>Modo Automático Activo:</strong> La resolución no requiere envío manual. El sistema despachará este correo automáticamente a las 17:00 hrs si corresponde.
+            </div>`;
+    } else {
+        // CASO 2: MODO MANUAL
+        if (!estaListoParaResolver) {
+            // AÚN EN PLAZO (Caja 2): No se permite enviar resolución todavía
+            btnEnviar.style.display = "none";
+            contenedorAlerta.innerHTML = `
+                <div class="highlight-callout urgent" style="margin:0;">
+                    ⏳ <strong>Plazo de 3 días en curso:</strong> La empresa contratista aún se encuentra dentro del plazo legal para presentar descargos. El botón "Enviar Resolución" se activará cuando llegue el descargo o venza el plazo.
+                </div>`;
+        } else {
+            // DESCARGO RECIBIDO O PLAZO VENCIDO (Caja 3 o 4): Muestra el botón verde
+            btnEnviar.style.display = "flex";
+            contenedorAlerta.innerHTML = ""; // Limpia advertencias
+        }
+    }
 }
     </script>
 
