@@ -2592,46 +2592,28 @@
                 <div id="panel-control" class="tab-panel active">
                     
                     <!-- PIPELINE STAGE FILTERS (Modificado según nuevo flujo operativo) -->
-                    <div class="pipeline-bar">
-                        <div class="pipeline-node active" id="pipe-all" onclick="filtrarPorEtapaTramite('TODOS')">
-                            TODOS LOS CASOS ACTIVOS
-                            <span class="pipeline-counter" id="pipe-count-all">0</span>
-                        </div>
-                        <div class="pipeline-node" id="pipe-pendiente" onclick="filtrarPorEtapaTramite('PENDIENTE')">
-                            PAPELETAS ENVIADAS A LA EMPRESA
-                            <span class="pipeline-counter" id="pipe-count-pendiente">0</span>
-                        </div>
-                        <div class="pipeline-node" id="pipe-descargos" onclick="filtrarPorEtapaTramite('ESPERA_DESCARGOS')">
-                            DESCARGOS (GMAIL)
-                            <span class="pipeline-counter" id="pipe-count-descargos">0</span>
-                        </div>
-                        <div class="pipeline-node" id="pipe-evaluacion-humana" onclick="filtrarPorEtapaTramite('HUMANA')">
-                            EVALUACIÓN HUMANA
-                            <span class="pipeline-counter" id="pipe-count-humana">0</span>
-                        </div>
-                        <div class="pipeline-node" id="pipe-evaluacion-ia" onclick="filtrarPorEtapaTramite('IA')">
-                            EVALUACIÓN IA (AUTOMÁTICA 17:00)
-                            <span class="pipeline-counter" id="pipe-count-ia">0</span>
-                        </div>
-                    </div>
-
-                    <!-- BARRA DE BÚSQUEDA DEL PANEL DE ACTIVOS -->
-                    <div class="card search-filter-card" style="margin-bottom: 15px; padding: 15px;">
-                        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-                            <input type="text" id="tabla-buscador-rapido" placeholder="🔎 Buscar por DNI, ID, Nombre o Empresa..." style="flex: 1; min-width: 250px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: var(--text-color);" oninput="ejecutarBusquedaDBServidor('activo')">
-                            <select id="filtro-empresa" style="width: 150px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: var(--text-color);" onchange="filtrarYRenderizarTabla()">
-                                <option value="">Filtro Empresa</option>
-                            </select>
-                            <select id="filtro-semaforo" style="width: 150px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: var(--text-color);" onchange="filtrarYRenderizarTabla()">
-                                <option value="">Filtro Semáforo</option>
-                                <option value="vigente">Plazo Vigente</option>
-                                <option value="ultimo_dia">Último Día</option>
-                                <option value="vencido">Plazo Vencido</option>
-                                <option value="descargo">Descargo Recibido</option>
-                            </select>
-                            <button class="btn-apm" style="width: auto; padding: 10px 15px; background-color: var(--apm-blue); color: black;" onclick="forzarSincronizacionManual()">🔄 Sincronizar</button>
-                        </div>
-                    </div>
+<div class="pipeline-bar">
+    <div class="pipeline-node active" id="pipe-all" onclick="filtrarPorEtapaTramite('TODOS')">
+        TODOS LOS CASOS ACTIVOS
+        <span class="pipeline-counter" id="pipe-count-all">0</span>
+    </div>
+    <div class="pipeline-node" id="pipe-enplazo" onclick="filtrarPorEtapaTramite('EN_PLAZO')">
+        EN PLAZO (ESPERA DESCARGO)
+        <span class="pipeline-counter" id="pipe-count-enplazo">0</span>
+    </div>
+    <div class="pipeline-node" id="pipe-descargo" onclick="filtrarPorEtapaTramite('DESCARGO_RECIBIDO')">
+        DESCARGOS RECIBIDOS (GMAIL)
+        <span class="pipeline-counter" id="pipe-count-descargo">0</span>
+    </div>
+    <div class="pipeline-node" id="pipe-vencido" onclick="filtrarPorEtapaTramite('PLAZO_VENCIDO')">
+        PLAZO VENCIDO (SIN DESCARGO)
+        <span class="pipeline-counter" id="pipe-count-vencido">0</span>
+    </div>
+    <div class="pipeline-node" id="pipe-ia" onclick="filtrarPorEtapaTramite('AUTOMATICO')">
+        MODO AUTOMÁTICO (IA)
+        <span class="pipeline-counter" id="pipe-count-ia">0</span>
+    </div>
+</div>
 
                     <div class="dashboard-layout">
                         <!-- Tabla de papeletas activas con scrollbar interno -->
@@ -3580,44 +3562,61 @@
         }
 
         function calcularFiltrosEtapa(papeletas) {
-            let counts = { PENDIENTE: 0, ESPERA_DESCARGOS: 0, HUMANA: 0, IA: 0, CERRADO: 0 };
-            papeletas.forEach(p => {
-                const est = p.estado_tramite || "PENDIENTE";
-                const modo = p.modo_tramite || "MANUAL";
-                if (est === "PENDIENTE") counts.PENDIENTE++;
-                else if (est === "ESPERA_DESCARGOS") counts.ESPERA_DESCARGOS++;
-                else if (est === "DESCARGO_RECIBIDO" || est === "PLAZO_VENCIDO") {
-                    if (modo === "AUTOMATICO") counts.IA++;
-                    else counts.HUMANA++;
-                }
-                else if (est.indexOf("CERRADO") !== -1) counts.CERRADO++;
-            });
+    let activos = 0;
+    let enPlazo = 0;
+    let descargosRecibidos = 0;
+    let plazosVencidos = 0;
+    let enModoIA = 0;
 
-            const elAll = document.getElementById("pipe-count-all");
-            if (elAll) elAll.innerText = papeletas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1).length;
-            
-            const elPen = document.getElementById("pipe-count-pendiente");
-            if (elPen) elPen.innerText = counts.PENDIENTE;
-            
-            const elDes = document.getElementById("pipe-count-descargos");
-            if (elDes) elDes.innerText = counts.ESPERA_DESCARGOS;
-            
-            const elHum = document.getElementById("pipe-count-humana");
-            if (elHum) elHum.innerText = counts.HUMANA;
-            
-            const elIa = document.getElementById("pipe-count-ia");
-            if (elIa) elIa.innerText = counts.IA;
+    papeletas.forEach(p => {
+        const est = String(p.estado_tramite || "PENDIENTE").trim().toUpperCase();
+        const semaforo = String(p.estado_semaforo || "").trim().toLowerCase();
+        const modo = String(p.modo_tramite || "MANUAL").trim().toUpperCase();
+
+        // Solo procesar papeletas ACTIVAS (no cerradas)
+        if (est.indexOf("CERRADO") === -1) {
+            activos++;
+
+            if (est === "DESCARGO_RECIBIDO" || semaforo === "descargo") {
+                descargosRecibidos++;
+            } else if (est === "PLAZO_VENCIDO" || semaforo === "vencido") {
+                plazosVencidos++;
+            } else {
+                enPlazo++;
+            }
+
+            if (modo === "AUTOMATICO") {
+                enModoIA++;
+            }
         }
+    });
+
+    // Asignar los valores a los IDs corregidos del HTML
+    if (document.getElementById("pipe-count-all")) document.getElementById("pipe-count-all").innerText = activos;
+    if (document.getElementById("pipe-count-enplazo")) document.getElementById("pipe-count-enplazo").innerText = enPlazo;
+    if (document.getElementById("pipe-count-descargo")) document.getElementById("pipe-count-descargo").innerText = descargosRecibidos;
+    if (document.getElementById("pipe-count-vencido")) document.getElementById("pipe-count-vencido").innerText = plazosVencidos;
+    if (document.getElementById("pipe-count-ia")) document.getElementById("pipe-count-ia").innerText = enModoIA;
+}
 
         function filtrarPorEtapaTramite(etapa) {
-            etapaTramiteActual = etapa;
-            document.querySelectorAll(".pipeline-node").forEach(n => n.classList.remove("active"));
-            if (etapa === "TODOS") document.getElementById("pipe-all").classList.add("active");
-            else if (etapa === "HUMANA") document.getElementById("pipe-evaluacion-humana").classList.add("active");
-            else if (etapa === "IA") document.getElementById("pipe-evaluacion-ia").classList.add("active");
-            else document.getElementById(`pipe-${etapa.toLowerCase().replace("_", "")}`).classList.add("active");
-            filtrarYRenderizarTabla();
-        }
+    etapaTramiteActual = etapa;
+
+    // Quitar la clase activa a todos los botones
+    document.querySelectorAll(".pipeline-bar .pipeline-node").forEach(n => n.classList.remove("active"));
+
+    // Determinar cuál caja activar según la etapa seleccionada
+    let targetId = "pipe-all";
+    if (etapa === "EN_PLAZO") targetId = "pipe-enplazo";
+    else if (etapa === "DESCARGO_RECIBIDO") targetId = "pipe-descargo";
+    else if (etapa === "PLAZO_VENCIDO") targetId = "pipe-vencido";
+    else if (etapa === "AUTOMATICO") targetId = "pipe-ia";
+
+    const elTarget = document.getElementById(targetId);
+    if (elTarget) elTarget.classList.add("active");
+
+    filtrarYRenderizarTabla();
+}
 
         function ordenarTablaPor(columna) {
             if (sortColumnaActual === columna) sortOrdenAscendente = !sortOrdenAscendente;
@@ -3653,13 +3652,29 @@
                 const cumpleEmpresa = !empresaFiltro || p.empresa === empresaFiltro;
                 const cumpleSemaforo = !semaforoFiltro || p.estado_semaforo === semaforoFiltro;
 
-                let cumpleEtapa = true;
-                const est = p.estado_tramite || "PENDIENTE";
-                if (etapaTramiteActual === "PENDIENTE" && est !== "PENDIENTE") cumpleEtapa = false;
-                else if (etapaTramiteActual === "ESPERA_DESCARGOS" && est !== "ESPERA_DESCARGOS") cumpleEtapa = false;
-                else if (etapaTramiteActual === "EVALUACION" && est !== "DESCARGO_RECIBIDO" && est !== "PLAZO_VENCIDO") cumpleEtapa = false;
-                else if (etapaTramiteActual === "CERRADO" && est.indexOf("CERRADO") === -1) cumpleEtapa = false;
-                
+                // Reemplazar el bloque interno de cumpleEtapa dentro de filtrarYRenderizarTabla():
+let cumpleEtapa = true;
+const est = String(p.estado_tramite || "PENDIENTE").trim().toUpperCase();
+const semaforo = String(p.estado_semaforo || "").trim().toLowerCase();
+const modo = String(p.modo_tramite || "MANUAL").trim().toUpperCase();
+
+if (etapaTramiteActual === "EN_PLAZO") {
+    if (est === "DESCARGO_RECIBIDO" || est === "PLAZO_VENCIDO" || semaforo === "descargo" || semaforo === "vencido") {
+        cumpleEtapa = false;
+    }
+} else if (etapaTramiteActual === "DESCARGO_RECIBIDO") {
+    if (!(est === "DESCARGO_RECIBIDO" || semaforo === "descargo")) {
+        cumpleEtapa = false;
+    }
+} else if (etapaTramiteActual === "PLAZO_VENCIDO") {
+    if (!(est === "PLAZO_VENCIDO" || semaforo === "vencido")) {
+        cumpleEtapa = false;
+    }
+} else if (etapaTramiteActual === "AUTOMATICO") {
+    if (modo !== "AUTOMATICO") {
+        cumpleEtapa = false;
+    }
+}
                 return cumpleBuscador && cumpleEmpresa && cumpleSemaforo && cumpleEtapa;
             });
 
