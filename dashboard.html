@@ -2793,19 +2793,18 @@
         <div class="table-container card">
             <div class="table-scroll-container">
                 <table id="tabla-tipos-modos">
-                    <thead>
-                        <tr>
-                            <th>Conducta Infractora</th>
-                            <th>Descripción</th>
-                            <th style="width: 120px; text-align:center;">Días 1.ª Vez</th>
-                            <th style="width: 140px; text-align:center;">Días Reincidente (12 Meses)</th>
-                            <th style="width: 150px; text-align:center;">Modo de Trámite</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody-tipos-modos">
-                        <tr><td colspan="5" style="text-align:center;">Cargando conductas desde PLANTILLAS...</td></tr>
-                    </tbody>
-                </table>
+    <thead>
+        <tr>
+            <th style="text-align: left;">Conducta Infractora</th>
+            <th style="width: 140px; text-align: center;">Días 1.ª Vez</th>
+            <th style="width: 180px; text-align: center;">Días Reincidente (12 Meses)</th>
+            <th style="width: 180px; text-align: center;">Modo de Trámite</th>
+        </tr>
+    </thead>
+    <tbody id="tbody-tipos-modos">
+        <tr><td colspan="4" style="text-align:center;">Cargando conductas desde PLANTILLAS...</td></tr>
+    </tbody>
+</table>
             </div>
         </div>
     </div>
@@ -4420,18 +4419,18 @@ function renderizarTablaTiposModos() {
         const conductaEscapada = escapeJS(p.conducta);
 
         tr.innerHTML = `
-            <td><strong style="color:var(--text-color);">${p.conducta}</strong></td>
-            <td style="text-align:center;">
+            <td style="text-align: left;"><strong style="color:var(--text-color);">${p.conducta}</strong></td>
+            <td style="text-align: center;">
                 <input type="number" min="0" value="${p.dias_1ra}" 
                        style="width: 70px; text-align: center; padding: 4px; background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 4px;"
                        onchange="actualizarPlantillaAutoSave('${conductaEscapada}', 'dias_1ra', this.value)">
             </td>
-            <td style="text-align:center;">
+            <td style="text-align: center;">
                 <input type="number" min="0" value="${p.dias_reincidente}" 
                        style="width: 70px; text-align: center; padding: 4px; background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 4px;"
                        onchange="actualizarPlantillaAutoSave('${conductaEscapada}', 'dias_reincidente', this.value)">
             </td>
-            <td style="text-align:center;">
+            <td style="text-align: center;">
                 <select style="padding: 4px 8px; background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 4px; font-weight: bold;"
                         onchange="actualizarPlantillaAutoSave('${conductaEscapada}', 'modo', this.value)">
                     <option value="MANUAL" ${p.modo === "MANUAL" ? "selected" : ""}>✍️ MANUAL</option>
