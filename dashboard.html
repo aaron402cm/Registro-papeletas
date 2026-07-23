@@ -2765,7 +2765,6 @@
                         </div> <!-- Cierra #modal-instruccion-expediente -->
                     </div> <!-- Cierra .dashboard-layout -->
                 </div> <!-- Cierra #panel-control -->
-               </div> <! 
                 <!-- PESTAÑA: TIPOS Y MODOS DE TRÁMITE -->
 <div id="panel-tipos-modos" class="tab-panel">
     <div class="card">
@@ -2798,6 +2797,21 @@
                 <!-- NUEVA PESTAÑA: CASOS CERRADOS (HISTORIAL RECIENTE Y BÚSQUEDA AVANZADA) -->
             <div id="panel-cerradas-panel" class="tab-panel">
                 <div class="card search-filter-card" style="margin-bottom: 15px; padding: 15px;">
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+        <input type="text" id="tabla-buscador-rapido" placeholder="🔎 Buscar por DNI, ID, Nombre o Empresa..." style="flex: 1; min-width: 250px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: var(--text-color);" oninput="ejecutarBusquedaDBServidor('activo')">
+        <select id="filtro-empresa" style="width: 150px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: var(--text-color);" onchange="filtrarYRenderizarTabla()">
+            <option value="">Filtro Empresa</option>
+        </select>
+        <select id="filtro-semaforo" style="width: 150px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: var(--text-color);" onchange="filtrarYRenderizarTabla()">
+            <option value="">Filtro Semáforo</option>
+            <option value="vigente">Plazo Vigente</option>
+            <option value="ultimo_dia">Último Día</option>
+            <option value="vencido">Plazo Vencido</option>
+            <option value="descargo">Descargo Recibido</option>
+        </select>
+        <button class="btn-apm" style="width: auto; padding: 10px 15px; background-color: var(--apm-blue); color: black;" onclick="forzarSincronizacionManual()">🔄 Sincronizar</button>
+    </div>
+</div>
                         <div style="display: flex; gap: 10px; align-items: center;">
                             <input type="text" id="buscador-casos-cerrados" placeholder="🔎 Búsqueda Histórica Avanzada en Base de Datos (ID, DNI, Nombre, Empresa)..." style="flex: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: var(--text-color);" oninput="ejecutarBusquedaDBServidor('cerrado')">
                             <button class="btn-apm" style="width: auto; padding: 10px 15px; background-color: var(--apm-orange); color: white; font-weight: bold; box-shadow: 0 4px 10px rgba(224, 91, 27, 0.3);" onclick="forzarSincronizacionManual()">🔄 Sincronizar</button>
@@ -3559,51 +3573,88 @@
         }
 
         function poblarFiltrosDinamicos(papeletas) {
-            const selectEmpresa = document.getElementById("filtro-empresa");
-            selectEmpresa.innerHTML = '<option value="">Filtro Empresa</option>';
-            let empresas = new Set();
-            papeletas.forEach(p => { if (p.empresa) empresas.add(p.empresa); });
-            empresas.forEach(emp => {
-                const opt = document.createElement("option");
-                opt.value = emp; opt.innerText = emp;
-                selectEmpresa.appendChild(opt);
-            });
-        }
+    const selectEmpresa = document.getElementById("filtro-empresa");
+    if (!selectEmpresa) return; // ✅ Protección contra nulos
+    
+    selectEmpresa.innerHTML = '<option value="">Filtro Empresa</option>';
+    let empresas = new Set();
+    papeletas.forEach(p => { if (p.empresa) empresas.add(p.empresa); });
+    empresas.forEach(emp => {
+        const opt = document.createElement("option");
+        opt.value = emp; opt.innerText = emp;
+        selectEmpresa.appendChild(opt);
+    });
+}
 
-      function calcularFiltrosEtapa(papeletas) {
-    let activos = 0;
-    let enPlazo = 0;
-    let descargosRecibidos = 0;
-    let plazosVencidos = 0;
-    let enModoIA = 0;
+function filtrarYRenderizarTabla() {
+    if (!globalDashboardCache || !globalDashboardCache.dashboardData || !globalDashboardCache.dashboardData.papeletas) return;
+    
+    const elBuscador = document.getElementById("tabla-buscador-rapido");
+    const query = elBuscador ? elBuscador.value.trim().toLowerCase() : "";
+    const selectEmpresa = document.getElementById("filtro-empresa");
+    const empresaFiltro = selectEmpresa ? selectEmpresa.value : "";
+    const selectSemaforo = document.getElementById("filtro-semaforo");
+    const semaforoFiltro = selectSemaforo ? selectSemaforo.value : "";
 
-    papeletas.forEach(p => {
+    const papeletas = globalDashboardCache.dashboardData.papeletas;
+    activeFilteredPapeletas = papeletas.filter(p => {
+        const cumpleBuscador = !query || 
+            String(p.id_papeleta).toLowerCase().includes(query) ||
+            String(p.infractor).toLowerCase().includes(query) ||
+            String(p.dni).toLowerCase().includes(query) ||
+            String(p.empresa).toLowerCase().includes(query) ||
+            String(p.conducta).toLowerCase().includes(query);
+        
+        const cumpleEmpresa = !empresaFiltro || p.empresa === empresaFiltro;
+        const cumpleSemaforo = !semaforoFiltro || p.estado_semaforo === semaforoFiltro;
+
+        let cumpleEtapa = true;
         const est = String(p.estado_tramite || "PENDIENTE").trim().toUpperCase();
         const semaforo = String(p.estado_semaforo || "").trim().toLowerCase();
         const modo = String(p.modo_tramite || "MANUAL").trim().toUpperCase();
 
-        if (est.indexOf("CERRADO") === -1) {
-            activos++;
-
-            if (est === "DESCARGO_RECIBIDO" || semaforo === "descargo") {
-                descargosRecibidos++;
-            } else if (est === "PLAZO_VENCIDO" || semaforo === "vencido") {
-                plazosVencidos++;
-            } else {
-                enPlazo++;
+        if (etapaTramiteActual === "EN_PLAZO") {
+            if (est === "DESCARGO_RECIBIDO" || est === "PLAZO_VENCIDO" || semaforo === "descargo" || semaforo === "vencido") {
+                cumpleEtapa = false;
             }
-
-            if (modo === "AUTOMATICO") {
-                enModoIA++;
+        } else if (etapaTramiteActual === "DESCARGO_RECIBIDO") {
+            if (!(est === "DESCARGO_RECIBIDO" || semaforo === "descargo")) {
+                cumpleEtapa = false;
+            }
+        } else if (etapaTramiteActual === "PLAZO_VENCIDO") {
+            if (!(est === "PLAZO_VENCIDO" || semaforo === "vencido")) {
+                cumpleEtapa = false;
+            }
+        } else if (etapaTramiteActual === "AUTOMATICO") {
+            if (modo !== "AUTOMATICO") {
+                cumpleEtapa = false;
             }
         }
+
+        return cumpleBuscador && cumpleEmpresa && cumpleSemaforo && cumpleEtapa;
     });
 
-    if (document.getElementById("pipe-count-all")) document.getElementById("pipe-count-all").innerText = activos;
-    if (document.getElementById("pipe-count-enplazo")) document.getElementById("pipe-count-enplazo").innerText = enPlazo;
-    if (document.getElementById("pipe-count-descargo")) document.getElementById("pipe-count-descargo").innerText = descargosRecibidos;
-    if (document.getElementById("pipe-count-vencido")) document.getElementById("pipe-count-vencido").innerText = plazosVencidos;
-    if (document.getElementById("pipe-count-ia")) document.getElementById("pipe-count-ia").innerText = enModoIA;
+    activeFilteredPapeletas.sort((a, b) => {
+        let valA = a[sortColumnaActual]; let valB = b[sortColumnaActual];
+        if (typeof valA === "string") valA = valA.toLowerCase();
+        if (typeof valB === "string") valB = valB.toLowerCase();
+        if (valA < valB) return sortOrdenAscendente ? -1 : 1;
+        if (valA > valB) return sortOrdenAscendente ? 1 : -1;
+        return 0;
+    });
+    
+    const totalBadge = document.getElementById("badge-total-papeletas");
+    if (totalBadge) {
+        if (activeFilteredPapeletas.length > 0) {
+            totalBadge.innerText = activeFilteredPapeletas.length;
+            totalBadge.style.display = "inline-block";
+        } else {
+            totalBadge.style.display = "none";
+        }
+    }
+
+    actualizarIconosOrdenado();
+    renderizarBandejaPrincipal();
 }
 
         function filtrarPorEtapaTramite(etapa) {
