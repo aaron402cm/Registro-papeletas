@@ -27,17 +27,17 @@
             --text-muted: #b0cddd;
         }
 
-        /* --- NUEVO MODO DIURNO (ELEGANTE FONDO CREMA/MARFIL CON ALTO CONTRASTE) --- */
+        /* --- MODO DIURNO --- */
         body.light-theme {
-            --bg-color: #f7f5ee; /* Fondo crema refinado de alta categoría */
-            --card-bg: #ffffff; /* Ventanas y cajas en blanco puro elegante */
-            --text-color: #001f3f; /* Azul marino profundo para máxima lectura */
-            --text-muted: #4b6584; /* Contraste secundario sofisticado */
-            --border-color: rgba(0, 31, 63, 0.15); /* Bordes sutiles en tono marino */
-            --table-row-hover: rgba(0, 75, 135, 0.05); /* Desplazamiento de filas sutil */
-            --input-bg: #fcfcfc; /* Cajas de texto limpias */
-            --apm-dark-blue: #001f3f; /* Encabezado unificado */
-            --apm-blue: #005f9e; /* Azul activo para links y botones */
+            --bg-color: #f7f5ee;
+            --card-bg: #ffffff;
+            --text-color: #001f3f;
+            --text-muted: #4b6584;
+            --border-color: rgba(0, 31, 63, 0.15);
+            --table-row-hover: rgba(0, 75, 135, 0.05);
+            --input-bg: #fcfcfc;
+            --apm-dark-blue: #001f3f;
+            --apm-blue: #005f9e;
             --success-green: #0e8a43;
             --warning-yellow: #a17000;
             --danger-red: #c01c40;
@@ -46,7 +46,6 @@
         body {
             font-family: 'Segoe UI', -apple-system, Roboto, sans-serif;
             background-color: var(--bg-color);
-            /* Patrón de cuadrícula de control táctico */
             background-image: 
                 linear-gradient(rgba(0, 240, 255, 0.015) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 240, 255, 0.015) 1px, transparent 1px);
@@ -60,14 +59,12 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* Reconfiguración de cuadrícula sutil en Modo Diurno */
         body.light-theme {
             background-image: 
                 linear-gradient(rgba(0, 31, 63, 0.012) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 31, 63, 0.012) 1px, transparent 1px);
         }
 
-        /* --- BARRA DE DESPLAZAMIENTO FUTURISTA --- */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -84,13 +81,11 @@
             box-shadow: 0 0 10px var(--apm-orange);
         }
 
-        /* --- PANTALLA DE INGRESO CON LIQUID GLASS Y FONDO DE BUQUE PORTACONTENEDORES ELEGANTE --- */
         #login-screen {
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            /* Se utiliza la imagen guardada en tu repositorio local */
             background: linear-gradient(135deg, rgba(0, 12, 24, 0.40), rgba(0, 6, 12, 0.9)), 
                         url('fondo.jpg') no-repeat center center/cover;
             padding: 20px;
@@ -98,7 +93,6 @@
         }
 
         .login-box {
-            /* Efecto Liquid Glassmorphism Premium */
             background: rgba(255, 255, 255, 0.08); 
             border: 1px solid rgba(255, 255, 255, 0.22);
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
@@ -191,7 +185,6 @@
             transition: border-color 0.2s, background-color 0.3s, color 0.3s, box-shadow 0.2s;
         }
 
-        /* Inputs específicos en Modo Diurno */
         body.light-theme .form-group input,
         body.light-theme .form-group select,
         body.light-theme .form-group textarea {
@@ -253,9 +246,8 @@
             text-shadow: 0 0 8px rgba(255, 0, 85, 0.4);
         }
 
-        /* --- ANIMACIÓN INTERACTIVA DE PUNTOS CARGANDO (DOTS JUMPING LOADER) --- */
         .login-dots-loader {
-            display: none; /* Controlado dinámicamente */
+            display: none;
             text-align: center;
             margin-top: 20px;
         }
@@ -279,7 +271,6 @@
             40% { transform: scale(1.1); opacity: 1; }
         }
 
-        /* --- CONTENEDOR PRINCIPAL DEL DASHBOARD --- */
         #main-app {
             display: none;
             flex-direction: column;
@@ -427,7 +418,6 @@
             border-color: var(--danger-red);
         }
 
-        /* --- LAYOUT DEL CUERPO CON NAVEGACIÓN LATERAL VERTICAL --- */
         .app-body-wrapper {
             display: flex;
             flex-direction: row;
@@ -436,7 +426,6 @@
             overflow: hidden;
         }
 
-        /* --- COLUMNA DE NAVEGACIÓN LATERAL IZQUIERDO--- */
         .nav-tabs {
             width: 230px !important;
             min-width: 230px !important;
@@ -461,7 +450,7 @@
             padding: 12px 14px !important; 
             font-size: 13px !important; 
             font-weight: 600;
-            color: #64748b !important; /* Gris slate monocromático por defecto */
+            color: #64748b !important;
             cursor: pointer;
             border-left: 2px solid transparent !important; 
             display: flex;
@@ -469,24 +458,21 @@
             justify-content: flex-start;
             gap: 10px;
             border-radius: 4px;
-            /* Curva bezier de rebote físico (Elastic spring transition) para el efecto Ojo de Pez */
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
                         color 0.3s ease, 
                         background-color 0.3s ease, 
                         border-color 0.3s ease;
         }
 
-        /* Corrección de color de botones inactivos en Modo Diurno (Evita letras blancas invisibles) */
         body.light-theme .tab-link {
-            color: #475569 !important; /* Gris oscuro muy visible en fondo blanco */
+            color: #475569 !important;
         }
 
-        /* Efecto Ojo de Pez (Ampliación táctica progresiva) */
         .tab-link:hover {
             color: #ffffff !important;
             background-color: rgba(255, 96, 0, 0.05) !important;
             border-left-color: rgba(255, 96, 0, 0.4) !important;
-            transform: scale(1.05) translateX(8px); /* Sutil aumento tridimensional hacia la derecha */
+            transform: scale(1.05) translateX(8px);
         }
 
         body.light-theme .tab-link:hover {
@@ -495,13 +481,12 @@
             border-left-color: rgba(255, 96, 0, 0.4) !important;
         }
 
-        /* Pestaña seleccionada activa: Efecto Ojo de Pez expandido */
         .tab-link.active {
             color: #ffffff !important;
             background: linear-gradient(90deg, rgba(255, 96, 0, 0.08) 0%, rgba(255, 96, 0, 0) 100%) !important;
             border-color: transparent !important;
             border-left: 3px solid #ff6000 !important;
-            transform: scale(1.05) translateX(12px); /* Mayor proyección visual activa */
+            transform: scale(1.05) translateX(12px);
             box-shadow: none !important;
         }
 
@@ -512,7 +497,6 @@
             box-shadow: none !important;
         }
 
-        /* Badge de notificación táctico de bajo contraste */
         .tab-badge {
             background-color: #0d1527 !important;
             color: #ff6000 !important;
@@ -525,7 +509,6 @@
             box-shadow: 0 0 8px rgba(255, 96, 0, 0.15);
         }
 
-        /* --- CONTENIDO --- */
         .content-area {
             flex: 1;
             padding: 25px 30px;
@@ -535,7 +518,6 @@
             height: calc(100vh - 60px);
         }
 
-        /* --- TRANSICIÓN SUAVE EN CAMBIO DE PESTAÑAS (FADE IN + ZOOM SCALE) --- */
         .tab-panel {
             display: none;
         }
@@ -556,7 +538,6 @@
             }
         }
 
-        /* --- EFECTO DE PANEL MARINO EN TARJETAS --- */
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -581,9 +562,9 @@
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 12px;
             display: flex;
-            justify-content: center; /* Centra los puntos y el texto juntos */
+            justify-content: center;
             align-items: center;
-            gap: 10px; /* Espacio controlado entre los puntos y el texto */
+            gap: 10px;
             position: relative;
         }
 
@@ -595,18 +576,16 @@
             text-shadow: 0 0 4px var(--apm-orange);
         }
 
-        /* --- LA TABLA AHORA OCUPA EL 100% DEL ANCHO DE LA PANTALLA --- */
         .dashboard-layout {
-            display: block; /* Desactiva las dos columnas y expande la tabla */
+            display: block;
             width: 100%;
         }
 
-        /* --- NUEVO MODAL DE INSTRUCCIÓN (LIQUID GLASS) --- */
         #modal-instruccion-expediente {
-            display: none; /* Controlado por JS */
+            display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 8, 16, 0.85); /* Fondo oscuro semitransparente */
+            background: rgba(0, 8, 16, 0.85);
             z-index: 4000;
             justify-content: center;
             align-items: center;
@@ -614,25 +593,23 @@
             box-sizing: border-box;
         }
 
-        /* --- MODAL DE INSTRUCCIÓN VERSIÓN 2.0 (TACTICAL CONTROL DECK) --- */
         #modal-instruccion-expediente .modal-box {
-            background: #111827 !important; /* Cuerpo de pestañas oscuro unificado */
+            background: #111827 !important;
             border: 1px solid rgba(255, 255, 255, 0.18) !important;
             box-shadow: 0 25px 65px rgba(0, 0, 0, 0.85), inset 0 1px 1px rgba(255, 255, 255, 0.15);
             border-radius: 16px;
             width: 95%;
             max-width: 950px !important;
-            height: 85%; /* Alto fijo para controlar las proporciones internas */
+            height: 85%;
             display: flex;
-            flex-direction: column; /* Apila el encabezado fijo y el cuerpo de trabajo */
-            overflow: hidden; /* Evita scrolls dobles extraños */
+            flex-direction: column;
+            overflow: hidden;
             position: relative;
             border-top: 4px solid var(--apm-orange) !important;
         }
 
-        /* --- 1. ENCABEZADO FIJO ("Ficha de Identificación") --- */
         .modal-header-fijo {
-            background-color: #061424 !important; /* Más oscuro y neutro */
+            background-color: #061424 !important;
             padding: 22px 25px;
             border-bottom: 2px solid rgba(0, 240, 255, 0.15);
             border-top-left-radius: 16px;
@@ -666,7 +643,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* --- 2. CUERPO DE TRABAJO --- */
         .modal-cuerpo-trabajo {
             flex: 1;
             padding: 25px;
@@ -691,7 +667,6 @@
             border: 1px solid rgba(0, 240, 255, 0.12);
         }
 
-        /* Fuerza a que la pestaña D se comporte como flexbox al activarse para estirar el borrador */
         #pane-section-D.active {
             display: flex !important;
             flex-direction: column;
@@ -699,7 +674,6 @@
             height: 100%;
         }
 
-        /* --- 3. CHIPS DE ESTADO EN DESCARGOS --- */
         .highlight-callout.info {
             background-color: rgba(255, 255, 255, 0.04) !important;
             border: 1px solid rgba(255, 255, 255, 0.12) !important;
@@ -711,7 +685,6 @@
             border-radius: 6px;
         }
 
-        /* --- 4. BOTONES DE ACCIÓN SEMÁNTICOS --- */
         .btn-save-draft {
             flex: 1;
             background-color: #061424 !important;
@@ -735,7 +708,7 @@
 
         .btn-send-resolution {
             flex: 1;
-            background-color: #00C853 !important; /* Verde Tecnológico APM */
+            background-color: #00C853 !important;
             border: none !important;
             color: #ffffff !important;
             padding: 14px;
@@ -755,7 +728,6 @@
             box-shadow: 0 4px 20px rgba(0, 200, 83, 0.5);
         }
 
-        /* Ajuste en modo diurno (Gris platino claro neutro y pulcro) */
         body.light-theme #modal-instruccion-expediente .modal-box {
             background: #f4f5f7 !important; 
             border: 1px solid rgba(0, 31, 63, 0.15) !important;
@@ -764,16 +736,6 @@
             -webkit-backdrop-filter: none !important;
         }
 
-        /* Adaptación en modo diurno (Gris platino claro neutro y pulcro) */
-        body.light-theme #modal-instruccion-expediente .modal-box {
-            background: #f4f5f7 !important; /* Gris claro satinado */
-            border: 1px solid rgba(0, 31, 63, 0.15) !important;
-            box-shadow: 0 15px 35px rgba(0, 31, 63, 0.08) !important;
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
-        }
-
-        /* --- BOTÓN DE CIERRE EXCLUSIVO PARA EL MODAL (ESQUINA SUPERIOR DERECHA) --- */
         .modal-close-btn {
             position: absolute !important;
             top: 20px !important;
@@ -791,7 +753,6 @@
             transform: scale(1.15);
         }
 
-        /* --- PIPELINE STAGE FILTERS --- */
         .pipeline-bar {
             display: flex;
             gap: 10px;
@@ -809,7 +770,6 @@
             border-color: rgba(0, 31, 63, 0.15);
         }
 
-        /* Nodos del pipeline modificados para eliminar el color negro */
         .pipeline-node {
             flex: 1;
             min-width: 160px;
@@ -869,7 +829,6 @@
             text-shadow: 0 0 6px currentColor;
         }
 
-        /* BARRA DE DESPLAZAMIENTO PARA LA TABLA */
         .table-scroll-container {
             max-height: 580px;
             overflow-y: auto;
@@ -905,50 +864,46 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            background: transparent !important; /* Transparente para heredar el color de la tarjeta (card) */
+            background: transparent !important;
             font-size: 14px;
         }
 
-        /* --- CONTENEDORES DE TABLAS: AZUL NOCHE EN NOCTURNO, BLANCO EN DIURNO --- */
         .table-container.card {
-            background-color: #051224 !important; /* Azul Noche Táctico en modo nocturno */
+            background-color: #051224 !important;
             border: 1px solid rgba(0, 240, 255, 0.12) !important;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0, 240, 255, 0.03);
             transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
-        /* Ajuste de contenedores de tablas en Modo Diurno (Light Theme) */
         body.light-theme .table-container.card {
-            background-color: #ffffff !important; /* Fondo blanco limpio */
+            background-color: #ffffff !important;
             border: 1px solid rgba(0, 31, 63, 0.12) !important;
             box-shadow: 0 4px 15px rgba(0, 31, 63, 0.05) !important;
         }
 
-        /* --- FILAS CON FONDO ALTERNO ADAPTABLE --- */
         tr.clickable-row:nth-child(even) {
-            background-color: rgba(0, 24, 48, 0.3) !important; /* Azul sutil en modo nocturno */
+            background-color: rgba(0, 24, 48, 0.3) !important;
         }
 
         body.light-theme tr.clickable-row:nth-child(even) {
-            background-color: rgba(0, 31, 63, 0.02) !important; /* Gris ultra suave en modo diurno */
+            background-color: rgba(0, 31, 63, 0.02) !important;
         }
 
-        /* --- AJUSTE DE HOVER EN FILAS PARA MODO DIURNO --- */
         body.light-theme tr.clickable-row:hover {
-            background-color: rgba(0, 75, 135, 0.04) !important; /* Sutil hover celeste grisáceo */
+            background-color: rgba(0, 75, 135, 0.04) !important;
             box-shadow: none !important;
         }
 
         th, td {
-            padding: 20px 14px !important; /* Espaciado cómodo py-5 para que los datos respiren */
-            border-bottom: 1px solid #1E293B !important; /* Bordes finos de celdas */
+            padding: 20px 14px !important;
+            border-bottom: 1px solid #1E293B !important;
             text-align: left;
             color: var(--text-color);
         }
 
         th {
-            background-color: #020713 !important; /* Fondo negro profundo en nocturno */
-            color: #00f0ff !important; /* Letras cian de alta visibilidad en nocturno */
+            background-color: #020713 !important;
+            color: #00f0ff !important;
             font-family: monospace;
             text-transform: uppercase;
             font-size: 12px;
@@ -957,26 +912,24 @@
         }
 
         body.light-theme th {
-            background-color: #001f3f !important; /* Azul marino corporativo de alta gama */
-            color: #ffffff !important; /* Letras blancas brillantes de alto contraste */
+            background-color: #001f3f !important;
+            color: #ffffff !important;
         }
 
-        /* --- PRESERVAR EFECTO DE LUMINOSIDAD/GLOW EN LAS FILAS AL PASAR EL CURSOR --- */
         tr.clickable-row {
             cursor: pointer;
             transition: all 0.2s ease-in-out;
         }
 
         tr.clickable-row:hover {
-            background-color: rgba(0, 240, 255, 0.04) !important; /* Luz sutil cian de fondo */
-            box-shadow: inset 0 0 12px rgba(0, 240, 255, 0.08) !important; /* Resplandor interno de celda */
+            background-color: rgba(0, 240, 255, 0.04) !important;
+            box-shadow: inset 0 0 12px rgba(0, 240, 255, 0.08) !important;
         }
 
         tr.active-row {
             background-color: rgba(0, 240, 255, 0.08) !important;
             border-left: 4px solid var(--apm-blue) !important;
         }
-
 
         #tabla-control-papeletas td:nth-child(1),
         #tabla-control-papeletas td:nth-child(5),
@@ -986,21 +939,11 @@
             white-space: nowrap;
         }
 
-        tr.clickable-row {
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        tr.clickable-row:hover {
-            background-color: var(--table-row-hover) !important;
-        }
-
         body.light-theme tr.active-row {
             background-color: rgba(0, 95, 158, 0.06) !important;
             border-left-color: var(--apm-blue);
         }
 
-        /* --- CAMPOS DE BÚSQUEDA Y SELECTS MEJORADOS --- */
         #tabla-buscador-rapido, #buscador-casos-cerrados {
             background-color: var(--input-bg) !important; 
             border: 2px solid var(--border-color) !important; 
@@ -1025,7 +968,6 @@
             font-weight: 600;
         }
 
-        /* --- BADGES FUTURISTAS --- */
         .badge {
             display: inline-block;
             padding: 4px 10px;
@@ -1043,7 +985,6 @@
         .badge-red { background-color: rgba(255, 0, 85, 0.15); color: var(--danger-red); border: 1px solid rgba(255, 0, 85, 0.3); }
         .badge-blue { background-color: rgba(0, 240, 255, 0.15); color: var(--apm-blue); border: 1px solid rgba(0, 240, 255, 0.3); }
 
-        /* --- BOTÓN DE ENLACE DE DRIVE --- */
         .btn-drive-link {
             display: flex;
             align-items: center;
@@ -1069,7 +1010,6 @@
             box-shadow: 0 4px 15px rgba(16, 124, 65, 0.5);
         }
 
-        /* AUTOMATICO / MANUAL TOGGLE SWITCH */
         .toggle-switch-container {
             display: flex;
             align-items: center;
@@ -1116,7 +1056,6 @@
         input:checked + .slider { background-color: rgba(0, 255, 102, 0.3); border-color: var(--success-green); }
         input:checked + .slider:before { transform: translateX(22px); background-color: var(--success-green); }
 
-        /* --- DISEÑO DE PANEL LATERAL ANCHO OPTIMIZADO A 540PX --- */
         .ai-side-panel {
             width: 540px;
             min-width: 540px;
@@ -1186,7 +1125,6 @@
             border-radius: 4px;
         }
 
-        /* --- TIMELINE DE TRAZABILIDAD --- */
         .trazabilidad-timeline {
             margin-top: 12px;
             padding-left: 15px;
@@ -1210,7 +1148,6 @@
             text-shadow: 0 0 8px var(--apm-orange);
         }
 
-        /* --- ACCIONES DE VISTA DE TARJETAS --- */
         .cards-grid-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -1254,7 +1191,6 @@
             margin-bottom: 5px;
         }
 
-        /* --- PEPELETA DIARIA & AGENTES --- */
         .kpi-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -1262,34 +1198,31 @@
             margin-bottom: 25px;
         }
 
-        /* --- TARJETAS KPI (GLASSMORPHISM Y MONOSPACE) --- */
         .kpi-card {
             background: rgba(10, 20, 38, 0.45) !important;
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             padding: 22px;
             border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.05) !important; /* Borde sutil por defecto */
+            border: 1px solid rgba(255, 255, 255, 0.05) !important;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             text-align: center;
-            border-bottom: none !important; /* Retiramos el borde azul grueso para estilizar */
+            border-bottom: none !important;
             transition: all 0.3s ease;
         }
 
-        /* Solo la tarjeta activa ("Todos los casos activos") muestra el borde y resplandor sutil */
         .kpi-card.accent-orange {
             border: 1px solid rgba(255, 96, 0, 0.35) !important;
             background: rgba(255, 96, 0, 0.01) !important;
             box-shadow: 0 0 20px rgba(255, 96, 0, 0.08), inset 0 0 10px rgba(255, 96, 0, 0.03);
         }
 
-        /* Contadores con fuentes monoespaciadas para máxima precisión visual */
         .kpi-value {
             font-size: 32px;
             font-weight: 800;
             color: var(--text-color);
             margin-bottom: 5px;
-            font-family: 'Courier New', Courier, monospace !important; /* Fuente monoespaciada */
+            font-family: 'Courier New', Courier, monospace !important;
             letter-spacing: -1px;
             text-shadow: 0 0 10px currentColor;
         }
@@ -1327,7 +1260,6 @@
             border-color: #001f3f;
         }
 
-        /* --- EL NOTICIERO DE SEGURIDAD --- */
         .newspaper-container {
             max-width: 100%;
             background: var(--card-bg);
@@ -1386,7 +1318,6 @@
             text-shadow: 0 0 6px var(--apm-orange);
         }
 
-        /* --- AJUSTES Y REGLAS DEL RIS --- */
         .ris-rule-card {
             border: 1px solid var(--border-color);
             border-radius: 6px;
@@ -1430,7 +1361,6 @@
             font-weight: bold;
         }
 
-        /* Modal para Formulario de Edición de Reglas */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -1454,7 +1384,6 @@
             max-width: 550px;
         }
 
-        /* --- VISOR DE PDF FLOTANTE --- */
         .pdf-modal-overlay {
             display: none;
             position: fixed;
@@ -1499,22 +1428,20 @@
             border: none;
         }
 
-        /* --- MODAL DE CARGA DE ROBOT IA CON EFECTO LÍQUIDO (MAREA EN ASCENSO) --- */
         .robot-modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 8, 16, 0.94); /* Fondo más oscuro para que resalte el agua */
+            background: rgba(0, 8, 16, 0.94);
             z-index: 5000;
             justify-content: center;
             align-items: center;
             color: white;
             font-family: 'Segoe UI', sans-serif;
             overflow: hidden;
-            --water-height: 0%; /* Inicialización obligatoria para rastreo de marea */
+            --water-height: 0%;
         }
 
-        /* Vaso de agua en ascenso (Cuerpo líquido con brillo de neón superior) */
         .robot-modal-overlay::before {
             content: '';
             position: absolute;
@@ -1522,33 +1449,28 @@
             left: 0;
             width: 100%;
             height: var(--water-height, 0%);
-            /* Incremento drástico de opacidad con gradiente cian de neón a azul APM */
             background: linear-gradient(180deg, rgba(0, 240, 255, 0.55) 0%, rgba(0, 31, 63, 0.85) 100%);
             z-index: 1;
             transition: height 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
             pointer-events: none;
-            
-            /* Cresta de luz de neón (Simula el borde del agua llenando el vaso) */
             border-top: 3px solid #00f0ff;
             box-shadow: 0 -8px 25px rgba(0, 240, 255, 0.95), inset 0 12px 20px rgba(0, 240, 255, 0.5);
         }
 
-        /* Oleaje en movimiento continuo */
         .robot-modal-overlay::after {
             content: '';
             position: absolute;
             bottom: var(--water-height, 0%);
             left: 0;
             width: 200%;
-            height: 38px; /* Onda más visible y pronunciada */
-            /* Vector con color cian eléctrico de alta opacidad (0.65) */
+            height: 38px;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,0 C150,90 350,-40 500,40 C650,120 850,10 1000,60 C1150,110 1250,30 1300,50 L1300,120 L0,120 Z' fill='rgba(0, 240, 255, 0.65)'/%3E%3C/svg%3E");
             background-size: 50% 100%;
             background-repeat: repeat-x;
             z-index: 2;
             transition: bottom 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
             pointer-events: none;
-            animation: waveFlow 2.4s linear infinite; /* Movimiento de marea más dinámico y rápido */
+            animation: waveFlow 2.4s linear infinite;
             transform: translateY(18px);
         }
 
@@ -1562,10 +1484,9 @@
             max-width: 450px;
             padding: 30px;
             position: relative;
-            z-index: 10; /* Mantiene la interfaz y el robot siempre legibles por encima del agua */
+            z-index: 10;
         }
 
-        /* Contenedor del nuevo Robot SVG */
         .robot-anim {
             width: 90px;
             height: 90px;
@@ -1579,7 +1500,6 @@
             100% { transform: translateY(0px) rotate(0deg); }
         }
 
-        /* --- WIZARD EN PANEL LATERAL (6 PASOS) --- */
         .wizard-step-node {
             width: 25px;
             height: 25px;
@@ -1642,7 +1562,6 @@
             padding-top: 15px;
         }
 
-        /* --- TIMELINE VISUAL DE REINCIDENCIAS --- */
         .vertical-timeline {
             position: relative;
             margin: 15px 0 15px 15px;
@@ -1748,7 +1667,6 @@
             color: #d1f7ff;
         }
 
-        /* --- ANIMACIÓN HOLOGRÁFICA DE RESPIRACIÓN (CHAT BOT FAB) --- */
         @keyframes breathingGlow {
             0% {
                 transform: scale(1);
@@ -1787,7 +1705,6 @@
             transform: scale(1.12);
         }
 
-        /* --- CONTENEDOR FLOTANTE DEL CHATBOT --- */
         .chat-panel {
             position: fixed;
             bottom: 95px;
@@ -1806,7 +1723,6 @@
             transition: background-color 0.3s;
         }
 
-        /* --- ÁREA DE MENSAJES (ESTILO WHATSAPP CON IMAGEN DE FONDO LOCAL) --- */
         .chat-messages {
             flex: 1;
             padding: 15px;
@@ -1814,7 +1730,6 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            /* Vinculamos su imagen descargada directamente en el cuerpo del chat */
             background: linear-gradient(rgba(0, 12, 24, 0.4), rgba(0, 12, 24, 0.4)), 
                         url('fondo_chatbot.png') no-repeat center center/cover;
         }
@@ -1873,20 +1788,18 @@
             font-size: 13px;
         }
 
-        /* --- CABECERA DEL CHATBOT CON FONDO MARINO CRISPADO (ELEVADO CONTRASTE) --- */
         .chat-header {
-            background: #00152b !important; /* Forzar fondo azul marino muy oscuro en cualquier modo */
-            color: #ffffff !important; /* Forzar letras en blanco brillante */
-            padding: 14px 45px 14px 15px !important; /* Espacio reservado a la derecha para la X */
+            background: #00152b !important;
+            color: #ffffff !important;
+            padding: 14px 45px 14px 15px !important;
             font-weight: bold;
             font-size: 14px;
             display: flex;
             align-items: center;
             border-bottom: 1px solid var(--border-color);
-            position: relative; /* Permite posicionamiento absoluto del botón de cierre */
+            position: relative;
         }
 
-        /* --- BOTÓN DE CIERRE "X" ABSOLUTO EN LA ESQUINA SUPERIOR DERECHA --- */
         .chat-close-btn {
             position: absolute !important;
             top: 50% !important;
@@ -1894,7 +1807,7 @@
             transform: translateY(-50%) !important;
             cursor: pointer !important;
             font-size: 18px !important;
-            color: #ffffff !important; /* Asegurar contraste impecable */
+            color: #ffffff !important;
             transition: color 0.2s ease;
             z-index: 10;
         }
@@ -1903,7 +1816,6 @@
             color: var(--apm-orange) !important;
         }
         
-        /* --- INDICADOR DE ESTADO GEMINI --- */
         .status-dot {
             width: 10px;
             height: 10px;
@@ -1945,7 +1857,6 @@
             100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(255, 183, 0, 0); }
         }
 
-        /* --- ESTILO DE ANIMACIÓN SPINNER --- */
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -1958,7 +1869,7 @@
             height: 50px;
             animation: spin 1s linear infinite;
         }
-        /* --- ESTILOS DE SUB-PESTAÑAS DE EXPEDIENTE RIS --- */
+
         button.sub-tab-link {
             flex: 1;
             padding: 8px 4px;
@@ -1979,7 +1890,7 @@
             color: var(--apm-orange) !important;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
-        /* --- COLORES SEMÁNTICOS PARA LAS TARJETAS DEL PIPELINE --- */
+
         #pipe-all {
             border-color: rgba(0, 240, 255, 0.25) !important;
             color: #00f0ff !important;
@@ -2029,35 +1940,32 @@
             border-color: #c38bf7 !important;
             box-shadow: 0 0 12px rgba(0, 240, 255, 0.25) !important;
         }
-        /* --- TARJETAS DE BÚSQUEDA EN COLOR MARFIL ELEGANTE Y ALTO CONTRASTE --- */
+
         .search-filter-card {
-            background-color: #f5f2eb !important; /* Color marfil cálido de alta gama */
+            background-color: #f5f2eb !important;
             border: 1px solid rgba(0, 31, 63, 0.18) !important;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
         }
 
-        /* Ajustar inputs y selectores internos para que armonicen y contrasten sobre el marfil */
         .search-filter-card input, 
         .search-filter-card select {
-            background-color: #ffffff !important; /* Blanco limpio para las cajas de texto */
-            border: 2px solid rgba(0, 31, 63, 0.3) !important; /* Borde oscuro definido */
-            color: #001f3f !important; /* Texto marino profundo de alto contraste */
+            background-color: #ffffff !important;
+            border: 2px solid rgba(0, 31, 63, 0.3) !important;
+            color: #001f3f !important;
             font-weight: 600;
         }
 
-        /* Texto de sugerencia (placeholder) en color oscuro legible */
         .search-filter-card input::placeholder {
             color: #556677 !important;
         }
 
-        /* Fuerza a que los botones "Sincronizar" dentro de estas tarjetas sean naranja sólido con texto blanco */
         .search-filter-card .btn-apm {
             background-color: var(--apm-orange) !important;
             color: #ffffff !important;
             font-weight: bold !important;
             box-shadow: 0 4px 10px rgba(224, 91, 27, 0.25) !important;
         }
-        /* --- JERARQUÍA EN TABLAS (MODO NOCTURNO POR DEFECTO) --- */
+
         .text-id {
             color: #ffffff;
             text-shadow: 0 0 4px rgba(255, 255, 255, 0.15);
@@ -2073,49 +1981,40 @@
         }
         .text-conducta {
             color: #cbd5e1;
-            font-style: normal !important; /* Sin cursiva para mejorar lectura rápida */
+            font-style: normal !important;
             font-family: 'Segoe UI', -apple-system, sans-serif;
         }
         .text-fecha {
             color: #cbd5e1;
         }
 
-        /* --- CORRECCIÓN DE CONTRASTE EN MODO DIURNO (LIGHT THEME) --- */
         body.light-theme .text-id {
-            color: #001f3f !important; /* Azul marino profundo */
+            color: #001f3f !important;
             text-shadow: none !important;
         }
         body.light-theme .text-infractor {
-            color: #0a1128 !important; /* Gris oscuro para nombres */
+            color: #0a1128 !important;
         }
         body.light-theme .text-empresa {
-            color: #4b6584 !important; /* Gris medio elegante para empresas */
+            color: #4b6584 !important;
         }
         body.light-theme .text-conducta {
-            color: #576574 !important; /* Gris medio sin cursiva */
+            color: #576574 !important;
         }
         body.light-theme .text-fecha {
             color: #4b6584 !important;
         }
-        /* --- ELIMINACIÓN DE CURSIVA EN CONDUCTAS --- */
-        .text-conducta {
-            color: #cbd5e1;
-            font-style: normal !important; /* Sin cursiva para mejorar lectura rápida */
-            font-family: 'Segoe UI', -apple-system, sans-serif;
-        }
 
-        /* --- AMPLIACIÓN DE ESPACIADO EN FILAS DE TABLA --- */
         th, td {
-            padding: 18px 14px !important; /* Más respiro vertical entre datos */
+            padding: 18px 14px !important;
             border-bottom: 1px solid var(--border-color);
             text-align: left;
             color: var(--text-color);
         }
 
-        /* --- MEJORA DE CONTRASTE EN BADGES SEMÁNTICOS --- */
         .badge-red {
-            background-color: rgba(255, 51, 102, 0.08) !important; /* Fondo suave */
-            color: #ff3366 !important; /* Texto rosa/rojo vibrante y legible */
+            background-color: rgba(255, 51, 102, 0.08) !important;
+            color: #ff3366 !important;
             border: 1px solid rgba(255, 51, 102, 0.25) !important;
         }
         .badge-green {
@@ -2134,10 +2033,9 @@
             border: 1px solid rgba(0, 240, 255, 0.25) !important;
         }
 
-        /* --- BOTÓN VER PDF: DISEÑO MINIMALISTA OSCURO CON HOVER EN NARANJA --- */
         .btn-pdf-view {
-            background-color: rgba(30, 41, 59, 0.65) !important; /* Gris oscuro elegante */
-            color: #94a3b8 !important; /* Texto e icono en gris slate suave */
+            background-color: rgba(30, 41, 59, 0.65) !important;
+            color: #94a3b8 !important;
             border: 1px solid rgba(255, 255, 255, 0.08) !important;
             padding: 6px 12px !important;
             border-radius: 4px !important;
@@ -2151,41 +2049,34 @@
         }
 
         .btn-pdf-view:hover {
-            background-color: rgba(255, 96, 0, 0.15) !important; /* Resplandor naranja translúcido */
-            color: #ff5500 !important; /* Icono y texto cambian a naranja */
+            background-color: rgba(255, 96, 0, 0.15) !important;
+            color: #ff5500 !important;
             border-color: rgba(255, 96, 0, 0.3) !important;
             box-shadow: 0 0 10px rgba(255, 96, 0, 0.2) !important;
             transform: translateY(-1px);
         }
-     /* ================================================================= */
-        /* --- ADAPTACIÓN DEL MODAL 2.0 EN MODO DIURNO (ALTO CONTRASTE) ---  */
-        /* ================================================================= */
-        
-        /* 1. Caja Principal del Modal en Modo Diurno */
+
         body.light-theme #modal-instruccion-expediente .modal-box {
-            background: #f8fafc !important; /* Base gris claro satinada */
+            background: #f8fafc !important;
             border: 1px solid rgba(0, 31, 63, 0.15) !important;
             box-shadow: 0 25px 65px rgba(0, 31, 63, 0.12) !important;
         }
 
-        /* 2. Cabecera Fija de Identificación */
         body.light-theme .modal-header-fijo {
-            background-color: #f1f5f9 !important; /* Gris marfil sedoso */
+            background-color: #f1f5f9 !important;
             border-bottom: 2px solid rgba(0, 31, 63, 0.1);
         }
         body.light-theme .modal-header-fijo .field-label {
-            color: #005f9e !important; /* Azul de contraste táctico */
+            color: #005f9e !important;
         }
         body.light-theme .modal-header-fijo .field-value {
-            color: #001f3f !important; /* Texto en azul marino profundo */
+            color: #001f3f !important;
         }
 
-        /* 3. Cuerpo del Área de Trabajo */
         body.light-theme .modal-cuerpo-trabajo {
-            background-color: #ffffff !important; /* Blanco puro de alta claridad */
+            background-color: #ffffff !important;
         }
 
-        /* 4. Sub-Pestañas del Modal (Navegación Interna) */
         body.light-theme .modal-cuerpo-trabajo .sub-tab-link {
             color: #475569 !important;
             background: rgba(0, 31, 63, 0.04);
@@ -2198,23 +2089,20 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
         }
 
-        /* 5. Cajas de Datos (Criterio legal, Sanciones, etc.) */
         body.light-theme #panel-txt-sancion-raw,
         body.light-theme #wiz-val-criterio-legal,
         body.light-theme #wiz-val-resumen-infraccion,
         body.light-theme #wiz-val-descargos-container div {
-            background-color: #f1f5f9 !important; /* Cajas gris claro neutro */
+            background-color: #f1f5f9 !important;
             border-color: #cbd5e1 !important;
-            color: #0f172a !important; /* Carbón oscuro de alta visibilidad */
+            color: #0f172a !important;
         }
 
-        /* 6. Textos de Trazabilidad e Historial */
         body.light-theme .timeline-desc,
         body.light-theme .trazabilidad-item {
             color: #334155 !important;
         }
 
-        /* 7. Área de Edición de Correo (Borrador) */
         body.light-theme #panel-txt-correo-borrador {
             background-color: #ffffff !important;
             border: 2px solid rgba(0, 95, 158, 0.25) !important;
@@ -2225,7 +2113,6 @@
             box-shadow: 0 0 10px rgba(0, 95, 158, 0.15);
         }
 
-        /* 8. Botón Guardar Borrador (Cian adaptativo de bajo contraste invasivo) */
         body.light-theme .btn-save-draft {
             background-color: #f1f5f9 !important;
             border: 1.5px solid #0A84C6 !important;
@@ -2235,24 +2122,21 @@
             background-color: rgba(10, 132, 198, 0.08) !important;
         }
 
-        /* 9. Botón de Cerrar Ventana "X" */
         body.light-theme .modal-close-btn {
-            color: #475569 !important; /* Gris oscuro para resaltar en el fondo claro */
+            color: #475569 !important;
         }
         body.light-theme .modal-close-btn:hover {
             color: var(--apm-orange) !important;
         }   
         
-        /* --- LÍNEA LED DE ILUMINACIÓN AMBIENTAL PREMIUM (BARRIDO METÁLICO) --- */
         .ambient-led-bar {
             height: 2px;
             width: 100%;
-            /* Gradiente con núcleo blanco reflectivo en el centro para simular el destello */
             background: linear-gradient(90deg, 
                 rgba(255, 96, 0, 0.1) 0%, 
                 rgba(255, 96, 0, 0.1) 35%, 
                 #FF6000 46%, 
-                #ffffff 50%, /* Destello de luz blanca brillante (núcleo del barrido) */
+                #ffffff 50%, 
                 #FF6000 54%, 
                 rgba(255, 96, 0, 0.1) 65%, 
                 rgba(255, 96, 0, 0.1) 100%
@@ -2261,22 +2145,17 @@
             position: relative;
             z-index: 102;
             box-shadow: 0 2px 10px rgba(255, 96, 0, 0.6), 0 0 4px rgba(255, 96, 0, 0.3);
-            /* Curva bezier de entrada/salida para suavizar el destello al pasar */
             animation: ledSweep 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
 
         @keyframes ledSweep {
-            0% {
-                background-position: 150% 0;
-            }
-            100% {
-                background-position: -50% 0;
-            }
+            0% { background-position: 150% 0; }
+            100% { background-position: -50% 0; }
         }
-        /* --- TARJETA DE LA TABLA: AZUL NOCHE TÁCTICO CON DELICADO GLOW --- */
+
         #bandeja-tabla-container.card {
-            background-color: #051224 !important; /* Color azul noche profundo */
-            border: 1px solid rgba(0, 240, 255, 0.12) !important; /* Sutil borde cian de radar */
+            background-color: #051224 !important;
+            border: 1px solid rgba(0, 240, 255, 0.12) !important;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0, 240, 255, 0.03);
             transition: background-color 0.3s ease, border-color 0.3s ease;
         }
@@ -2287,45 +2166,37 @@
             box-shadow: 0 4px 15px rgba(0, 31, 63, 0.05);
         }
         
-        /* ================================================================= */
-        /* --- ADAPTACIÓN DE BADGES EN MODO DIURNO (EVITA NEÓN EN BLANCO) --- */
-        /* ================================================================= */
-        
-        /* Badges de Alerta / Peligro (Rojos) */
         body.light-theme .badge-red {
-            background-color: #fce8e6 !important; /* Fondo pastel suave sólido */
-            color: #c01c40 !important; /* Carmesí oscuro de alto contraste */
+            background-color: #fce8e6 !important;
+            color: #c01c40 !important;
             border: 1px solid rgba(192, 28, 64, 0.22) !important;
             text-shadow: none !important;
         }
 
-        /* Badges de Éxito / Proceso (Verdes) */
         body.light-theme .badge-green {
-            background-color: #e6f4ea !important; /* Verde pastel suave sólido */
-            color: #0e8a43 !important; /* Verde bosque de alto contraste */
+            background-color: #e6f4ea !important;
+            color: #0e8a43 !important;
             border: 1px solid rgba(14, 138, 67, 0.22) !important;
             text-shadow: none !important;
         }
 
-        /* Badges de Advertencia / Precaución (Amarillos) */
         body.light-theme .badge-yellow {
-            background-color: #fef7e0 !important; /* Amarillo pastel suave sólido */
-            color: #a17000 !important; /* Ocre/Marrón de alto contraste */
+            background-color: #fef7e0 !important;
+            color: #a17000 !important;
             border: 1px solid rgba(161, 112, 0, 0.22) !important;
             text-shadow: none !important;
         }
 
-        /* Badges de Información / Pendientes (Azules) */
         body.light-theme .badge-blue {
-            background-color: #e8f1f5 !important; /* Azul pastel suave sólido */
-            color: #005f9e !important; /* Azul marino profundo de alto contraste */
+            background-color: #e8f1f5 !important;
+            color: #005f9e !important;
             border: 1px solid rgba(0, 95, 158, 0.22) !important;
             text-shadow: none !important;
         }
-        /* --- CHIPS DE VISTA PREVIA DE SANCIÓN SUGERIDA (IA) --- */
+
         .badge-sancion-dias {
             background-color: rgba(255, 170, 0, 0.08) !important;
-            color: #ffa100 !important; /* Dorado cálido de advertencia */
+            color: #ffa100 !important;
             border: 1px solid rgba(255, 170, 0, 0.25) !important;
             font-family: monospace;
             font-weight: 700;
@@ -2367,49 +2238,46 @@
             border: 1px dashed rgba(100, 116, 139, 0.25) !important;
         }
 
-        /* ================================================================= */
-        /* --- ADAPTACIÓN DE PIPELINE NODES EN MODO DIURNO (EVITA NEÓN) ---  */
-        /* ================================================================= */
         body.light-theme #pipe-all {
             border-color: rgba(0, 95, 158, 0.18) !important;
-            color: #005f9e !important; /* Azul marino de alto contraste */
+            color: #005f9e !important;
             background: #f8fafc !important;
         }
         body.light-theme #pipe-all.active {
-            background-color: #e8f1f5 !important; /* Celeste marfil suave */
+            background-color: #e8f1f5 !important;
             border-color: #005f9e !important;
             box-shadow: 0 4px 10px rgba(0, 95, 158, 0.12) !important;
         }
 
         body.light-theme #pipe-pendiente {
             border-color: rgba(14, 138, 67, 0.18) !important;
-            color: #0e8a43 !important; /* Verde bosque */
+            color: #0e8a43 !important;
             background: #f8fafc !important;
         }
         body.light-theme #pipe-pendiente.active {
-            background-color: #e6f4ea !important; /* Verde pastel suave */
+            background-color: #e6f4ea !important;
             border-color: #0e8a43 !important;
             box-shadow: 0 4px 10px rgba(14, 138, 67, 0.12) !important;
         }
 
         body.light-theme #pipe-descargos {
             border-color: rgba(161, 112, 0, 0.18) !important;
-            color: #a17000 !important; /* Ámbar/Ocre */
+            color: #a17000 !important;
             background: #fdfbf7 !important;
         }
         body.light-theme #pipe-descargos.active {
-            background-color: #fef7e0 !important; /* Amarillo pastel suave */
+            background-color: #fef7e0 !important;
             border-color: #a17000 !important;
             box-shadow: 0 4px 10px rgba(161, 112, 0, 0.12) !important;
         }
 
         body.light-theme #pipe-evaluacion-humana {
             border-color: rgba(178, 93, 0, 0.18) !important;
-            color: #b25d00 !important; /* Naranja/Ámbar oscuro */
+            color: #b25d00 !important;
             background: #fdfbf7 !important;
         }
         body.light-theme #pipe-evaluacion-humana.active {
-            background-color: #fff3e0 !important; /* Naranja pastel suave */
+            background-color: #fff3e0 !important;
             border-color: #b25d00 !important;
             box-shadow: 0 4px 10px rgba(178, 93, 0, 0.12) !important;
         }
@@ -2424,31 +2292,26 @@
             border-color: #005f9e !important;
             box-shadow: 0 4px 10px rgba(0, 95, 158, 0.12) !important;
         }
-        /* ================================================================= */
-        /* --- ADAPTACIÓN DE TARJETAS KPI EN MODO DIURNO (HIGH CONTRAST) --- */
-        /* ================================================================= */
+
         body.light-theme .kpi-card {
-            background: #ffffff !important; /* Blanco limpio para eliminar el bloque gris oscuro */
-            border: 1px solid rgba(0, 31, 63, 0.12) !important; /* Borde gris sutil de alta definición */
+            background: #ffffff !important;
+            border: 1px solid rgba(0, 31, 63, 0.12) !important;
             box-shadow: 0 4px 15px rgba(0, 31, 63, 0.05) !important;
         }
 
-        /* Tarjeta seleccionada de KPIs */
         body.light-theme .kpi-card.accent-orange {
             border: 1px solid rgba(255, 96, 0, 0.35) !important;
-            background: #fffcf9 !important; /* Sutil fondo cálido naranja/crema */
+            background: #fffcf9 !important;
             box-shadow: 0 4px 15px rgba(255, 96, 0, 0.06) !important;
         }
 
-        /* Color de las etiquetas internas de los KPIs */
         body.light-theme .kpi-label {
-            color: #475569 !important; /* Gris oscuro muy legible */
+            color: #475569 !important;
             font-weight: 700;
         }
 
-        /* Color del contador de los KPIs (Garantiza letras de alto contraste) */
         body.light-theme .kpi-value {
-            color: #001f3f !important; /* Azul marino profundo */
+            color: #001f3f !important;
             text-shadow: none !important;
         }
     </style>
@@ -2457,7 +2320,6 @@
 
     <!-- PANTALLA DE INTRO CON PRECARGA Y OMISIÓN POR DOBLE CLIC -->
     <div id="intro-screen" ondblclick="omitirIntroSeguro()" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000000; z-index: 99999; align-items: center; justify-content: center; overflow: hidden; opacity: 1; transition: opacity 0.8s ease; cursor: pointer;" title="Doble clic para omitir">
-        <!-- Video optimizado con preload="auto" para descargarse en segundo plano durante el login -->
         <video id="intro-video" style="width: 100%; height: 100%; object-fit: contain; display: block;" playsinline preload="auto">
             <source src="intro.mp4" type="video/mp4">
         </video>
@@ -2472,14 +2334,12 @@
                     <polygon points="5,28 115,28 95,42 -15,42" fill="#E05B1B" />
                 </g>
                 <text x="125" y="28" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="18" fill="#E05B1B">Lifting Global Trade</text>
-                <!-- Modificado fill a blanco para contraste perfecto con Liquid Glass -->
                 <text x="125" y="68" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="34" fill="#FFFFFF" letter-spacing="0.5">APM TERMINALS</text>
             </svg>
             
             <h2>🔒 Acceso Secretaria</h2>
             <p>Verificación de seguridad para la administración del RIS</p>
 
-            <!-- Paso 1: Credenciales -->
             <div id="credentials-section">
                 <div class="form-group">
                     <label>Nombre de Usuario</label>
@@ -2495,7 +2355,6 @@
                 <button class="btn-apm" onclick="enviarCredentialsLogin()">Ingresar y Solicitar OTP</button>
             </div>
 
-            <!-- Paso 2: Código 2FA por correo -->
             <div id="otp-section">
                 <div class="form-group">
                     <label>Código de Seguridad OTP</label>
@@ -2505,7 +2364,6 @@
                 <button class="btn-apm" onclick="verificarCodigoOTP()">Verificar e Ingresar</button>
             </div>
 
-            <!-- CARGADOR INTERACTIVO CON TRES PUNTOS EN ACCIÓN -->
             <div id="login-loader" class="login-dots-loader">
                 <div class="dot"></div>
                 <div class="dot"></div>
@@ -2518,7 +2376,6 @@
     <!-- CONTENEDOR PRINCIPAL DEL DASHBOARD -->
     <div id="main-app">
         
-        <!-- CABECERA -->
         <header class="app-header">
             <div class="header-inner">
                 <div class="header-brand">
@@ -2535,10 +2392,8 @@
                 </div>
                 
                 <div class="header-user-info">
-                    <!-- Toggle Modo Oscuro / Claro interactivo -->
                     <button class="icon-btn" onclick="toggleDarkMode()" title="Cambiar tema" id="btn-theme-toggle">🌙</button>
                     
-                    <!-- Campana de Alertas -->
                     <div style="position: relative;">
                         <button class="icon-btn" onclick="toggleNotificationDropdown()" title="Notificaciones" id="btn-notifications">
                             🔔 <span class="notification-badge" id="bell-badge" style="display:none;">0</span>
@@ -2556,67 +2411,85 @@
                 </div>
             </div>
         </header>
-                <div class="ambient-led-bar"></div>
-        <!-- ESTRUCTURA PARA AGRUPAR LA NAVEGACIÓN LATERAL Y EL CONTENIDO -->
+        <div class="ambient-led-bar"></div>
+        
         <div class="app-body-wrapper">
 
-            <!-- MENU PESTAÑAS (Vertical Lado Izquierdo) con Animaciones de Alta Fidelidad -->
             <nav class="nav-tabs">
-    <div class="nav-tabs-inner">
-        <button class="tab-link active" onclick="cambiarPanel('control', this)">
-            📥 Bandeja de Papeletas 
-            <span class="tab-badge" id="badge-total-papeletas" style="display:none;">0</span>
-        </button>
-        <button class="tab-link" onclick="cambiarPanel('tipos-modos', this)">
-            📑 Tipos y Modos de Trámite
-        </button>   
-        <button class="tab-link" onclick="cambiarPanel('cerradas-panel', this)">
-            🟢 Casos Cerrados
-        </button>
-        <button class="tab-link" onclick="cambiarPanel('kpis', this)">
-            📊 KPIs Operativos
-        </button>
-        <button class="tab-link" onclick="cambiarPanel('informe-ia', this)">
-            📰 Análisis Semanal (IA)
-        </button>
-        <button class="tab-link" onclick="cambiarPanel('config', this)">
-            ⚙️ Ajustes y RIS
-        </button>
-    </div>
-</nav>
+                <div class="nav-tabs-inner">
+                    <button class="tab-link active" onclick="cambiarPanel('control', this)">
+                        📥 Bandeja de Papeletas 
+                        <span class="tab-badge" id="badge-total-papeletas" style="display:none;">0</span>
+                    </button>
+                    <button class="tab-link" onclick="cambiarPanel('tipos-modos', this)">
+                        📑 Tipos y Modos de Trámite
+                    </button>   
+                    <button class="tab-link" onclick="cambiarPanel('cerradas-panel', this)">
+                        🟢 Casos Cerrados
+                    </button>
+                    <button class="tab-link" onclick="cambiarPanel('kpis', this)">
+                        📊 KPIs Operativos
+                    </button>
+                    <button class="tab-link" onclick="cambiarPanel('informe-ia', this)">
+                        📰 Análisis Semanal (IA)
+                    </button>
+                    <button class="tab-link" onclick="cambiarPanel('config', this)">
+                        ⚙️ Ajustes y RIS
+                    </button>
+                </div>
+            </nav>
 
-            <!-- AREA DE CONTENIDO -->
             <main class="content-area">
-
-                <!-- PESTAÑA 1: BANDEJA DE CONTROL Y EVALUACIÓN IA -->
+           <!-- PESTAÑA 1: BANDEJA DE CONTROL Y EVALUACIÓN IA -->
                 <div id="panel-control" class="tab-panel active">
                     
-                    <!-- PIPELINE STAGE FILTERS (Modificado según nuevo flujo operativo) -->
-<div class="pipeline-bar">
-    <div class="pipeline-node active" id="pipe-all" onclick="filtrarPorEtapaTramite('TODOS')">
-        TODOS LOS CASOS ACTIVOS
-        <span class="pipeline-counter" id="pipe-count-all">0</span>
-    </div>
-    <div class="pipeline-node" id="pipe-enplazo" onclick="filtrarPorEtapaTramite('EN_PLAZO')">
-        EN PLAZO (ESPERA DESCARGO)
-        <span class="pipeline-counter" id="pipe-count-enplazo">0</span>
-    </div>
-    <div class="pipeline-node" id="pipe-descargo" onclick="filtrarPorEtapaTramite('DESCARGO_RECIBIDO')">
-        DESCARGOS RECIBIDOS (GMAIL)
-        <span class="pipeline-counter" id="pipe-count-descargo">0</span>
-    </div>
-    <div class="pipeline-node" id="pipe-vencido" onclick="filtrarPorEtapaTramite('PLAZO_VENCIDO')">
-        PLAZO VENCIDO (SIN DESCARGO)
-        <span class="pipeline-counter" id="pipe-count-vencido">0</span>
-    </div>
-    <div class="pipeline-node" id="pipe-ia" onclick="filtrarPorEtapaTramite('AUTOMATICO')">
-        MODO AUTOMÁTICO (IA)
-        <span class="pipeline-counter" id="pipe-count-ia">0</span>
-    </div>
-</div>
+                    <!-- PIPELINE STAGE FILTERS -->
+                    <div class="pipeline-bar">
+                        <div class="pipeline-node active" id="pipe-all" onclick="filtrarPorEtapaTramite('TODOS')">
+                            TODOS LOS CASOS ACTIVOS
+                            <span class="pipeline-counter" id="pipe-count-all">0</span>
+                        </div>
+                        <div class="pipeline-node" id="pipe-enplazo" onclick="filtrarPorEtapaTramite('EN_PLAZO')">
+                            EN PLAZO (ESPERA DESCARGO)
+                            <span class="pipeline-counter" id="pipe-count-enplazo">0</span>
+                        </div>
+                        <div class="pipeline-node" id="pipe-descargo" onclick="filtrarPorEtapaTramite('DESCARGO_RECIBIDO')">
+                            DESCARGOS RECIBIDOS (GMAIL)
+                            <span class="pipeline-counter" id="pipe-count-descargo">0</span>
+                        </div>
+                        <div class="pipeline-node" id="pipe-vencido" onclick="filtrarPorEtapaTramite('PLAZO_VENCIDO')">
+                            PLAZO VENCIDO (SIN DESCARGO)
+                            <span class="pipeline-counter" id="pipe-count-vencido">0</span>
+                        </div>
+                        <div class="pipeline-node" id="pipe-ia" onclick="filtrarPorEtapaTramite('AUTOMATICO')">
+                            MODO AUTOMÁTICO (IA)
+                            <span class="pipeline-counter" id="pipe-count-ia">0</span>
+                        </div>
+                    </div>
+
+                    <!-- TARJETA DE BÚSQUEDA Y FILTROS RÁPIDOS (Garantiza el correcto funcionamiento de los filtros) -->
+                    <div class="card search-filter-card" style="margin-bottom: 15px; padding: 15px;">
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <input type="text" id="tabla-buscador-rapido" placeholder="🔎 Búsqueda Rápida (ID, DNI, Nombre, Empresa, Conducta)..." style="flex: 2; min-width: 200px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px;" oninput="filtrarYRenderizarTabla()">
+                            
+                            <select id="filtro-empresa" style="flex: 1; min-width: 150px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px;" onchange="filtrarYRenderizarTabla()">
+                                <option value="">Filtro Empresa</option>
+                            </select>
+                            
+                            <select id="filtro-semaforo" style="flex: 1; min-width: 150px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px;" onchange="filtrarYRenderizarTabla()">
+                                <option value="">Estado Trámite</option>
+                                <option value="vigente">Plazo Vigente</option>
+                                <option value="ultimo_dia">Último Día</option>
+                                <option value="vencido">Expirado</option>
+                                <option value="descargo">Descargo Recibido</option>
+                            </select>
+
+                            <button class="btn-apm" style="width: auto; padding: 10px 15px; background-color: var(--apm-orange); color: white; font-weight: bold;" onclick="forzarSincronizacionManual()">🔄 Sincronizar</button>
+                        </div>
+                    </div>
 
                     <div class="dashboard-layout">
-                        <!-- Tabla de papeletas activas con scrollbar interno -->
+                        <!-- Tabla de papeletas activas -->
                         <div class="table-container card" id="bandeja-tabla-container">
                             <h3 class="card-title">Seguimiento de Expedientes de Infracciones en Curso</h3>
                             <div class="table-scroll-container">
@@ -2633,187 +2506,161 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr><td colspan="9" style="text-align:center;">Por favor, inicie sesión de forma segura para cargar la base de datos...</td></tr>
+                                        <tr><td colspan="7" style="text-align:center;">Por favor, inicie sesión de forma segura para cargar la base de datos...</td></tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
 
-                        <!-- NUEVO MODAL DE INSTRUCCIÓN DE EXPEDIENTES VERSIÓN 2.0 (TACTICAL CONTROL DECK) -->
-    <div id="modal-instruccion-expediente">
-        <div class="modal-box">
-            <!-- Botón de Cerrar Ventana "X" en la esquina superior derecha -->
-            <span class="modal-close-btn" onclick="cerrarModalInstruccion()">✕</span>
-            
-            <!-- 1. ENCABEZADO FIJO ("Ficha de Identificación" - Fondo #061424) -->
-            <div class="modal-header-fijo">
-                <div class="header-grid">
-                    <div class="header-field">
-                        <span class="field-label">ID EXPEDIENTE</span>
-                        <strong class="field-value mono" id="wiz-val-id">-</strong>
-                    </div>
-                    <div class="header-field">
-                        <span class="field-label">CONDUCTOR</span>
-                        <strong class="field-value" id="wiz-val-infractor">-</strong>
-                    </div>
-                    <div class="header-field">
-                        <span class="field-label">EMPRESA CONTRATISTA</span>
-                        <strong class="field-value" id="wiz-val-empresa">-</strong>
-                    </div>
-                    <div class="header-field">
-                        <span class="field-label">CONDUCTA IMPUTADA</span>
-                        <strong class="field-value" id="wiz-val-conducta">-</strong>
-                    </div>
-                </div>
-            </div>
+                        <!-- MODAL DE INSTRUCCIÓN DE EXPEDIENTES VERSIÓN 2.0 -->
+                        <div id="modal-instruccion-expediente">
+                            <div class="modal-box">
+                                <span class="modal-close-btn" onclick="cerrarModalInstruccion()">✕</span>
+                                
+                                <div class="modal-header-fijo">
+                                    <div class="header-grid">
+                                        <div class="header-field">
+                                            <span class="field-label">ID EXPEDIENTE</span>
+                                            <strong class="field-value mono" id="wiz-val-id">-</strong>
+                                        </div>
+                                        <div class="header-field">
+                                            <span class="field-label">CONDUCTOR</span>
+                                            <strong class="field-value" id="wiz-val-infractor">-</strong>
+                                        </div>
+                                        <div class="header-field">
+                                            <span class="field-label">EMPRESA CONTRATISTA</span>
+                                            <strong class="field-value" id="wiz-val-empresa">-</strong>
+                                        </div>
+                                        <div class="header-field">
+                                            <span class="field-label">CONDUCTA IMPUTADA</span>
+                                            <strong class="field-value" id="wiz-val-conducta">-</strong>
+                                        </div>
+                                    </div>
+                                </div>
 
-            <!-- 2. CUERPO DE TRABAJO ("Área de Trabajo" - Fondo #111827) -->
-            <div class="modal-cuerpo-trabajo">
-                
-                <div class="modal-work-navbar">
-                    <!-- Botones de Sub-pestañas con iconos técnicos -->
-                    <div style="display: flex; background: rgba(0, 240, 255, 0.05); padding: 4px; border-radius: 6px; gap: 4px; flex: 1;">
-                        <button class="sub-tab-link active" onclick="cambiarSubTab('A', this)">📄 Resumen de Conducta</button>
-                        <button class="sub-tab-link" onclick="cambiarSubTab('B', this)">⚖️ Ley y Sanción</button>
-                        <button class="sub-tab-link" onclick="cambiarSubTab('C', this)">📩 Descargos y Alegatos</button>
-                        <button class="sub-tab-link" onclick="cambiarSubTab('D', this)">🛠️ Resolución Final</button>
-                    </div>
-                    
-                    <!-- Control de Modo Automatizado Compactado -->
-                    <div class="compact-toggle-container">
-                        <strong style="font-size: 11px; color: var(--apm-blue); letter-spacing: 0.5px;">AUTOMATIZADO (IA)</strong>
-                        <label class="switch">
-                            <input type="checkbox" id="toggle-automode-switch" onchange="cambiarModoTramiteServidor()">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                </div>
+                                <div class="modal-cuerpo-trabajo">
+                                    <div class="modal-work-navbar">
+                                        <div style="display: flex; background: rgba(0, 240, 255, 0.05); padding: 4px; border-radius: 6px; gap: 4px; flex: 1;">
+                                            <button class="sub-tab-link active" onclick="cambiarSubTab('A', this)">📄 Resumen de Conducta</button>
+                                            <button class="sub-tab-link" onclick="cambiarSubTab('B', this)">⚖️ Ley y Sanción</button>
+                                            <button class="sub-tab-link" onclick="cambiarSubTab('C', this)">📩 Descargos y Alegatos</button>
+                                            <button class="sub-tab-link" onclick="cambiarSubTab('D', this)">🛠️ Resolución Final</button>
+                                        </div>
+                                        
+                                        <div class="compact-toggle-container">
+                                            <strong style="font-size: 11px; color: var(--apm-blue); letter-spacing: 0.5px;">AUTOMATIZADO (IA)</strong>
+                                            <label class="switch">
+                                                <input type="checkbox" id="toggle-automode-switch" onchange="cambiarModoTramiteServidor()">
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
 
-                <!-- CONTENEDORES DE SECCIONES -->
-                <div id="secciones-panes-container" style="flex: 1; display: flex; flex-direction: column;">
-                    
-                    <!-- PESTAÑA A: RESUMEN DE CONDUCTA (Trazabilidad) -->
-                    <div class="wizard-step-pane active" id="pane-section-A">
-                        <!-- Enlace dinámico a Drive -->
-                        <a href="#" target="_blank" id="btn-abrir-carpeta-drive" class="btn-drive-link" style="margin-bottom: 20px; display: none;">
-                            📂 Abrir Carpeta del Expediente en Drive
-                        </a>
-                        <div class="panel-section-title">📍 Trazabilidad e Historial de Acciones</div>
-                        <div class="trazabilidad-timeline" id="wiz-val-trazabilidad"></div>
-                    </div>
+                                    <div id="secciones-panes-container" style="flex: 1; display: flex; flex-direction: column;">
+                                        
+                                        <div class="wizard-step-pane active" id="pane-section-A">
+                                            <a href="#" target="_blank" id="btn-abrir-carpeta-drive" class="btn-drive-link" style="margin-bottom: 20px; display: none;">
+                                                📂 Abrir Carpeta del Expediente en Drive
+                                            </a>
+                                            <div class="panel-section-title">📍 Trazabilidad e Historial de Acciones</div>
+                                            <div class="trazabilidad-timeline" id="wiz-val-trazabilidad"></div>
+                                        </div>
 
-                    <!-- PESTAÑA B: ANÁLISIS LEGAL E HISTORIAL APN -->
-                    <div class="wizard-step-pane" id="pane-section-B">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-                            <div>
-                                <div class="panel-section-title">Conducta RIS Relacionada</div>
-                                <div id="panel-txt-conducta-ris" style="font-weight: bold; color: #ffffff; font-size: 13px;">-</div>
-                            </div>
-                            <div>
-                                <div class="panel-section-title">Graduación</div>
-                                <div><span id="panel-txt-graduacion-ris" class="badge">-</span></div>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-bottom: 15px;">
-                            <div class="panel-section-title">Sanción Estipulada en Reglamento APN</div>
-                            <span id="panel-txt-sancion-raw" style="white-space: pre-wrap; display: block; background: #061424; padding: 10px; border: 1px solid var(--border-color); border-radius:4px; line-height:1.4; font-size: 11px; color: #ffffff;">-</span>
-                        </div>
+                                        <div class="wizard-step-pane" id="pane-section-B">
+                                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                                                <div>
+                                                    <div class="panel-section-title">Conducta RIS Relacionada</div>
+                                                    <div id="panel-txt-conducta-ris" style="font-weight: bold; color: #ffffff; font-size: 13px;">-</div>
+                                                </div>
+                                                <div>
+                                                    <div class="panel-section-title">Graduación</div>
+                                                    <div><span id="panel-txt-graduacion-ris" class="badge">-</span></div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div style="margin-bottom: 15px;">
+                                                <div class="panel-section-title">Sanción Estipulada en Reglamento APN</div>
+                                                <span id="panel-txt-sancion-raw" style="white-space: pre-wrap; display: block; background: #061424; padding: 10px; border: 1px solid var(--border-color); border-radius:4px; line-height:1.4; font-size: 11px; color: #ffffff;">-</span>
+                                            </div>
 
-                        <div class="panel-section-title">Análisis e Interpretación Legal RIS (IA)</div>
-                        <div style="background-color: #061424; padding: 12px; border-radius: 6px; border-left: 3px solid var(--apm-blue); font-size: 12px; line-height: 1.4; margin-bottom: 15px; color: #ffffff;" id="wiz-val-criterio-legal">-</div>
+                                            <div class="panel-section-title">Análisis e Interpretación Legal RIS (IA)</div>
+                                            <div style="background-color: #061424; padding: 12px; border-radius: 6px; border-left: 3px solid var(--apm-blue); font-size: 12px; line-height: 1.4; margin-bottom: 15px; color: #ffffff;" id="wiz-val-criterio-legal">-</div>
 
-                        <div class="panel-section-title">⚠️ Historial de Reincidencias Detectadas</div>
-                        <div class="vertical-timeline" id="wiz-val-reincidencias-timeline"></div>
-                    </div>
+                                            <div class="panel-section-title">⚠️ Historial de Reincidencias Detectadas</div>
+                                            <div class="vertical-timeline" id="wiz-val-reincidencias-timeline"></div>
+                                        </div>
 
-                    <!-- PESTAÑA C: DESCARGOS Y EVALUACIÓN IA -->
-                    <div class="wizard-step-pane" id="pane-section-C">
-                        <div class="panel-section-title">Evaluación de Descargos y Alegatos</div>
-                        <div id="wiz-val-descargos-container"></div>
+                                        <div class="wizard-step-pane" id="pane-section-C">
+                                            <div class="panel-section-title">Evaluación de Descargos y Alegatos</div>
+                                            <div id="wiz-val-descargos-container"></div>
 
-                        <div class="panel-section-title" style="margin-top: 15px;">Resumen Crítico de Hechos (IA)</div>
-                        <div style="background-color: #061424; padding: 12px; border-radius: 6px; border-left: 3px solid var(--apm-orange); font-size: 12px; line-height: 1.4; color: #ffffff;" id="wiz-val-resumen-infraccion">-</div>
-                    </div>
+                                            <div class="panel-section-title" style="margin-top: 15px;">Resumen Crítico de Hechos (IA)</div>
+                                            <div style="background-color: #061424; padding: 12px; border-radius: 6px; border-left: 3px solid var(--apm-orange); font-size: 12px; line-height: 1.4; color: #ffffff;" id="wiz-val-resumen-infraccion">-</div>
+                                        </div>
 
-                   <!-- PESTAÑA D: RESOLUCIÓN FINAL -->
-                   <div class="wizard-step-pane" id="pane-section-D">
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                  <span class="panel-section-title" style="margin-bottom: 0;">Resolución Final y Notificación</span>
-                  <div class="sancion-input-group" style="margin-top: 0; background: rgba(224, 91, 27, 0.08); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(224, 91, 27, 0.3);">
-                  <label style="font-size:11px; font-weight:bold; color: var(--apm-orange); margin-bottom: 0; margin-right: 8px;">Suspender Acceso (Días):</label>
-                  <input type="number" id="sancion-dias-final" min="0" value="0" style="width: 55px; padding: 4px; font-size: 12px; background: #061424; border: 1px solid var(--border-color); color: #ffffff;">
-                </div>
-               </div>
-    
-               <div style="flex: 1; display: flex; flex-direction: column; margin-bottom: 15px;">
-              <label style="font-size: 11px; font-weight: bold; margin-bottom: 4px; color: var(--text-muted);">Borrador del Correo Formal (Editable):</label>
-              <textarea id="panel-txt-correo-borrador" style="flex: 1; min-height: 250px; width: 100%; border: 1px solid rgba(0, 240, 255, 0.3); background-color: #061424; color: #ffffff; padding: 12px; font-family: inherit; font-size: 12px; line-height: 1.5; border-radius: 6px; box-sizing: border-box; resize: none;"></textarea>
-              </div>
+                                        <div class="wizard-step-pane" id="pane-section-D">
+                                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                                <span class="panel-section-title" style="margin-bottom: 0;">Resolución Final y Notificación</span>
+                                                <div class="sancion-input-group" style="margin-top: 0; background: rgba(224, 91, 27, 0.08); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(224, 91, 27, 0.3);">
+                                                    <label style="font-size:11px; font-weight:bold; color: var(--apm-orange); margin-bottom: 0; margin-right: 8px;">Suspender Acceso (Días):</label>
+                                                    <input type="number" id="sancion-dias-final" min="0" value="0" style="width: 55px; padding: 4px; font-size: 12px; background: #061424; border: 1px solid var(--border-color); color: #ffffff;">
+                                                </div>
+                                            </div>
+                                
+                                            <div style="flex: 1; display: flex; flex-direction: column; margin-bottom: 15px;">
+                                                <label style="font-size: 11px; font-weight: bold; margin-bottom: 4px; color: var(--text-muted);">Borrador del Correo Formal (Editable):</label>
+                                                <textarea id="panel-txt-correo-borrador" style="flex: 1; min-height: 250px; width: 100%; border: 1px solid rgba(0, 240, 255, 0.3); background-color: #061424; color: #ffffff; padding: 12px; font-family: inherit; font-size: 12px; line-height: 1.5; border-radius: 6px; box-sizing: border-box; resize: none;"></textarea>
+                                            </div>
 
-                <!-- MENSAJE DE ADVERTENCIA DINÁMICO SEGÚN ESTADO Y MODO -->
-        <div id="contenedor-alerta-resolucion" style="margin-bottom: 15px;"></div>
+                                            <div id="contenedor-alerta-resolucion" style="margin-bottom: 15px;"></div>
 
                                             <div style="display: flex; gap: 15px;">
                                                 <button class="btn-save-draft" onclick="guardarBorradorResolucion()">💾 Guardar Borrador</button>
                                                 <button class="btn-send-resolution" id="btn-enviar-resolucion-manual" onclick="ejecutarAprobacionYSancion()">✉️ Enviar Resolución</button>
                                             </div>
-                                        </div> <!-- Cierra #pane-section-D -->
-                                    </div> <!-- Cierra #secciones-panes-container -->
-                                </div> <!-- Cierra .modal-cuerpo-trabajo -->
-                            </div> <!-- Cierra .modal-box -->
-                        </div> <!-- Cierra #modal-instruccion-expediente -->
-                    </div> <!-- Cierra .dashboard-layout -->
-                </div> <!-- Cierra #panel-control -->
-                <!-- PESTAÑA: TIPOS Y MODOS DE TRÁMITE -->
-<div id="panel-tipos-modos" class="tab-panel">
-    <div class="card">
-        <div class="card-title">
-            <span>⚙️ Configuración de Conductas Infractoras (Plantillas)</span>
-        </div>
-        <p style="font-size:13px; color:var(--text-muted); margin-top:0;">
-            Los cambios de días y modo de trámite realizados en esta tabla se guardan <strong>automáticamente en Google Sheets</strong>. La IA utilizará estos parámetros como regla base de evaluación.
-        </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-        <div class="table-container card">
-            <div class="table-scroll-container">
-                <table id="tabla-tipos-modos">
-    <thead>
-        <tr>
-            <th style="text-align: left;">Conducta Infractora</th>
-            <th style="width: 140px; text-align: center;">Días 1.ª Vez</th>
-            <th style="width: 180px; text-align: center;">Días Reincidente (12 Meses)</th>
-            <th style="width: 180px; text-align: center;">Modo de Trámite</th>
-        </tr>
-    </thead>
-    <tbody id="tbody-tipos-modos">
-        <tr><td colspan="4" style="text-align:center;">Cargando conductas desde PLANTILLAS...</td></tr>
-    </tbody>
-</table>
-            </div>
-        </div>
-    </div>
-</div>               
-                <!-- NUEVA PESTAÑA: CASOS CERRADOS (HISTORIAL RECIENTE Y BÚSQUEDA AVANZADA) -->
-            <div id="panel-cerradas-panel" class="tab-panel">
-                <div class="card search-filter-card" style="margin-bottom: 15px; padding: 15px;">
-    <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-        <input type="text" id="tabla-buscador-rapido" placeholder="🔎 Buscar por DNI, ID, Nombre o Empresa..." style="flex: 1; min-width: 250px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: var(--text-color);" oninput="ejecutarBusquedaDBServidor('activo')">
-        <select id="filtro-empresa" style="width: 150px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: var(--text-color);" onchange="filtrarYRenderizarTabla()">
-            <option value="">Filtro Empresa</option>
-        </select>
-        <select id="filtro-semaforo" style="width: 150px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: var(--text-color);" onchange="filtrarYRenderizarTabla()">
-            <option value="">Filtro Semáforo</option>
-            <option value="vigente">Plazo Vigente</option>
-            <option value="ultimo_dia">Último Día</option>
-            <option value="vencido">Plazo Vencido</option>
-            <option value="descargo">Descargo Recibido</option>
-        </select>
-        <button class="btn-apm" style="width: auto; padding: 10px 15px; background-color: var(--apm-blue); color: black;" onclick="forzarSincronizacionManual()">🔄 Sincronizar</button>
-    </div>
-</div>
+                <!-- PESTAÑA: TIPOS Y MODOS DE TRÁMITE -->
+                <div id="panel-tipos-modos" class="tab-panel">
+                    <div class="card">
+                        <div class="card-title">
+                            <span>⚙️ Configuración de Conductas Infractoras (Plantillas)</span>
+                        </div>
+                        <p style="font-size:13px; color:var(--text-muted); margin-top:0;">
+                            Los cambios de días y modo de trámite realizados en esta tabla se guardan <strong>automáticamente en Google Sheets</strong>. La IA utilizará estos parámetros como regla base de evaluación.
+                        </p>
+
+                        <div class="table-container card">
+                            <div class="table-scroll-container">
+                                <table id="tabla-tipos-modos">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: left;">Conducta Infractora</th>
+                                            <th style="width: 140px; text-align: center;">Días 1.ª Vez</th>
+                                            <th style="width: 180px; text-align: center;">Días Reincidente (12 Meses)</th>
+                                            <th style="width: 180px; text-align: center;">Modo de Trámite</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbody-tipos-modos">
+                                        <tr><td colspan="4" style="text-align:center;">Cargando conductas desde PLANTILLAS...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>               
+
+                <!-- PESTAÑA: CASOS CERRADOS -->
+                <div id="panel-cerradas-panel" class="tab-panel">
+                    <div class="card search-filter-card" style="margin-bottom: 15px; padding: 15px;">
                         <div style="display: flex; gap: 10px; align-items: center;">
-                            <input type="text" id="buscador-casos-cerrados" placeholder="🔎 Búsqueda Histórica Avanzada en Base de Datos (ID, DNI, Nombre, Empresa)..." style="flex: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: var(--text-color);" oninput="ejecutarBusquedaDBServidor('cerrado')">
+                            <input type="text" id="buscador-casos-cerrados" placeholder="🔎 Búsqueda Histórica Avanzada en Base de Datos (ID, DNI, Nombre, Empresa)..." style="flex: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px;" oninput="ejecutarBusquedaDBServidor('cerrado')">
                             <button class="btn-apm" style="width: auto; padding: 10px 15px; background-color: var(--apm-orange); color: white; font-weight: bold; box-shadow: 0 4px 10px rgba(224, 91, 27, 0.3);" onclick="forzarSincronizacionManual()">🔄 Sincronizar</button>
                         </div>
                     </div>
@@ -2842,7 +2689,7 @@
                     </div>
                 </div>
 
-                <!-- PESTAÑA 2: KPIS DINÁMICOS, OFICIALES Y TIMELINE -->
+                <!-- PESTAÑA 2: KPIS DINÁMICOS -->
                 <div id="panel-kpis" class="tab-panel">
                     <div class="kpi-grid">
                         <div class="kpi-card accent-orange">
@@ -2865,7 +2712,6 @@
                             <div class="kpi-value" id="kpi-suspension-dias">0 d</div>
                             <div class="kpi-label">RIESGO MITIGADO (DÍAS ACC.)</div>
                         </div>
-                        <!-- Generador del reporte mensual PDF de gerencia -->
                         <div class="kpi-card" style="border-bottom-color: var(--apm-blue); cursor: pointer;" onclick="generarReporteMensualGerencia()">
                             <div class="kpi-value" style="font-size: 24px; padding: 12px 0;" id="kpi-reporte-btn-text">📊 GENERAR</div>
                             <div class="kpi-label">REPORTE MENSUAL PDF</div>
@@ -2873,7 +2719,6 @@
                     </div>
 
                     <div class="dashboard-layout" style="margin-bottom: 25px;">
-                        <!-- Gráfico Timeline de Infracciones -->
                         <div class="card" style="flex: 1; padding: 20px;">
                             <h3 class="card-title">📈 Línea de Tiempo de Infracciones (Últimos 30 días)</h3>
                             <div style="height: 250px; position: relative;">
@@ -2897,7 +2742,6 @@
                             </ul>
                         </div>
 
-                        <!-- Panel de Empresas Contratistas -->
                         <div class="table-container card" style="flex: 1;">
                             <h3 class="card-title">🏢 Infracciones por Empresa Contratista</h3>
                             <ul class="agents-list" id="lista-kpi-contratistas">
@@ -2916,7 +2760,7 @@
                                 ✨ Generar Análisis de Patrones Semanal (IA)
                             </button>
                         </div>
-                        <p style="font-size:14px; color:#6c757d; margin-top:0;">Esta auditoría procesa de forma heurística el consolidado de infracciones mediante Inteligencia Artificial para identificar áreas críticas o conductas conductas recurrentes en la terminal.</p>
+                        <p style="font-size:14px; color:#6c757d; margin-top:0;">Esta auditoría procesa de forma heurística el consolidado de infracciones mediante Inteligencia Artificial para identificar áreas críticas o conductas recurrentes en la terminal.</p>
                         
                         <div class="newspaper-container" style="margin-top: 20px;">
                             <div class="newspaper-header">
@@ -2951,7 +2795,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE EDICIÓN / ADICIÓN DE REGLAS RIS -->
+    <!-- MODAL DE EDICIÓN DE REGLAS RIS -->
     <div class="modal-overlay" id="modal-edicion-regla">
         <div class="modal-box">
             <h3 style="margin-top:0; color:var(--apm-blue); border-bottom:2px solid var(--apm-orange); padding-bottom:8px;" id="modal-title">Editar Regla del RIS</h3>
@@ -2992,11 +2836,9 @@
         </div>
     </div>
 
-    <!-- ROBOT IA LOADER (PROGRESIVO E INTERACTIVO) -->
+    <!-- ROBOT IA LOADER -->
     <div class="robot-modal-overlay" id="robot-ia-loader">
         <div class="robot-modal-box">
-            
-            <!-- NUEVO ROBOT VECTORIAL PROFESIONAL -->
             <div class="robot-anim">
                 <svg viewBox="0 0 100 100" style="width: 100%; height: 100%; display: block;">
                     <defs>
@@ -3012,21 +2854,15 @@
                             </feMerge>
                         </filter>
                     </defs>
-                    <!-- Antenas / Orejas -->
                     <rect x="15" y="42" width="7" height="16" rx="3.5" fill="#ff5500" />
                     <rect x="78" y="42" width="7" height="16" rx="3.5" fill="#ff5500" />
-                    <!-- Cuello -->
                     <rect x="43" y="74" width="14" height="12" rx="3" fill="#000c18" stroke="#00f0ff" stroke-width="2" />
-                    <!-- Cuerpo/Placa de la cara -->
                     <rect x="24" y="26" width="52" height="50" rx="14" fill="#00152b" stroke="url(#robotGrad)" stroke-width="2.5" filter="url(#neonBlue)" />
-                    <!-- Línea decorativa frente -->
                     <line x1="36" y1="36" x2="64" y2="36" stroke="rgba(0, 240, 255, 0.4)" stroke-width="2" stroke-linecap="round" />
-                    <!-- Ojos Neón Cian -->
                     <circle cx="41" cy="48" r="4.5" fill="#00f0ff" filter="url(#neonBlue)" />
                     <circle cx="59" cy="48" r="4.5" fill="#00f0ff" filter="url(#neonBlue)" />
                     <circle cx="41" cy="48" r="1.5" fill="#ffffff" />
                     <circle cx="59" cy="48" r="1.5" fill="#ffffff" />
-                    <!-- Boca con onda de voz -->
                     <path d="M37 62 Q50 67 63 62" stroke="#ff5500" stroke-width="2.5" fill="none" stroke-linecap="round" filter="url(#neonBlue)" />
                 </svg>
             </div>
@@ -3038,7 +2874,8 @@
             </div>
         </div>
     </div>
-    <!-- MODAL DEL VISOR DE PDF EMERGENte -->
+
+    <!-- MODAL VISOR DE PDF -->
     <div class="pdf-modal-overlay" id="pdf-visor-modal">
         <div class="pdf-modal-box">
             <div class="pdf-modal-header">
@@ -3052,7 +2889,7 @@
         </div>
     </div>
 
-    <!-- VENTANA EMERGENTE DE PROCESAMIENTO (LOADER MODAL REPORTES IA) -->
+    <!-- VENTANA EMERGENTE DE PROCESAMIENTO -->
     <div class="modal-overlay" id="loading-reporte-modal" style="display: none; z-index: 4000; background: rgba(0, 12, 24, 0.95); align-items: center; justify-content: center;">
         <div class="modal-box" style="text-align: center; max-width: 400px; padding: 40px 25px;">
             <div class="spinner" style="margin: 0 auto 20px auto;"></div>
@@ -3061,7 +2898,24 @@
         </div>
     </div>
 
-    <!-- BOTÓN Y CHAT FLOTANTE DE CONSULTA IA -->
+    <!-- MODAL INFORME SEMANAL IA -->
+    <div class="modal-overlay" id="modal-informe-semanal-ia" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 4500; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;">
+        <div class="modal-box" id="modal-box-informe-semanal" style="background: var(--apm-dark-blue); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 8px; width: 100%; max-width: 800px; max-height: 85%; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: all 0.3s ease;">
+            <div style="background-color: #000c18; color: white; padding: 15px 20px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; border-top-left-radius: 8px; border-top-right-radius: 8px;">
+                <span>📰 Informe Semanal de Patrones de Seguridad (IA)</span>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button onclick="togglePantallaCompletaInforme()" style="background: none; border: 1px solid var(--border-color); color: var(--apm-blue); padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold;">⬜ Ampliar</button>
+                    <span style="cursor:pointer; font-size: 20px;" onclick="cerrarModalInformeSemanal()">✕</span>
+                </div>
+            </div>
+            <div style="flex: 1; padding: 20px; overflow-y: auto; font-family: Georgia, serif; font-size: 14px; line-height: 1.6; text-align: justify;" id="modal-cuerpo-informe-semanal"></div>
+            <div style="padding: 15px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; background: #000c18; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
+                <button class="btn-pdf-view" onclick="cerrarModalInformeSemanal()" style="background-color: var(--danger-red); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold;">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHAT FLOTANTE -->
     <div class="chat-fab" id="chat-fab-element" onclick="toggleChatFlotante()" title="Consultar Asistente RIS">💬</div>
     
     <div class="chat-panel" id="chat-flotante-ris">
@@ -3083,9 +2937,8 @@
         </div>
     </div>
 
-    <script>
-        // URL de Google Apps Script Web App
-        const CONFIG_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykGrZsjMZ3ewTIXjuPKqy-UDpOjtFPtT-ebMM_ilC6bf6qwPRcNn1KhdUhrODdYzEBKg/exec";
+    <script>    
+    const CONFIG_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykGrZsjMZ3ewTIXjuPKqy-UDpOjtFPtT-ebMM_ilC6bf6qwPRcNn1KhdUhrODdYzEBKg/exec";
 
         let globalDashboardCache = null; 
         let activeFilteredPapeletas = [];
@@ -3099,11 +2952,8 @@
         
         let prevPapeletasCount = null;
         let wizardPasoActual = 1;
-
-        // Caché temporal para pasar los datos de inicialización tras finalizar el video
         let tempTransitionData = null;
 
-        // Formateador dinámico de texto para la IA
         function formatearRespuestaChat(texto) {
             if (!texto) return "";
             let seguro = texto
@@ -3115,34 +2965,33 @@
             return seguro;
         }
 
-        // --- MANEJO DEL ROBOT LOADER (PROGRESIVO) ---
         function mostrarRobotLoader(idExpediente) {
             const overlay = document.getElementById("robot-ia-loader");
             const title = document.getElementById("robot-loader-title");
             const text = document.getElementById("robot-loader-text");
             const progress = document.getElementById("robot-loader-progress");
 
-            overlay.style.display = "flex";
-            progress.style.width = "0%";
-            title.innerText = `🤖 Procesando Caso ${idExpediente}`;
+            if (overlay) overlay.style.display = "flex";
+            if (progress) progress.style.width = "0%";
+            if (title) title.innerText = `🤖 Procesando Caso ${idExpediente}`;
 
-            setTimeout(() => { progress.style.width = "20%"; text.innerText = "🤖 Conectando de forma segura con el servidor de APM Terminals..."; }, 200);
-            setTimeout(() => { progress.style.width = "45%"; text.innerText = "🔍 Escaneando la descripción del hecho de la papeleta..."; }, 900);
-            setTimeout(() => { progress.style.width = "70%"; text.innerText = "⚖️ Cotejando contra el Catálogo de Sanciones de la APN..."; }, 1600);
-            setTimeout(() => { progress.style.width = "90%"; text.innerText = "⏳ Calculando reincidencias en el historial de Excel..."; }, 2300);
+            setTimeout(() => { if (progress) progress.style.width = "20%"; if (text) text.innerText = "🤖 Conectando de forma segura con el servidor de APM Terminals..."; }, 200);
+            setTimeout(() => { if (progress) progress.style.width = "45%"; if (text) text.innerText = "🔍 Escaneando la descripción del hecho de la papeleta..."; }, 900);
+            setTimeout(() => { if (progress) progress.style.width = "70%"; if (text) text.innerText = "⚖️ Cotejando contra el Catálogo de Sanciones de la APN..."; }, 1600);
+            setTimeout(() => { if (progress) progress.style.width = "90%"; if (text) text.innerText = "⏳ Calculando reincidencias en el historial de Excel..."; }, 2300);
         }
 
         function completarYQuitarRobotLoader() {
             const progress = document.getElementById("robot-loader-progress");
             const text = document.getElementById("robot-loader-text");
-            progress.style.width = "100%";
-            text.innerText = "✨ ¡Análisis legal de la IA completado!";
+            if (progress) progress.style.width = "100%";
+            if (text) text.innerText = "✨ ¡Análisis legal de la IA completado!";
             setTimeout(() => {
-                document.getElementById("robot-ia-loader").style.display = "none";
+                const loader = document.getElementById("robot-ia-loader");
+                if (loader) loader.style.display = "none";
             }, 600);
         }
 
-        // --- INDICADOR DE ESTADO GEMINI ---
         function actualizarEstadoGemini(estado) {
             const dot = document.getElementById("gemini-status-dot");
             if (!dot) return;
@@ -3159,15 +3008,14 @@
         }
         actualizarEstadoGemini("connected");
 
-        // --- MANEJO DE CAMBIO DE TEMA DIURNO / NOCTURNO ---
         function toggleDarkMode() {
             document.body.classList.toggle("light-theme");
             const esDiurno = document.body.classList.contains("light-theme");
             localStorage.setItem("modo_diurno", esDiurno ? "si" : "no");
-            document.getElementById("btn-theme-toggle").innerText = esDiurno ? "☀️" : "🌙";
+            const btn = document.getElementById("btn-theme-toggle");
+            if (btn) btn.innerText = esDiurno ? "☀️" : "🌙";
         }
 
-        // --- AUDIO SINTETIZADO ---
         function reproducirSonidoNotificacion() {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -3186,10 +3034,10 @@
         }
 
         function toggleNotificationDropdown() {
-            document.getElementById("notification-dropdown-box").classList.toggle("active");
+            const dropdown = document.getElementById("notification-dropdown-box");
+            if (dropdown) dropdown.classList.toggle("active");
         }
 
-        // --- SINCRONIZACIÓN AUTOMÁTICA ---
         setInterval(function() {
             if (sessionStorage.getItem("secure_user_initials")) {
                 ejecutarSincronizacionSilenciosa();
@@ -3211,36 +3059,44 @@
             const user = sessionStorage.getItem("secure_user_initials");
             const auth = sessionStorage.getItem("secure_auth_plain");
             const btn = document.querySelector("button[onclick='forzarSincronizacionManual()']");
-            const txtOriginal = btn.innerText;
-            btn.innerText = "⏳ Sincronizando...";
-            btn.disabled = true;
+            const txtOriginal = btn ? btn.innerText : "";
+            if (btn) {
+                btn.innerText = "⏳ Sincronizando...";
+                btn.disabled = true;
+            }
 
             fetch(`${CONFIG_WEB_APP_URL}?user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
             .then(res => res.json())
             .then(data => {
                 inicializarDashboardConDatos(data);
                 alert("✅ ¡Base de datos de Excel sincronizada con éxito!");
-                btn.innerText = txtOriginal;
-                btn.disabled = false;
+                if (btn) {
+                    btn.innerText = txtOriginal;
+                    btn.disabled = false;
+                }
             })
             .catch(err => {
                 alert("Error: " + err.toString());
-                btn.innerText = txtOriginal;
-                btn.disabled = false;
+                if (btn) {
+                    btn.innerText = txtOriginal;
+                    btn.disabled = false;
+                }
             });
         }
 
         function cambiarPanel(target, btn) {
             document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab-link').forEach(b => b.classList.remove('active'));
-            document.getElementById('panel-' + target).classList.add('active');
-            btn.classList.add('active');
+            const pTarget = document.getElementById('panel-' + target);
+            if (pTarget) pTarget.classList.add('active');
+            if (btn) btn.classList.add('active');
             if (target === 'config') cargarReglasRISDesdeServidor();
         }
 
         function toggleLoginPassword() {
             const passInput = document.getElementById("sec-password");
             const toggleBtn = document.getElementById("btn-toggle-password");
+            if (!passInput || !toggleBtn) return;
             if (passInput.type === "password") {
                 passInput.type = "text";
                 toggleBtn.innerText = "🔒";
@@ -3251,12 +3107,15 @@
         }
 
         function mostrarLoaderModal(texto) {
-            document.getElementById("loading-reporte-texto").innerText = texto || "Procesando...";
-            document.getElementById("loading-reporte-modal").style.display = "flex";
+            const txt = document.getElementById("loading-reporte-texto");
+            if (txt) txt.innerText = texto || "Procesando...";
+            const modal = document.getElementById("loading-reporte-modal");
+            if (modal) modal.style.display = "flex";
         }
 
         function ocultarLoaderModal() {
-            document.getElementById("loading-reporte-modal").style.display = "none";
+            const modal = document.getElementById("loading-reporte-modal");
+            if (modal) modal.style.display = "none";
         }
 
         function detectarEnterLogin(event) {
@@ -3267,24 +3126,21 @@
             if (event.key === "Enter") verificarCodigoOTP();
         }
 
-        // Variable global para controlar el temporizador de respaldo de la intro
         let safetyIntroTimeout = null;
 
-        // --- GESTIÓN DE LA PANTALLA DE INICIALIZACIÓN CON INTRO OPTIMIZADA ---
         function iniciarIntroYAcceder(data) {
             tempTransitionData = data;
             const loginScreen = document.getElementById("login-screen");
             const introScreen = document.getElementById("intro-screen");
             const introVideo = document.getElementById("intro-video");
 
-            loginScreen.style.display = "none";
-            introScreen.style.display = "flex";
-            introScreen.style.opacity = "1";
+            if (loginScreen) loginScreen.style.display = "none";
+            if (introScreen) {
+                introScreen.style.display = "flex";
+                introScreen.style.opacity = "1";
+            }
 
-            // RESPALDO DE SEGURIDAD: Si el video se congela o no carga tras 6 segundos,
-            // ingresa automáticamente al sistema para evitar bloquear al usuario.
             safetyIntroTimeout = setTimeout(() => {
-                console.log("Respaldo activado: El video tardó en responder. Omitiendo intro.");
                 omitirIntroSeguro();
             }, 6000); 
 
@@ -3295,57 +3151,38 @@
                 
                 const playPromise = introVideo.play();
                 if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        // El video comenzó a reproducirse sin problemas
-                    }).catch(err => {
-                        console.log("Autoplay bloqueado o error en el descodificador:", err);
+                    playPromise.then(() => {}).catch(err => {
                         omitirIntroSeguro();
                     });
                 }
 
-                // Si el video termina de forma natural
-                introVideo.onended = function() {
-                    omitirIntroSeguro();
-                };
-
-                // Si hay un error de red o formato
-                introVideo.onerror = function() {
-                    console.log("Error detectado en la reproducción del archivo de video.");
-                    omitirIntroSeguro();
-                };
-
-                // Si el video entra en pausa o buffer infinito por congelamiento
-                introVideo.onstalled = function() {
-                    console.log("La reproducción se estancó. Cargando panel.");
-                    omitirIntroSeguro();
-                };
+                introVideo.onended = function() { omitirIntroSeguro(); };
+                introVideo.onerror = function() { omitirIntroSeguro(); };
+                introVideo.onstalled = function() { omitirIntroSeguro(); };
             } else {
                 omitirIntroSeguro();
             }
         }
 
-        // --- FUNCIÓN DE OMISIÓN SEGURA E INSTANTÁNEA ---
         window.omitirIntroSeguro = function() {
             if (safetyIntroTimeout) {
                 clearTimeout(safetyIntroTimeout);
                 safetyIntroTimeout = null;
             }
             const introVideo = document.getElementById("intro-video");
-            if (introVideo) {
-                introVideo.pause(); // Detiene el video para liberar memoria del procesador
-            }
-            finalizarIntroVideo(); // Carga de inmediato el dashboard principal
+            if (introVideo) introVideo.pause();
+            finalizarIntroVideo();
         };
 
         function finalizarIntroVideo() {
             const introScreen = document.getElementById("intro-screen");
             const mainApp = document.getElementById("main-app");
 
-            introScreen.style.opacity = "0";
+            if (introScreen) introScreen.style.opacity = "0";
 
             setTimeout(() => {
-                introScreen.style.display = "none";
-                mainApp.style.display = "flex";
+                if (introScreen) introScreen.style.display = "none";
+                if (mainApp) mainApp.style.display = "flex";
 
                 const chatFab = document.getElementById("chat-fab-element");
                 if (chatFab) chatFab.style.display = "flex";
@@ -3355,17 +3192,17 @@
                     tempTransitionData = null; 
                 }
 
-                // Disparador de voz de inicialización (espera 800ms para una entrada limpia)
-                setTimeout(() => {
-                    anunciarBienvenidaSistema();
-                }, 800);
+                setTimeout(() => { anunciarBienvenidaSistema(); }, 800);
 
             }, 800); 
         }
 
         function enviarCredentialsLogin() {
-            const user = document.getElementById("sec-username").value.trim().toUpperCase();
-            const pass = document.getElementById("sec-password").value.trim();
+            const userEl = document.getElementById("sec-username");
+            const passEl = document.getElementById("sec-password");
+            if (!userEl || !passEl) return;
+            const user = userEl.value.trim().toUpperCase();
+            const pass = passEl.value.trim();
             const loader = document.getElementById("login-loader");
             const loginError = document.getElementById("login-error");
 
@@ -3374,172 +3211,175 @@
                 return;
             }
 
-            loader.style.display = "block"; // Activará el jumping dots container
-            loginError.style.display = "none";
+            if (loader) loader.style.display = "block";
+            if (loginError) loginError.style.display = "none";
 
             fetch(`${CONFIG_WEB_APP_URL}?action=request_otp&user=${encodeURIComponent(user)}&pass=${encodeURIComponent(pass)}`)
             .then(res => res.json())
             .then(data => {
-                loader.style.display = "none";
+                if (loader) loader.style.display = "none";
                 if (data.status === "otp_sent") {
-                    document.getElementById("credentials-section").style.display = "none";
-                    document.getElementById("otp-section").style.display = "block";
+                    const cSec = document.getElementById("credentials-section");
+                    const oSec = document.getElementById("otp-section");
+                    if (cSec) cSec.style.display = "none";
+                    if (oSec) oSec.style.display = "block";
                     sessionStorage.setItem("temp_user", user);
                     sessionStorage.setItem("temp_pass", pass);
-                    setTimeout(() => document.getElementById("sec-otp").focus(), 150);
+                    setTimeout(() => {
+                        const otpInput = document.getElementById("sec-otp");
+                        if (otpInput) otpInput.focus();
+                    }, 150);
                 } else if (data.status === "success") {
                     sessionStorage.setItem("secure_user_initials", user);
                     sessionStorage.setItem("secure_auth_plain", pass);
                     iniciarIntroYAcceder(data.data);
-                } else if (data.error) {
+                } else if (data.error && loginError) {
                     loginError.innerText = data.error;
                     loginError.style.display = "block";
                 }
             })
             .catch(err => {
-                loader.style.display = "none";
-                loginError.innerText = "Error: " + err.toString();
-                loginError.style.display = "block";
+                if (loader) loader.style.display = "none";
+                if (loginError) {
+                    loginError.innerText = "Error: " + err.toString();
+                    loginError.style.display = "block";
+                }
             });
         }
 
         function verificarCodigoOTP() {
-            const otp = document.getElementById("sec-otp").value.trim();
+            const otpEl = document.getElementById("sec-otp");
+            if (!otpEl) return;
+            const otp = otpEl.value.trim();
             const loader = document.getElementById("login-loader");
             const loginError = document.getElementById("login-error");
             const user = sessionStorage.getItem("temp_user");
 
-            loader.style.display = "block";
-            loginError.style.display = "none";
+            if (loader) loader.style.display = "block";
+            if (loginError) loginError.style.display = "none";
 
             fetch(`${CONFIG_WEB_APP_URL}?action=verify_otp&user=${encodeURIComponent(user)}&otp=${encodeURIComponent(otp)}`)
             .then(res => res.json())
             .then(data => {
-                loader.style.display = "none";
+                if (loader) loader.style.display = "none";
                 if (data.status === "success") {
                     sessionStorage.setItem("secure_user_initials", user);
                     sessionStorage.setItem("secure_auth_plain", sessionStorage.getItem("temp_pass"));
-                    document.getElementById("user-display").innerText = user;
+                    const uDisp = document.getElementById("user-display");
+                    if (uDisp) uDisp.innerText = user;
                     iniciarIntroYAcceder(data.data);
-                } else {
+                } else if (loginError) {
                     loginError.innerText = data.error || "Código incorrecto";
                     loginError.style.display = "block";
                 }
             })
             .catch(err => {
-                loader.style.display = "none";
-                loginError.innerText = "Error de validación.";
-                loginError.style.display = "block";
+                if (loader) loader.style.display = "none";
+                if (loginError) {
+                    loginError.innerText = "Error de validación.";
+                    loginError.style.display = "block";
+                }
             });
         }
 
         function inicializarDashboardConDatos(data) {
-    if (!data) return;
-    
-    // 1. Guardar la caché global PRIMERO
-    globalDashboardCache = data; 
-    
-    const totalActual = (data.dashboardData && data.dashboardData.papeletas) ? data.dashboardData.papeletas.length : 0;
-    
-    // Alerta sonora/voz si llega una nueva papeleta
-    if (prevPapeletasCount !== null && totalActual > prevPapeletasCount) {
-        reproducirSonidoNotificacion();
-        try {
-            const viejosIds = new Set(globalDashboardCache.dashboardData.papeletas.map(p => String(p.id_papeleta)));
-            const nuevasPapeletas = data.dashboardData.papeletas.filter(p => !viejosIds.has(String(p.id_papeleta)));
+            if (!data) return;
+            globalDashboardCache = data; 
             
-            if (nuevasPapeletas.length > 0) {
-                const nueva = nuevasPapeletas[0];
-                const inspector = nueva.agente || nueva.oficial || "Oficial de Turno";
-                const id = nueva.id_papeleta || "Sin Identificador";
-                setTimeout(() => { anunciarPapeletaPorVoz(inspector, id); }, 800);
+            const totalActual = (data.dashboardData && data.dashboardData.papeletas) ? data.dashboardData.papeletas.length : 0;
+            
+            if (prevPapeletasCount !== null && totalActual > prevPapeletasCount) {
+                reproducirSonidoNotificacion();
+                try {
+                    const viejosIds = new Set(globalDashboardCache.dashboardData.papeletas.map(p => String(p.id_papeleta)));
+                    const nuevasPapeletas = data.dashboardData.papeletas.filter(p => !viejosIds.has(String(p.id_papeleta)));
+                    
+                    if (nuevasPapeletas.length > 0) {
+                        const nueva = nuevasPapeletas[0];
+                        const inspector = nueva.agente || nueva.oficial || "Oficial de Turno";
+                        const id = nueva.id_papeleta || "Sin Identificador";
+                        setTimeout(() => { anunciarPapeletaPorVoz(inspector, id); }, 800);
+                    }
+                } catch (e) {}
             }
-        } catch (e) {
-            console.log("Error al procesar el anuncio por voz: ", e);
-        }
-    }
 
-    prevPapeletasCount = totalActual;
+            prevPapeletasCount = totalActual;
 
-    // 2. Dibujar tabla de tipos y modos
-    renderizarTablaTiposModos();
+            renderizarTablaTiposModos();
 
-    // 3. Renderizar las papeletas y métricas con protección contra NULOS
-    if (data.dashboardData && data.dashboardData.papeletas) {
-        poblarFiltrosDinamicos(data.dashboardData.papeletas);
-        calcularFiltrosEtapa(data.dashboardData.papeletas);
-        filtrarYRenderizarTabla();
-        calcularNotificacionesYAlertas(data.dashboardData.papeletas);
+            if (data.dashboardData && data.dashboardData.papeletas) {
+                poblarFiltrosDinamicos(data.dashboardData.papeletas);
+                calcularFiltrosEtapa(data.dashboardData.papeletas);
+                filtrarYRenderizarTabla();
+                calcularNotificacionesYAlertas(data.dashboardData.papeletas);
 
-        // Protección de KPIs principales
-        const elHoy = document.getElementById("kpi-hoy"); if (elHoy) elHoy.innerText = data.dashboardData.kpis.hoy || 0;
-        const elMes = document.getElementById("kpi-mes"); if (elMes) elMes.innerText = data.dashboardData.kpis.esteMes || 0;
-        const elAbs = document.getElementById("kpi-absueltas"); if (elAbs) elAbs.innerText = data.dashboardData.kpis.absueltas || 0;
+                const elHoy = document.getElementById("kpi-hoy"); if (elHoy) elHoy.innerText = data.dashboardData.kpis.hoy || 0;
+                const elMes = document.getElementById("kpi-mes"); if (elMes) elMes.innerText = data.dashboardData.kpis.esteMes || 0;
+                const elAbs = document.getElementById("kpi-absueltas"); if (elAbs) elAbs.innerText = data.dashboardData.kpis.absueltas || 0;
 
-        let totalDias = 0;
-        let dniUnicos = new Set();
-        let dnisRepetidos = new Set();
+                let totalDias = 0;
+                let dniUnicos = new Set();
+                let dnisRepetidos = new Set();
 
-        data.dashboardData.papeletas.forEach(p => {
-            if (p.estado_tramite && p.estado_tramite.indexOf("CERRADO") !== -1) {
-                totalDias += 15; 
-            }
-            const dniVal = p.dni ? String(p.dni).trim() : "";
-            if (dniVal) {
-                if (dniUnicos.has(dniVal)) dnisRepetidos.add(dniVal);
-                else dniUnicos.add(dniVal);
-            }
-        });
-        
-        const elSus = document.getElementById("kpi-suspension-dias"); if (elSus) elSus.innerText = `${totalDias} d`;
-        const tasaReincidencia = dniUnicos.size > 0 ? Math.round((dnisRepetidos.size / dniUnicos.size) * 100) : 0;
-        const elRein = document.getElementById("kpi-reincidencia-tasa"); if (elRein) elRein.innerText = `${tasaReincidencia}%`;
-
-        // Protección de Lista de Agentes (Evita el fallo del null)
-        const listaAgentes = document.getElementById("lista-kpi-agentes");
-        if (listaAgentes) {
-            listaAgentes.innerHTML = "";
-            if (data.dashboardData.kpis.agentes && data.dashboardData.kpis.agentes.length > 0) {
-                data.dashboardData.kpis.agentes.forEach((ag, idx) => {
-                    listaAgentes.innerHTML += `
-                        <li class="agents-list-item">
-                            <span>#${idx+1} Oficial <strong>${ag.agente}</strong></span>
-                            <div><span class="agent-rank">${ag.count} papeleta${ag.count !== 1 ? 's' : ''}</span></div>
-                        </li>`;
+                data.dashboardData.papeletas.forEach(p => {
+                    if (p.estado_tramite && p.estado_tramite.indexOf("CERRADO") !== -1) {
+                        totalDias += 15; 
+                    }
+                    const dniVal = p.dni ? String(p.dni).trim() : "";
+                    if (dniVal) {
+                        if (dniUnicos.has(dniVal)) dnisRepetidos.add(dniVal);
+                        else dniUnicos.add(dniVal);
+                    }
                 });
-            } else {
-                listaAgentes.innerHTML = `<li class="agents-list-item">Sin datos.</li>`;
+                
+                const elSus = document.getElementById("kpi-suspension-dias"); if (elSus) elSus.innerText = `${totalDias} d`;
+                const tasaReincidencia = dniUnicos.size > 0 ? Math.round((dnisRepetidos.size / dniUnicos.size) * 100) : 0;
+                const elRein = document.getElementById("kpi-reincidencia-tasa"); if (elRein) elRein.innerText = `${tasaReincidencia}%`;
+
+                const listaAgentes = document.getElementById("lista-kpi-agentes");
+                if (listaAgentes) {
+                    listaAgentes.innerHTML = "";
+                    if (data.dashboardData.kpis.agentes && data.dashboardData.kpis.agentes.length > 0) {
+                        data.dashboardData.kpis.agentes.forEach((ag, idx) => {
+                            listaAgentes.innerHTML += `
+                                <li class="agents-list-item">
+                                    <span>#${idx+1} Oficial <strong>${ag.agente}</strong></span>
+                                    <div><span class="agent-rank">${ag.count} papeleta${ag.count !== 1 ? 's' : ''}</span></div>
+                                </li>`;
+                        });
+                    } else {
+                        listaAgentes.innerHTML = `<li class="agents-list-item">Sin datos.</li>`;
+                    }
+                }
+
+                const listaConductas = document.getElementById("lista-kpi-conductas");
+                if (listaConductas) {
+                    listaConductas.innerHTML = "";
+                    if (data.dashboardData.kpis.conductas && data.dashboardData.kpis.conductas.length > 0) {
+                        data.dashboardData.kpis.conductas.slice(0, 5).forEach(c => {
+                            listaConductas.innerHTML += `
+                                <li class="agents-list-item">
+                                    <span>${c.conducta}</span>
+                                    <strong>${c.count} casos</strong>
+                                </li>`;
+                        });
+                    }
+                }
+
+                renderizarKpisContratistas(data.dashboardData.papeletas);
+                renderizarTimelineChart(data.dashboardData.papeletas);
+
+                if (data.dashboardData.newsSummary) {
+                    const elFechaNot = document.getElementById("noticia-fecha"); if (elFechaNot) elFechaNot.innerText = data.dashboardData.newsSummary.fecha;
+                    const elCuerpoNot = document.getElementById("noticia-cuerpo"); if (elCuerpoNot) elCuerpoNot.innerHTML = formatearRespuestaChat(data.dashboardData.newsSummary.cuerpo);
+                }
             }
         }
-
-        // Protección de Lista de Conductas
-        const listaConductas = document.getElementById("lista-kpi-conductas");
-        if (listaConductas) {
-            listaConductas.innerHTML = "";
-            if (data.dashboardData.kpis.conductas && data.dashboardData.kpis.conductas.length > 0) {
-                data.dashboardData.kpis.conductas.slice(0, 5).forEach(c => {
-                    listaConductas.innerHTML += `
-                        <li class="agents-list-item">
-                            <span>${c.conducta}</span>
-                            <strong>${c.count} casos</strong>
-                        </li>`;
-                });
-            }
-        }
-
-        renderizarKpisContratistas(data.dashboardData.papeletas);
-        renderizarTimelineChart(data.dashboardData.papeletas);
-
-        if (data.dashboardData.newsSummary) {
-            const elFechaNot = document.getElementById("noticia-fecha"); if (elFechaNot) elFechaNot.innerText = data.dashboardData.newsSummary.fecha;
-            const elCuerpoNot = document.getElementById("noticia-cuerpo"); if (elCuerpoNot) elCuerpoNot.innerHTML = formatearRespuestaChat(data.dashboardData.newsSummary.cuerpo);
-        }
-    }
-}
 
         function calcularNotificacionesYAlertas(papeletas) {
             const container = document.getElementById("notification-items-container");
             const bellBadge = document.getElementById("bell-badge");
+            if (!container) return;
             container.innerHTML = "";
             let alertas = [];
             let vencidasCount = 0;
@@ -3557,124 +3397,91 @@
             if (descargosCount > 0) alertas.push(`<div class="notification-item" onclick="cambiarFiltroRapido('descargo')">📩 Se recibieron <strong>${descargosCount} descargos</strong>.</div>`);
 
             if (alertas.length > 0) {
-                bellBadge.innerText = alertas.length;
-                bellBadge.style.display = "flex";
+                if (bellBadge) {
+                    bellBadge.innerText = alertas.length;
+                    bellBadge.style.display = "flex";
+                }
                 container.innerHTML = alertas.join("");
             } else {
-                bellBadge.style.display = "none";
+                if (bellBadge) bellBadge.style.display = "none";
                 container.innerHTML = `<div class="notification-item">Sin alertas.</div>`;
             }
         }
 
         function cambiarFiltroRapido(estado) {
-            document.getElementById("filtro-semaforo").value = estado;
-            document.getElementById("notification-dropdown-box").classList.remove("active");
+            const selectSemaforo = document.getElementById("filtro-semaforo");
+            if (selectSemaforo) selectSemaforo.value = estado;
+            const dropdown = document.getElementById("notification-dropdown-box");
+            if (dropdown) dropdown.classList.remove("active");
             filtrarYRenderizarTabla();
         }
 
+        /* --- CONTROL DE ERRORES: PREVIENE EL ERROR DE PROPIEDADES NULAS --- */
         function poblarFiltrosDinamicos(papeletas) {
-    const selectEmpresa = document.getElementById("filtro-empresa");
-    if (!selectEmpresa) return; // ✅ Protección contra nulos
-    
-    selectEmpresa.innerHTML = '<option value="">Filtro Empresa</option>';
-    let empresas = new Set();
-    papeletas.forEach(p => { if (p.empresa) empresas.add(p.empresa); });
-    empresas.forEach(emp => {
-        const opt = document.createElement("option");
-        opt.value = emp; opt.innerText = emp;
-        selectEmpresa.appendChild(opt);
-    });
-}
-
-function filtrarYRenderizarTabla() {
-    if (!globalDashboardCache || !globalDashboardCache.dashboardData || !globalDashboardCache.dashboardData.papeletas) return;
-    
-    const elBuscador = document.getElementById("tabla-buscador-rapido");
-    const query = elBuscador ? elBuscador.value.trim().toLowerCase() : "";
-    const selectEmpresa = document.getElementById("filtro-empresa");
-    const empresaFiltro = selectEmpresa ? selectEmpresa.value : "";
-    const selectSemaforo = document.getElementById("filtro-semaforo");
-    const semaforoFiltro = selectSemaforo ? selectSemaforo.value : "";
-
-    const papeletas = globalDashboardCache.dashboardData.papeletas;
-    activeFilteredPapeletas = papeletas.filter(p => {
-        const cumpleBuscador = !query || 
-            String(p.id_papeleta).toLowerCase().includes(query) ||
-            String(p.infractor).toLowerCase().includes(query) ||
-            String(p.dni).toLowerCase().includes(query) ||
-            String(p.empresa).toLowerCase().includes(query) ||
-            String(p.conducta).toLowerCase().includes(query);
-        
-        const cumpleEmpresa = !empresaFiltro || p.empresa === empresaFiltro;
-        const cumpleSemaforo = !semaforoFiltro || p.estado_semaforo === semaforoFiltro;
-
-        let cumpleEtapa = true;
-        const est = String(p.estado_tramite || "PENDIENTE").trim().toUpperCase();
-        const semaforo = String(p.estado_semaforo || "").trim().toLowerCase();
-        const modo = String(p.modo_tramite || "MANUAL").trim().toUpperCase();
-
-        if (etapaTramiteActual === "EN_PLAZO") {
-            if (est === "DESCARGO_RECIBIDO" || est === "PLAZO_VENCIDO" || semaforo === "descargo" || semaforo === "vencido") {
-                cumpleEtapa = false;
-            }
-        } else if (etapaTramiteActual === "DESCARGO_RECIBIDO") {
-            if (!(est === "DESCARGO_RECIBIDO" || semaforo === "descargo")) {
-                cumpleEtapa = false;
-            }
-        } else if (etapaTramiteActual === "PLAZO_VENCIDO") {
-            if (!(est === "PLAZO_VENCIDO" || semaforo === "vencido")) {
-                cumpleEtapa = false;
-            }
-        } else if (etapaTramiteActual === "AUTOMATICO") {
-            if (modo !== "AUTOMATICO") {
-                cumpleEtapa = false;
-            }
+            const selectEmpresa = document.getElementById("filtro-empresa");
+            if (!selectEmpresa) return; // Validación de seguridad anti-null
+            selectEmpresa.innerHTML = '<option value="">Filtro Empresa</option>';
+            let empresas = new Set();
+            papeletas.forEach(p => { if (p.empresa) empresas.add(p.empresa); });
+            empresas.forEach(emp => {
+                const opt = document.createElement("option");
+                opt.value = emp; opt.innerText = emp;
+                selectEmpresa.appendChild(opt);
+            });
         }
 
-        return cumpleBuscador && cumpleEmpresa && cumpleSemaforo && cumpleEtapa;
-    });
+        function calcularFiltrosEtapa(papeletas) {
+            let activos = 0;
+            let enPlazo = 0;
+            let descargosRecibidos = 0;
+            let plazosVencidos = 0;
+            let enModoIA = 0;
 
-    activeFilteredPapeletas.sort((a, b) => {
-        let valA = a[sortColumnaActual]; let valB = b[sortColumnaActual];
-        if (typeof valA === "string") valA = valA.toLowerCase();
-        if (typeof valB === "string") valB = valB.toLowerCase();
-        if (valA < valB) return sortOrdenAscendente ? -1 : 1;
-        if (valA > valB) return sortOrdenAscendente ? 1 : -1;
-        return 0;
-    });
-    
-    const totalBadge = document.getElementById("badge-total-papeletas");
-    if (totalBadge) {
-        if (activeFilteredPapeletas.length > 0) {
-            totalBadge.innerText = activeFilteredPapeletas.length;
-            totalBadge.style.display = "inline-block";
-        } else {
-            totalBadge.style.display = "none";
+            papeletas.forEach(p => {
+                const est = String(p.estado_tramite || "PENDIENTE").trim().toUpperCase();
+                const semaforo = String(p.estado_semaforo || "").trim().toLowerCase();
+                const modo = String(p.modo_tramite || "MANUAL").trim().toUpperCase();
+
+                if (est.indexOf("CERRADO") === -1) {
+                    activos++;
+
+                    if (est === "DESCARGO_RECIBIDO" || semaforo === "descargo") {
+                        descargosRecibidos++;
+                    } else if (est === "PLAZO_VENCIDO" || semaforo === "vencido") {
+                        plazosVencidos++;
+                    } else {
+                        enPlazo++;
+                    }
+
+                    if (modo === "AUTOMATICO") {
+                        enModoIA++;
+                    }
+                }
+            });
+
+            const pAll = document.getElementById("pipe-count-all"); if (pAll) pAll.innerText = activos;
+            const pPlazo = document.getElementById("pipe-count-enplazo"); if (pPlazo) pPlazo.innerText = enPlazo;
+            const pDesc = document.getElementById("pipe-count-descargo"); if (pDesc) pDesc.innerText = descargosRecibidos;
+            const pVenc = document.getElementById("pipe-count-vencido"); if (pVenc) pVenc.innerText = plazosVencidos;
+            const pIA = document.getElementById("pipe-count-ia"); if (pIA) pIA.innerText = enModoIA;
         }
-    }
-
-    actualizarIconosOrdenado();
-    renderizarBandejaPrincipal();
-}
 
         function filtrarPorEtapaTramite(etapa) {
-    etapaTramiteActual = etapa;
+            etapaTramiteActual = etapa;
 
-    // Quitar la clase activa a todos los botones
-    document.querySelectorAll(".pipeline-bar .pipeline-node").forEach(n => n.classList.remove("active"));
+            document.querySelectorAll(".pipeline-bar .pipeline-node").forEach(n => n.classList.remove("active"));
 
-    // Determinar cuál caja activar según la etapa seleccionada
-    let targetId = "pipe-all";
-    if (etapa === "EN_PLAZO") targetId = "pipe-enplazo";
-    else if (etapa === "DESCARGO_RECIBIDO") targetId = "pipe-descargo";
-    else if (etapa === "PLAZO_VENCIDO") targetId = "pipe-vencido";
-    else if (etapa === "AUTOMATICO") targetId = "pipe-ia";
+            let targetId = "pipe-all";
+            if (etapa === "EN_PLAZO") targetId = "pipe-enplazo";
+            else if (etapa === "DESCARGO_RECIBIDO") targetId = "pipe-descargo";
+            else if (etapa === "PLAZO_VENCIDO") targetId = "pipe-vencido";
+            else if (etapa === "AUTOMATICO") targetId = "pipe-ia";
 
-    const elTarget = document.getElementById(targetId);
-    if (elTarget) elTarget.classList.add("active");
+            const elTarget = document.getElementById(targetId);
+            if (elTarget) elTarget.classList.add("active");
 
-    filtrarYRenderizarTabla();
-}
+            filtrarYRenderizarTabla();
+        }
 
         function ordenarTablaPor(columna) {
             if (sortColumnaActual === columna) sortOrdenAscendente = !sortOrdenAscendente;
@@ -3692,9 +3499,13 @@ function filtrarYRenderizarTabla() {
 
         function filtrarYRenderizarTabla() {
             if (!globalDashboardCache || !globalDashboardCache.dashboardData || !globalDashboardCache.dashboardData.papeletas) return;
-            const query = document.getElementById("tabla-buscador-rapido").value.trim().toLowerCase();
+            
+            const inputBuscador = document.getElementById("tabla-buscador-rapido");
+            const query = inputBuscador ? inputBuscador.value.trim().toLowerCase() : "";
+            
             const selectEmpresa = document.getElementById("filtro-empresa");
             const empresaFiltro = selectEmpresa ? selectEmpresa.value : "";
+            
             const selectSemaforo = document.getElementById("filtro-semaforo");
             const semaforoFiltro = selectSemaforo ? selectSemaforo.value : "";
 
@@ -3710,29 +3521,28 @@ function filtrarYRenderizarTabla() {
                 const cumpleEmpresa = !empresaFiltro || p.empresa === empresaFiltro;
                 const cumpleSemaforo = !semaforoFiltro || p.estado_semaforo === semaforoFiltro;
 
-                // Reemplazar el bloque interno de cumpleEtapa dentro de filtrarYRenderizarTabla():
-let cumpleEtapa = true;
-const est = String(p.estado_tramite || "PENDIENTE").trim().toUpperCase();
-const semaforo = String(p.estado_semaforo || "").trim().toLowerCase();
-const modo = String(p.modo_tramite || "MANUAL").trim().toUpperCase();
+                let cumpleEtapa = true;
+                const est = String(p.estado_tramite || "PENDIENTE").trim().toUpperCase();
+                const semaforo = String(p.estado_semaforo || "").trim().toLowerCase();
+                const modo = String(p.modo_tramite || "MANUAL").trim().toUpperCase();
 
-if (etapaTramiteActual === "EN_PLAZO") {
-    if (est === "DESCARGO_RECIBIDO" || est === "PLAZO_VENCIDO" || semaforo === "descargo" || semaforo === "vencido") {
-        cumpleEtapa = false;
-    }
-} else if (etapaTramiteActual === "DESCARGO_RECIBIDO") {
-    if (!(est === "DESCARGO_RECIBIDO" || semaforo === "descargo")) {
-        cumpleEtapa = false;
-    }
-} else if (etapaTramiteActual === "PLAZO_VENCIDO") {
-    if (!(est === "PLAZO_VENCIDO" || semaforo === "vencido")) {
-        cumpleEtapa = false;
-    }
-} else if (etapaTramiteActual === "AUTOMATICO") {
-    if (modo !== "AUTOMATICO") {
-        cumpleEtapa = false;
-    }
-}
+                if (etapaTramiteActual === "EN_PLAZO") {
+                    if (est === "DESCARGO_RECIBIDO" || est === "PLAZO_VENCIDO" || semaforo === "descargo" || semaforo === "vencido") {
+                        cumpleEtapa = false;
+                    }
+                } else if (etapaTramiteActual === "DESCARGO_RECIBIDO") {
+                    if (!(est === "DESCARGO_RECIBIDO" || semaforo === "descargo")) {
+                        cumpleEtapa = false;
+                    }
+                } else if (etapaTramiteActual === "PLAZO_VENCIDO") {
+                    if (!(est === "PLAZO_VENCIDO" || semaforo === "vencido")) {
+                        cumpleEtapa = false;
+                    }
+                } else if (etapaTramiteActual === "AUTOMATICO") {
+                    if (modo !== "AUTOMATICO") {
+                        cumpleEtapa = false;
+                    }
+                }
                 return cumpleBuscador && cumpleEmpresa && cumpleSemaforo && cumpleEtapa;
             });
 
@@ -3746,10 +3556,12 @@ if (etapaTramiteActual === "EN_PLAZO") {
             });
             
             const totalBadge = document.getElementById("badge-total-papeletas");
-            if (activeFilteredPapeletas.length > 0) {
-                totalBadge.innerText = activeFilteredPapeletas.length;
-                totalBadge.style.display = "inline-block";
-            } else totalBadge.style.display = "none";
+            if (totalBadge) {
+                if (activeFilteredPapeletas.length > 0) {
+                    totalBadge.innerText = activeFilteredPapeletas.length;
+                    totalBadge.style.display = "inline-block";
+                } else totalBadge.style.display = "none";
+            }
 
             actualizarIconosOrdenado();
             renderizarBandejaPrincipal();
@@ -3759,16 +3571,19 @@ if (etapaTramiteActual === "EN_PLAZO") {
             vistaBandejaActual = modo;
             const btnList = document.getElementById("btn-view-list");
             const btnGrid = document.getElementById("btn-view-grid");
+            const tContainer = document.getElementById("bandeja-tabla-container");
+            const tarjContainer = document.getElementById("bandeja-tarjetas-container");
+
             if (modo === "list") {
-                btnList.style.backgroundColor = "var(--apm-blue)";
-                btnGrid.style.backgroundColor = "var(--apm-dark-blue)";
-                document.getElementById("bandeja-tabla-container").style.display = "block";
-                document.getElementById("bandeja-tarjetas-container").style.display = "none";
+                if (btnList) btnList.style.backgroundColor = "var(--apm-blue)";
+                if (btnGrid) btnGrid.style.backgroundColor = "var(--apm-dark-blue)";
+                if (tContainer) tContainer.style.display = "block";
+                if (tarjContainer) tarjContainer.style.display = "none";
             } else {
-                btnList.style.backgroundColor = "var(--apm-dark-blue)";
-                btnGrid.style.backgroundColor = "var(--apm-blue)";
-                document.getElementById("bandeja-tabla-container").style.display = "none";
-                document.getElementById("bandeja-tarjetas-container").style.display = "block";
+                if (btnList) btnList.style.backgroundColor = "var(--apm-dark-blue)";
+                if (btnGrid) btnGrid.style.backgroundColor = "var(--apm-blue)";
+                if (tContainer) tContainer.style.display = "none";
+                if (tarjContainer) tarjContainer.style.display = "block";
             }
             renderizarBandejaPrincipal();
         }
@@ -3780,6 +3595,7 @@ if (etapaTramiteActual === "EN_PLAZO") {
 
         function renderizarTablaFiltrada(papeletasFiltradas) {
             const tbody = document.querySelector("#tabla-control-papeletas tbody");
+            if (!tbody) return;
             tbody.innerHTML = "";
             const activas = papeletasFiltradas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1);
 
@@ -3789,15 +3605,13 @@ if (etapaTramiteActual === "EN_PLAZO") {
             }
 
             activas.forEach(p => {
-                // 1. Limpieza de Fecha (solo el día)
                 let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.split(/[T ]/)[0] : "-";
                 
-                // 2. Lógica visual del LED de envío justo debajo del ID Papeleta
                 let ledMarkup = "";
                 if (p.estado_envio === "Se envió correctamente" || !p.estado_envio) {
                     ledMarkup = `
                         <div style="display: flex; align-items: center; gap: 6px; margin-top: 5px;">
-                            <span style="display: inline-block; width: 8px; height: 8px; background-color: #10B981; border-radius: 50%; box-shadow: 0 0 8px #10B981; animation: pulseLed 2s infinite;"></span>
+                            <span style="display: inline-block; width: 8px; height: 8px; background-color: #10B981; border-radius: 50%; box-shadow: 0 0 8px #10B981;"></span>
                             <span style="font-size: 11px; color: #10B981; font-weight: bold; font-family: sans-serif;">Enviado</span>
                         </div>
                     `;
@@ -3810,7 +3624,6 @@ if (etapaTramiteActual === "EN_PLAZO") {
                     `;
                 }
 
-                // 3. Extracción de días sugeridos de la caché de la IA (Google Sheets)
                 let badgeSancionSugerida = "";
                 try {
                     if (p.ia_analisis_cache && p.ia_analisis_cache.trim() !== "") {
@@ -3832,7 +3645,6 @@ if (etapaTramiteActual === "EN_PLAZO") {
                     badgeSancionSugerida = `<span class="badge-sancion-pendiente">Pendiente IA</span>`;
                 }
 
-                // 4. Lógica de negocio unificada para "ESTADO DEL TRÁMITE"
                 let estadoTramiteBadge = "";
                 if (p.estado_semaforo === "vigente" || p.estado_semaforo === "ultimo_dia") {
                     estadoTramiteBadge = `<span class="badge badge-blue">Plazo Vigente (Pendiente Descargos)</span>`;
@@ -3853,7 +3665,6 @@ if (etapaTramiteActual === "EN_PLAZO") {
                     seleccionarPapeletaParaRevision(p.id_papeleta);
                 };
 
-                // Renderizado limpio de la rejilla compacta de 7 columnas
                 tr.innerHTML = `
                     <td>
                         <strong class="text-id">${p.id_papeleta}</strong>
@@ -3874,8 +3685,10 @@ if (etapaTramiteActual === "EN_PLAZO") {
                 tbody.appendChild(tr);
             });
         }
+
         function renderizarTablaCasosCerrados(papeletasCerradas) {
             const tbody = document.querySelector("#tabla-casos-cerrados tbody");
+            if (!tbody) return;
             tbody.innerHTML = "";
             if (papeletasCerradas.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">No hay expedientes cerrados recientemente.</td></tr>`;
@@ -3905,7 +3718,10 @@ if (etapaTramiteActual === "EN_PLAZO") {
 
         function ejecutarBusquedaDBServidor(tipo) {
             const inputId = tipo === "activo" ? "tabla-buscador-rapido" : "buscador-casos-cerrados";
-            const query = document.getElementById(inputId).value.trim();
+            const inputEl = document.getElementById(inputId);
+            if (!inputEl) return;
+            const query = inputEl.value.trim();
+
             if (query.length === 0) {
                 if (tipo === "activo") filtrarYRenderizarTabla();
                 else {
@@ -3935,6 +3751,7 @@ if (etapaTramiteActual === "EN_PLAZO") {
 
         function renderizarTarjetasFiltradas(papeletasFiltradas) {
             const container = document.getElementById("tarjetas-papeletas-contenedor");
+            if (!container) return;
             container.innerHTML = "";
             papeletasFiltradas.forEach(p => {
                 let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.split("T")[0] : "-";
@@ -3958,7 +3775,6 @@ if (etapaTramiteActual === "EN_PLAZO") {
             });
         }
 
-        // --- NAVEGACIÓN LIBRE POR SUB-TABS ---
         function cambiarSubTab(seccion, btn) {
             document.querySelectorAll("#secciones-panes-container .wizard-step-pane").forEach(pane => {
                 pane.classList.remove("active");
@@ -3969,136 +3785,120 @@ if (etapaTramiteActual === "EN_PLAZO") {
             document.querySelectorAll(".sub-tab-link").forEach(b => {
                 b.classList.remove("active");
             });
-            btn.classList.add("active");
+            if (btn) btn.classList.add("active");
         }
 
         function seleccionarPapeletaParaRevision(id) {
-    activePapeletaId = id;
-    
-    const subTabA = document.querySelector(".sub-tab-link");
-    if (subTabA) {
-        cambiarSubTab('A', subTabA);
-    }
-
-    mostrarRobotLoader(id);
-
-    const user = sessionStorage.getItem("secure_user_initials");
-    const auth = sessionStorage.getItem("secure_auth_plain");
-
-    fetch(`${CONFIG_WEB_APP_URL}?action=analizar_ia&id=${encodeURIComponent(id)}&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
-    .then(res => res.json())
-    .then(data => {
-        completarYQuitarRobotLoader();
-        
-        // Abre la ventana emergente Liquid Glass al finalizar la carga
-        document.getElementById("modal-instruccion-expediente").style.display = "flex";
-        
-        const localData = activeFilteredPapeletas.find(p => String(p.id_papeleta) === String(id));
-        
-        if (localData) {
-            const elId = document.getElementById("wiz-val-id");
-            if (elId) elId.innerText = id;
-
-            const elInf = document.getElementById("wiz-val-infractor");
-            if (elInf) elInf.innerText = localData.infractor;
+            activePapeletaId = id;
             
-            const elEmp = document.getElementById("wiz-val-empresa");
-            if (elEmp) elEmp.innerText = localData.empresa;
-            
-            const elCon = document.getElementById("wiz-val-conducta");
-            if (elCon) elCon.innerText = localData.conducta;
-
-            const elBadgeEstado = document.getElementById("lbl-estado-papeleta-badge");
-            if (elBadgeEstado) {
-                elBadgeEstado.innerText = localData.estado_texto;
-                elBadgeEstado.className = `badge badge-${localData.estado_color}`;
+            const subTabA = document.querySelector(".sub-tab-link");
+            if (subTabA) {
+                cambiarSubTab('A', subTabA);
             }
 
-            const btnDrive = document.getElementById("btn-abrir-carpeta-drive");
-            if (btnDrive) {
-                if (localData.carpeta_drive_url && localData.carpeta_drive_url.trim() !== "") {
-                    btnDrive.href = localData.carpeta_drive_url;
-                    btnDrive.style.display = "flex";
-                } else {
-                    btnDrive.style.display = "none";
+            mostrarRobotLoader(id);
+
+            const user = sessionStorage.getItem("secure_user_initials");
+            const auth = sessionStorage.getItem("secure_auth_plain");
+
+            fetch(`${CONFIG_WEB_APP_URL}?action=analizar_ia&id=${encodeURIComponent(id)}&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
+            .then(res => res.json())
+            .then(data => {
+                completarYQuitarRobotLoader();
+                
+                const modal = document.getElementById("modal-instruccion-expediente");
+                if (modal) modal.style.display = "flex";
+                
+                const localData = activeFilteredPapeletas.find(p => String(p.id_papeleta) === String(id));
+                
+                if (localData) {
+                    const elId = document.getElementById("wiz-val-id"); if (elId) elId.innerText = id;
+                    const elInf = document.getElementById("wiz-val-infractor"); if (elInf) elInf.innerText = localData.infractor;
+                    const elEmp = document.getElementById("wiz-val-empresa"); if (elEmp) elEmp.innerText = localData.empresa;
+                    const elCon = document.getElementById("wiz-val-conducta"); if (elCon) elCon.innerText = localData.conducta;
+
+                    const elBadgeEstado = document.getElementById("lbl-estado-papeleta-badge");
+                    if (elBadgeEstado) {
+                        elBadgeEstado.innerText = localData.estado_texto;
+                        elBadgeEstado.className = `badge badge-${localData.estado_color}`;
+                    }
+
+                    const btnDrive = document.getElementById("btn-abrir-carpeta-drive");
+                    if (btnDrive) {
+                        if (localData.carpeta_drive_url && localData.carpeta_drive_url.trim() !== "") {
+                            btnDrive.href = localData.carpeta_drive_url;
+                            btnDrive.style.display = "flex";
+                        } else {
+                            btnDrive.style.display = "none";
+                        }
+                    }
+
+                    evaluarVisibilidadBotonEnviar(localData);
+
+                    let tHtml = "";
+                    if (localData.fecha_infraccion) tHtml += `<div class="trazabilidad-item"><strong>${localData.fecha_infraccion.split("T")[0]}</strong> - Reportado por Security.</div>`;
+                    if (localData.fecha_envio) tHtml += `<div class="trazabilidad-item"><strong>${localData.fecha_envio.split("T")[0]}</strong> - Notificación generada.</div>`;
+                    if (localData.estado_semaforo === "descargo") tHtml += `<div class="trazabilidad-item" style="color:var(--success-green);"><strong>Vía Gmail</strong> - Descargo recibido.</div>`;
+                    
+                    const elTraz = document.getElementById("wiz-val-trazabilidad");
+                    if (elTraz) elTraz.innerHTML = tHtml;
+
+                    const descargosContenedor = document.getElementById("wiz-val-descargos-container");
+                    if (descargosContenedor) {
+                        if (localData.estado_semaforo === "descargo") {
+                            descargosContenedor.innerHTML = `
+                                <div class="highlight-callout urgent" style="margin-bottom: 12px;"><strong>📧 Descargo Recibido</strong></div>
+                                <div style="background-color: var(--input-bg); padding:12px; border-radius:6px; border-left:3px solid var(--apm-blue);">
+                                    <p style="font-size:12px; margin:0;">${formatearRespuestaChat(data.resumen_descargo)}</p>
+                                </div>`;
+                        } else {
+                            descargosContenedor.innerHTML = `<div class="highlight-callout info">En espera de descargos en el buzón.</div>`;
+                        }
+                    }
+                    const switchEl = document.getElementById("toggle-automode-switch");
+                    if (switchEl) switchEl.checked = (localData.modo_tramite === "AUTOMATICO");
                 }
-            }
+                
+                const elRes = document.getElementById("wiz-val-resumen-infraccion"); if (elRes) elRes.innerHTML = formatearRespuestaChat(data.resumen_descargo);
+                const elCrit = document.getElementById("wiz-val-criterio-legal"); if (elCrit) elCrit.innerHTML = formatearRespuestaChat(data.analisis_caso);
 
-            // Evaluar visibilidad del botón Enviar Resolución
-            evaluarVisibilidadBotonEnviar(localData);
-
-            let tHtml = "";
-            if (localData.fecha_infraccion) tHtml += `<div class="trazabilidad-item"><strong>${localData.fecha_infraccion.split("T")[0]}</strong> - Reportado por Security.</div>`;
-            if (localData.fecha_envio) tHtml += `<div class="trazabilidad-item"><strong>${localData.fecha_envio.split("T")[0]}</strong> - Notificación generada.</div>`;
-            if (localData.estado_semaforo === "descargo") tHtml += `<div class="trazabilidad-item" style="color:var(--success-green);"><strong>Vía Gmail</strong> - Descargo recibido.</div>`;
-            
-            const elTraz = document.getElementById("wiz-val-trazabilidad");
-            if (elTraz) elTraz.innerHTML = tHtml;
-
-            const descargosContenedor = document.getElementById("wiz-val-descargos-container");
-            if (descargosContenedor) {
-                if (localData.estado_semaforo === "descargo") {
-                    descargosContenedor.innerHTML = `
-                        <div class="highlight-callout urgent" style="margin-bottom: 12px;"><strong>📧 Descargo Recibido</strong></div>
-                        <div style="background-color: var(--input-bg); padding:12px; border-radius:6px; border-left:3px solid var(--apm-blue);">
-                            <p style="font-size:12px; margin:0;">${formatearRespuestaChat(data.resumen_descargo)}</p>
-                        </div>`;
-                } else {
-                    descargosContenedor.innerHTML = `<div class="highlight-callout info">En espera de descargos en el buzón.</div>`;
+                const timelineContainer = document.getElementById("wiz-val-reincidencias-timeline");
+                if (timelineContainer) {
+                    timelineContainer.innerHTML = "";
+                    if (data.reincidencia_texto) {
+                        const lineas = data.reincidencia_texto.split("\n").filter(l => l.trim().length > 0);
+                        lineas.forEach((linea, index) => {
+                            const item = document.createElement("div");
+                            item.className = "timeline-item-wizard warning";
+                            item.innerHTML = `<div class="timeline-date">Evento ${index + 1}</div><div class="timeline-desc">${formatearRespuestaChat(linea)}</div>`;
+                            timelineContainer.appendChild(item);
+                        });
+                    }
                 }
-            }
-            const switchEl = document.getElementById("toggle-automode-switch");
-            if (switchEl) switchEl.checked = (localData.modo_tramite === "AUTOMATICO");
+                
+                const elConR = document.getElementById("panel-txt-conducta-ris"); if (elConR) elConR.innerText = data.conducta_tabla || "-";
+                const elSancR = document.getElementById("panel-txt-sancion-raw"); if (elSancR) elSancR.innerHTML = formatearRespuestaChat(data.sancion_estipulada_tabla);
+                const elDiasF = document.getElementById("sancion-dias-final"); if (elDiasF) elDiasF.value = data.dias_sugeridos;
+                const elCorrB = document.getElementById("panel-txt-correo-borrador"); if (elCorrB) elCorrB.value = data.correo_borrador;
+            })
+            .catch(err => {
+                const elLoader = document.getElementById("robot-ia-loader");
+                if (elLoader) elLoader.style.display = "none";
+            });
         }
-        
-        const elRes = document.getElementById("wiz-val-resumen-infraccion");
-        if (elRes) elRes.innerHTML = formatearRespuestaChat(data.resumen_descargo);
-        
-        const elCrit = document.getElementById("wiz-val-criterio-legal");
-        if (elCrit) elCrit.innerHTML = formatearRespuestaChat(data.analisis_caso);
 
-        const timelineContainer = document.getElementById("wiz-val-reincidencias-timeline");
-        if (timelineContainer) {
-            timelineContainer.innerHTML = "";
-            if (data.reincidencia_texto) {
-                const lineas = data.reincidencia_texto.split("\n").filter(l => l.trim().length > 0);
-                lineas.forEach((linea, index) => {
-                    const item = document.createElement("div");
-                    item.className = "timeline-item-wizard warning";
-                    item.innerHTML = `<div class="timeline-date">Evento ${index + 1}</div><div class="timeline-desc">${formatearRespuestaChat(linea)}</div>`;
-                    timelineContainer.appendChild(item);
-                });
-            }
-        }
-        
-        const elConR = document.getElementById("panel-txt-conducta-ris");
-        if (elConR) elConR.innerText = data.conducta_tabla || "-";
-        
-        const elSancR = document.getElementById("panel-txt-sancion-raw");
-        if (elSancR) elSancR.innerHTML = formatearRespuestaChat(data.sancion_estipulada_tabla);
-        
-        const elDiasF = document.getElementById("sancion-dias-final");
-        if (elDiasF) elDiasF.value = data.dias_sugeridos;
-        
-        const elCorrB = document.getElementById("panel-txt-correo-borrador");
-        if (elCorrB) elCorrB.value = data.correo_borrador;
-    })
-    .catch(err => {
-        const elLoader = document.getElementById("robot-ia-loader");
-        if (elLoader) elLoader.style.display = "none";
-    });
-}
         function ejecutarAprobacionYSancion() {
             const diasSancion = document.getElementById("sancion-dias-final").value;
             const correoFinal = document.getElementById("panel-txt-correo-borrador").value;
             alert(`🚀 Resolución Procesada!\nSe aplicó sanción de ${diasSancion} días.\n\nBorrador:\n${correoFinal.substring(0,100)}...`);
             
-            cerrarModalInstruccion(); // Cierra el modal de forma limpia
+            cerrarModalInstruccion();
             filtrarYRenderizarTabla();
         }
 
         function cargarReglasRISDesdeServidor() {
             const container = document.getElementById("contenedor-reglas-ris-dinamico");
+            if (!container) return;
             container.innerHTML = `<p style="text-align:center;">🔄 Cargando...</p>`;
             const user = sessionStorage.getItem("secure_user_initials");
             const auth = sessionStorage.getItem("secure_auth_plain");
@@ -4157,7 +3957,6 @@ if (etapaTramiteActual === "EN_PLAZO") {
             const modal = document.getElementById("pdf-visor-modal");
             const iframe = document.getElementById("pdf-visor-iframe");
             const loader = document.getElementById("pdf-visor-loader");
-            const titulo = document.getElementById("pdf-visor-titulo");
 
             modal.style.display = "flex"; iframe.style.display = "none"; loader.style.display = "block";
             const user = sessionStorage.getItem("secure_user_initials");
@@ -4184,11 +3983,11 @@ if (etapaTramiteActual === "EN_PLAZO") {
             const textBtn = document.getElementById("kpi-reporte-btn-text");
             const user = sessionStorage.getItem("secure_user_initials");
             const auth = sessionStorage.getItem("secure_auth_plain");
-            textBtn.innerText = "⏳...";
+            if (textBtn) textBtn.innerText = "⏳...";
             fetch(`${CONFIG_WEB_APP_URL}?action=generar_reporte_mensual&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
             .then(res => res.json()).then(data => {
-                textBtn.innerText = "📊 GENERAR";
-                if (data.status === "success") abrirModalPDFGenerated(data.url);
+                if (textBtn) textBtn.innerText = "📊 GENERAR";
+                if (data.status === "success") abrirModalPDFGenerado(data.url);
             });
         }
 
@@ -4201,10 +4000,11 @@ if (etapaTramiteActual === "EN_PLAZO") {
             const btn = document.getElementById("btn-informe-semanal");
             const user = sessionStorage.getItem("secure_user_initials");
             const auth = sessionStorage.getItem("secure_auth_plain");
-            btn.disabled = true; mostrarLoaderModal("Procesando...");
+            if (btn) btn.disabled = true; 
+            mostrarLoaderModal("Procesando...");
             fetch(`${CONFIG_WEB_APP_URL}?action=generar_informe_ia_semanal&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`)
             .then(res => res.json()).then(data => {
-                ocultarLoaderModal(); btn.disabled = false;
+                ocultarLoaderModal(); if (btn) btn.disabled = false;
                 if (data.respuesta) {
                     document.getElementById("modal-cuerpo-informe-semanal").innerHTML = formatearRespuestaChat(data.respuesta);
                     document.getElementById("modal-informe-semanal-ia").style.display = "flex";
@@ -4218,12 +4018,15 @@ if (etapaTramiteActual === "EN_PLAZO") {
 
         function togglePantallaCompletaInforme() {
             const box = document.getElementById("modal-box-informe-semanal");
+            if (!box) return;
             if (box.style.maxWidth === "100%") box.style.maxWidth = "800px";
             else box.style.maxWidth = "100%";
         }
 
         function renderizarTimelineChart(papeletas) {
-            const ctx = document.getElementById("timelineChart").getContext("2d");
+            const canvas = document.getElementById("timelineChart");
+            if (!canvas) return;
+            const ctx = canvas.getContext("2d");
             let countsByDay = {};
             const hoy = new Date();
             for (let i = 29; i >= 0; i--) {
@@ -4250,6 +4053,7 @@ if (etapaTramiteActual === "EN_PLAZO") {
 
         function renderizarKpisContratistas(papeletas) {
             const container = document.getElementById("lista-kpi-contratistas");
+            if (!container) return;
             container.innerHTML = "";
             let counts = {};
             papeletas.forEach(p => { if (p.empresa) counts[p.empresa] = (counts[p.empresa] || 0) + 1; });
@@ -4271,7 +4075,7 @@ if (etapaTramiteActual === "EN_PLAZO") {
 
         function toggleChatFlotante() {
             const chat = document.getElementById("chat-flotante-ris");
-            chat.style.display = (chat.style.display === "flex") ? "none" : "flex";
+            if (chat) chat.style.display = (chat.style.display === "flex") ? "none" : "flex";
         }
 
         function detectarEnterChat(event) {
@@ -4280,6 +4084,7 @@ if (etapaTramiteActual === "EN_PLAZO") {
 
         function enviarConsultaChatIA() {
             const input = document.getElementById("chat-input-texto");
+            if (!input) return;
             const query = input.value.trim(); if (!query) return;
             const areaMensajes = document.getElementById("chat-mensajes-area");
 
@@ -4331,44 +4136,38 @@ if (etapaTramiteActual === "EN_PLAZO") {
             location.reload();
         }
 
-        // --- AUTO-LOGIN AL REFRESCAR LA PÁGINA (F5) ---
         window.addEventListener("DOMContentLoaded", function() {
-    // 1. Restaurar Tema guardado (Modo Diurno / Nocturno)
-    const diurno = localStorage.getItem("modo_diurno");
-    if (diurno === "si") {
-        document.body.classList.add("light-theme");
-        document.getElementById("btn-theme-toggle").innerText = "☀️";
-    } else {
-        document.body.classList.remove("light-theme");
-        document.getElementById("btn-theme-toggle").innerText = "🌙";
-    }
+            const diurno = localStorage.getItem("modo_diurno");
+            if (diurno === "si") {
+                document.body.classList.add("light-theme");
+                const btn = document.getElementById("btn-theme-toggle");
+                if (btn) btn.innerText = "☀️";
+            } else {
+                document.body.classList.remove("light-theme");
+                const btn = document.getElementById("btn-theme-toggle");
+                if (btn) btn.innerText = "🌙";
+            }
 
-    // 2. Restaurar Sesión Activa de forma segura
-    const user = sessionStorage.getItem("secure_user_initials");
-    const auth = sessionStorage.getItem("secure_auth_plain");
+            const user = sessionStorage.getItem("secure_user_initials");
+            const auth = sessionStorage.getItem("secure_auth_plain");
 
-    if (user && auth) {
-        document.getElementById("login-screen").style.display = "none";
-        document.getElementById("main-app").style.display = "flex";
-        
-        const elChat = document.getElementById("chat-fab-element");
-        if (elChat) elChat.style.display = "flex";
-        
-        const elUser = document.getElementById("user-display");
-        if (elUser) elUser.innerText = user;
+            if (user && auth) {
+                const loginScr = document.getElementById("login-screen"); if (loginScr) loginScr.style.display = "none";
+                const mainApp = document.getElementById("main-app"); if (mainApp) mainApp.style.display = "flex";
+                
+                const elChat = document.getElementById("chat-fab-element");
+                if (elChat) elChat.style.display = "flex";
+                
+                const elUser = document.getElementById("user-display");
+                if (elUser) elUser.innerText = user;
 
-        ejecutarSincronizacionSilenciosa();
-    }
-});
+                ejecutarSincronizacionSilenciosa();
+            }
+        });
 
-        function finalizarSesion() {
-            cerrarSesionDashboard();
-        }
-        // --- SÍNTESIS DE VOZ ROBÓTICA FEMENINA DE ALERTA DE INFRACCIÓN ---
         function anunciarPapeletaPorVoz(inspector, id) {
             if (!('speechSynthesis' in window)) return;
 
-            // Deletrear el ID para que Siri lo dicte con claridad
             const idDeletreado = id.split('').map(char => {
                 if (char === '_') return ' guion bajo ';
                 if (char === '-') return ' guion ';
@@ -4379,13 +4178,11 @@ if (etapaTramiteActual === "EN_PLAZO") {
             
             const utterance = new SpeechSynthesisUtterance(texto);
             utterance.lang = 'es-ES';
-            utterance.rate = 0.98; // Cadencia natural de Siri (pausada y humana)
-            utterance.pitch = 1.0;  // Tono natural humano (sin distorsión robótica)
+            utterance.rate = 0.98;
+            utterance.pitch = 1.0;
             utterance.volume = 0.9;
 
             const voices = window.speechSynthesis.getVoices();
-            
-            // FILTRO DE VOCES: Prioriza estrictamente la voz oficial de Siri del sistema Apple
             const vozSiri = voices.find(v => 
                 v.lang.startsWith('es') && 
                 (v.name.toLowerCase().includes('siri') || 
@@ -4396,18 +4193,14 @@ if (etapaTramiteActual === "EN_PLAZO") {
                  v.name.toLowerCase().includes('elvira'))
             ) || voices.find(v => v.lang.startsWith('es'));
 
-            if (vozSiri) {
-                utterance.voice = vozSiri;
-            }
-
+            if (vozSiri) utterance.voice = vozSiri;
             window.speechSynthesis.speak(utterance);
         }
 
-        // Cargar voces preventivamente en navegadores basados en Chromium (Chrome/Edge)
         if ('speechSynthesis' in window) {
             window.speechSynthesis.getVoices();
         }
-        // --- CALCULA EL SALUDO SEGÚN LA HORA DEL SISTEMA ---
+
         function obtenerSaludoHorario() {
             const horas = new Date().getHours();
             if (horas >= 6 && horas < 12) return "Buenos días";
@@ -4415,7 +4208,6 @@ if (etapaTramiteActual === "EN_PLAZO") {
             return "Buenas noches";
         }
 
-        // --- ANUNCIO DE BIENVENIDA E INICIALIZACIÓN AUDITIVA (SITUACIÓN INICIAL) ---
         function anunciarBienvenidaSistema() {
             if (!('speechSynthesis' in window) || !globalDashboardCache) return;
 
@@ -4426,7 +4218,7 @@ if (etapaTramiteActual === "EN_PLAZO") {
 
             const saludo = obtenerSaludoHorario();
             
-            let texto = `${saludo},Me alegra verte!, ¿Todo listo para comenzar? . El panel de control R I S de APM Terminals se ha inicializado de forma correcta. `;
+            let texto = `${saludo}, ¡Me alegra verte! ¿Todo listo para comenzar? El panel de control RIS de APM Terminals se ha inicializado de forma correcta. `;
             texto += `Al momento, registramos un total de ${totalActivas} expedientes activos en el sistema. `;
             
             if (enEsperaDescargos > 0) {
@@ -4445,13 +4237,11 @@ if (etapaTramiteActual === "EN_PLAZO") {
 
             const utterance = new SpeechSynthesisUtterance(texto);
             utterance.lang = 'es-ES';
-            utterance.rate = 0.98; // Cadencia natural conversacional de Siri
-            utterance.pitch = 1.0;  // Tono de voz humana estándar
+            utterance.rate = 0.98;
+            utterance.pitch = 1.0;
             utterance.volume = 0.9;
 
             const voices = window.speechSynthesis.getVoices();
-            
-            // Busca las mismas voces premium de Siri/Apple o equivalentes naturales
             const vozSiri = voices.find(v => 
                 v.lang.startsWith('es') && 
                 (v.name.toLowerCase().includes('siri') || 
@@ -4462,152 +4252,123 @@ if (etapaTramiteActual === "EN_PLAZO") {
                  v.name.toLowerCase().includes('elvira'))
             ) || voices.find(v => v.lang.startsWith('es'));
 
-            if (vozSiri) {
-                utterance.voice = vozSiri;
-            }
-
+            if (vozSiri) utterance.voice = vozSiri;
             window.speechSynthesis.speak(utterance);
         }
-    // --- FUNCIÓN PARA CERRAR EL MODAL DE INSTRUCCIÓN ---
-window.cerrarModalInstruccion = function() {
-    const modal = document.getElementById("modal-instruccion-expediente");
-    if (modal) {
-        modal.style.display = "none";
-    }
-    window.activePapeletaId = null;
-    // Remueve de forma segura el sombreado de la fila seleccionada en la tabla
-    document.querySelectorAll("#tabla-control-papeletas tbody tr").forEach(row => {
-        row.classList.remove("active-row");
-    });
-};
-        // 1. Renderizar la tabla de Tipos y Modos desde la caché de Plantillas
-function renderizarTablaTiposModos() {
-    const tbody = document.getElementById("tbody-tipos-modos");
-    if (!tbody || !globalDashboardCache || !globalDashboardCache.plantillas) return;
 
-    const plantillas = globalDashboardCache.plantillas;
-    tbody.innerHTML = "";
+        window.cerrarModalInstruccion = function() {
+            const modal = document.getElementById("modal-instruccion-expediente");
+            if (modal) modal.style.display = "none";
+            window.activePapeletaId = null;
+            document.querySelectorAll("#tabla-control-papeletas tbody tr").forEach(row => {
+                row.classList.remove("active-row");
+            });
+        };
 
-    if (plantillas.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No hay conductas registradas en la hoja PLANTILLAS.</td></tr>`;
-        return;
-    }
+        function renderizarTablaTiposModos() {
+            const tbody = document.getElementById("tbody-tipos-modos");
+            if (!tbody || !globalDashboardCache || !globalDashboardCache.plantillas) return;
 
-    plantillas.forEach((p) => {
-        const tr = document.createElement("tr");
-        const conductaEscapada = escapeJS(p.conducta);
+            const plantillas = globalDashboardCache.plantillas;
+            tbody.innerHTML = "";
 
-        tr.innerHTML = `
-            <td style="text-align: left;"><strong style="color:var(--text-color);">${p.conducta}</strong></td>
-            <td style="text-align: center;">
-                <input type="number" min="0" value="${p.dias_1ra}" 
-                       style="width: 70px; text-align: center; padding: 4px; background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 4px;"
-                       onchange="actualizarPlantillaAutoSave('${conductaEscapada}', 'dias_1ra', this.value)">
-            </td>
-            <td style="text-align: center;">
-                <input type="number" min="0" value="${p.dias_reincidente}" 
-                       style="width: 70px; text-align: center; padding: 4px; background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 4px;"
-                       onchange="actualizarPlantillaAutoSave('${conductaEscapada}', 'dias_reincidente', this.value)">
-            </td>
-            <td style="text-align: center;">
-                <select style="padding: 4px 8px; background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 4px; font-weight: bold;"
-                        onchange="actualizarPlantillaAutoSave('${conductaEscapada}', 'modo', this.value)">
-                    <option value="MANUAL" ${p.modo === "MANUAL" ? "selected" : ""}>✍️ MANUAL</option>
-                    <option value="AUTOMATICO" ${p.modo === "AUTOMATICO" ? "selected" : ""}>⚡ AUTOMÁTICO</option>
-                </select>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
+            if (plantillas.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No hay conductas registradas en la hoja PLANTILLAS.</td></tr>`;
+                return;
+            }
 
-// 2. Enviar actualización en segundo plano (Auto-Save)
-function actualizarPlantillaAutoSave(conducta, campo, valor) {
-    const user = sessionStorage.getItem("secure_user_initials");
-    const auth = sessionStorage.getItem("secure_auth_plain");
+            plantillas.forEach((p) => {
+                const tr = document.createElement("tr");
+                const conductaEscapada = escapeJS(p.conducta);
 
-    // Actualizar caché local inmediatamente
-    if (globalDashboardCache && globalDashboardCache.plantillas) {
-        const item = globalDashboardCache.plantillas.find(p => p.conducta.trim().toLowerCase() === conducta.trim().toLowerCase());
-        if (item) {
-            if (campo === "dias_1ra") item.dias_1ra = Number(valor);
-            if (campo === "dias_reincidente") item.dias_reincidente = Number(valor);
-            if (campo === "modo") item.modo = String(valor).toUpperCase();
+                tr.innerHTML = `
+                    <td style="text-align: left;"><strong style="color:var(--text-color);">${p.conducta}</strong></td>
+                    <td style="text-align: center;">
+                        <input type="number" min="0" value="${p.dias_1ra}" 
+                               style="width: 70px; text-align: center; padding: 4px; background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 4px;"
+                               onchange="actualizarPlantillaAutoSave('${conductaEscapada}', 'dias_1ra', this.value)">
+                    </td>
+                    <td style="text-align: center;">
+                        <input type="number" min="0" value="${p.dias_reincidente}" 
+                               style="width: 70px; text-align: center; padding: 4px; background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 4px;"
+                               onchange="actualizarPlantillaAutoSave('${conductaEscapada}', 'dias_reincidente', this.value)">
+                    </td>
+                    <td style="text-align: center;">
+                        <select style="padding: 4px 8px; background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 4px; font-weight: bold;"
+                                onchange="actualizarPlantillaAutoSave('${conductaEscapada}', 'modo', this.value)">
+                            <option value="MANUAL" ${p.modo === "MANUAL" ? "selected" : ""}>✍️ MANUAL</option>
+                            <option value="AUTOMATICO" ${p.modo === "AUTOMATICO" ? "selected" : ""}>⚡ AUTOMÁTICO</option>
+                        </select>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
-    }
 
-    const payload = {
-        action: "save_plantilla_config",
-        user: user,
-        auth: auth,
-        conducta: conducta,
-        campo: campo,
-        valor: valor
-    };
+        function actualizarPlantillaAutoSave(conducta, campo, valor) {
+            const user = sessionStorage.getItem("secure_user_initials");
+            const auth = sessionStorage.getItem("secure_auth_plain");
 
-    fetch(CONFIG_WEB_APP_URL + "?action=save_plantilla_config", {
-        method: "POST",
-        mode: "no-cors",
-        body: JSON.stringify(payload)
-    }).then(() => {
-        console.log(`✅ Auto-save exitoso para "${conducta}" (${campo}: ${valor})`);
-    }).catch(err => {
-        console.error("Error en Auto-save: ", err);
-    });
-}
+            if (globalDashboardCache && globalDashboardCache.plantillas) {
+                const item = globalDashboardCache.plantillas.find(p => p.conducta.trim().toLowerCase() === conducta.trim().toLowerCase());
+                if (item) {
+                    if (campo === "dias_1ra") item.dias_1ra = Number(valor);
+                    if (campo === "dias_reincidente") item.dias_reincidente = Number(valor);
+                    if (campo === "modo") item.modo = String(valor).toUpperCase();
+                }
+            }
+
+            const payload = {
+                action: "save_plantilla_config",
+                user: user,
+                auth: auth,
+                conducta: conducta,
+                campo: campo,
+                valor: valor
+            };
+
+            fetch(CONFIG_WEB_APP_URL + "?action=save_plantilla_config", {
+                method: "POST",
+                mode: "no-cors",
+                body: JSON.stringify(payload)
+            }).then(() => {
+                console.log(`✅ Auto-save exitoso para "${conducta}" (${campo}: ${valor})`);
+            }).catch(err => {
+                console.error("Error en Auto-save: ", err);
+            });
+        }
+
         function evaluarVisibilidadBotonEnviar(localData) {
-    const btnEnviar = document.getElementById("btn-enviar-resolucion-manual");
-    const contenedorAlerta = document.getElementById("contenedor-alerta-resolucion");
+            const btnEnviar = document.getElementById("btn-enviar-resolucion-manual");
+            const contenedorAlerta = document.getElementById("contenedor-alerta-resolucion");
 
-    if (!localData || !btnEnviar || !contenedorAlerta) return;
+            if (!localData || !btnEnviar || !contenedorAlerta) return;
 
-    const modo = String(localData.modo_tramite || "MANUAL").toUpperCase();
-    const est = String(localData.estado_tramite || "").toUpperCase();
-    const semaforo = String(localData.estado_semaforo || "").toLowerCase();
+            const modo = String(localData.modo_tramite || "MANUAL").toUpperCase();
+            const est = String(localData.estado_tramite || "").toUpperCase();
+            const semaforo = String(localData.estado_semaforo || "").toLowerCase();
 
-    // Determinar si la papeleta ya pasó los 3 días o si ya llegó descargo
-    const estaListoParaResolver = (est === "DESCARGO_RECIBIDO" || est === "PLAZO_VENCIDO" || semaforo === "descargo" || semaforo === "vencido");
+            const estaListoParaResolver = (est === "DESCARGO_RECIBIDO" || est === "PLAZO_VENCIDO" || semaforo === "descargo" || semaforo === "vencido");
 
-    if (modo === "AUTOMATICO") {
-        // CASO 1: MODO AUTOMÁTICO -> Oculta botón de envío
-        btnEnviar.style.display = "none";
-        contenedorAlerta.innerHTML = `
-            <div class="highlight-callout success" style="margin:0;">
-                🤖 <strong>Modo Automático Activo:</strong> La resolución no requiere envío manual. El sistema despachará este correo automáticamente a las 17:00 hrs si corresponde.
-            </div>`;
-    } else {
-        // CASO 2: MODO MANUAL
-        if (!estaListoParaResolver) {
-            // AÚN EN PLAZO (Caja 2): No se permite enviar resolución todavía
-            btnEnviar.style.display = "none";
-            contenedorAlerta.innerHTML = `
-                <div class="highlight-callout urgent" style="margin:0;">
-                    ⏳ <strong>Plazo de 3 días en curso:</strong> La empresa contratista aún se encuentra dentro del plazo legal para presentar descargos. El botón "Enviar Resolución" se activará cuando llegue el descargo o venza el plazo.
-                </div>`;
-        } else {
-            // DESCARGO RECIBIDO O PLAZO VENCIDO (Caja 3 o 4): Muestra el botón verde
-            btnEnviar.style.display = "flex";
-            contenedorAlerta.innerHTML = ""; // Limpia advertencias
+            if (modo === "AUTOMATICO") {
+                btnEnviar.style.display = "none";
+                contenedorAlerta.innerHTML = `
+                    <div class="highlight-callout success" style="margin:0;">
+                        🤖 <strong>Modo Automático Activo:</strong> La resolución no requiere envío manual. El sistema despachará este correo automáticamente a las 17:00 hrs si corresponde.
+                    </div>`;
+            } else {
+                if (!estaListoParaResolver) {
+                    btnEnviar.style.display = "none";
+                    contenedorAlerta.innerHTML = `
+                        <div class="highlight-callout urgent" style="margin:0;">
+                            ⏳ <strong>Plazo de 3 días en curso:</strong> La empresa contratista aún se encuentra dentro del plazo legal para presentar descargos. El botón "Enviar Resolución" se activará cuando llegue el descargo o venza el plazo.
+                        </div>`;
+                } else {
+                    btnEnviar.style.display = "flex";
+                    contenedorAlerta.innerHTML = "";
+                }
+            }
         }
-    }
-}
     </script>
-
-    <!-- MODAL INFORME SEMANAL IA -->
-    <div class="modal-overlay" id="modal-informe-semanal-ia" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 4500; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;">
-        <div class="modal-box" id="modal-box-informe-semanal" style="background: var(--apm-dark-blue); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 8px; width: 100%; max-width: 800px; max-height: 85%; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: all 0.3s ease;">
-            <div style="background-color: #000c18; color: white; padding: 15px 20px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; border-top-left-radius: 8px; border-top-right-radius: 8px;">
-                <span>📰 Informe Semanal de Patrones de Seguridad (IA)</span>
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    <button onclick="togglePantallaCompletaInforme()" style="background: none; border: 1px solid var(--border-color); color: var(--apm-blue); padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold;">⬜ Ampliar</button>
-                    <span style="cursor:pointer; font-size: 20px;" onclick="cerrarModalInformeSemanal()">✕</span>
-                </div>
-            </div>
-            <div style="flex: 1; padding: 20px; overflow-y: auto; font-family: Georgia, serif; font-size: 14px; line-height: 1.6; text-align: justify;" id="modal-cuerpo-informe-semanal"></div>
-            <div style="padding: 15px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; background: #000c18; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
-                <button class="btn-pdf-view" onclick="cerrarModalInformeSemanal()" style="background-color: var(--danger-red); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold;">Cerrar</button>
-            </div>
-        </div>
-    </div>
 </body>
 </html>
