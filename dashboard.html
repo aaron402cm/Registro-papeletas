@@ -2566,6 +2566,9 @@
                     <button class="tab-link active" onclick="cambiarPanel('control', this)">
                         📥 Bandeja de Papeletas 
                         <span class="tab-badge" id="badge-total-papeletas" style="display:none;">0</span>
+                    <button class="tab-link" onclick="cambiarPanel('tipos-modos', this)">
+                        📑 Tipos y Modos de Trámite
+                    </button>   
                     </button>
                     <button class="tab-link" onclick="cambiarPanel('cerradas-panel', this)">
                         🟢 Casos Cerrados
@@ -2776,7 +2779,37 @@
         </div>
     </div>
     </div>                 
-    </div>                         
+    </div> 
+                <!-- PESTAÑA: TIPOS Y MODOS DE TRÁMITE -->
+<div id="panel-tipos-modos" class="tab-panel">
+    <div class="card">
+        <div class="card-title">
+            <span>⚙️ Configuración de Conductas Infractoras (Plantillas)</span>
+        </div>
+        <p style="font-size:13px; color:var(--text-muted); margin-top:0;">
+            Los cambios de días y modo de trámite realizados en esta tabla se guardan <strong>automáticamente en Google Sheets</strong>. La IA utilizará estos parámetros como regla base de evaluación.
+        </p>
+
+        <div class="table-container card">
+            <div class="table-scroll-container">
+                <table id="tabla-tipos-modos">
+                    <thead>
+                        <tr>
+                            <th>Conducta Infractora</th>
+                            <th>Descripción</th>
+                            <th style="width: 120px; text-align:center;">Días 1.ª Vez</th>
+                            <th style="width: 140px; text-align:center;">Días Reincidente (12 Meses)</th>
+                            <th style="width: 150px; text-align:center;">Modo de Trámite</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-tipos-modos">
+                        <tr><td colspan="5" style="text-align:center;">Cargando conductas desde PLANTILLAS...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>               
                 <!-- NUEVA PESTAÑA: CASOS CERRADOS (HISTORIAL RECIENTE Y BÚSQUEDA AVANZADA) -->
             <div id="panel-cerradas-panel" class="tab-panel">
                 <div class="card search-filter-card" style="margin-bottom: 15px; padding: 15px;">
@@ -3427,6 +3460,7 @@
                     console.log("Error al procesar el anuncio por voz: ", e);
                 }
             }
+            renderizarTablaTiposModos();
             
             globalDashboardCache = data; 
             prevPapeletasCount = totalActual;
@@ -4365,6 +4399,82 @@ window.cerrarModalInstruccion = function() {
         row.classList.remove("active-row");
     });
 };
+        // 1. Renderizar la tabla de Tipos y Modos desde la caché de Plantillas
+function renderizarTablaTiposModos() {
+    const tbody = document.getElementById("tbody-tipos-modos");
+    if (!tbody || !globalDashboardCache || !globalDashboardCache.plantillas) return;
+
+    const plantillas = globalDashboardCache.plantillas;
+    tbody.innerHTML = "";
+
+    if (plantillas.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No hay conductas registradas en la hoja PLANTILLAS.</td></tr>`;
+        return;
+    }
+
+    plantillas.forEach((p, index) => {
+        const tr = document.createElement("tr");
+        const conductaEscapada = escapeJS(p.conducta);
+
+        tr.innerHTML = `
+            <td><strong style="color:var(--text-color);">${p.conducta}</strong></td>
+            <td style="font-size:12px; color:var(--text-muted);">${p.descripcion || "-"}</td>
+            <td style="text-align:center;">
+                <input type="number" min="0" value="${p.dias_1ra}" 
+                       style="width: 70px; text-align: center; padding: 4px; background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 4px;"
+                       onchange="actualizarPlantillaAutoSave('${conductaEscapada}', 'dias_1ra', this.value)">
+            </td>
+            <td style="text-align:center;">
+                <input type="number" min="0" value="${p.dias_reincidente}" 
+                       style="width: 70px; text-align: center; padding: 4px; background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 4px;"
+                       onchange="actualizarPlantillaAutoSave('${conductaEscapada}', 'dias_reincidente', this.value)">
+            </td>
+            <td style="text-align:center;">
+                <select style="padding: 4px 8px; background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 4px; font-weight: bold;"
+                        onchange="actualizarPlantillaAutoSave('${conductaEscapada}', 'modo', this.value)">
+                    <option value="MANUAL" ${p.modo === "MANUAL" ? "selected" : ""}>✍️ MANUAL</option>
+                    <option value="AUTOMATICO" ${p.modo === "AUTOMATICO" ? "selected" : ""}>⚡ AUTOMÁTICO</option>
+                </select>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+// 2. Enviar actualización en segundo plano (Auto-Save)
+function actualizarPlantillaAutoSave(conducta, campo, valor) {
+    const user = sessionStorage.getItem("secure_user_initials");
+    const auth = sessionStorage.getItem("secure_auth_plain");
+
+    // Actualizar caché local inmediatamente
+    if (globalDashboardCache && globalDashboardCache.plantillas) {
+        const item = globalDashboardCache.plantillas.find(p => p.conducta.trim().toLowerCase() === conducta.trim().toLowerCase());
+        if (item) {
+            if (campo === "dias_1ra") item.dias_1ra = Number(valor);
+            if (campo === "dias_reincidente") item.dias_reincidente = Number(valor);
+            if (campo === "modo") item.modo = String(valor).toUpperCase();
+        }
+    }
+
+    const payload = {
+        action: "save_plantilla_config",
+        user: user,
+        auth: auth,
+        conducta: conducta,
+        campo: campo,
+        valor: valor
+    };
+
+    fetch(CONFIG_WEB_APP_URL + "?action=save_plantilla_config", {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify(payload)
+    }).then(() => {
+        console.log(`✅ Auto-save exitoso para "${conducta}" (${campo}: ${valor})`);
+    }).catch(err => {
+        console.error("Error en Auto-save: ", err);
+    });
+}
     </script>
 
     <!-- MODAL INFORME SEMANAL IA -->
