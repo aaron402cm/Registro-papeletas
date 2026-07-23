@@ -3435,97 +3435,100 @@
         }
 
         function inicializarDashboardConDatos(data) {
-            const totalActual = data.dashboardData.papeletas.length;
+    // 1. Guardar la caché global PRIMERO que todo
+    globalDashboardCache = data; 
+    
+    const totalActual = data.dashboardData ? data.dashboardData.papeletas.length : 0;
+    
+    // Si la aplicación ya está abierta y llega una papeleta nueva en tiempo real
+    if (prevPapeletasCount !== null && totalActual > prevPapeletasCount) {
+        reproducirSonidoNotificacion(); // Campana física
+        
+        try {
+            const viejosIds = new Set(globalDashboardCache.dashboardData.papeletas.map(p => String(p.id_papeleta)));
+            const nuevasPapeletas = data.dashboardData.papeletas.filter(p => !viejosIds.has(String(p.id_papeleta)));
             
-            // Si la aplicación ya está abierta y llega una papeleta nueva en tiempo real
-            if (prevPapeletasCount !== null && totalActual > prevPapeletasCount) {
-                reproducirSonidoNotificacion(); // Campana física
+            if (nuevasPapeletas.length > 0) {
+                const nueva = nuevasPapeletas[0];
+                const inspector = nueva.agente || nueva.oficial || "Oficial de Turno";
+                const id = nueva.id_papeleta || "Sin Identificador";
                 
-                try {
-                    // Encontrar cuál es la papeleta nueva comparando IDs contra la caché anterior
-                    const viejosIds = new Set(globalDashboardCache.dashboardData.papeletas.map(p => String(p.id_papeleta)));
-                    const nuevasPapeletas = data.dashboardData.papeletas.filter(p => !viejosIds.has(String(p.id_papeleta)));
-                    
-                    if (nuevasPapeletas.length > 0) {
-                        const nueva = nuevasPapeletas[0];
-                        const inspector = nueva.agente || nueva.oficial || "Oficial de Turno";
-                        const id = nueva.id_papeleta || "Sin Identificador";
-                        
-                        // Esperar 800 milisegundos para que la voz no se cruce con el sonido de la campana
-                        setTimeout(() => {
-                            anunciarPapeletaPorVoz(inspector, id);
-                        }, 800);
-                    }
-                } catch (e) {
-                    console.log("Error al procesar el anuncio por voz: ", e);
-                }
+                setTimeout(() => {
+                    anunciarPapeletaPorVoz(inspector, id);
+                }, 800);
             }
-            renderizarTablaTiposModos();
-            
-            globalDashboardCache = data; 
-            prevPapeletasCount = totalActual;
-
-            poblarFiltrosDinamicos(data.dashboardData.papeletas);
-            calcularFiltrosEtapa(data.dashboardData.papeletas);
-            filtrarYRenderizarTabla();
-            calcularNotificacionesYAlertas(data.dashboardData.papeletas);
-
-            document.getElementById("kpi-hoy").innerText = data.dashboardData.kpis.hoy || 0;
-            document.getElementById("kpi-mes").innerText = data.dashboardData.kpis.esteMes || 0;
-            document.getElementById("kpi-absueltas").innerText = data.dashboardData.kpis.absueltas || 0;
-
-            let totalDias = 0;
-            let dniUnicos = new Set();
-            let dnisRepetidos = new Set();
-
-            data.dashboardData.papeletas.forEach(p => {
-                if (p.estado_tramite && p.estado_tramite.indexOf("CERRADO") !== -1) {
-                    totalDias += 15; 
-                }
-                const dniVal = p.dni ? String(p.dni).trim() : "";
-                if (dniVal) {
-                    if (dniUnicos.has(dniVal)) dnisRepetidos.add(dniVal);
-                    else dniUnicos.add(dniVal);
-                }
-            });
-            document.getElementById("kpi-suspension-dias").innerText = `${totalDias} d`;
-            const tasaReincidencia = dniUnicos.size > 0 ? Math.round((dnisRepetidos.size / dniUnicos.size) * 100) : 0;
-            document.getElementById("kpi-reincidencia-tasa").innerText = `${tasaReincidencia}%`;
-
-            const listaAgentes = document.getElementById("lista-kpi-agentes");
-            listaAgentes.innerHTML = "";
-            if (data.dashboardData.kpis.agentes && data.dashboardData.kpis.agentes.length > 0) {
-                data.dashboardData.kpis.agentes.forEach((ag, idx) => {
-                    listaAgentes.innerHTML += `
-                        <li class="agents-list-item">
-                            <span>#${idx+1} Oficial <strong>${ag.agente}</strong></span>
-                            <div><span class="agent-rank">${ag.count} papeleta${ag.count !== 1 ? 's' : ''}</span></div>
-                        </li>`;
-                });
-            } else {
-                listaAgentes.innerHTML = `<li class="agents-list-item">Sin datos.</li>`;
-            }
-
-            const listaConductas = document.getElementById("lista-kpi-conductas");
-            listaConductas.innerHTML = "";
-            if (data.dashboardData.kpis.conductas && data.dashboardData.kpis.conductas.length > 0) {
-                data.dashboardData.kpis.conductas.slice(0, 5).forEach(c => {
-                    listaConductas.innerHTML += `
-                        <li class="agents-list-item">
-                            <span>${c.conducta}</span>
-                            <strong>${c.count} casos</strong>
-                        </li>`;
-                });
-            }
-
-            renderizarKpisContratistas(data.dashboardData.papeletas);
-            renderizarTimelineChart(data.dashboardData.papeletas);
-
-            if (data.dashboardData.newsSummary) {
-                document.getElementById("noticia-fecha").innerText = data.dashboardData.newsSummary.fecha;
-                document.getElementById("noticia-cuerpo").innerHTML = formatearRespuestaChat(data.dashboardData.newsSummary.cuerpo);
-            }
+        } catch (e) {
+            console.log("Error al procesar el anuncio por voz: ", e);
         }
+    }
+
+    prevPapeletasCount = totalActual;
+
+    // 2. Ahora sí renderizar la tabla con la caché ya cargada
+    renderizarTablaTiposModos();
+
+    // 3. Renderizar el resto del dashboard
+    poblarFiltrosDinamicos(data.dashboardData.papeletas);
+    calcularFiltrosEtapa(data.dashboardData.papeletas);
+    filtrarYRenderizarTabla();
+    calcularNotificacionesYAlertas(data.dashboardData.papeletas);
+
+    document.getElementById("kpi-hoy").innerText = data.dashboardData.kpis.hoy || 0;
+    document.getElementById("kpi-mes").innerText = data.dashboardData.kpis.esteMes || 0;
+    document.getElementById("kpi-absueltas").innerText = data.dashboardData.kpis.absueltas || 0;
+
+    let totalDias = 0;
+    let dniUnicos = new Set();
+    let dnisRepetidos = new Set();
+
+    data.dashboardData.papeletas.forEach(p => {
+        if (p.estado_tramite && p.estado_tramite.indexOf("CERRADO") !== -1) {
+            totalDias += 15; 
+        }
+        const dniVal = p.dni ? String(p.dni).trim() : "";
+        if (dniVal) {
+            if (dniUnicos.has(dniVal)) dnisRepetidos.add(dniVal);
+            else dniUnicos.add(dniVal);
+        }
+    });
+    document.getElementById("kpi-suspension-dias").innerText = `${totalDias} d`;
+    const tasaReincidencia = dniUnicos.size > 0 ? Math.round((dnisRepetidos.size / dniUnicos.size) * 100) : 0;
+    document.getElementById("kpi-reincidencia-tasa").innerText = `${tasaReincidencia}%`;
+
+    const listaAgentes = document.getElementById("lista-kpi-agentes");
+    listaAgentes.innerHTML = "";
+    if (data.dashboardData.kpis.agentes && data.dashboardData.kpis.agentes.length > 0) {
+        data.dashboardData.kpis.agentes.forEach((ag, idx) => {
+            listaAgentes.innerHTML += `
+                <li class="agents-list-item">
+                    <span>#${idx+1} Oficial <strong>${ag.agente}</strong></span>
+                    <div><span class="agent-rank">${ag.count} papeleta${ag.count !== 1 ? 's' : ''}</span></div>
+                </li>`;
+        });
+    } else {
+        listaAgentes.innerHTML = `<li class="agents-list-item">Sin datos.</li>`;
+    }
+
+    const listaConductas = document.getElementById("lista-kpi-conductas");
+    listaConductas.innerHTML = "";
+    if (data.dashboardData.kpis.conductas && data.dashboardData.kpis.conductas.length > 0) {
+        data.dashboardData.kpis.conductas.slice(0, 5).forEach(c => {
+            listaConductas.innerHTML += `
+                <li class="agents-list-item">
+                    <span>${c.conducta}</span>
+                    <strong>${c.count} casos</strong>
+                </li>`;
+        });
+    }
+
+    renderizarKpisContratistas(data.dashboardData.papeletas);
+    renderizarTimelineChart(data.dashboardData.papeletas);
+
+    if (data.dashboardData.newsSummary) {
+        document.getElementById("noticia-fecha").innerText = data.dashboardData.newsSummary.fecha;
+        document.getElementById("noticia-cuerpo").innerHTML = formatearRespuestaChat(data.dashboardData.newsSummary.cuerpo);
+    }
+}
 
         function calcularNotificacionesYAlertas(papeletas) {
             const container = document.getElementById("notification-items-container");
