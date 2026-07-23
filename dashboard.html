@@ -2562,28 +2562,28 @@
 
             <!-- MENU PESTAÑAS (Vertical Lado Izquierdo) con Animaciones de Alta Fidelidad -->
             <nav class="nav-tabs">
-                <div class="nav-tabs-inner">
-                    <button class="tab-link active" onclick="cambiarPanel('control', this)">
-                        📥 Bandeja de Papeletas 
-                        <span class="tab-badge" id="badge-total-papeletas" style="display:none;">0</span>
-                    <button class="tab-link" onclick="cambiarPanel('tipos-modos', this)">
-                        📑 Tipos y Modos de Trámite
-                    </button>   
-                    </button>
-                    <button class="tab-link" onclick="cambiarPanel('cerradas-panel', this)">
-                        🟢 Casos Cerrados
-                    </button>
-                    <button class="tab-link" onclick="cambiarPanel('kpis', this)">
-                        📊 KPIs Operativos
-                    </button>
-                    <button class="tab-link" onclick="cambiarPanel('informe-ia', this)">
-                        📰 Análisis Semanal (IA)
-                    </button>
-                    <button class="tab-link" onclick="cambiarPanel('config', this)">
-                        ⚙️ Ajustes y RIS
-                    </button>
-                </div>
-            </nav>
+    <div class="nav-tabs-inner">
+        <button class="tab-link active" onclick="cambiarPanel('control', this)">
+            📥 Bandeja de Papeletas 
+            <span class="tab-badge" id="badge-total-papeletas" style="display:none;">0</span>
+        </button>
+        <button class="tab-link" onclick="cambiarPanel('tipos-modos', this)">
+            📑 Tipos y Modos de Trámite
+        </button>   
+        <button class="tab-link" onclick="cambiarPanel('cerradas-panel', this)">
+            🟢 Casos Cerrados
+        </button>
+        <button class="tab-link" onclick="cambiarPanel('kpis', this)">
+            📊 KPIs Operativos
+        </button>
+        <button class="tab-link" onclick="cambiarPanel('informe-ia', this)">
+            📰 Análisis Semanal (IA)
+        </button>
+        <button class="tab-link" onclick="cambiarPanel('config', this)">
+            ⚙️ Ajustes y RIS
+        </button>
+    </div>
+</nav>
 
             <!-- AREA DE CONTENIDO -->
             <main class="content-area">
@@ -2752,19 +2752,19 @@
               </div>
 
                 <!-- MENSAJE DE ADVERTENCIA DINÁMICO SEGÚN ESTADO Y MODO -->
-              <div id="contenedor-alerta-resolucion" style="margin-bottom: 15px;"></div>
+        <div id="contenedor-alerta-resolucion" style="margin-bottom: 15px;"></div>
 
-                  <div style="display: flex; gap: 15px;">
-                 <button class="btn-save-draft" onclick="guardarBorradorResolucion()">💾 Guardar Borrador</button>
-                <button class="btn-send-resolution" id="btn-enviar-resolucion-manual" onclick="ejecutarAprobacionYSancion()">✉️ Enviar Resolución</button>
-                      </div>
-                   </div>
-                 </div>
-            </div>
+        <div style="display: flex; gap: 15px;">
+            <button class="btn-save-draft" onclick="guardarBorradorResolucion()">💾 Guardar Borrador</button>
+            <button class="btn-send-resolution" id="btn-enviar-resolucion-manual" onclick="ejecutarAprobacionYSancion()">✉️ Enviar Resolución</button>
         </div>
-    </div>
-    </div>                 
-    </div> 
+    </div> <!-- Cierra #pane-section-D -->
+</div> <!-- Cierra #secciones-panes-container -->
+</div> <!-- Cierra .modal-cuerpo-trabajo -->
+</div> <!-- Cierra .modal-box -->
+</div> <!-- Cierra #modal-instruccion-expediente -->
+</div> <!-- Cierra .dashboard-layout -->
+</div> <!-- Cierra #panel-control -->
                 <!-- PESTAÑA: TIPOS Y MODOS DE TRÁMITE -->
 <div id="panel-tipos-modos" class="tab-panel">
     <div class="card">
@@ -3561,7 +3561,7 @@
             });
         }
 
-        function calcularFiltrosEtapa(papeletas) {
+      function calcularFiltrosEtapa(papeletas) {
     let activos = 0;
     let enPlazo = 0;
     let descargosRecibidos = 0;
@@ -3573,7 +3573,6 @@
         const semaforo = String(p.estado_semaforo || "").trim().toLowerCase();
         const modo = String(p.modo_tramite || "MANUAL").trim().toUpperCase();
 
-        // Solo procesar papeletas ACTIVAS (no cerradas)
         if (est.indexOf("CERRADO") === -1) {
             activos++;
 
@@ -3591,7 +3590,6 @@
         }
     });
 
-    // Asignar los valores a los IDs corregidos del HTML
     if (document.getElementById("pipe-count-all")) document.getElementById("pipe-count-all").innerText = activos;
     if (document.getElementById("pipe-count-enplazo")) document.getElementById("pipe-count-enplazo").innerText = enPlazo;
     if (document.getElementById("pipe-count-descargo")) document.getElementById("pipe-count-descargo").innerText = descargosRecibidos;
