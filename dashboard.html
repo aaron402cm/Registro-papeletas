@@ -4408,17 +4408,16 @@ function renderizarTablaTiposModos() {
     tbody.innerHTML = "";
 
     if (plantillas.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No hay conductas registradas en la hoja PLANTILLAS.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No hay conductas registradas en la hoja PLANTILLAS.</td></tr>`;
         return;
     }
 
-    plantillas.forEach((p, index) => {
+    plantillas.forEach((p) => {
         const tr = document.createElement("tr");
         const conductaEscapada = escapeJS(p.conducta);
 
         tr.innerHTML = `
             <td><strong style="color:var(--text-color);">${p.conducta}</strong></td>
-            <td style="font-size:12px; color:var(--text-muted);">${p.descripcion || "-"}</td>
             <td style="text-align:center;">
                 <input type="number" min="0" value="${p.dias_1ra}" 
                        style="width: 70px; text-align: center; padding: 4px; background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 4px;"
