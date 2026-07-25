@@ -3892,13 +3892,39 @@ function seleccionarPapeletaParaRevision(id) {
 }
 
         function ejecutarAprobacionYSancion() {
-            const diasSancion = document.getElementById("sancion-dias-final").value;
-            const correoFinal = document.getElementById("panel-txt-correo-borrador").value;
-            alert(`🚀 Resolución Procesada!\nSe aplicó sanción de ${diasSancion} días.\n\nBorrador:\n${correoFinal.substring(0,100)}...`);
-            
-            cerrarModalInstruccion();
-            filtrarYRenderizarTabla();
-        }
+    if (!activePapeletaId) return;
+    const diasSancion = document.getElementById("sancion-dias-final").value;
+    const correoFinal = document.getElementById("panel-txt-correo-borrador").value;
+
+    if (!confirm(`¿Está seguro de enviar formalmente la resolución final para la papeleta ${activePapeletaId}?`)) return;
+
+    mostrarLoaderModal("Despachando correo de resolución...");
+
+    const user = sessionStorage.getItem("secure_user_initials");
+    const auth = sessionStorage.getItem("secure_auth_plain");
+    const payload = {
+        action: "enviar_resolucion_manual",
+        user: user,
+        auth: auth,
+        id: activePapeletaId,
+        dias: diasSancion,
+        correo: correoFinal
+    };
+
+    fetch(CONFIG_WEB_APP_URL + "?action=enviar_resolucion_manual", {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify(payload)
+    }).then(() => {
+        ocultarLoaderModal();
+        alert("✉️ ¡Resolución enviada con éxito a la empresa contratista!");
+        cerrarModalInstruccion();
+        forzarSincronizacionManual();
+    }).catch(err => {
+        ocultarLoaderModal();
+        alert("Error al enviar resolución: " + err);
+    });
+}
 
         function cargarReglasRISDesdeServidor() {
             const container = document.getElementById("contenedor-reglas-ris-dinamico");
