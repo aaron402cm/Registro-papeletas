@@ -2498,6 +2498,7 @@
                                             <th onclick="ordenarTablaPor('id_papeleta')">ID Papeleta <span id="sort-icon-id_papeleta"></span></th>
                                             <th onclick="ordenarTablaPor('infractor')">Infractor / Empresa <span id="sort-icon-infractor"></span></th>
                                             <th onclick="ordenarTablaPor('conducta')">Conducta Infractora <span id="sort-icon-conducta"></span></th>
+                                             <th onclick="ordenarTablaPor('modo_tramite')">Modo <span id="sort-icon-modo_tramite"></span></th>
                                             <th onclick="ordenarTablaPor('fecha_infraccion')">Fecha Suceso <span id="sort-icon-fecha_infraccion"></span></th>
                                             <th onclick="ordenarTablaPor('ia_analisis_cache')">Sanción Sugerida (IA) <span id="sort-icon-ia_analisis_cache"></span></th>
                                             <th onclick="ordenarTablaPor('estado_semaforo')">Estado del Trámite <span id="sort-icon-estado_semaforo"></span></th>
@@ -2505,7 +2506,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr><td colspan="7" style="text-align:center;">Por favor, inicie sesión de forma segura para cargar la base de datos...</td></tr>
+                                        <tr><td colspan="8" style="text-align:center;">Por favor, inicie sesión de forma segura para cargar la base de datos...</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -3486,12 +3487,12 @@
         }
 
         function actualizarIconosOrdenado() {
-            const columnas = ["id_papeleta", "infractor", "empresa", "conducta", "fecha_infraccion", "estado_semaforo"];
-            columnas.forEach(col => {
-                const icon = document.getElementById(`sort-icon-${col}`);
-                if (icon) icon.innerText = (sortColumnaActual === col) ? (sortOrdenAscendente ? " ▲" : " ▼") : "";
-            });
-        }
+    const columnas = ["id_papeleta", "infractor", "empresa", "conducta", "modo_tramite", "fecha_infraccion", "estado_semaforo"];
+    columnas.forEach(col => {
+        const icon = document.getElementById(`sort-icon-${col}`);
+        if (icon) icon.innerText = (sortColumnaActual === col) ? (sortOrdenAscendente ? " ▲" : " ▼") : "";
+    });
+}
 
         function filtrarYRenderizarTabla() {
             if (!globalDashboardCache || !globalDashboardCache.dashboardData || !globalDashboardCache.dashboardData.papeletas) return;
@@ -3590,97 +3591,108 @@
         }
 
         function renderizarTablaFiltrada(papeletasFiltradas) {
-            const tbody = document.querySelector("#tabla-control-papeletas tbody");
-            if (!tbody) return;
-            tbody.innerHTML = "";
-            const activas = papeletasFiltradas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1);
+    const tbody = document.querySelector("#tabla-control-papeletas tbody");
+    if (!tbody) return;
+    tbody.innerHTML = "";
+    const activas = papeletasFiltradas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1);
 
-            if (activas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">No se encontraron papeletas en esta etapa.</td></tr>`;
-                return;
-            }
+    if (activas.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">No se encontraron papeletas en esta etapa.</td></tr>`;
+        return;
+    }
 
-            activas.forEach(p => {
-                let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.split(/[T ]/)[0] : "-";
-                
-                let ledMarkup = "";
-                if (p.estado_envio === "Se envió correctamente" || !p.estado_envio) {
-                    ledMarkup = `
-                        <div style="display: flex; align-items: center; gap: 6px; margin-top: 5px;">
-                            <span style="display: inline-block; width: 8px; height: 8px; background-color: #10B981; border-radius: 50%; box-shadow: 0 0 8px #10B981;"></span>
-                            <span style="font-size: 11px; color: #10B981; font-weight: bold; font-family: sans-serif;">Enviado</span>
-                        </div>
-                    `;
-                } else {
-                    ledMarkup = `
-                        <div style="display: flex; align-items: center; gap: 6px; margin-top: 5px;">
-                            <span style="display: inline-block; width: 8px; height: 8px; background-color: #F43F5E; border-radius: 50%; box-shadow: 0 0 0 2px rgba(244, 63, 94, 0.25);"></span>
-                            <span style="font-size: 11px; color: #F43F5E; font-weight: bold; font-family: sans-serif;">Fallo de Envío</span>
-                        </div>
-                    `;
-                }
+    activas.forEach(p => {
+        let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.split(/[T ]/)[0] : "-";
+        
+        let ledMarkup = "";
+        if (p.estado_envio === "Se envió correctamente" || !p.estado_envio) {
+            ledMarkup = `
+                <div style="display: flex; align-items: center; gap: 6px; margin-top: 5px;">
+                    <span style="display: inline-block; width: 8px; height: 8px; background-color: #10B981; border-radius: 50%; box-shadow: 0 0 8px #10B981;"></span>
+                    <span style="font-size: 11px; color: #10B981; font-weight: bold; font-family: sans-serif;">Enviado</span>
+                </div>
+            `;
+        } else {
+            ledMarkup = `
+                <div style="display: flex; align-items: center; gap: 6px; margin-top: 5px;">
+                    <span style="display: inline-block; width: 8px; height: 8px; background-color: #F43F5E; border-radius: 50%; box-shadow: 0 0 0 2px rgba(244, 63, 94, 0.25);"></span>
+                    <span style="font-size: 11px; color: #F43F5E; font-weight: bold; font-family: sans-serif;">Fallo de Envío</span>
+                </div>
+            `;
+        }
 
-                let badgeSancionSugerida = "";
-                try {
-                    if (p.ia_analisis_cache && p.ia_analisis_cache.trim() !== "") {
-                        const cache = JSON.parse(p.ia_analisis_cache);
-                        if (cache.dias_sugeridos !== undefined) {
-                            const dias = parseInt(cache.dias_sugeridos, 10);
-                            if (dias === 0) {
-                                badgeSancionSugerida = `<span class="badge-sancion-amonesta">Amonestación</span>`;
-                            } else {
-                                badgeSancionSugerida = `<span class="badge-sancion-dias">${dias} días</span>`;
-                            }
-                        } else {
-                            badgeSancionSugerida = `<span class="badge-sancion-pendiente">Pendiente IA</span>`;
-                        }
+        // 🌟 CREACIÓN DEL BADGE/ÍCONO PARA EL MODO DE TRÁMITE (ROBOT / MANO)
+        let modoBadge = "";
+        const modoClean = String(p.modo_tramite || "MANUAL").trim().toUpperCase();
+        if (modoClean === "AUTOMATICO") {
+            modoBadge = `<span class="badge" style="background-color: rgba(0, 240, 255, 0.1); color: #00f0ff; border: 1px solid rgba(0, 240, 255, 0.3);" title="Trámite Automático por IA">🤖 Automático</span>`;
+        } else {
+            modoBadge = `<span class="badge" style="background-color: rgba(255, 183, 0, 0.1); color: #ffb700; border: 1px solid rgba(255, 183, 0, 0.3);" title="Revisión y Firma Manual">✍️ Manual</span>`;
+        }
+
+        let badgeSancionSugerida = "";
+        try {
+            if (p.ia_analisis_cache && p.ia_analisis_cache.trim() !== "") {
+                const cache = JSON.parse(p.ia_analisis_cache);
+                if (cache.dias_sugeridos !== undefined) {
+                    const dias = parseInt(cache.dias_sugeridos, 10);
+                    if (dias === 0) {
+                        badgeSancionSugerida = `<span class="badge-sancion-amonesta">Amonestación</span>`;
                     } else {
-                        badgeSancionSugerida = `<span class="badge-sancion-pendiente">Pendiente IA</span>`;
+                        badgeSancionSugerida = `<span class="badge-sancion-dias">${dias} días</span>`;
                     }
-                } catch (e) {
+                } else {
                     badgeSancionSugerida = `<span class="badge-sancion-pendiente">Pendiente IA</span>`;
                 }
-
-                let estadoTramiteBadge = "";
-                if (p.estado_semaforo === "vigente" || p.estado_semaforo === "ultimo_dia") {
-                    estadoTramiteBadge = `<span class="badge badge-blue">Plazo Vigente (Pendiente Descargos)</span>`;
-                } else if (p.estado_semaforo === "vencido") {
-                    estadoTramiteBadge = `<span class="badge badge-red">Expirado (Sin Descargo)</span>`;
-                } else if (p.estado_semaforo === "descargo") {
-                    estadoTramiteBadge = `<span class="badge badge-green">Descargo Recibido</span>`;
-                } else {
-                    estadoTramiteBadge = `<span class="badge badge-blue">En Proceso</span>`;
-                }
-
-                const tr = document.createElement("tr");
-                tr.className = "clickable-row"; tr.id = `row-${p.id_papeleta}`;
-                if (activePapeletaId === p.id_papeleta) tr.classList.add("active-row");
-                tr.onclick = function() {
-                    document.querySelectorAll("#tabla-control-papeletas tbody tr").forEach(row => row.classList.remove("active-row"));
-                    tr.classList.add("active-row");
-                    seleccionarPapeletaParaRevision(p.id_papeleta);
-                };
-
-                tr.innerHTML = `
-                    <td>
-                        <strong class="text-id">${p.id_papeleta}</strong>
-                        ${ledMarkup}
-                    </td>
-                    <td>
-                        <div style="display: flex; flex-direction: column; gap: 3px;">
-                            <span class="text-infractor">${p.infractor}</span>
-                            <span class="text-empresa" style="font-size: 12px; opacity: 0.85;">${p.empresa}</span>
-                        </div>
-                    </td>
-                    <td class="text-conducta">${p.conducta}</td>
-                    <td class="text-fecha" style="font-family: 'Courier New', Courier, monospace; font-weight: bold; letter-spacing: -0.5px;">${fechaFormat}</td>
-                    <td>${badgeSancionSugerida}</td>
-                    <td>${estadoTramiteBadge}</td>
-                    <td><button class="btn-pdf-view" onclick="abrirVisorPDF('${p.id_papeleta}', event)">📄 PDF</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
+            } else {
+                badgeSancionSugerida = `<span class="badge-sancion-pendiente">Pendiente IA</span>`;
+            }
+        } catch (e) {
+            badgeSancionSugerida = `<span class="badge-sancion-pendiente">Pendiente IA</span>`;
         }
+
+        let estadoTramiteBadge = "";
+        if (p.estado_semaforo === "vigente" || p.estado_semaforo === "ultimo_dia") {
+            estadoTramiteBadge = `<span class="badge badge-blue">Plazo Vigente (Pendiente Descargos)</span>`;
+        } else if (p.estado_semaforo === "vencido") {
+            estadoTramiteBadge = `<span class="badge badge-red">Expirado (Sin Descargo)</span>`;
+        } else if (p.estado_semaforo === "descargo") {
+            estadoTramiteBadge = `<span class="badge badge-green">Descargo Recibido</span>`;
+        } else {
+            estadoTramiteBadge = `<span class="badge badge-blue">En Proceso</span>`;
+        }
+
+        const tr = document.createElement("tr");
+        tr.className = "clickable-row"; tr.id = `row-${p.id_papeleta}`;
+        if (activePapeletaId === p.id_papeleta) tr.classList.add("active-row");
+        tr.onclick = function() {
+            document.querySelectorAll("#tabla-control-papeletas tbody tr").forEach(row => row.classList.remove("active-row"));
+            tr.classList.add("active-row");
+            seleccionarPapeletaParaRevision(p.id_papeleta);
+        };
+
+        // Renderizado de las 8 celdas de la fila
+        tr.innerHTML = `
+            <td>
+                <strong class="text-id">${p.id_papeleta}</strong>
+                ${ledMarkup}
+            </td>
+            <td>
+                <div style="display: flex; flex-direction: column; gap: 3px;">
+                    <span class="text-infractor">${p.infractor}</span>
+                    <span class="text-empresa" style="font-size: 12px; opacity: 0.85;">${p.empresa}</span>
+                </div>
+            </td>
+            <td class="text-conducta">${p.conducta}</td>
+            <td>${modoBadge}</td> <!-- 🌟 CELDA DEL MODO DE TRÁMITE -->
+            <td class="text-fecha" style="font-family: 'Courier New', Courier, monospace; font-weight: bold; letter-spacing: -0.5px;">${fechaFormat}</td>
+            <td>${badgeSancionSugerida}</td>
+            <td>${estadoTramiteBadge}</td>
+            <td><button class="btn-pdf-view" onclick="abrirVisorPDF('${p.id_papeleta}', event)">📄 PDF</button></td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
 
         function renderizarTablaCasosCerrados(papeletasCerradas) {
             const tbody = document.querySelector("#tabla-casos-cerrados tbody");
