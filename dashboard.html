@@ -4310,37 +4310,57 @@ function seleccionarPapeletaParaRevision(id) {
         }
 
         function actualizarPlantillaAutoSave(conducta, campo, valor) {
-            const user = sessionStorage.getItem("secure_user_initials");
-            const auth = sessionStorage.getItem("secure_auth_plain");
+    const user = sessionStorage.getItem("secure_user_initials");
+    const auth = sessionStorage.getItem("secure_auth_plain");
 
-            if (globalDashboardCache && globalDashboardCache.plantillas) {
-                const item = globalDashboardCache.plantillas.find(p => p.conducta.trim().toLowerCase() === conducta.trim().toLowerCase());
-                if (item) {
-                    if (campo === "dias_1ra") item.dias_1ra = Number(valor);
-                    if (campo === "dias_reincidente") item.dias_reincidente = Number(valor);
-                    if (campo === "modo") item.modo = String(valor).toUpperCase();
+    // 1. Actualizar memoria local de plantillas
+    if (globalDashboardCache && globalDashboardCache.plantillas) {
+        const item = globalDashboardCache.plantillas.find(p => p.conducta.trim().toLowerCase() === conducta.trim().toLowerCase());
+        if (item) {
+            if (campo === "dias_1ra") item.dias_1ra = Number(valor);
+            if (campo === "dias_reincidente") item.dias_reincidente = Number(valor);
+            if (campo === "modo") item.modo = String(valor).toUpperCase();
+        }
+    }
+
+    // 2. 🌟 SI SE MODIFICÓ EL MODO, ACTUALIZAR INMEDIATAMENTE LAS PAPELETAS VISIBLES
+    if (campo === "modo" && globalDashboardCache && globalDashboardCache.dashboardData && globalDashboardCache.dashboardData.papeletas) {
+        const nuevoModo = String(valor).toUpperCase();
+        const conductaNorm = conducta.trim().toLowerCase();
+        
+        globalDashboardCache.dashboardData.papeletas.forEach(p => {
+            if (String(p.conducta || "").trim().toLowerCase() === conductaNorm) {
+                const est = String(p.estado_tramite || "").toUpperCase();
+                if (est.indexOf("CERRADO") === -1) {
+                    p.modo_tramite = nuevoModo; // Cambiar valor local
                 }
             }
+        });
+        
+        // Re-renderizar la tabla para mostrar los robots 🤖 o manos ✍️ al instante
+        filtrarYRenderizarTabla();
+        calcularFiltrosEtapa(globalDashboardCache.dashboardData.papeletas);
+    }
 
-            const payload = {
-                action: "save_plantilla_config",
-                user: user,
-                auth: auth,
-                conducta: conducta,
-                campo: campo,
-                valor: valor
-            };
+    const payload = {
+        action: "save_plantilla_config",
+        user: user,
+        auth: auth,
+        conducta: conducta,
+        campo: campo,
+        valor: valor
+    };
 
-            fetch(CONFIG_WEB_APP_URL + "?action=save_plantilla_config", {
-                method: "POST",
-                mode: "no-cors",
-                body: JSON.stringify(payload)
-            }).then(() => {
-                console.log(`✅ Auto-save exitoso para "${conducta}" (${campo}: ${valor})`);
-            }).catch(err => {
-                console.error("Error en Auto-save: ", err);
-            });
-        }
+    fetch(CONFIG_WEB_APP_URL + "?action=save_plantilla_config", {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify(payload)
+    }).then(() => {
+        console.log(`✅ Auto-save exitoso para "${conducta}" (${campo}: ${valor})`);
+    }).catch(err => {
+        console.error("Error en Auto-save: ", err);
+    });
+}
 
         function evaluarVisibilidadBotonEnviar(localData) {
             const btnEnviar = document.getElementById("btn-enviar-resolucion-manual");
