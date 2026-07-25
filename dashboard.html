@@ -4,23 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Control RIS - APM Terminals</title>
-    <!-- PRECARGA DE IMAGEN DEL CHATBOT EN CACHÉ PARA EVITAR RETRASOS -->
+    <!-- PRECARGA DE IMAGEN DEL CHATBOT EN CACHÉ -->
     <link rel="preload" href="fondo_chatbot.png" as="image">
     <!-- Librería Chart.js para el gráfico del Timeline -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Librería SheetJS para exportar de forma nativa a Excel -->
+    <!-- Librería SheetJS para exportar a Excel -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
         :root {
             --apm-orange: #ff5500;
             --apm-dark-blue: #00152b; /* Azul marino corporativo oscuro */
             --apm-blue: #00f0ff; /* Azul cian de visualización táctica */
-            --bg-color: #000c18; /* Fondo marino profundo nocturno por defecto */
-            --card-bg: rgba(0, 24, 48, 0.9); /* Vidrio marino translúcido de alta densidad */
-            --text-color: #f1f8ff; /* Blanco frío para legibilidad óptima */
-            --border-color: rgba(0, 240, 255, 0.25); /* Rejilla digital de cian suave */
+            --bg-color: #000c18; /* Fondo marino profundo nocturno */
+            --card-bg: rgba(0, 24, 48, 0.9); /* Vidrio marino translúcido */
+            --text-color: #f1f8ff; /* Blanco frío para legibilidad */
+            --border-color: rgba(0, 240, 255, 0.25); /* Rejilla digital cian */
             --table-row-hover: rgba(0, 240, 255, 0.08); /* Hover cian en tablas */
-            --input-bg: #001a33; /* Fondo de inputs oscuro de alta visibilidad */
+            --input-bg: #001a33; /* Fondo de inputs oscuro */
             --success-green: #00ff66;
             --warning-yellow: #ffb700;
             --danger-red: #ff0055;
@@ -2359,7 +2359,7 @@
                 <div class="form-group">
                     <label>Código de Seguridad OTP</label>
                     <input type="text" id="sec-otp" placeholder="XXXXXX" maxlength="6" style="text-align: center; font-size: 24px; letter-spacing: 4px;" onkeydown="detectarEnterOTP(event)">
-                    <p style="font-size:12px; color:#ffffff; margin-top:8px; margin-bottom:0;">Se ha enviado un código a su correo de APM Terminals procesos.ris@apmterminals.com.</p>
+                    <p style="font-size:12px; color:#ffffff; margin-top:8px; margin-bottom:0;">Se ha enviado un código a su correo de APM Terminals registrosapmterminals@gmail.com.</p>
                 </div>
                 <button class="btn-apm" onclick="verificarCodigoOTP()">Verificar e Ingresar</button>
             </div>
@@ -2372,7 +2372,6 @@
             <p id="login-error">Credenciales incorrectas</p>
         </div>
     </div>
-
     <!-- CONTENEDOR PRINCIPAL DEL DASHBOARD -->
     <div id="main-app">
         
@@ -2440,7 +2439,7 @@
             </nav>
 
             <main class="content-area">
-           <!-- PESTAÑA 1: BANDEJA DE CONTROL Y EVALUACIÓN IA -->
+                <!-- PESTAÑA 1: BANDEJA DE CONTROL Y EVALUACIÓN IA -->
                 <div id="panel-control" class="tab-panel active">
                     
                     <!-- PIPELINE STAGE FILTERS -->
@@ -2467,7 +2466,7 @@
                         </div>
                     </div>
 
-                    <!-- TARJETA DE BÚSQUEDA Y FILTROS RÁPIDOS (Garantiza el correcto funcionamiento de los filtros) -->
+                    <!-- TARJETA DE BÚSQUEDA Y FILTROS RÁPIDOS -->
                     <div class="card search-filter-card" style="margin-bottom: 15px; padding: 15px;">
                         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                             <input type="text" id="tabla-buscador-rapido" placeholder="🔎 Búsqueda Rápida (ID, DNI, Nombre, Empresa, Conducta)..." style="flex: 2; min-width: 200px; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px;" oninput="filtrarYRenderizarTabla()">
@@ -2512,7 +2511,7 @@
                             </div>
                         </div>
 
-                        <!-- MODAL DE INSTRUCCIÓN DE EXPEDIENTES VERSIÓN 2.0 -->
+                        <!-- MODAL DE INSTRUCCIÓN DE EXPEDIENTES -->
                         <div id="modal-instruccion-expediente">
                             <div class="modal-box">
                                 <span class="modal-close-btn" onclick="cerrarModalInstruccion()">✕</span>
@@ -2936,9 +2935,8 @@
             <button onclick="enviarConsultaChatIA()">Enviar</button>
         </div>
     </div>
-
     <script>    
-    const CONFIG_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykGrZsjMZ3ewTIXjuPKqy-UDpOjtFPtT-ebMM_ilC6bf6qwPRcNn1KhdUhrODdYzEBKg/exec";
+        const CONFIG_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykGrZsjMZ3ewTIXjuPKqy-UDpOjtFPtT-ebMM_ilC6bf6qwPRcNn1KhdUhrODdYzEBKg/exec";
 
         let globalDashboardCache = null; 
         let activeFilteredPapeletas = [];
@@ -2951,7 +2949,6 @@
         let etapaTramiteActual = "TODOS";
         
         let prevPapeletasCount = null;
-        let wizardPasoActual = 1;
         let tempTransitionData = null;
 
         function formatearRespuestaChat(texto) {
@@ -2977,7 +2974,7 @@
 
             setTimeout(() => { if (progress) progress.style.width = "20%"; if (text) text.innerText = "🤖 Conectando de forma segura con el servidor de APM Terminals..."; }, 200);
             setTimeout(() => { if (progress) progress.style.width = "45%"; if (text) text.innerText = "🔍 Escaneando la descripción del hecho de la papeleta..."; }, 900);
-            setTimeout(() => { if (progress) progress.style.width = "70%"; if (text) text.innerText = "⚖️ Cotejando contra el Catálogo de Sanciones de la APN..."; }, 1600);
+            setTimeout(() => { if (progress) progress.style.width = "70%"; if (text) text.innerText = "⚖️ Cotejando contra las Plantillas y el Catálogo RIS..."; }, 1600);
             setTimeout(() => { if (progress) progress.style.width = "90%"; if (text) text.innerText = "⏳ Calculando reincidencias en el historial de Excel..."; }, 2300);
         }
 
@@ -3416,10 +3413,9 @@
             filtrarYRenderizarTabla();
         }
 
-        /* --- CONTROL DE ERRORES: PREVIENE EL ERROR DE PROPIEDADES NULAS --- */
         function poblarFiltrosDinamicos(papeletas) {
             const selectEmpresa = document.getElementById("filtro-empresa");
-            if (!selectEmpresa) return; // Validación de seguridad anti-null
+            if (!selectEmpresa) return;
             selectEmpresa.innerHTML = '<option value="">Filtro Empresa</option>';
             let empresas = new Set();
             papeletas.forEach(p => { if (p.empresa) empresas.add(p.empresa); });
