@@ -594,20 +594,39 @@
         }
 
         #modal-instruccion-expediente .modal-box {
-            background: #111827 !important;
-            border: 1px solid rgba(255, 255, 255, 0.18) !important;
-            box-shadow: 0 25px 65px rgba(0, 0, 0, 0.85), inset 0 1px 1px rgba(255, 255, 255, 0.15);
-            border-radius: 16px;
-            width: 95%;
-            max-width: 950px !important;
-            height: 85%;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            position: relative;
-            border-top: 4px solid var(--apm-orange) !important;
+    background: #111827 !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    box-shadow: 0 25px 65px rgba(0, 0, 0, 0.85);
+    border-radius: 16px;
+    width: 95%;
+    max-width: 1000px !important;
+    height: 88vh !important; /* Altura gigante fija en pantalla */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    border-top: 4px solid var(--apm-orange) !important;
         }
+        .modal-cuerpo-trabajo {
+    flex: 1;
+    padding: 20px 25px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    background-color: #0b1322 !important;
+}
 
+.wizard-step-pane {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+}
+
+.wizard-step-pane.active {
+    display: flex !important;
+    flex-direction: column;
+    flex: 1;
+}
         .modal-header-fijo {
             background-color: #061424 !important;
             padding: 22px 25px;
@@ -3813,21 +3832,20 @@ function seleccionarPapeletaParaRevision(id) {
     const auth = sessionStorage.getItem("secure_auth_plain");
     const localData = activeFilteredPapeletas.find(p => String(p.id_papeleta) === String(id));
 
-    // 🌟 EVALUAR SI TIENE DESCARGO O SI EL ANÁLISIS EN CACHÉ ESTÁ VACÍO
-    let tieneCacheValido = false;
+    // Evaluar si requiere forzar recálculo
+    let tieneCacheInvalido = true;
     try {
         if (localData && localData.ia_analisis_cache) {
             const parsed = JSON.parse(localData.ia_analisis_cache);
-            if (parsed && parsed.conducta_tabla && parsed.conducta_tabla !== "-") {
-                tieneCacheValido = true;
+            if (parsed && parsed.correo_borrador && parsed.correo_borrador !== "undefined" && parsed.conducta_tabla !== "-") {
+                tieneCacheInvalido = false;
             }
         }
     } catch(e) {}
 
     const esDescargo = (localData && (localData.estado_semaforo === "descargo" || localData.estado_tramite === "DESCARGO_RECIBIDO"));
+    const requiereForzar = (esDescargo || tieneCacheInvalido);
     
-    // Forzar recálculo si es descargo O si la papeleta no tiene un análisis válido guardado
-    const requiereForzar = (esDescargo || !tieneCacheValido);
     const urlFetch = `${CONFIG_WEB_APP_URL}?action=analizar_ia&id=${encodeURIComponent(id)}&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}${requiereForzar ? '&force=true' : ''}`;
 
     fetch(urlFetch)
@@ -3870,7 +3888,7 @@ function seleccionarPapeletaParaRevision(id) {
                     descargosContenedor.innerHTML = `
                         <div class="highlight-callout urgent" style="margin-bottom: 12px;"><strong>📧 Descargo Recibido</strong></div>
                         <div style="background-color: var(--input-bg); padding:12px; border-radius:6px; border-left:3px solid var(--apm-blue);">
-                            <p style="font-size:12px; margin:0;">${formatearRespuestaChat(data.resumen_descargo)}</p>
+                            <p style="font-size:12px; margin:0;">${formatearRespuestaChat(data.resumen_descargo || "Descargo en revisión.")}</p>
                         </div>`;
                 } else {
                     descargosContenedor.innerHTML = `<div class="highlight-callout info">En espera de descargos en el buzón.</div>`;
@@ -3880,21 +3898,21 @@ function seleccionarPapeletaParaRevision(id) {
             if (switchEl) switchEl.checked = (localData.modo_tramite === "AUTOMATICO");
         }
         
-        // 🌟 RELLENAR CAMPOS DE LEY Y SANCIÓN
+        // 🌟 RELLENAR CAMPOS CON PROTECCIÓN ANTI-UNDEFINED
         const elConR = document.getElementById("panel-txt-conducta-ris"); 
-        if (elConR) elConR.innerText = data.conducta_tabla || localData.conducta || "-";
+        if (elConR) elConR.innerText = (data.conducta_tabla && data.conducta_tabla !== "undefined") ? data.conducta_tabla : (localData ? localData.conducta : "-");
 
         const elGradR = document.getElementById("panel-txt-graduacion-ris"); 
-        if (elGradR) elGradR.innerText = data.graduacion_tabla || "Grave";
+        if (elGradR) elGradR.innerText = (data.graduacion_tabla && data.graduacion_tabla !== "undefined") ? data.graduacion_tabla : "Grave";
 
         const elSancR = document.getElementById("panel-txt-sancion-raw"); 
-        if (elSancR) elSancR.innerHTML = formatearRespuestaChat(data.sancion_estipulada_tabla || "Sanción estipulada según RIS APM Terminals.");
+        if (elSancR) elSancR.innerHTML = formatearRespuestaChat((data.sancion_estipulada_tabla && data.sancion_estipulada_tabla !== "undefined") ? data.sancion_estipulada_tabla : "Sanción estipulada según RIS APM Terminals.");
 
         const elRes = document.getElementById("wiz-val-resumen-infraccion"); 
-        if (elRes) elRes.innerHTML = formatearRespuestaChat(data.resumen_descargo);
+        if (elRes) elRes.innerHTML = formatearRespuestaChat(data.resumen_descargo || "En espera de descargos.");
 
         const elCrit = document.getElementById("wiz-val-criterio-legal"); 
-        if (elCrit) elCrit.innerHTML = formatearRespuestaChat(data.analisis_caso);
+        if (elCrit) elCrit.innerHTML = formatearRespuestaChat(data.analisis_caso || "Análisis legal en proceso.");
 
         const timelineContainer = document.getElementById("wiz-val-reincidencias-timeline");
         if (timelineContainer) {
@@ -3910,8 +3928,15 @@ function seleccionarPapeletaParaRevision(id) {
             }
         }
         
-        const elDiasF = document.getElementById("sancion-dias-final"); if (elDiasF) elDiasF.value = data.dias_sugeridos;
-        const elCorrB = document.getElementById("panel-txt-correo-borrador"); if (elCorrB) elCorrB.value = data.correo_borrador;
+        const elDiasF = document.getElementById("sancion-dias-final"); 
+        if (elDiasF) elDiasF.value = (data.dias_sugeridos !== undefined && data.dias_sugeridos !== null) ? data.dias_sugeridos : 6;
+
+        const elCorrB = document.getElementById("panel-txt-correo-borrador"); 
+        if (elCorrB) {
+            elCorrB.value = (data.correo_borrador && data.correo_borrador !== "undefined") 
+                ? data.correo_borrador 
+                : `RESOLUCIÓN SANCIONADORA RIS - Papeleta N° ${id}\n\nEstimados,\n\nSe determina la sanción correspondiente según Reglamento.`;
+        }
     })
     .catch(err => {
         const elLoader = document.getElementById("robot-ia-loader");
