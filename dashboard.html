@@ -2498,7 +2498,7 @@
                                             <th onclick="ordenarTablaPor('id_papeleta')">ID Papeleta <span id="sort-icon-id_papeleta"></span></th>
                                             <th onclick="ordenarTablaPor('infractor')">Infractor / Empresa <span id="sort-icon-infractor"></span></th>
                                             <th onclick="ordenarTablaPor('conducta')">Conducta Infractora <span id="sort-icon-conducta"></span></th>
-                                             <th onclick="ordenarTablaPor('modo_tramite')">Modo <span id="sort-icon-modo_tramite"></span></th>
+                                            <th onclick="ordenarTablaPor('modo_tramite')">Modo <span id="sort-icon-modo_tramite"></span></th>
                                             <th onclick="ordenarTablaPor('fecha_infraccion')">Fecha Suceso <span id="sort-icon-fecha_infraccion"></span></th>
                                             <th onclick="ordenarTablaPor('ia_analisis_cache')">Sanción Sugerida (IA) <span id="sort-icon-ia_analisis_cache"></span></th>
                                             <th onclick="ordenarTablaPor('estado_semaforo')">Estado del Trámite <span id="sort-icon-estado_semaforo"></span></th>
@@ -3036,6 +3036,7 @@
             if (dropdown) dropdown.classList.toggle("active");
         }
 
+        // Sincronización silenciosa en segundo plano cada 60 segundos
         setInterval(function() {
             if (sessionStorage.getItem("secure_user_initials")) {
                 ejecutarSincronizacionSilenciosa();
@@ -3280,6 +3281,7 @@
             });
         }
 
+        // CARGA DE DATOS UNIFICADA (CARGA 100% DE LA APP EN 1 SOLO FETCH MASIVO - EVITA N+1)
         function inicializarDashboardConDatos(data) {
             if (!data) return;
             globalDashboardCache = data; 
@@ -3487,13 +3489,14 @@
         }
 
         function actualizarIconosOrdenado() {
-    const columnas = ["id_papeleta", "infractor", "empresa", "conducta", "modo_tramite", "fecha_infraccion", "estado_semaforo"];
-    columnas.forEach(col => {
-        const icon = document.getElementById(`sort-icon-${col}`);
-        if (icon) icon.innerText = (sortColumnaActual === col) ? (sortOrdenAscendente ? " ▲" : " ▼") : "";
-    });
-}
+            const columnas = ["id_papeleta", "infractor", "empresa", "conducta", "modo_tramite", "fecha_infraccion", "estado_semaforo"];
+            columnas.forEach(col => {
+                const icon = document.getElementById(`sort-icon-${col}`);
+                if (icon) icon.innerText = (sortColumnaActual === col) ? (sortOrdenAscendente ? " ▲" : " ▼") : "";
+            });
+        }
 
+        // BÚSQUEDA Y FILTRADO RÁPIDO 100% EN MEMORIA RAM (CERO PETICIONES RED)
         function filtrarYRenderizarTabla() {
             if (!globalDashboardCache || !globalDashboardCache.dashboardData || !globalDashboardCache.dashboardData.papeletas) return;
             
@@ -3590,109 +3593,110 @@
             else renderizarTarjetasFiltradas(activeFilteredPapeletas);
         }
 
+        // RENDERIZADO DE LA TABLA PRINCIPAL DE 8 COLUMNAS
         function renderizarTablaFiltrada(papeletasFiltradas) {
-    const tbody = document.querySelector("#tabla-control-papeletas tbody");
-    if (!tbody) return;
-    tbody.innerHTML = "";
-    const activas = papeletasFiltradas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1);
+            const tbody = document.querySelector("#tabla-control-papeletas tbody");
+            if (!tbody) return;
+            tbody.innerHTML = "";
+            const activas = papeletasFiltradas.filter(p => !p.estado_tramite || p.estado_tramite.indexOf("CERRADO") === -1);
 
-    if (activas.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">No se encontraron papeletas en esta etapa.</td></tr>`;
-        return;
-    }
+            if (activas.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">No se encontraron papeletas en esta etapa.</td></tr>`;
+                return;
+            }
 
-    activas.forEach(p => {
-        let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.split(/[T ]/)[0] : "-";
-        
-        let ledMarkup = "";
-        if (p.estado_envio === "Se envió correctamente" || !p.estado_envio) {
-            ledMarkup = `
-                <div style="display: flex; align-items: center; gap: 6px; margin-top: 5px;">
-                    <span style="display: inline-block; width: 8px; height: 8px; background-color: #10B981; border-radius: 50%; box-shadow: 0 0 8px #10B981;"></span>
-                    <span style="font-size: 11px; color: #10B981; font-weight: bold; font-family: sans-serif;">Enviado</span>
-                </div>
-            `;
-        } else {
-            ledMarkup = `
-                <div style="display: flex; align-items: center; gap: 6px; margin-top: 5px;">
-                    <span style="display: inline-block; width: 8px; height: 8px; background-color: #F43F5E; border-radius: 50%; box-shadow: 0 0 0 2px rgba(244, 63, 94, 0.25);"></span>
-                    <span style="font-size: 11px; color: #F43F5E; font-weight: bold; font-family: sans-serif;">Fallo de Envío</span>
-                </div>
-            `;
-        }
-
-        // 🌟 CREACIÓN DEL BADGE/ÍCONO PARA EL MODO DE TRÁMITE (ROBOT / MANO)
-        let modoBadge = "";
-        const modoClean = String(p.modo_tramite || "MANUAL").trim().toUpperCase();
-        if (modoClean === "AUTOMATICO") {
-            modoBadge = `<span class="badge" style="background-color: rgba(0, 240, 255, 0.1); color: #00f0ff; border: 1px solid rgba(0, 240, 255, 0.3);" title="Trámite Automático por IA">🤖 Automático</span>`;
-        } else {
-            modoBadge = `<span class="badge" style="background-color: rgba(255, 183, 0, 0.1); color: #ffb700; border: 1px solid rgba(255, 183, 0, 0.3);" title="Revisión y Firma Manual">✍️ Manual</span>`;
-        }
-
-        let badgeSancionSugerida = "";
-        try {
-            if (p.ia_analisis_cache && p.ia_analisis_cache.trim() !== "") {
-                const cache = JSON.parse(p.ia_analisis_cache);
-                if (cache.dias_sugeridos !== undefined) {
-                    const dias = parseInt(cache.dias_sugeridos, 10);
-                    if (dias === 0) {
-                        badgeSancionSugerida = `<span class="badge-sancion-amonesta">Amonestación</span>`;
-                    } else {
-                        badgeSancionSugerida = `<span class="badge-sancion-dias">${dias} días</span>`;
-                    }
+            activas.forEach(p => {
+                let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.split(/[T ]/)[0] : "-";
+                
+                let ledMarkup = "";
+                if (p.estado_envio === "Se envió correctamente" || !p.estado_envio) {
+                    ledMarkup = `
+                        <div style="display: flex; align-items: center; gap: 6px; margin-top: 5px;">
+                            <span style="display: inline-block; width: 8px; height: 8px; background-color: #10B981; border-radius: 50%; box-shadow: 0 0 8px #10B981;"></span>
+                            <span style="font-size: 11px; color: #10B981; font-weight: bold; font-family: sans-serif;">Enviado</span>
+                        </div>
+                    `;
                 } else {
+                    ledMarkup = `
+                        <div style="display: flex; align-items: center; gap: 6px; margin-top: 5px;">
+                            <span style="display: inline-block; width: 8px; height: 8px; background-color: #F43F5E; border-radius: 50%; box-shadow: 0 0 0 2px rgba(244, 63, 94, 0.25);"></span>
+                            <span style="font-size: 11px; color: #F43F5E; font-weight: bold; font-family: sans-serif;">Fallo de Envío</span>
+                        </div>
+                    `;
+                }
+
+                // ÍCONO DE MODO DE TRÁMITE (ROBOT / MANO)
+                let modoBadge = "";
+                const modoClean = String(p.modo_tramite || "MANUAL").trim().toUpperCase();
+                if (modoClean === "AUTOMATICO") {
+                    modoBadge = `<span class="badge" style="background-color: rgba(0, 240, 255, 0.1); color: #00f0ff; border: 1px solid rgba(0, 240, 255, 0.3);" title="Trámite Automático por IA">🤖 Automático</span>`;
+                } else {
+                    modoBadge = `<span class="badge" style="background-color: rgba(255, 183, 0, 0.1); color: #ffb700; border: 1px solid rgba(255, 183, 0, 0.3);" title="Revisión y Firma Manual">✍️ Manual</span>`;
+                }
+
+                // BADGE DE SANCIÓN SUGERIDA (DÍAS O AMONESTACIÓN)
+                let badgeSancionSugerida = "";
+                try {
+                    if (p.ia_analisis_cache && p.ia_analisis_cache.trim() !== "") {
+                        const cache = JSON.parse(p.ia_analisis_cache);
+                        if (cache.dias_sugeridos !== undefined) {
+                            const dias = parseInt(cache.dias_sugeridos, 10);
+                            if (dias === 0) {
+                                badgeSancionSugerida = `<span class="badge-sancion-amonesta">Amonestación Escrita</span>`;
+                            } else {
+                                badgeSancionSugerida = `<span class="badge-sancion-dias">${dias} días</span>`;
+                            }
+                        } else {
+                            badgeSancionSugerida = `<span class="badge-sancion-pendiente">Pendiente IA</span>`;
+                        }
+                    } else {
+                        badgeSancionSugerida = `<span class="badge-sancion-pendiente">Pendiente IA</span>`;
+                    }
+                } catch (e) {
                     badgeSancionSugerida = `<span class="badge-sancion-pendiente">Pendiente IA</span>`;
                 }
-            } else {
-                badgeSancionSugerida = `<span class="badge-sancion-pendiente">Pendiente IA</span>`;
-            }
-        } catch (e) {
-            badgeSancionSugerida = `<span class="badge-sancion-pendiente">Pendiente IA</span>`;
+
+                let estadoTramiteBadge = "";
+                if (p.estado_semaforo === "vigente" || p.estado_semaforo === "ultimo_dia") {
+                    estadoTramiteBadge = `<span class="badge badge-blue">Plazo Vigente (Pendiente Descargos)</span>`;
+                } else if (p.estado_semaforo === "vencido") {
+                    estadoTramiteBadge = `<span class="badge badge-red">Expirado (Sin Descargo)</span>`;
+                } else if (p.estado_semaforo === "descargo") {
+                    estadoTramiteBadge = `<span class="badge badge-green">Descargo Recibido</span>`;
+                } else {
+                    estadoTramiteBadge = `<span class="badge badge-blue">En Proceso</span>`;
+                }
+
+                const tr = document.createElement("tr");
+                tr.className = "clickable-row"; tr.id = `row-${p.id_papeleta}`;
+                if (activePapeletaId === p.id_papeleta) tr.classList.add("active-row");
+                tr.onclick = function() {
+                    document.querySelectorAll("#tabla-control-papeletas tbody tr").forEach(row => row.classList.remove("active-row"));
+                    tr.classList.add("active-row");
+                    seleccionarPapeletaParaRevision(p.id_papeleta);
+                };
+
+                tr.innerHTML = `
+                    <td>
+                        <strong class="text-id">${p.id_papeleta}</strong>
+                        ${ledMarkup}
+                    </td>
+                    <td>
+                        <div style="display: flex; flex-direction: column; gap: 3px;">
+                            <span class="text-infractor">${p.infractor}</span>
+                            <span class="text-empresa" style="font-size: 12px; opacity: 0.85;">${p.empresa}</span>
+                        </div>
+                    </td>
+                    <td class="text-conducta">${p.conducta}</td>
+                    <td>${modoBadge}</td> 
+                    <td class="text-fecha" style="font-family: 'Courier New', Courier, monospace; font-weight: bold; letter-spacing: -0.5px;">${fechaFormat}</td>
+                    <td>${badgeSancionSugerida}</td>
+                    <td>${estadoTramiteBadge}</td>
+                    <td><button class="btn-pdf-view" onclick="abrirVisorPDF('${p.id_papeleta}', event)">📄 PDF</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
-
-        let estadoTramiteBadge = "";
-        if (p.estado_semaforo === "vigente" || p.estado_semaforo === "ultimo_dia") {
-            estadoTramiteBadge = `<span class="badge badge-blue">Plazo Vigente (Pendiente Descargos)</span>`;
-        } else if (p.estado_semaforo === "vencido") {
-            estadoTramiteBadge = `<span class="badge badge-red">Expirado (Sin Descargo)</span>`;
-        } else if (p.estado_semaforo === "descargo") {
-            estadoTramiteBadge = `<span class="badge badge-green">Descargo Recibido</span>`;
-        } else {
-            estadoTramiteBadge = `<span class="badge badge-blue">En Proceso</span>`;
-        }
-
-        const tr = document.createElement("tr");
-        tr.className = "clickable-row"; tr.id = `row-${p.id_papeleta}`;
-        if (activePapeletaId === p.id_papeleta) tr.classList.add("active-row");
-        tr.onclick = function() {
-            document.querySelectorAll("#tabla-control-papeletas tbody tr").forEach(row => row.classList.remove("active-row"));
-            tr.classList.add("active-row");
-            seleccionarPapeletaParaRevision(p.id_papeleta);
-        };
-
-        // Renderizado de las 8 celdas de la fila
-        tr.innerHTML = `
-            <td>
-                <strong class="text-id">${p.id_papeleta}</strong>
-                ${ledMarkup}
-            </td>
-            <td>
-                <div style="display: flex; flex-direction: column; gap: 3px;">
-                    <span class="text-infractor">${p.infractor}</span>
-                    <span class="text-empresa" style="font-size: 12px; opacity: 0.85;">${p.empresa}</span>
-                </div>
-            </td>
-            <td class="text-conducta">${p.conducta}</td>
-            <td>${modoBadge}</td> <!-- 🌟 CELDA DEL MODO DE TRÁMITE -->
-            <td class="text-fecha" style="font-family: 'Courier New', Courier, monospace; font-weight: bold; letter-spacing: -0.5px;">${fechaFormat}</td>
-            <td>${badgeSancionSugerida}</td>
-            <td>${estadoTramiteBadge}</td>
-            <td><button class="btn-pdf-view" onclick="abrirVisorPDF('${p.id_papeleta}', event)">📄 PDF</button></td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
 
         function renderizarTablaCasosCerrados(papeletasCerradas) {
             const tbody = document.querySelector("#tabla-casos-cerrados tbody");
@@ -3796,135 +3800,136 @@
             if (btn) btn.classList.add("active");
         }
 
-        // BUSCA ESTA FUNCIÓN EN DASHBOARD.HTML
-function seleccionarPapeletaParaRevision(id) {
-    activePapeletaId = id;
-    
-    const subTabA = document.querySelector(".sub-tab-link");
-    if (subTabA) cambiarSubTab('A', subTabA);
-
-    mostrarRobotLoader(id);
-
-    const user = sessionStorage.getItem("secure_user_initials");
-    const auth = sessionStorage.getItem("secure_auth_plain");
-    const localData = activeFilteredPapeletas.find(p => String(p.id_papeleta) === String(id));
-
-    // 🌟 SI TIENE DESCARGO RECIBIDO, FORZAMOS EL RECÁLCULO (&force=true)
-    const esDescargo = (localData && (localData.estado_semaforo === "descargo" || localData.estado_tramite === "DESCARGO_RECIBIDO"));
-    const urlFetch = `${CONFIG_WEB_APP_URL}?action=analizar_ia&id=${encodeURIComponent(id)}&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}${esDescargo ? '&force=true' : ''}`;
-
-    fetch(urlFetch)
-    .then(res => res.json())
-    .then(data => {
-        completarYQuitarRobotLoader();
-        
-        const modal = document.getElementById("modal-instruccion-expediente");
-        if (modal) modal.style.display = "flex";
-        
-        if (localData) {
-            const elId = document.getElementById("wiz-val-id"); if (elId) elId.innerText = id;
-            const elInf = document.getElementById("wiz-val-infractor"); if (elInf) elInf.innerText = localData.infractor;
-            const elEmp = document.getElementById("wiz-val-empresa"); if (elEmp) elEmp.innerText = localData.empresa;
-            const elCon = document.getElementById("wiz-val-conducta"); if (elCon) elCon.innerText = localData.conducta;
-
-            const btnDrive = document.getElementById("btn-abrir-carpeta-drive");
-            if (btnDrive) {
-                if (localData.carpeta_drive_url && localData.carpeta_drive_url.trim() !== "") {
-                    btnDrive.href = localData.carpeta_drive_url;
-                    btnDrive.style.display = "flex";
-                } else {
-                    btnDrive.style.display = "none";
-                }
-            }
-
-            evaluarVisibilidadBotonEnviar(localData);
-
-            let tHtml = "";
-            if (localData.fecha_infraccion) tHtml += `<div class="trazabilidad-item"><strong>${localData.fecha_infraccion.split("T")[0]}</strong> - Reportado por Security.</div>`;
-            if (localData.fecha_envio) tHtml += `<div class="trazabilidad-item"><strong>${localData.fecha_envio.split("T")[0]}</strong> - Notificación generada.</div>`;
-            if (localData.estado_semaforo === "descargo") tHtml += `<div class="trazabilidad-item" style="color:var(--success-green);"><strong>Vía Gmail</strong> - Descargo recibido.</div>`;
+        // ABRIR Y REVISAR PAPELETA (CON RECÁLCULO INTELIGENTE SOLO SI HAY DESCARGO)
+        function seleccionarPapeletaParaRevision(id) {
+            activePapeletaId = id;
             
-            const elTraz = document.getElementById("wiz-val-trazabilidad");
-            if (elTraz) elTraz.innerHTML = tHtml;
+            const subTabA = document.querySelector(".sub-tab-link");
+            if (subTabA) cambiarSubTab('A', subTabA);
 
-            const descargosContenedor = document.getElementById("wiz-val-descargos-container");
-            if (descargosContenedor) {
-                if (localData.estado_semaforo === "descargo") {
-                    descargosContenedor.innerHTML = `
-                        <div class="highlight-callout urgent" style="margin-bottom: 12px;"><strong>📧 Descargo Recibido</strong></div>
-                        <div style="background-color: var(--input-bg); padding:12px; border-radius:6px; border-left:3px solid var(--apm-blue);">
-                            <p style="font-size:12px; margin:0;">${formatearRespuestaChat(data.resumen_descargo)}</p>
-                        </div>`;
-                } else {
-                    descargosContenedor.innerHTML = `<div class="highlight-callout info">En espera de descargos en el buzón.</div>`;
+            mostrarRobotLoader(id);
+
+            const user = sessionStorage.getItem("secure_user_initials");
+            const auth = sessionStorage.getItem("secure_auth_plain");
+            const localData = activeFilteredPapeletas.find(p => String(p.id_papeleta) === String(id));
+
+            // Si es un descargo recién recibido, forzamos recálculo en el servidor
+            const esDescargo = (localData && (localData.estado_semaforo === "descargo" || localData.estado_tramite === "DESCARGO_RECIBIDO"));
+            const urlFetch = `${CONFIG_WEB_APP_URL}?action=analizar_ia&id=${encodeURIComponent(id)}&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}${esDescargo ? '&force=true' : ''}`;
+
+            fetch(urlFetch)
+            .then(res => res.json())
+            .then(data => {
+                completarYQuitarRobotLoader();
+                
+                const modal = document.getElementById("modal-instruccion-expediente");
+                if (modal) modal.style.display = "flex";
+                
+                if (localData) {
+                    const elId = document.getElementById("wiz-val-id"); if (elId) elId.innerText = id;
+                    const elInf = document.getElementById("wiz-val-infractor"); if (elInf) elInf.innerText = localData.infractor;
+                    const elEmp = document.getElementById("wiz-val-empresa"); if (elEmp) elEmp.innerText = localData.empresa;
+                    const elCon = document.getElementById("wiz-val-conducta"); if (elCon) elCon.innerText = localData.conducta;
+
+                    const btnDrive = document.getElementById("btn-abrir-carpeta-drive");
+                    if (btnDrive) {
+                        if (localData.carpeta_drive_url && localData.carpeta_drive_url.trim() !== "") {
+                            btnDrive.href = localData.carpeta_drive_url;
+                            btnDrive.style.display = "flex";
+                        } else {
+                            btnDrive.style.display = "none";
+                        }
+                    }
+
+                    evaluarVisibilidadBotonEnviar(localData);
+
+                    let tHtml = "";
+                    if (localData.fecha_infraccion) tHtml += `<div class="trazabilidad-item"><strong>${localData.fecha_infraccion.split("T")[0]}</strong> - Reportado por Security.</div>`;
+                    if (localData.fecha_envio) tHtml += `<div class="trazabilidad-item"><strong>${localData.fecha_envio.split("T")[0]}</strong> - Notificación generada.</div>`;
+                    if (localData.estado_semaforo === "descargo") tHtml += `<div class="trazabilidad-item" style="color:var(--success-green);"><strong>Vía Gmail</strong> - Descargo recibido.</div>`;
+                    
+                    const elTraz = document.getElementById("wiz-val-trazabilidad");
+                    if (elTraz) elTraz.innerHTML = tHtml;
+
+                    const descargosContenedor = document.getElementById("wiz-val-descargos-container");
+                    if (descargosContenedor) {
+                        if (localData.estado_semaforo === "descargo") {
+                            descargosContenedor.innerHTML = `
+                                <div class="highlight-callout urgent" style="margin-bottom: 12px;"><strong>📧 Descargo Recibido</strong></div>
+                                <div style="background-color: var(--input-bg); padding:12px; border-radius:6px; border-left:3px solid var(--apm-blue);">
+                                    <p style="font-size:12px; margin:0;">${formatearRespuestaChat(data.resumen_descargo)}</p>
+                                </div>`;
+                        } else {
+                            descargosContenedor.innerHTML = `<div class="highlight-callout info">En espera de descargos en el buzón.</div>`;
+                        }
+                    }
+                    const switchEl = document.getElementById("toggle-automode-switch");
+                    if (switchEl) switchEl.checked = (localData.modo_tramite === "AUTOMATICO");
                 }
-            }
-            const switchEl = document.getElementById("toggle-automode-switch");
-            if (switchEl) switchEl.checked = (localData.modo_tramite === "AUTOMATICO");
-        }
-        
-        const elRes = document.getElementById("wiz-val-resumen-infraccion"); if (elRes) elRes.innerHTML = formatearRespuestaChat(data.resumen_descargo);
-        const elCrit = document.getElementById("wiz-val-criterio-legal"); if (elCrit) elCrit.innerHTML = formatearRespuestaChat(data.analisis_caso);
+                
+                const elRes = document.getElementById("wiz-val-resumen-infraccion"); if (elRes) elRes.innerHTML = formatearRespuestaChat(data.resumen_descargo);
+                const elCrit = document.getElementById("wiz-val-criterio-legal"); if (elCrit) elCrit.innerHTML = formatearRespuestaChat(data.analisis_caso);
 
-        const timelineContainer = document.getElementById("wiz-val-reincidencias-timeline");
-        if (timelineContainer) {
-            timelineContainer.innerHTML = "";
-            if (data.reincidencia_texto) {
-                const lineas = data.reincidencia_texto.split("\n").filter(l => l.trim().length > 0);
-                lineas.forEach((linea, index) => {
-                    const item = document.createElement("div");
-                    item.className = "timeline-item-wizard warning";
-                    item.innerHTML = `<div class="timeline-date">Evento ${index + 1}</div><div class="timeline-desc">${formatearRespuestaChat(linea)}</div>`;
-                    timelineContainer.appendChild(item);
-                });
-            }
+                const timelineContainer = document.getElementById("wiz-val-reincidencias-timeline");
+                if (timelineContainer) {
+                    timelineContainer.innerHTML = "";
+                    if (data.reincidencia_texto) {
+                        const lineas = data.reincidencia_texto.split("\n").filter(l => l.trim().length > 0);
+                        lineas.forEach((linea, index) => {
+                            const item = document.createElement("div");
+                            item.className = "timeline-item-wizard warning";
+                            item.innerHTML = `<div class="timeline-date">Evento ${index + 1}</div><div class="timeline-desc">${formatearRespuestaChat(linea)}</div>`;
+                            timelineContainer.appendChild(item);
+                        });
+                    }
+                }
+                
+                const elConR = document.getElementById("panel-txt-conducta-ris"); if (elConR) elConR.innerText = data.conducta_tabla || "-";
+                const elSancR = document.getElementById("panel-txt-sancion-raw"); if (elSancR) elSancR.innerHTML = formatearRespuestaChat(data.sancion_estipulada_tabla);
+                const elDiasF = document.getElementById("sancion-dias-final"); if (elDiasF) elDiasF.value = data.dias_sugeridos;
+                const elCorrB = document.getElementById("panel-txt-correo-borrador"); if (elCorrB) elCorrB.value = data.correo_borrador;
+            })
+            .catch(err => {
+                const elLoader = document.getElementById("robot-ia-loader");
+                if (elLoader) elLoader.style.display = "none";
+            });
         }
-        
-        const elConR = document.getElementById("panel-txt-conducta-ris"); if (elConR) elConR.innerText = data.conducta_tabla || "-";
-        const elSancR = document.getElementById("panel-txt-sancion-raw"); if (elSancR) elSancR.innerHTML = formatearRespuestaChat(data.sancion_estipulada_tabla);
-        const elDiasF = document.getElementById("sancion-dias-final"); if (elDiasF) elDiasF.value = data.dias_sugeridos;
-        const elCorrB = document.getElementById("panel-txt-correo-borrador"); if (elCorrB) elCorrB.value = data.correo_borrador;
-    })
-    .catch(err => {
-        const elLoader = document.getElementById("robot-ia-loader");
-        if (elLoader) elLoader.style.display = "none";
-    });
-}
 
+        // DESPACHO REAL DE RESOLUCIÓN MANUAL
         function ejecutarAprobacionYSancion() {
-    if (!activePapeletaId) return;
-    const diasSancion = document.getElementById("sancion-dias-final").value;
-    const correoFinal = document.getElementById("panel-txt-correo-borrador").value;
+            if (!activePapeletaId) return;
+            const diasSancion = document.getElementById("sancion-dias-final").value;
+            const correoFinal = document.getElementById("panel-txt-correo-borrador").value;
 
-    if (!confirm(`¿Está seguro de enviar formalmente la resolución final para la papeleta ${activePapeletaId}?`)) return;
+            if (!confirm(`¿Está seguro de enviar formalmente la resolución final para la papeleta ${activePapeletaId}?`)) return;
 
-    mostrarLoaderModal("Despachando correo de resolución...");
+            mostrarLoaderModal("Despachando correo de resolución...");
 
-    const user = sessionStorage.getItem("secure_user_initials");
-    const auth = sessionStorage.getItem("secure_auth_plain");
-    const payload = {
-        action: "enviar_resolucion_manual",
-        user: user,
-        auth: auth,
-        id: activePapeletaId,
-        dias: diasSancion,
-        correo: correoFinal
-    };
+            const user = sessionStorage.getItem("secure_user_initials");
+            const auth = sessionStorage.getItem("secure_auth_plain");
+            const payload = {
+                action: "enviar_resolucion_manual",
+                user: user,
+                auth: auth,
+                id: activePapeletaId,
+                dias: diasSancion,
+                correo: correoFinal
+            };
 
-    fetch(CONFIG_WEB_APP_URL + "?action=enviar_resolucion_manual", {
-        method: "POST",
-        mode: "no-cors",
-        body: JSON.stringify(payload)
-    }).then(() => {
-        ocultarLoaderModal();
-        alert("✉️ ¡Resolución enviada con éxito a la empresa contratista!");
-        cerrarModalInstruccion();
-        forzarSincronizacionManual();
-    }).catch(err => {
-        ocultarLoaderModal();
-        alert("Error al enviar resolución: " + err);
-    });
-}
+            fetch(CONFIG_WEB_APP_URL + "?action=enviar_resolucion_manual", {
+                method: "POST",
+                mode: "no-cors",
+                body: JSON.stringify(payload)
+            }).then(() => {
+                ocultarLoaderModal();
+                alert("✉️ ¡Resolución enviada con éxito a la empresa contratista!");
+                cerrarModalInstruccion();
+                forzarSincronizacionManual();
+            }).catch(err => {
+                ocultarLoaderModal();
+                alert("Error al enviar resolución: " + err);
+            });
+        }
 
         function cargarReglasRISDesdeServidor() {
             const container = document.getElementById("contenedor-reglas-ris-dinamico");
@@ -4335,58 +4340,59 @@ function seleccionarPapeletaParaRevision(id) {
             });
         }
 
+        // GUARDADO DE PLANTILLA Y PROPAGACIÓN DE MODO EN CASCAADA
         function actualizarPlantillaAutoSave(conducta, campo, valor) {
-    const user = sessionStorage.getItem("secure_user_initials");
-    const auth = sessionStorage.getItem("secure_auth_plain");
+            const user = sessionStorage.getItem("secure_user_initials");
+            const auth = sessionStorage.getItem("secure_auth_plain");
 
-    // 1. Actualizar memoria local de plantillas
-    if (globalDashboardCache && globalDashboardCache.plantillas) {
-        const item = globalDashboardCache.plantillas.find(p => p.conducta.trim().toLowerCase() === conducta.trim().toLowerCase());
-        if (item) {
-            if (campo === "dias_1ra") item.dias_1ra = Number(valor);
-            if (campo === "dias_reincidente") item.dias_reincidente = Number(valor);
-            if (campo === "modo") item.modo = String(valor).toUpperCase();
-        }
-    }
-
-    // 2. 🌟 SI SE MODIFICÓ EL MODO, ACTUALIZAR INMEDIATAMENTE LAS PAPELETAS VISIBLES
-    if (campo === "modo" && globalDashboardCache && globalDashboardCache.dashboardData && globalDashboardCache.dashboardData.papeletas) {
-        const nuevoModo = String(valor).toUpperCase();
-        const conductaNorm = conducta.trim().toLowerCase();
-        
-        globalDashboardCache.dashboardData.papeletas.forEach(p => {
-            if (String(p.conducta || "").trim().toLowerCase() === conductaNorm) {
-                const est = String(p.estado_tramite || "").toUpperCase();
-                if (est.indexOf("CERRADO") === -1) {
-                    p.modo_tramite = nuevoModo; // Cambiar valor local
+            // 1. Actualizar memoria local de plantillas
+            if (globalDashboardCache && globalDashboardCache.plantillas) {
+                const item = globalDashboardCache.plantillas.find(p => p.conducta.trim().toLowerCase() === conducta.trim().toLowerCase());
+                if (item) {
+                    if (campo === "dias_1ra") item.dias_1ra = Number(valor);
+                    if (campo === "dias_reincidente") item.dias_reincidente = Number(valor);
+                    if (campo === "modo") item.modo = String(valor).toUpperCase();
                 }
             }
-        });
-        
-        // Re-renderizar la tabla para mostrar los robots 🤖 o manos ✍️ al instante
-        filtrarYRenderizarTabla();
-        calcularFiltrosEtapa(globalDashboardCache.dashboardData.papeletas);
-    }
 
-    const payload = {
-        action: "save_plantilla_config",
-        user: user,
-        auth: auth,
-        conducta: conducta,
-        campo: campo,
-        valor: valor
-    };
+            // 2. Si se modificó el modo, actualizar inmediatamente las papeletas visibles
+            if (campo === "modo" && globalDashboardCache && globalDashboardCache.dashboardData && globalDashboardCache.dashboardData.papeletas) {
+                const nuevoModo = String(valor).toUpperCase();
+                const conductaNorm = conducta.trim().toLowerCase();
+                
+                globalDashboardCache.dashboardData.papeletas.forEach(p => {
+                    if (String(p.conducta || "").trim().toLowerCase() === conductaNorm) {
+                        const est = String(p.estado_tramite || "").toUpperCase();
+                        if (est.indexOf("CERRADO") === -1) {
+                            p.modo_tramite = nuevoModo; 
+                        }
+                    }
+                });
+                
+                // Re-renderizar la tabla al instante para mostrar robots 🤖 o manos ✍️
+                filtrarYRenderizarTabla();
+                calcularFiltrosEtapa(globalDashboardCache.dashboardData.papeletas);
+            }
 
-    fetch(CONFIG_WEB_APP_URL + "?action=save_plantilla_config", {
-        method: "POST",
-        mode: "no-cors",
-        body: JSON.stringify(payload)
-    }).then(() => {
-        console.log(`✅ Auto-save exitoso para "${conducta}" (${campo}: ${valor})`);
-    }).catch(err => {
-        console.error("Error en Auto-save: ", err);
-    });
-}
+            const payload = {
+                action: "save_plantilla_config",
+                user: user,
+                auth: auth,
+                conducta: conducta,
+                campo: campo,
+                valor: valor
+            };
+
+            fetch(CONFIG_WEB_APP_URL + "?action=save_plantilla_config", {
+                method: "POST",
+                mode: "no-cors",
+                body: JSON.stringify(payload)
+            }).then(() => {
+                console.log(`✅ Auto-save exitoso para "${conducta}" (${campo}: ${valor})`);
+            }).catch(err => {
+                console.error("Error en Auto-save: ", err);
+            });
+        }
 
         function evaluarVisibilidadBotonEnviar(localData) {
             const btnEnviar = document.getElementById("btn-enviar-resolucion-manual");
@@ -4422,3 +4428,4 @@ function seleccionarPapeletaParaRevision(id) {
     </script>
 </body>
 </html>
+    
