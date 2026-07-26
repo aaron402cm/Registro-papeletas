@@ -3801,99 +3801,123 @@
         }
 
         // ABRIR Y REVISAR PAPELETA (CON RECÁLCULO INTELIGENTE SOLO SI HAY DESCARGO)
-        function seleccionarPapeletaParaRevision(id) {
-            activePapeletaId = id;
-            
-            const subTabA = document.querySelector(".sub-tab-link");
-            if (subTabA) cambiarSubTab('A', subTabA);
+function seleccionarPapeletaParaRevision(id) {
+    activePapeletaId = id;
+    
+    const subTabA = document.querySelector(".sub-tab-link");
+    if (subTabA) cambiarSubTab('A', subTabA);
 
-            mostrarRobotLoader(id);
+    mostrarRobotLoader(id);
 
-            const user = sessionStorage.getItem("secure_user_initials");
-            const auth = sessionStorage.getItem("secure_auth_plain");
-            const localData = activeFilteredPapeletas.find(p => String(p.id_papeleta) === String(id));
+    const user = sessionStorage.getItem("secure_user_initials");
+    const auth = sessionStorage.getItem("secure_auth_plain");
+    const localData = activeFilteredPapeletas.find(p => String(p.id_papeleta) === String(id));
 
-            // Si es un descargo recién recibido, forzamos recálculo en el servidor
-            const esDescargo = (localData && (localData.estado_semaforo === "descargo" || localData.estado_tramite === "DESCARGO_RECIBIDO"));
-            const urlFetch = `${CONFIG_WEB_APP_URL}?action=analizar_ia&id=${encodeURIComponent(id)}&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}${esDescargo ? '&force=true' : ''}`;
-
-            fetch(urlFetch)
-            .then(res => res.json())
-            .then(data => {
-                completarYQuitarRobotLoader();
-                
-                const modal = document.getElementById("modal-instruccion-expediente");
-                if (modal) modal.style.display = "flex";
-                
-                if (localData) {
-                    const elId = document.getElementById("wiz-val-id"); if (elId) elId.innerText = id;
-                    const elInf = document.getElementById("wiz-val-infractor"); if (elInf) elInf.innerText = localData.infractor;
-                    const elEmp = document.getElementById("wiz-val-empresa"); if (elEmp) elEmp.innerText = localData.empresa;
-                    const elCon = document.getElementById("wiz-val-conducta"); if (elCon) elCon.innerText = localData.conducta;
-
-                    const btnDrive = document.getElementById("btn-abrir-carpeta-drive");
-                    if (btnDrive) {
-                        if (localData.carpeta_drive_url && localData.carpeta_drive_url.trim() !== "") {
-                            btnDrive.href = localData.carpeta_drive_url;
-                            btnDrive.style.display = "flex";
-                        } else {
-                            btnDrive.style.display = "none";
-                        }
-                    }
-
-                    evaluarVisibilidadBotonEnviar(localData);
-
-                    let tHtml = "";
-                    if (localData.fecha_infraccion) tHtml += `<div class="trazabilidad-item"><strong>${localData.fecha_infraccion.split("T")[0]}</strong> - Reportado por Security.</div>`;
-                    if (localData.fecha_envio) tHtml += `<div class="trazabilidad-item"><strong>${localData.fecha_envio.split("T")[0]}</strong> - Notificación generada.</div>`;
-                    if (localData.estado_semaforo === "descargo") tHtml += `<div class="trazabilidad-item" style="color:var(--success-green);"><strong>Vía Gmail</strong> - Descargo recibido.</div>`;
-                    
-                    const elTraz = document.getElementById("wiz-val-trazabilidad");
-                    if (elTraz) elTraz.innerHTML = tHtml;
-
-                    const descargosContenedor = document.getElementById("wiz-val-descargos-container");
-                    if (descargosContenedor) {
-                        if (localData.estado_semaforo === "descargo") {
-                            descargosContenedor.innerHTML = `
-                                <div class="highlight-callout urgent" style="margin-bottom: 12px;"><strong>📧 Descargo Recibido</strong></div>
-                                <div style="background-color: var(--input-bg); padding:12px; border-radius:6px; border-left:3px solid var(--apm-blue);">
-                                    <p style="font-size:12px; margin:0;">${formatearRespuestaChat(data.resumen_descargo)}</p>
-                                </div>`;
-                        } else {
-                            descargosContenedor.innerHTML = `<div class="highlight-callout info">En espera de descargos en el buzón.</div>`;
-                        }
-                    }
-                    const switchEl = document.getElementById("toggle-automode-switch");
-                    if (switchEl) switchEl.checked = (localData.modo_tramite === "AUTOMATICO");
-                }
-                
-                const elRes = document.getElementById("wiz-val-resumen-infraccion"); if (elRes) elRes.innerHTML = formatearRespuestaChat(data.resumen_descargo);
-                const elCrit = document.getElementById("wiz-val-criterio-legal"); if (elCrit) elCrit.innerHTML = formatearRespuestaChat(data.analisis_caso);
-
-                const timelineContainer = document.getElementById("wiz-val-reincidencias-timeline");
-                if (timelineContainer) {
-                    timelineContainer.innerHTML = "";
-                    if (data.reincidencia_texto) {
-                        const lineas = data.reincidencia_texto.split("\n").filter(l => l.trim().length > 0);
-                        lineas.forEach((linea, index) => {
-                            const item = document.createElement("div");
-                            item.className = "timeline-item-wizard warning";
-                            item.innerHTML = `<div class="timeline-date">Evento ${index + 1}</div><div class="timeline-desc">${formatearRespuestaChat(linea)}</div>`;
-                            timelineContainer.appendChild(item);
-                        });
-                    }
-                }
-                
-                const elConR = document.getElementById("panel-txt-conducta-ris"); if (elConR) elConR.innerText = data.conducta_tabla || "-";
-                const elSancR = document.getElementById("panel-txt-sancion-raw"); if (elSancR) elSancR.innerHTML = formatearRespuestaChat(data.sancion_estipulada_tabla);
-                const elDiasF = document.getElementById("sancion-dias-final"); if (elDiasF) elDiasF.value = data.dias_sugeridos;
-                const elCorrB = document.getElementById("panel-txt-correo-borrador"); if (elCorrB) elCorrB.value = data.correo_borrador;
-            })
-            .catch(err => {
-                const elLoader = document.getElementById("robot-ia-loader");
-                if (elLoader) elLoader.style.display = "none";
-            });
+    // 🌟 EVALUAR SI TIENE DESCARGO O SI EL ANÁLISIS EN CACHÉ ESTÁ VACÍO
+    let tieneCacheValido = false;
+    try {
+        if (localData && localData.ia_analisis_cache) {
+            const parsed = JSON.parse(localData.ia_analisis_cache);
+            if (parsed && parsed.conducta_tabla && parsed.conducta_tabla !== "-") {
+                tieneCacheValido = true;
+            }
         }
+    } catch(e) {}
+
+    const esDescargo = (localData && (localData.estado_semaforo === "descargo" || localData.estado_tramite === "DESCARGO_RECIBIDO"));
+    
+    // Forzar recálculo si es descargo O si la papeleta no tiene un análisis válido guardado
+    const requiereForzar = (esDescargo || !tieneCacheValido);
+    const urlFetch = `${CONFIG_WEB_APP_URL}?action=analizar_ia&id=${encodeURIComponent(id)}&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}${requiereForzar ? '&force=true' : ''}`;
+
+    fetch(urlFetch)
+    .then(res => res.json())
+    .then(data => {
+        completarYQuitarRobotLoader();
+        
+        const modal = document.getElementById("modal-instruccion-expediente");
+        if (modal) modal.style.display = "flex";
+        
+        if (localData) {
+            const elId = document.getElementById("wiz-val-id"); if (elId) elId.innerText = id;
+            const elInf = document.getElementById("wiz-val-infractor"); if (elInf) elInf.innerText = localData.infractor;
+            const elEmp = document.getElementById("wiz-val-empresa"); if (elEmp) elEmp.innerText = localData.empresa;
+            const elCon = document.getElementById("wiz-val-conducta"); if (elCon) elCon.innerText = localData.conducta;
+
+            const btnDrive = document.getElementById("btn-abrir-carpeta-drive");
+            if (btnDrive) {
+                if (localData.carpeta_drive_url && localData.carpeta_drive_url.trim() !== "") {
+                    btnDrive.href = localData.carpeta_drive_url;
+                    btnDrive.style.display = "flex";
+                } else {
+                    btnDrive.style.display = "none";
+                }
+            }
+
+            evaluarVisibilidadBotonEnviar(localData);
+
+            let tHtml = "";
+            if (localData.fecha_infraccion) tHtml += `<div class="trazabilidad-item"><strong>${localData.fecha_infraccion.split("T")[0]}</strong> - Reportado por Security.</div>`;
+            if (localData.fecha_envio) tHtml += `<div class="trazabilidad-item"><strong>${localData.fecha_envio.split("T")[0]}</strong> - Notificación generada.</div>`;
+            if (localData.estado_semaforo === "descargo") tHtml += `<div class="trazabilidad-item" style="color:var(--success-green);"><strong>Vía Gmail</strong> - Descargo recibido.</div>`;
+            
+            const elTraz = document.getElementById("wiz-val-trazabilidad");
+            if (elTraz) elTraz.innerHTML = tHtml;
+
+            const descargosContenedor = document.getElementById("wiz-val-descargos-container");
+            if (descargosContenedor) {
+                if (localData.estado_semaforo === "descargo") {
+                    descargosContenedor.innerHTML = `
+                        <div class="highlight-callout urgent" style="margin-bottom: 12px;"><strong>📧 Descargo Recibido</strong></div>
+                        <div style="background-color: var(--input-bg); padding:12px; border-radius:6px; border-left:3px solid var(--apm-blue);">
+                            <p style="font-size:12px; margin:0;">${formatearRespuestaChat(data.resumen_descargo)}</p>
+                        </div>`;
+                } else {
+                    descargosContenedor.innerHTML = `<div class="highlight-callout info">En espera de descargos en el buzón.</div>`;
+                }
+            }
+            const switchEl = document.getElementById("toggle-automode-switch");
+            if (switchEl) switchEl.checked = (localData.modo_tramite === "AUTOMATICO");
+        }
+        
+        // 🌟 RELLENAR CAMPOS DE LEY Y SANCIÓN
+        const elConR = document.getElementById("panel-txt-conducta-ris"); 
+        if (elConR) elConR.innerText = data.conducta_tabla || localData.conducta || "-";
+
+        const elGradR = document.getElementById("panel-txt-graduacion-ris"); 
+        if (elGradR) elGradR.innerText = data.graduacion_tabla || "Grave";
+
+        const elSancR = document.getElementById("panel-txt-sancion-raw"); 
+        if (elSancR) elSancR.innerHTML = formatearRespuestaChat(data.sancion_estipulada_tabla || "Sanción estipulada según RIS APM Terminals.");
+
+        const elRes = document.getElementById("wiz-val-resumen-infraccion"); 
+        if (elRes) elRes.innerHTML = formatearRespuestaChat(data.resumen_descargo);
+
+        const elCrit = document.getElementById("wiz-val-criterio-legal"); 
+        if (elCrit) elCrit.innerHTML = formatearRespuestaChat(data.analisis_caso);
+
+        const timelineContainer = document.getElementById("wiz-val-reincidencias-timeline");
+        if (timelineContainer) {
+            timelineContainer.innerHTML = "";
+            if (data.reincidencia_texto) {
+                const lineas = data.reincidencia_texto.split("\n").filter(l => l.trim().length > 0);
+                lineas.forEach((linea, index) => {
+                    const item = document.createElement("div");
+                    item.className = "timeline-item-wizard warning";
+                    item.innerHTML = `<div class="timeline-date">Evento ${index + 1}</div><div class="timeline-desc">${formatearRespuestaChat(linea)}</div>`;
+                    timelineContainer.appendChild(item);
+                });
+            }
+        }
+        
+        const elDiasF = document.getElementById("sancion-dias-final"); if (elDiasF) elDiasF.value = data.dias_sugeridos;
+        const elCorrB = document.getElementById("panel-txt-correo-borrador"); if (elCorrB) elCorrB.value = data.correo_borrador;
+    })
+    .catch(err => {
+        const elLoader = document.getElementById("robot-ia-loader");
+        if (elLoader) elLoader.style.display = "none";
+    });
+}
 
         // DESPACHO REAL DE RESOLUCIÓN MANUAL
         function ejecutarAprobacionYSancion() {
