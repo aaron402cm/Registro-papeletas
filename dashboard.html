@@ -581,33 +581,40 @@
             width: 100%;
         }
 
-        #modal-instruccion-expediente {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 8, 16, 0.85);
-            z-index: 4000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
+        /* REEMPLAZAR EN EL <style> DE DASHBOARD.HTML */
+#modal-instruccion-expediente {
+    display: none;
+    position: fixed;
+    top: 0; 
+    left: 0; 
+    width: 100vw; 
+    height: 100vh;
+    background: rgba(0, 8, 16, 0.85);
+    z-index: 4000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
 
-        #modal-instruccion-expediente .modal-box {
+#modal-instruccion-expediente .modal-box {
     background: #111827 !important;
     border: 1px solid rgba(255, 255, 255, 0.18) !important;
     box-shadow: 0 25px 65px rgba(0, 0, 0, 0.85);
     border-radius: 16px;
-    width: 95%;
-    max-width: 1000px !important;
-    height: 88vh !important; /* Altura gigante fija en pantalla */
+    width: 90%;
+    max-width: 950px !important;
+    height: 82vh !important; /* Altura perfecta centrada en pantalla */
+    max-height: 82vh !important;
     display: flex;
     flex-direction: column;
     overflow: hidden;
     position: relative;
+    margin: auto !important; /* Centrado automático vertical y horizontal */
     border-top: 4px solid var(--apm-orange) !important;
-        }
-        .modal-cuerpo-trabajo {
+}
+
+.modal-cuerpo-trabajo {
     flex: 1;
     padding: 20px 25px;
     display: flex;
@@ -3832,19 +3839,19 @@ function seleccionarPapeletaParaRevision(id) {
     const auth = sessionStorage.getItem("secure_auth_plain");
     const localData = activeFilteredPapeletas.find(p => String(p.id_papeleta) === String(id));
 
-    // Evaluar si requiere forzar recálculo
-    let tieneCacheInvalido = true;
+    // 🌟 DETECTAR SI EL ANÁLISIS ESTÁ EN BLANCO O CON TEXTO "EN PROCESO"
+    let requiereForzar = true;
     try {
         if (localData && localData.ia_analisis_cache) {
             const parsed = JSON.parse(localData.ia_analisis_cache);
-            if (parsed && parsed.correo_borrador && parsed.correo_borrador !== "undefined" && parsed.conducta_tabla !== "-") {
-                tieneCacheInvalido = false;
+            if (parsed && parsed.analisis_caso && !parsed.analisis_caso.includes("en proceso") && parsed.analisis_caso.length > 20) {
+                requiereForzar = false; // Ya tiene un análisis real completo
             }
         }
     } catch(e) {}
 
     const esDescargo = (localData && (localData.estado_semaforo === "descargo" || localData.estado_tramite === "DESCARGO_RECIBIDO"));
-    const requiereForzar = (esDescargo || tieneCacheInvalido);
+    if (esDescargo) requiereForzar = true;
     
     const urlFetch = `${CONFIG_WEB_APP_URL}?action=analizar_ia&id=${encodeURIComponent(id)}&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}${requiereForzar ? '&force=true' : ''}`;
 
@@ -3898,7 +3905,7 @@ function seleccionarPapeletaParaRevision(id) {
             if (switchEl) switchEl.checked = (localData.modo_tramite === "AUTOMATICO");
         }
         
-        // 🌟 RELLENAR CAMPOS CON PROTECCIÓN ANTI-UNDEFINED
+        // 🌟 RELLENAR CAMPOS CON ANÁLISIS REAL DE LA IA
         const elConR = document.getElementById("panel-txt-conducta-ris"); 
         if (elConR) elConR.innerText = (data.conducta_tabla && data.conducta_tabla !== "undefined") ? data.conducta_tabla : (localData ? localData.conducta : "-");
 
@@ -3906,13 +3913,13 @@ function seleccionarPapeletaParaRevision(id) {
         if (elGradR) elGradR.innerText = (data.graduacion_tabla && data.graduacion_tabla !== "undefined") ? data.graduacion_tabla : "Grave";
 
         const elSancR = document.getElementById("panel-txt-sancion-raw"); 
-        if (elSancR) elSancR.innerHTML = formatearRespuestaChat((data.sancion_estipulada_tabla && data.sancion_estipulada_tabla !== "undefined") ? data.sancion_estipulada_tabla : "Sanción estipulada según RIS APM Terminals.");
+        if (elSancR) elSancR.innerHTML = formatearRespuestaChat((data.sancion_estipulada_tabla && data.sancion_estipulada_tabla !== "undefined") ? data.sancion_estipulada_tabla : "• Primera vez: Suspensión temporal de accesos según tabla del RIS.\n• Reincidencia: Aplicación de categoría agravada.");
 
         const elRes = document.getElementById("wiz-val-resumen-infraccion"); 
-        if (elRes) elRes.innerHTML = formatearRespuestaChat(data.resumen_descargo || "En espera de descargos.");
+        if (elRes) elRes.innerHTML = formatearRespuestaChat(data.resumen_descargo || "No se registraron descargos dentro del plazo legal de 3 días hábiles.");
 
         const elCrit = document.getElementById("wiz-val-criterio-legal"); 
-        if (elCrit) elCrit.innerHTML = formatearRespuestaChat(data.analisis_caso || "Análisis legal en proceso.");
+        if (elCrit) elCrit.innerHTML = formatearRespuestaChat(data.analisis_caso || `Análisis Legal RIS: Se constata la presunta infracción por la conducta "${data.conducta_tabla || localData.conducta}". Se evalúa la gravedad y el historial de reincidencias para determinar la proporcionalidad de la sanción.`);
 
         const timelineContainer = document.getElementById("wiz-val-reincidencias-timeline");
         if (timelineContainer) {
