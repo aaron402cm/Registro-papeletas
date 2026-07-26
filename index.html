@@ -783,75 +783,70 @@
         }
 
     // --- INICIO DE SESIÓN INDIVIDUAL SEGURO (CORREGIDO) ---
-        function verificarPassword() {
-            const userInput = document.getElementById("app-username").value.trim().toUpperCase();
-            const passInput = document.getElementById("app-password").value.trim();
-            const loginError = document.getElementById("login-error");
-            const loginBtn = document.getElementById("login-btn");
-            
-            if (!userInput || !passInput) {
-                alert("Por favor, ingrese sus Iniciales y Contraseña.");
-                return;
-            }
+function verificarPassword() {
+    const userInput = document.getElementById("app-username").value.trim().toUpperCase();
+    const passInput = document.getElementById("app-password").value.trim();
+    const loginError = document.getElementById("login-error");
+    const loginBtn = document.getElementById("login-btn");
+    
+    if (!userInput || !passInput) {
+        alert("Por favor, ingrese sus Iniciales y Contraseña.");
+        return;
+    }
 
-            // Ocultar error previo si existiera
-            loginError.style.display = "none";
+    loginError.style.display = "none";
+    loginBtn.disabled = true;
+    loginBtn.innerText = "⏳ Verificando... Espere por favor";
+    loginBtn.style.backgroundColor = "#6c757d";
 
-            // Cambiar estado del botón a "Verificando..." y desactivarlo temporalmente
-            loginBtn.disabled = true;
-            loginBtn.innerText = "⏳ Verificando... Espere por favor";
-            loginBtn.style.backgroundColor = "#6c757d"; // Color gris de espera
+    sessionStorage.setItem("secure_user_initials", userInput);
+    sessionStorage.setItem("secure_auth_plain", passInput);
 
-            // Guardar temporalmente en la sesión activa del navegador
-            sessionStorage.setItem("secure_user_initials", userInput);
-            sessionStorage.setItem("secure_auth_plain", passInput);
-
-            // Validar de forma cifrada por HTTPS con el servidor de Google
-            fetch(`${CONFIG_WEB_APP_URL}?user=${encodeURIComponent(userInput)}&auth=${encodeURIComponent(passInput)}`)
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error("El servidor respondió con código de error " + res.status);
-                }
-                return res.json();
-            })
-            .then(data => {
-                if (data.error) {
-                    // Acceso denegado
-                    loginError.style.display = "block";
-                    sessionStorage.removeItem("secure_user_initials");
-                    sessionStorage.removeItem("secure_auth_plain");
-                    
-                    // Restaurar el botón para intentar de nuevo
-                    loginBtn.disabled = false;
-                    loginBtn.innerText = "Ingresar";
-                    loginBtn.style.backgroundColor = "var(--primary)";
-                } else {
-                    // Acceso aprobado de manera segura
-                    document.getElementById("login-screen").style.display = "none";
-                    document.getElementById("main-app").style.display = "block";
-                    
-                    databaseCache = data;
-                    renderizarDatosSincronizados(data);
-
-                    // Dejar el botón listo por si llegaran a cerrar sesión posteriormente
-                    loginBtn.disabled = false;
-                    loginBtn.innerText = "Ingresar";
-                    loginBtn.style.backgroundColor = "var(--primary)";
-                }
-            })
-            .catch(err => {
-                alert("Error de validación o conexión con el servidor:\n\n" + err.message + "\n\nSugerencia: Asegúrese de publicar la nueva versión en Apps Script como 'Cualquiera' (Anyone) para aplicar la optimización.");
-                
-                // Corrección de sintaxis de limpieza
-                sessionStorage.removeItem("secure_user_initials");
-                sessionStorage.removeItem("secure_auth_plain");
-                
-                // Restaurar el botón en caso de error de red o de servidor
-                loginBtn.disabled = false;
-                loginBtn.innerText = "Ingresar";
-                loginBtn.style.backgroundColor = "var(--primary)";
-            });
+    fetch(`${CONFIG_WEB_APP_URL}?user=${encodeURIComponent(userInput)}&auth=${encodeURIComponent(passInput)}`)
+    .then(res => {
+        if (!res.ok) {
+            throw new Error("El servidor respondió con código " + res.status);
         }
+        return res.json();
+    })
+    .then(data => {
+        // Evaluar si las credenciales fueron rechazadas
+        if (data.error || data.status === "error" || data.result === "error") {
+            loginError.style.display = "block";
+            loginError.innerText = data.message || data.error || "Credenciales incorrectas";
+            
+            sessionStorage.removeItem("secure_user_initials");
+            sessionStorage.removeItem("secure_auth_plain");
+            
+            loginBtn.disabled = false;
+            loginBtn.innerText = "Ingresar";
+            loginBtn.style.backgroundColor = "var(--primary)";
+        } else {
+            // Acceso concedido
+            document.getElementById("login-screen").style.display = "none";
+            document.getElementById("main-app").style.display = "block";
+            
+            databaseCache = data;
+            renderizarDatosSincronizados(data);
+
+            loginBtn.disabled = false;
+            loginBtn.innerText = "Ingresar";
+            loginBtn.style.backgroundColor = "var(--primary)";
+        }
+    })
+    .catch(err => {
+        loginError.style.display = "block";
+        loginError.innerText = "Error de conexión con el servidor";
+        alert("Error de conexión:\n" + err.message + "\n\nAsegúrese de desplegar una 'Nueva versión' en Apps Script.");
+        
+        sessionStorage.removeItem("secure_user_initials");
+        sessionStorage.removeItem("secure_auth_plain");
+        
+        loginBtn.disabled = false;
+        loginBtn.innerText = "Ingresar";
+        loginBtn.style.backgroundColor = "var(--primary)";
+    });
+}
 
         // --- INICIALIZACIÓN Y COLA OFFLINE ---
         window.addEventListener("load", function() {
