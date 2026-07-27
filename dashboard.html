@@ -4506,6 +4506,79 @@ function renderizarModalRevisionDatos(id, localData, data) {
                 }
             }
         }
+        // 🌟 1. GUARDADO AUTOMÁTICO DEL INTERRUPTOR "AUTOMATIZADO (IA)"
+function cambiarModoTramiteServidor() {
+    if (!activePapeletaId) return;
+
+    const switchEl = document.getElementById("toggle-automode-switch");
+    if (!switchEl) return;
+
+    const esAuto = switchEl.checked;
+    const nuevoModo = esAuto ? "AUTOMATICO" : "MANUAL";
+
+    // A) Actualizar de inmediato la memoria RAM local del Dashboard
+    if (globalDashboardCache && globalDashboardCache.dashboardData && globalDashboardCache.dashboardData.papeletas) {
+        const papeleta = globalDashboardCache.dashboardData.papeletas.find(p => String(p.id_papeleta) === String(activePapeletaId));
+        if (papeleta) {
+            papeleta.modo_tramite = nuevoModo;
+            papeleta.modo = nuevoModo;
+            evaluarVisibilidadBotonEnviar(papeleta); // Oculta o muestra el botón de envío
+        }
+    }
+
+    // B) Refrescar los íconos de la tabla (Robot 🤖 o Mano ✍️) y contadores
+    filtrarYRenderizarTabla();
+    if (globalDashboardCache && globalDashboardCache.dashboardData) {
+        calcularFiltrosEtapa(globalDashboardCache.dashboardData.papeletas);
+    }
+
+    // C) Guardar el cambio permanentemente en la Columna M de Google Sheets
+    const user = sessionStorage.getItem("secure_user_initials");
+    const auth = sessionStorage.getItem("secure_auth_plain");
+    const url = `${CONFIG_WEB_APP_URL}?action=toggle_modo_tramite&id=${encodeURIComponent(activePapeletaId)}&modo=${encodeURIComponent(nuevoModo)}&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`;
+
+    fetch(url)
+    .then(res => res.json())
+    .then(data => {
+        console.log(`✅ Modo cambiado a ${nuevoModo} para la papeleta ${activePapeletaId}`);
+    })
+    .catch(err => {
+        console.error("Error al guardar modo en servidor:", err);
+    });
+}
+
+// 🌟 2. CIERRE DE VENTANAS CON LA TECLA ESC (ESCAPE)
+window.addEventListener("keydown", function(event) {
+    if (event.key === "Escape" || event.key === "Esc") {
+        // Cierra la ventana emergente de la IA si está abierta
+        const instruccionModal = document.getElementById("modal-instruccion-expediente");
+        if (instruccionModal && instruccionModal.style.display === "flex") {
+            cerrarModalInstruccion();
+            return;
+        }
+
+        // Cierra el visor de PDF si está abierto
+        const pdfModal = document.getElementById("pdf-visor-modal");
+        if (pdfModal && pdfModal.style.display === "flex") {
+            cerrarVisorPDF();
+            return;
+        }
+
+        // Cierra el modal del informe semanal si está abierto
+        const semanalModal = document.getElementById("modal-informe-semanal-ia");
+        if (semanalModal && semanalModal.style.display === "flex") {
+            cerrarModalInformeSemanal();
+            return;
+        }
+
+        // Cierra el modal de edición de reglas RIS
+        const reglaModal = document.getElementById("modal-edicion-regla");
+        if (reglaModal && reglaModal.style.display === "flex") {
+            cerrarModalEdicionRegla();
+            return;
+        }
+    }
+});
     </script>
 </body>
 </html>
