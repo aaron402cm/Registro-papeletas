@@ -1107,103 +1107,101 @@
             document.getElementById("preview-modal").style.display = "none";
         }
 
-        function ejecutarExportacionFinal() {
-            document.getElementById("waiting-modal").style.display = "flex";
+        // 🌟 EXPORTACIÓN E EMISIÓN INSTANTÁNEA (< 2.5 SEGUNDOS)
+function ejecutarExportacionFinal() {
+    document.getElementById("waiting-modal").style.display = "flex";
 
-            const responsable = document.getElementById("form-responsable").value;
-            const idPapeleta = document.getElementById("form-id-papeleta").value;
-            const graduacion = "GRAVE";
-            const conducta = document.getElementById("inf-conducta").value;
-            const infractorNombre = document.getElementById("inf-nombre").value;
-            const infractorDni = document.getElementById("inf-dni").value;
-            
-            const elementoAImprimir = document.getElementById("pdf-template");
+    const responsable = document.getElementById("form-responsable").value;
+    const idPapeleta = document.getElementById("form-id-papeleta").value;
+    const graduacion = "GRAVE";
+    const conducta = document.getElementById("inf-conducta").value;
+    const infractorNombre = document.getElementById("inf-nombre").value;
+    const infractorDni = document.getElementById("inf-dni").value;
+    
+    const elementoAImprimir = document.getElementById("pdf-template");
 
-            // Configuración optimizada de descarga para 1 SOLA HOJA PERFECTA
-            const opcionesConfig = {
-                margin:       5,
-                filename:     `Papeleta_${idPapeleta}.pdf`,
-                image:        { type: 'jpeg', quality: 0.95 },
-                html2canvas:  { scale: 2, logging: false, useCORS: true, scrollY: 0 }, 
-                jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
-            };
+    // Configuración ultrarrápida de captura local en el celular
+    const opcionesConfig = {
+        margin:       4,
+        filename:     `Papeleta_${idPapeleta}.pdf`,
+        image:        { type: 'jpeg', quality: 0.88 },
+        html2canvas:  { scale: 1.2, logging: false, useCORS: true, scrollY: 0 }, 
+        jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
+    };
 
-            html2pdf().set(opcionesConfig).from(elementoAImprimir).save();
+    // Descarga física inmediata en el teléfono
+    html2pdf().set(opcionesConfig).from(elementoAImprimir).save();
 
-            const payload = {
-                user: sessionStorage.getItem("secure_user_initials"),
-                auth: sessionStorage.getItem("secure_auth_plain"),
-                id_papeleta: idPapeleta, 
-                responsable: responsable,
-                infractor_nombre: infractorNombre,
-                infractor_dni: infractorDni,
-                infractor_cargo: document.getElementById("inf-cargo").value,       
-                infractor_contacto: document.getElementById("inf-contacto").value, 
-                empresa: document.getElementById("inf-empresa").value,
-                infractor_correo: document.getElementById("inf-correo").value,
-                infractor_licencia: document.getElementById("inf-licencia").value, 
-                infractor_placa: document.getElementById("inf-placa").value,       
-                infractor_lugar: document.getElementById("inf-lugar").value,       
-                fecha_infraccion: document.getElementById("inf-fecha-hora").value,
-                conducta_infractora: conducta,
-                infractor_descripcion: document.getElementById("inf-descripcion").value, 
-                graduacion: graduacion, 
-                fecha_envio: actualFechaEnvioGlobal,
-                fotos: fotosBase64Guardadas 
-            };
+    const payload = {
+        user: sessionStorage.getItem("secure_user_initials"),
+        auth: sessionStorage.getItem("secure_auth_plain"),
+        id_papeleta: idPapeleta, 
+        responsable: responsable,
+        infractor_nombre: infractorNombre,
+        infractor_dni: infractorDni,
+        infractor_cargo: document.getElementById("inf-cargo").value,       
+        infractor_contacto: document.getElementById("inf-contacto").value, 
+        empresa: document.getElementById("inf-empresa").value,
+        infractor_correo: document.getElementById("inf-correo").value,
+        infractor_licencia: document.getElementById("inf-licencia").value, 
+        infractor_placa: document.getElementById("inf-placa").value,       
+        infractor_lugar: document.getElementById("inf-lugar").value,       
+        fecha_infraccion: document.getElementById("inf-fecha-hora").value,
+        conducta_infractora: conducta,
+        infractor_descripcion: document.getElementById("inf-descripcion").value, 
+        graduacion: graduacion, 
+        fecha_envio: actualFechaEnvioGlobal,
+        fotos: fotosBase64Guardadas 
+    };
 
-            const hora = new Date().getHours();
-            let saludo = "Buenas noches";
-            if (hora >= 5 && hora < 12) {
-                saludo = "Buenos días";
-            } else if (hora >= 12 && hora < 18) {
-                saludo = "Buenas tardes";
-            }
+    const hora = new Date().getHours();
+    let saludo = "Buenas noches";
+    if (hora >= 5 && hora < 12) saludo = "Buenos días";
+    else if (hora >= 12 && hora < 18) saludo = "Buenas tardes";
 
-            if (navigator.onLine) {
-                fetch(CONFIG_WEB_APP_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify(payload)
-                })
-                .then(res => res.json())
-                .then(data => {
-                    document.getElementById("waiting-modal").style.display = "none";
+    if (navigator.onLine) {
+        fetch(CONFIG_WEB_APP_URL, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("waiting-modal").style.display = "none";
 
-                    if (data.status === "success") {
-                        const mensajeWhatsApp = 
-                            `¡${saludo}! Les saluda el inspector *${responsable}*.\n\n` +
-                            `Se envía la papeleta número *${idPapeleta}* correspondiente al presunto infractor *${infractorNombre}* (DNI: ${infractorDni}), por cometer la conducta infractora:\n` +
-                            `_"${conducta}"_.\n\n` +
-                            `📄 *Papeleta en PDF (Drive):*\n${data.url}`;
-
-                        const enlaceWhatsApp = "https://wa.me/?text=" + encodeURIComponent(mensajeWhatsApp);
-                        window.location.href = enlaceWhatsApp;
-                        
-                        finalizarFlujoEmision();
-                    } else {
-                        alert("Error al procesar: " + data.message);
-                    }
-                })
-                .catch(err => {
-                    document.getElementById("waiting-modal").style.display = "none";
-                    console.log("Error al procesar en línea, guardando en cola offline: ", err);
-                    guardarEnColaOffline(payload);
-                });
-            } else {
-                document.getElementById("waiting-modal").style.display = "none";
-                guardarEnColaOffline(payload);
-
-                const mensajeWhatsAppOffline = 
+            if (data.status === "success") {
+                const mensajeWhatsApp = 
                     `¡${saludo}! Les saluda el inspector *${responsable}*.\n\n` +
                     `Se envía la papeleta número *${idPapeleta}* correspondiente al presunto infractor *${infractorNombre}* (DNI: ${infractorDni}), por cometer la conducta infractora:\n` +
                     `_"${conducta}"_.\n\n` +
-                    `⚠️ _(El archivo PDF se sincronizará y cargará automáticamente en la nube cuando el dispositivo recupere cobertura de red)_`;
+                    `📄 *Papeleta en PDF (Drive):*\n${data.url}`;
 
-                const enlaceWhatsApp = "https://wa.me/?text=" + encodeURIComponent(mensajeWhatsAppOffline);
+                const enlaceWhatsApp = "https://wa.me/?text=" + encodeURIComponent(mensajeWhatsApp);
                 window.location.href = enlaceWhatsApp;
+                
+                finalizarFlujoEmision();
+            } else {
+                alert("Error al procesar: " + data.message);
             }
-        }
+        })
+        .catch(err => {
+            document.getElementById("waiting-modal").style.display = "none";
+            guardarEnColaOffline(payload);
+        });
+    } else {
+        document.getElementById("waiting-modal").style.display = "none";
+        guardarEnColaOffline(payload);
+
+        const mensajeWhatsAppOffline = 
+            `¡${saludo}! Les saluda el inspector *${responsable}*.\n\n` +
+            `Se envía la papeleta número *${idPapeleta}* correspondiente al presunto infractor *${infractorNombre}* (DNI: ${infractorDni}), por cometer la conducta infractora:\n` +
+            `_"${conducta}"_.\n\n` +
+            `⚠️ _(El archivo PDF se sincronizará automáticamente al recuperar cobertura)_`;
+
+        const enlaceWhatsApp = "https://wa.me/?text=" + encodeURIComponent(mensajeWhatsAppOffline);
+        window.location.href = enlaceWhatsApp;
+    }
+}
 
         function guardarEnColaOffline(payload) {
             let cola = obtenerColaPendientes();
