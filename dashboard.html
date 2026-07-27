@@ -2062,26 +2062,71 @@
             color: var(--text-color);
         }
 
-        .badge-red {
-            background-color: rgba(255, 51, 102, 0.08) !important;
-            color: #ff3366 !important;
-            border: 1px solid rgba(255, 51, 102, 0.25) !important;
-        }
-        .badge-green {
-            background-color: rgba(0, 255, 102, 0.08) !important;
-            color: #00ff66 !important;
-            border: 1px solid rgba(0, 255, 102, 0.25) !important;
-        }
-        .badge-yellow {
-            background-color: rgba(255, 183, 0, 0.08) !important;
-            color: #ffb700 !important;
-            border: 1px solid rgba(255, 183, 0, 0.25) !important;
-        }
-        .badge-blue {
-            background-color: rgba(0, 240, 255, 0.08) !important;
-            color: #00f0ff !important;
-            border: 1px solid rgba(0, 240, 255, 0.25) !important;
-        }
+        /* 🌟 ESTILOS DE INSIGNIAS Y MODO DIURNO DE ALTO CONTRASTE */
+.badge-modo-auto {
+    background-color: rgba(0, 240, 255, 0.12);
+    color: #00f0ff;
+    border: 1px solid rgba(0, 240, 255, 0.35);
+}
+.badge-modo-manual {
+    background-color: rgba(255, 183, 0, 0.12);
+    color: #ffb700;
+    border: 1px solid rgba(255, 183, 0, 0.35);
+}
+
+/* ☀️ SOBRESCRITURA EXCLUSIVA PARA MODO DIURNO (NÍTIDO Y LEGIBLE) */
+body.light-theme .badge {
+    text-shadow: none !important;
+}
+
+body.light-theme .badge-modo-auto {
+    background-color: #e0f2fe !important;
+    color: #0369a1 !important;
+    border: 1px solid #7dd3fc !important;
+    font-weight: 800 !important;
+}
+
+body.light-theme .badge-modo-manual {
+    background-color: #fef3c7 !important;
+    color: #b45309 !important;
+    border: 1px solid #fcd34d !important;
+    font-weight: 800 !important;
+}
+
+body.light-theme .badge-blue {
+    background-color: #e0f2fe !important;
+    color: #0369a1 !important;
+    border: 1px solid #7dd3fc !important;
+    font-weight: 800 !important;
+}
+
+body.light-theme .badge-green {
+    background-color: #dcfce7 !important;
+    color: #15803d !important;
+    border: 1px solid #86efac !important;
+    font-weight: 800 !important;
+}
+
+body.light-theme .badge-red {
+    background-color: #fee2e2 !important;
+    color: #b91c1c !important;
+    border: 1px solid #fca5a5 !important;
+    font-weight: 800 !important;
+}
+
+body.light-theme .badge-sancion-dias {
+    background-color: #fef3c7 !important;
+    color: #92400e !important;
+    border: 1px solid #fcd34d !important;
+    font-weight: 800 !important;
+}
+
+body.light-theme .badge-sancion-amonesta {
+    background-color: #e0f2fe !important;
+    color: #0284c7 !important;
+    border: 1px solid #7dd3fc !important;
+    font-weight: 800 !important;
+}
 
         .btn-pdf-view {
             background-color: rgba(30, 41, 59, 0.65) !important;
@@ -3674,13 +3719,13 @@
                     `;
                 }
 
-                let modoBadge = "";
-                const modoClean = String(p.modo_tramite || "MANUAL").trim().toUpperCase();
-                if (modoClean === "AUTOMATICO") {
-                    modoBadge = `<span class="badge" style="background-color: rgba(0, 240, 255, 0.1); color: #00f0ff; border: 1px solid rgba(0, 240, 255, 0.3);" title="Trámite Automático por IA">🤖 Automático</span>`;
-                } else {
-                    modoBadge = `<span class="badge" style="background-color: rgba(255, 183, 0, 0.1); color: #ffb700; border: 1px solid rgba(255, 183, 0, 0.3);" title="Revisión y Firma Manual">✍️ Manual</span>`;
-                }
+let modoBadge = "";
+const modoClean = String(p.modo_tramite || "MANUAL").trim().toUpperCase();
+if (modoClean === "AUTOMATICO") {
+    modoBadge = `<span class="badge badge-modo-auto" title="Trámite Automático por IA">🤖 Automático</span>`;
+} else {
+    modoBadge = `<span class="badge badge-modo-manual" title="Revisión y Firma Manual">✍️ Manual</span>`;
+}
 
                 let badgeSancionSugerida = "";
                 try {
