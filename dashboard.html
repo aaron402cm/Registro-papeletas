@@ -1449,16 +1449,27 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             overflow: hidden;
         }
-        .pdf-modal-header {
-            background-color: #dde6f0;
-            color: white;
-            border-bottom: 1px solid var(--border-color);
-            padding: 15px 20px;
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        /* --- ENCABEZADO DEL VISOR MODAL DE PDF --- */
+.pdf-modal-header {
+    background-color: #00152b !important;
+    color: #00f0ff !important;
+    border-bottom: 2px solid var(--apm-orange) !important;
+    padding: 15px 20px;
+    font-weight: bold;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pdf-modal-header span:last-child {
+    color: #ffffff;
+    transition: color 0.2s ease;
+}
+
+.pdf-modal-header span:last-child:hover {
+    color: var(--apm-orange);
+}
         .pdf-modal-body {
             flex: 1;
             position: relative;
