@@ -657,83 +657,116 @@
             <div class="preview-scroll-area">
                 <div id="preview-pdf-content" style="background: white; padding: 5px;">
                     
-                    <div id="pdf-template">
-                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000000; padding-bottom: 6px; margin-bottom: 10px;">
-                            <svg viewBox="0 0 420 85" style="width: 165px; height: auto; display: block;">
-                                <g transform="translate(10, 5)">
-                                    <polygon points="35,8 85,8 65,22 15,22" fill="#E05B1B" />
-                                    <polygon points="5,28 115,28 95,42 -15,42" fill="#E05B1B" />
-                                </g>
-                                <text x="125" y="28" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="18" fill="#E05B1B">Lifting Global Trade</text>
-                                <text x="125" y="68" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="34" fill="#002244" letter-spacing="0.5">APM TERMINALS</text>
-                            </svg>
-                            <div style="text-align: right; font-weight: bold; font-size: 11px; line-height: 1.25;">
-                                APM TERMINALS / Lifting Global Trade<br>
-                                <span style="color:red; font-size:13px;" id="pdf-txt-id-papeleta"></span>
-                            </div>
-                        </div>
-
-                        <div class="pdf-header" style="margin-top: 5px;">PAPELETA DE CARGOS No. <span id="pdf-txt-num-papeleta"></span></div>
+                    <div class="preview-scroll-area">
+                <div id="preview-pdf-content" style="background: white; padding: 5px;">
+                    
+                    <!-- PLANTILLA OFICIAL EXECUTIVE 1 HOJA -->
+                    <div id="pdf-template" style="width: 680px; padding: 12px 18px; background: white; color: #1E293B; font-family: 'Segoe UI', Arial, sans-serif; font-size: 11px; box-sizing: border-box; margin: 0 auto;">
                         
-                        <div class="section-title">DATOS DEL PRESUNTO INFRACTOR</div>
-                        <table class="pdf-table">
-                            <tr>
-                                <td style="width:50%;"><strong>NOMBRES Y APELLIDOS:</strong><br><span id="pdf-txt-nombre"></span></td>
-                                <td style="width:50%;"><strong>DNI/C.E/PASAPORTE:</strong><br><span id="pdf-txt-dni"></span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>CARGO:</strong><br><span id="pdf-txt-cargo"></span></td>
-                                <td><strong>NUMERO DE CONTACTO:</strong><br><span id="pdf-txt-contacto"></span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>EMPRESA/RAZÓN SOCIAL:</strong><br><span id="pdf-txt-empresa"></span></td>
-                                <td><strong>CORREO ELECTRÓNICO:</strong><br><span id="pdf-txt-correo"></span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>N° LICENCIA DE CONDUCIR:</strong><br><span id="pdf-txt-licencia"></span></td>
-                                <td><strong>PLACA DE VEHÍCULO:</strong><br><span id="pdf-txt-placa"></span></td>
-                            </tr>
-                        </table>
+                        <!-- BARRA DE ACENTO -->
+                        <div style="height: 4px; background: linear-gradient(90deg, #002244 0%, #E05B1B 100%); width: 100%; margin-bottom: 8px;"></div>
 
-                        <div class="section-title">CONDUCTA INFRACTORA DETECTADA</div>
-                        <table class="pdf-table">
-                            <tr>
-                                <td style="width:50%;"><strong>LUGAR / ZONA DE LA INFRACCIÓN:</strong><br><span id="pdf-txt-lugar"></span></td>
-                                <td style="width:50%;"><strong>FECHA Y HORA DE LA INFRACCIÓN:</strong><br><span id="pdf-txt-fecha-hora"></span></td>
-                            </tr>
-                        </table>
-
-                        <div class="section-title">DESCRIPCIÓN DEL ACTO U OMISIÓN REALIZADO POR EL PRESUNTO INFRACTOR</div>
-                        <div class="descripcion-flexible-contenedor" style="border:1px solid #000000; padding:6px; font-size:10px; line-height: 1.35;" id="pdf-txt-descripcion"></div>
-
-                        <div class="section-title">MEDIOS PROBATORIOS (FOTOS, FILMACIONES, DOCUMENTOS U OTRAS EVIDENCIAS)</div>
-                        <div style="border:1px solid #000000; padding:6px; min-height:45px; margin-bottom:8px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;" id="pdf-txt-evidencias"></div>
-
-                        <div class="pdf-bloque-protegido">
-                            <div class="section-title">PRESUNTA INFRACION (De acuerdo con la tabla del RIS)</div>
-                            <p style="margin: 2px 0;"><strong>Área de la Infracción:</strong> Seguridad y Accesos</p>
-                            <p style="margin: 2px 0;"><strong>Tipo de Conducta Infractora:</strong> <span id="pdf-txt-conducta"></span></p>
-                            <p style="margin: 2px 0;"><strong>Graduación:</strong> <span id="pdf-txt-graduacion" style="font-weight:bold;"></span></p>
-                            <p style="margin: 4px 0 1px 0;"><strong>Posible Sanción:</strong></p>
-                            <div id="pdf-txt-sancion-bloque" style="border: 1px dashed #000000; padding: 6px; font-size: 10px; margin-bottom: 8px; background: #fafafa; line-height: 1.35; color: #000000 !important;"></div>
-
-                            <table class="pdf-table" style="margin-top:10px;">
-                                <tr>
-                                    <th style="width:50%;">RESPONSABLE COMPETENTE</th>
-                                    <th style="width:50%;">ÓRGANO DE INSTRUCCIÓN</th>
-                                </tr>
-                                <tr>
-                                    <td>DEPARTAMENTO DE PROTECCION<br><br><strong>Emitido:</strong> Electrónicamente</td>
-                                    <td><strong>FECHA Y HORA DE EMISIÓN:</strong><br><span id="pdf-txt-fecha-envio"></span></td>
-                                </tr>
-                            </table>
-
-                            <div style="margin-top: 10px; font-size: 9.5px; text-align: justify; line-height: 1.3; border-top: 1px solid #000000; padding-top: 6px; color: #000000 !important;">
-                                En virtud de lo señalado, se le otorga un plazo máximo de tres (3) días hábiles luego de recibida la presente notificación, a efectos de que presente sus descargos/información que considere pertinente.<br>
-                                <strong>Base legal:</strong> Reglamento de Infracciones y Sanciones del Terminal Norte Multipropósito del Terminal Portuario del Callao aprobado por Resolución de Gerencia General Nº 0013-2024-APN-GG.
+                        <!-- CABECERA -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <div>
+                                <div style="font-size: 20px; font-weight: 900; color: #002244; line-height: 1;">APM TERMINALS</div>
+                                <div style="font-size: 9px; font-weight: bold; color: #E05B1B; text-transform: uppercase; margin-top: 2px;">Lifting Global Trade | Callao - Perú</div>
+                            </div>
+                            <div style="background-color: #002244; color: #ffffff; padding: 4px 10px; border-radius: 4px; text-align: center;">
+                                <div style="font-size: 7.5px; font-weight: bold; color: #94A3B8; text-transform: uppercase;">PAPELETA DE CARGO N°</div>
+                                <div style="font-size: 12px; font-weight: 900; color: #FF7A33;" id="pdf-txt-id-papeleta"></div>
                             </div>
                         </div>
+
+                        <div style="text-align: center; background-color: #F1F5F9; color: #002244; font-weight: 900; font-size: 12px; padding: 4px 0; margin-bottom: 8px; border-radius: 4px; border-bottom: 2px solid #E05B1B;">
+                            PAPELETA DE NOTIFICACIÓN DE INFRACCIÓN NO. <span id="pdf-txt-num-papeleta"></span>
+                        </div>
+
+                        <!-- SECCIÓN 1: INFRACTOR -->
+                        <div class="section-title" style="background-color: #F0F4F8; color: #002244; font-weight: 800; font-size: 10px; text-transform: uppercase; padding: 3px 8px; border-left: 3.5px solid #E05B1B; margin-top: 6px; margin-bottom: 4px;">
+                            1. DATOS DEL PRESUNTO INFRACTOR Y CONTRATISTA
+                        </div>
+                        <table class="pdf-table" style="width: 100%; border-collapse: collapse; margin-bottom: 4px;">
+                            <tr>
+                                <td style="width:50%; border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>NOMBRES Y APELLIDOS:</strong><br><span id="pdf-txt-nombre"></span></td>
+                                <td style="width:50%; border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>DNI/C.E/PASAPORTE:</strong><br><span id="pdf-txt-dni"></span></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>CARGO / FUNCIÓN:</strong><br><span id="pdf-txt-cargo"></span></td>
+                                <td style="border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>TELÉFONO DE CONTACTO:</strong><br><span id="pdf-txt-contacto"></span></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>EMPRESA/RAZÓN SOCIAL:</strong><br><span id="pdf-txt-empresa"></span></td>
+                                <td style="border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>CORREO ELECTRÓNICO:</strong><br><span id="pdf-txt-correo"></span></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>LICENCIA DE CONDUCIR:</strong><br><span id="pdf-txt-licencia"></span></td>
+                                <td style="border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>PLACA DE VEHÍCULO:</strong><br><span id="pdf-txt-placa"></span></td>
+                            </tr>
+                        </table>
+
+                        <!-- SECCIÓN 2: CIRCUNSTANCIAS -->
+                        <div class="section-title" style="background-color: #F0F4F8; color: #002244; font-weight: 800; font-size: 10px; text-transform: uppercase; padding: 3px 8px; border-left: 3.5px solid #E05B1B; margin-top: 6px; margin-bottom: 4px;">
+                            2. CIRCUNSTANCIAS DE LA INFRACCIÓN DETECTADA
+                        </div>
+                        <table class="pdf-table" style="width: 100%; border-collapse: collapse; margin-bottom: 4px;">
+                            <tr>
+                                <td style="width:50%; border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>LUGAR / ZONA DE LA INFRACCIÓN:</strong><br><span id="pdf-txt-lugar"></span></td>
+                                <td style="width:50%; border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>FECHA Y HORA DEL SUCESO:</strong><br><span id="pdf-txt-fecha-hora"></span></td>
+                            </tr>
+                        </table>
+
+                        <!-- SECCIÓN 3: HECHOS -->
+                        <div class="section-title" style="background-color: #F0F4F8; color: #002244; font-weight: 800; font-size: 10px; text-transform: uppercase; padding: 3px 8px; border-left: 3.5px solid #E05B1B; margin-top: 6px; margin-bottom: 4px;">
+                            3. DESCRIPCIÓN DETALLADA DE LOS HECHOS CONSTATADOS
+                        </div>
+                        <div style="border: 1px solid #CBD5E1; background-color: #FAFAFA; border-radius: 4px; padding: 5px 8px; font-size: 10px; line-height: 1.3; margin-bottom: 4px;" id="pdf-txt-descripcion"></div>
+
+                        <!-- SECCIÓN 4: MEDIOS PROBATORIOS -->
+                        <div class="section-title" style="background-color: #F0F4F8; color: #002244; font-weight: 800; font-size: 10px; text-transform: uppercase; padding: 3px 8px; border-left: 3.5px solid #E05B1B; margin-top: 6px; margin-bottom: 4px;">
+                            4. MEDIOS PROBATORIOS Y EVIDENCIAS FOTOGRÁFICAS
+                        </div>
+                        <div style="border: 1px solid #CBD5E1; background-color: #FAFAFA; border-radius: 4px; padding: 4px; min-height: 35px; margin-bottom: 4px; display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;" id="pdf-txt-evidencias"></div>
+
+                        <!-- SECCIÓN 5: ENCUADRE RIS -->
+                        <div class="section-title" style="background-color: #F0F4F8; color: #002244; font-weight: 800; font-size: 10px; text-transform: uppercase; padding: 3px 8px; border-left: 3.5px solid #E05B1B; margin-top: 6px; margin-bottom: 4px;">
+                            5. ENCUADRE LEGAL RIS Y GRADUACIÓN DE LA FALTA
+                        </div>
+                        <table class="pdf-table" style="width: 100%; border-collapse: collapse; margin-bottom: 4px;">
+                            <tr>
+                                <td style="width:50%; border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>ÁREA DE LA INFRACCIÓN:</strong><br>Seguridad Operativa y Accesos</td>
+                                <td style="width:50%; border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>GRADUACIÓN:</strong><br><span id="pdf-txt-graduacion" style="font-weight:bold; color: #991B1B;"></span></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>CONDUCTA IMPUTADA:</strong><br><span id="pdf-txt-conducta"></span></td>
+                            </tr>
+                        </table>
+
+                        <div style="background-color: #FFF8F5; border: 1px solid #FFD8CC; border-left: 3.5px solid #E05B1B; border-radius: 4px; padding: 5px 8px; font-size: 9px; line-height: 1.3; margin-bottom: 6px;">
+                            <strong>ESCALA DE SANCIÓN APLICABLE CONFORME AL RIS:</strong>
+                            <div id="pdf-txt-sancion-bloque" style="margin-top: 2px;"></div>
+                        </div>
+
+                        <!-- SECCIÓN 6: ÓRGANO EMISOR (ANÓNIMO) -->
+                        <table class="pdf-table" style="width: 100%; border-collapse: collapse; margin-bottom: 4px;">
+                            <tr>
+                                <td style="width:50%; border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>ORGANISMO EMISOR:</strong><br>Departamento de Protección y Seguridad (SEC)</td>
+                                <td style="width:50%; border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>FECHA Y HORA DE EMISIÓN:</strong><br><span id="pdf-txt-fecha-envio"></span></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>MODO DE EMISIÓN:</strong><br>Sistema Electrónico Institucional APM Terminals Callao</td>
+                            </tr>
+                        </table>
+
+                        <div style="margin-top: 6px; font-size: 8.5px; color: #475569; text-align: justify; line-height: 1.25; border-top: 1px solid #E2E8F0; padding-top: 4px;">
+                            Se le otorga a la empresa contratista un plazo máximo de <strong>tres (3) días hábiles</strong> posteriores a la presente notificación para presentar sus descargos a través del correo oficial: <u>registrosapmterminals@gmail.com</u>.<br>
+                            <strong>Base legal:</strong> Reglamento de Infracciones y Sanciones (RIS) del Terminal Norte Multipropósito del Terminal Portuario del Callao aprobado por Resolución de Gerencia General Nº 0013-2024-APN-GG.
+                        </div>
+
                     </div>
+
+                </div>
+            </div>
 
                 </div>
             </div>
