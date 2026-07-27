@@ -601,17 +601,17 @@
 #modal-instruccion-expediente .modal-box {
     background: #0d1527 !important;
     border: 1px solid rgba(0, 240, 255, 0.25) !important;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 240, 255, 0.15);
+    box-shadow: 0 25px 65px rgba(0, 0, 0, 0.95), 0 0 25px rgba(0, 240, 255, 0.15);
     border-radius: 14px;
-    width: 92%;
+    width: 100%;
     max-width: 980px !important;
     height: 85vh !important;
-    max-height: 85vh !important;
+    max-height: 850px !important;
     display: flex;
     flex-direction: column;
     overflow: hidden;
     position: relative;
-    margin: 0 !important;
+    margin: auto !important;
     border-top: 4px solid var(--apm-orange) !important;
 }
 
@@ -3534,12 +3534,33 @@
 
             filtrarYRenderizarTabla();
         }
-
-        function ordenarTablaPor(columna) {
-            if (sortColumnaActual === columna) sortOrdenAscendente = !sortOrdenAscendente;
-            else { sortColumnaActual = columna; sortOrdenAscendente = true; }
-            filtrarYRenderizarTabla();
+        // 🌟 PARSEADOR UNIVERSAL DE FECHAS A MILISEGUNDOS
+function parsearFechaMs(fechaRaw) {
+    if (!fechaRaw) return 0;
+    if (fechaRaw instanceof Date) return fechaRaw.getTime();
+    let str = String(fechaRaw).trim();
+    let d = new Date(str);
+    if (!isNaN(d.getTime())) return d.getTime();
+    try {
+        let partes = str.split(" ")[0].split("/");
+        if (partes.length === 3) {
+            return new Date(parseInt(partes[2], 10), parseInt(partes[1], 10) - 1, parseInt(partes[0], 10)).getTime();
         }
+    } catch(e) {}
+    return 0;
+}
+
+let sortColumnaActual = "fecha_infraccion";
+let sortOrdenAscendente = false; // FALSE = Lo más nuevo ARRIBA por defecto
+        function ordenarTablaPor(columna) {
+    if (sortColumnaActual === columna) {
+        sortOrdenAscendente = !sortOrdenAscendente;
+    } else { 
+        sortColumnaActual = columna; 
+        sortOrdenAscendente = (columna === "infractor" || columna === "conducta" || columna === "empresa"); 
+    }
+    filtrarYRenderizarTabla();
+}
 
         function actualizarIconosOrdenado() {
             const columnas = ["id_papeleta", "infractor", "empresa", "conducta", "modo_tramite", "fecha_infraccion", "estado_semaforo"];
@@ -3551,74 +3572,83 @@
 
         // BÚSQUEDA Y FILTRADO RÁPIDO 100% EN MEMORIA RAM (CERO PETICIONES RED)
         function filtrarYRenderizarTabla() {
-            if (!globalDashboardCache || !globalDashboardCache.dashboardData || !globalDashboardCache.dashboardData.papeletas) return;
-            
-            const inputBuscador = document.getElementById("tabla-buscador-rapido");
-            const query = inputBuscador ? inputBuscador.value.trim().toLowerCase() : "";
-            
-            const selectEmpresa = document.getElementById("filtro-empresa");
-            const empresaFiltro = selectEmpresa ? selectEmpresa.value : "";
-            
-            const selectSemaforo = document.getElementById("filtro-semaforo");
-            const semaforoFiltro = selectSemaforo ? selectSemaforo.value : "";
+    if (!globalDashboardCache || !globalDashboardCache.dashboardData || !globalDashboardCache.dashboardData.papeletas) return;
+    
+    const inputBuscador = document.getElementById("tabla-buscador-rapido");
+    const query = inputBuscador ? inputBuscador.value.trim().toLowerCase() : "";
+    
+    const selectEmpresa = document.getElementById("filtro-empresa");
+    const empresaFiltro = selectEmpresa ? selectEmpresa.value : "";
+    
+    const selectSemaforo = document.getElementById("filtro-semaforo");
+    const semaforoFiltro = selectSemaforo ? selectSemaforo.value : "";
 
-            const papeletas = globalDashboardCache.dashboardData.papeletas;
-            activeFilteredPapeletas = papeletas.filter(p => {
-                const cumpleBuscador = !query || 
-                    String(p.id_papeleta).toLowerCase().includes(query) ||
-                    String(p.infractor).toLowerCase().includes(query) ||
-                    String(p.dni).toLowerCase().includes(query) ||
-                    String(p.empresa).toLowerCase().includes(query) ||
-                    String(p.conducta).toLowerCase().includes(query);
-                
-                const cumpleEmpresa = !empresaFiltro || p.empresa === empresaFiltro;
-                const cumpleSemaforo = !semaforoFiltro || p.estado_semaforo === semaforoFiltro;
+    const papeletas = globalDashboardCache.dashboardData.papeletas;
+    activeFilteredPapeletas = papeletas.filter(p => {
+        const cumpleBuscador = !query || 
+            String(p.id_papeleta).toLowerCase().includes(query) ||
+            String(p.infractor).toLowerCase().includes(query) ||
+            String(p.dni).toLowerCase().includes(query) ||
+            String(p.empresa).toLowerCase().includes(query) ||
+            String(p.conducta).toLowerCase().includes(query);
+        
+        const cumpleEmpresa = !empresaFiltro || p.empresa === empresaFiltro;
+        const cumpleSemaforo = !semaforoFiltro || p.estado_semaforo === semaforoFiltro;
 
-                let cumpleEtapa = true;
-                const est = String(p.estado_tramite || "PENDIENTE").trim().toUpperCase();
-                const semaforo = String(p.estado_semaforo || "").trim().toLowerCase();
-                const modo = String(p.modo_tramite || "MANUAL").trim().toUpperCase();
+        let cumpleEtapa = true;
+        const est = String(p.estado_tramite || "PENDIENTE").trim().toUpperCase();
+        const semaforo = String(p.estado_semaforo || "").trim().toLowerCase();
+        const modo = String(p.modo_tramite || "MANUAL").trim().toUpperCase();
 
-                if (etapaTramiteActual === "EN_PLAZO") {
-                    if (est === "DESCARGO_RECIBIDO" || est === "PLAZO_VENCIDO" || semaforo === "descargo" || semaforo === "vencido") {
-                        cumpleEtapa = false;
-                    }
-                } else if (etapaTramiteActual === "DESCARGO_RECIBIDO") {
-                    if (!(est === "DESCARGO_RECIBIDO" || semaforo === "descargo")) {
-                        cumpleEtapa = false;
-                    }
-                } else if (etapaTramiteActual === "PLAZO_VENCIDO") {
-                    if (!(est === "PLAZO_VENCIDO" || semaforo === "vencido")) {
-                        cumpleEtapa = false;
-                    }
-                } else if (etapaTramiteActual === "AUTOMATICO") {
-                    if (modo !== "AUTOMATICO") {
-                        cumpleEtapa = false;
-                    }
-                }
-                return cumpleBuscador && cumpleEmpresa && cumpleSemaforo && cumpleEtapa;
-            });
-
-            activeFilteredPapeletas.sort((a, b) => {
-                let valA = a[sortColumnaActual]; let valB = b[sortColumnaActual];
-                if (typeof valA === "string") valA = valA.toLowerCase();
-                if (typeof valB === "string") valB = valB.toLowerCase();
-                if (valA < valB) return sortOrdenAscendente ? -1 : 1;
-                if (valA > valB) return sortOrdenAscendente ? 1 : -1;
-                return 0;
-            });
-            
-            const totalBadge = document.getElementById("badge-total-papeletas");
-            if (totalBadge) {
-                if (activeFilteredPapeletas.length > 0) {
-                    totalBadge.innerText = activeFilteredPapeletas.length;
-                    totalBadge.style.display = "inline-block";
-                } else totalBadge.style.display = "none";
+        if (etapaTramiteActual === "EN_PLAZO") {
+            if (est === "DESCARGO_RECIBIDO" || est === "PLAZO_VENCIDO" || semaforo === "descargo" || semaforo === "vencido") {
+                cumpleEtapa = false;
             }
-
-            actualizarIconosOrdenado();
-            renderizarBandejaPrincipal();
+        } else if (etapaTramiteActual === "DESCARGO_RECIBIDO") {
+            if (!(est === "DESCARGO_RECIBIDO" || semaforo === "descargo")) {
+                cumpleEtapa = false;
+            }
+        } else if (etapaTramiteActual === "PLAZO_VENCIDO") {
+            if (!(est === "PLAZO_VENCIDO" || semaforo === "vencido")) {
+                cumpleEtapa = false;
+            }
+        } else if (etapaTramiteActual === "AUTOMATICO") {
+            if (modo !== "AUTOMATICO") {
+                cumpleEtapa = false;
+            }
         }
+        return cumpleBuscador && cumpleEmpresa && cumpleSemaforo && cumpleEtapa;
+    });
+
+    // 🌟 ORDENAMIENTO CRONOLÓGICO ROBUSTO (LO MÁS NUEVO ARRIBA POR DEFECTO)
+    activeFilteredPapeletas.sort((a, b) => {
+        let valA = a[sortColumnaActual]; 
+        let valB = b[sortColumnaActual];
+
+        if (sortColumnaActual === "fecha_infraccion" || sortColumnaActual === "fecha_envio") {
+            valA = parsearFechaMs(valA);
+            valB = parsearFechaMs(valB);
+        } else if (typeof valA === "string") {
+            valA = valA.toLowerCase();
+            valB = String(valB).toLowerCase();
+        }
+
+        if (valA < valB) return sortOrdenAscendente ? -1 : 1;
+        if (valA > valB) return sortOrdenAscendente ? 1 : -1;
+        return 0;
+    });
+    
+    const totalBadge = document.getElementById("badge-total-papeletas");
+    if (totalBadge) {
+        if (activeFilteredPapeletas.length > 0) {
+            totalBadge.innerText = activeFilteredPapeletas.length;
+            totalBadge.style.display = "inline-block";
+        } else totalBadge.style.display = "none";
+    }
+
+    actualizarIconosOrdenado();
+    renderizarBandejaPrincipal();
+}
 
         function cambiarVistaBandeja(modo) {
             vistaBandejaActual = modo;
