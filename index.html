@@ -10,24 +10,32 @@
     
     <style>
         :root {
-            --primary: #004b87;
-            --secondary: #007bff;
-            --success: #28a745;
-            --danger: #dc3545;
-            --warning: #ffc107;
-            --bg-color: #f8f9fa;
-            --text-color: #212529;
-            --apm-navy: #002244;
-            --apm-orange: #E05B1B;
+            --primary: #002244;
+            --secondary: #00f0ff;
+            --success: #00C853;
+            --danger: #ff0055;
+            --warning: #ffb700;
+            --bg-color: #000c18;
+            --card-bg: rgba(0, 20, 42, 0.75);
+            --border-color: rgba(0, 240, 255, 0.22);
+            --input-bg: rgba(0, 12, 24, 0.85);
+            --text-color: #f1f8ff;
+            --text-muted: #94a3b8;
+            --apm-navy: #00152b;
+            --apm-orange: #ff5500;
         }
 
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', -apple-system, Roboto, sans-serif;
             background-color: var(--bg-color);
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.015) 1px, transparent 1px);
+            background-size: 30px 30px;
             color: var(--text-color);
             margin: 0;
             padding: 0;
-            font-size: 18px;
+            font-size: 16px;
         }
 
         /* 🌟 LOGIN LIQUID GLASS - APM TERMINALS EXECUTIVE */
@@ -81,7 +89,6 @@
             outline: none;
         }
 
-        /* 🌟 ANIMACIÓN DE 3 PUNTOS JUMPING DOTS FOR BUTTON */
         .dots-loader {
             display: inline-flex;
             align-items: center;
@@ -110,18 +117,22 @@
         /* Contenedor Principal */
         #main-app {
             display: none;
-            padding-bottom: 80px;
+            padding-bottom: 95px;
         }
 
-        /* Barra de navegación inferior fija */
+        /* Barra de navegación inferior - ISLA FLOTANTE TÁCTICA */
         .navbar {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 70px;
-            background: white;
-            box-shadow: 0 -3px 10px rgba(0,0,0,0.1);
+            bottom: 12px;
+            left: 12px;
+            right: 12px;
+            height: 65px;
+            background: rgba(0, 20, 42, 0.88);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(0, 240, 255, 0.25);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
             display: flex;
             justify-content: space-around;
             align-items: center;
@@ -131,30 +142,31 @@
         .nav-btn {
             background: none;
             border: none;
-            font-size: 15px;
-            font-weight: bold;
-            color: #6c757d;
+            font-size: 13px;
+            font-weight: 700;
+            color: #64748b;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: transform 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.35), color 0.25s ease;
+            transition: all 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.35);
         }
 
         .nav-btn.active {
             color: var(--apm-orange) !important;
-            transform: scale(1.15) translateY(-5px);
+            transform: scale(1.15) translateY(-4px);
+            text-shadow: 0 0 8px rgba(255, 85, 0, 0.4);
         }
 
         .nav-btn span {
-            font-size: 24px;
+            font-size: 22px;
             margin-bottom: 2px;
         }
 
         /* Vistas/Pestañas */
         .view-section {
             display: none;
-            padding: 20px;
+            padding: 15px;
             max-width: 600px;
             margin: 0 auto;
         }
@@ -164,59 +176,113 @@
         }
 
         h2 {
-            color: var(--primary);
-            border-bottom: 3px solid var(--primary);
+            color: #ffffff;
+            border-bottom: 2px solid var(--apm-orange);
             padding-bottom: 8px;
-            font-size: 24px;
+            font-size: 22px;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
         }
 
-        /* Tarjetas y Formularios */
+        /* Tarjetas de Cristal Traslúcido */
         .card {
-            background: white;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0, 240, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 14px;
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
             margin-bottom: 20px;
+        }
+
+        .card h3 {
+            color: #ffffff;
+            font-size: 16px;
+            margin-top: 0;
+            margin-bottom: 16px;
+            padding-left: 10px;
+            border-left: 4px solid var(--apm-orange);
+            letter-spacing: 0.5px;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             position: relative;
         }
 
         label {
             display: block;
-            font-weight: bold;
-            margin-bottom: 8px;
-            color: #333;
+            font-weight: 700;
+            font-size: 13.5px;
+            margin-bottom: 7px;
+            color: var(--text-muted);
+            letter-spacing: 0.4px;
         }
 
         input, select, textarea {
             width: 100%;
-            padding: 14px;
-            font-size: 18px;
-            border: 2px solid #ced4da;
-            border-radius: 8px;
+            padding: 13px 15px;
+            font-size: 16px;
+            border: 1px solid rgba(0, 240, 255, 0.25);
+            border-radius: 10px;
             box-sizing: border-box;
-            background-color: #fff;
+            background-color: var(--input-bg);
+            color: #ffffff;
+            font-family: inherit;
+            transition: all 0.25s ease;
         }
 
         input:focus, select:focus, textarea:focus {
-            border-color: var(--secondary);
+            border-color: var(--apm-orange);
+            box-shadow: 0 0 12px rgba(255, 85, 0, 0.45);
             outline: none;
+            background-color: rgba(0, 8, 16, 0.95);
         }
 
+        /* 🌟 PLACAS DIGITALES NEÓN PARA N° DE PAPELETA E ID CALCULADO */
+        #form-num-papeleta {
+            background: rgba(0, 34, 68, 0.6) !important;
+            border: 1px solid rgba(0, 240, 255, 0.4) !important;
+            color: #00f0ff !important;
+            font-family: monospace, 'Courier New';
+            font-size: 20px !important;
+            font-weight: 900 !important;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        #form-id-papeleta {
+            background: rgba(40, 10, 10, 0.6) !important;
+            border: 1px solid rgba(255, 85, 0, 0.5) !important;
+            color: #ff5500 !important;
+            font-family: monospace, 'Courier New';
+            font-size: 19px !important;
+            font-weight: 900 !important;
+            letter-spacing: 1.5px;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(255, 85, 0, 0.5);
+        }
+
+        /* Botón de Emisión Táctico */
         .btn-block {
             width: 100%;
-            background-color: var(--success);
-            color: white;
+            background: linear-gradient(135deg, #ff5500, #E05B1B);
+            color: #ffffff;
             border: none;
-            padding: 18px;
-            font-size: 20px;
-            font-weight: bold;
-            border-radius: 8px;
+            padding: 16px;
+            font-size: 17px;
+            font-weight: 800;
+            border-radius: 12px;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 6px 20px rgba(255, 85, 0, 0.35);
+            transition: all 0.25s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-block:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 10px rgba(255, 85, 0, 0.2);
         }
 
         /* Modales */
@@ -224,23 +290,25 @@
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 8, 16, 0.92);
             z-index: 2000;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 15px;
             box-sizing: border-box;
+            backdrop-filter: blur(8px);
         }
         
         .cropper-container-box, .preview-container-box {
             width: 100%;
             max-width: 760px;
-            background: white;
-            border-radius: 12px;
+            background: #0d1527;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
             padding: 20px;
             box-sizing: border-box;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
             display: flex;
             flex-direction: column;
             max-height: 95vh;
@@ -249,19 +317,21 @@
         .cropper-wrapper {
             width: 100%;
             height: 300px;
-            background-color: #333;
+            background-color: #000c18;
             margin-bottom: 15px;
+            border-radius: 8px;
             overflow: hidden;
+            border: 1px solid var(--border-color);
         }
 
         .preview-scroll-area {
             overflow-y: auto;
             flex: 1;
-            border: 1px solid #ccc;
-            background: #475569;
+            border: 1px solid var(--border-color);
+            background: #1e293b;
             padding: 10px;
             margin-bottom: 15px;
-            border-radius: 6px;
+            border-radius: 8px;
         }
 
         .cropper-actions, .preview-actions {
@@ -270,10 +340,10 @@
         }
 
         /* Historial y Tablas */
-        .table-responsive { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; background: white; font-size: 16px; }
-        th, td { padding: 12px; border: 1px solid #dee2e6; text-align: left; }
-        th { background-color: var(--primary); color: white; }
+        .table-responsive { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border-color); }
+        table { width: 100%; border-collapse: collapse; background: rgba(0, 12, 24, 0.8); font-size: 14px; }
+        th, td { padding: 12px; border-bottom: 1px solid rgba(0, 240, 255, 0.12); text-align: left; color: #f1f8ff; }
+        th { background-color: #00152b; color: #00f0ff; font-weight: 800; font-size: 12px; text-transform: uppercase; }
 
         .suggestions-box {
             display: none;
@@ -281,10 +351,10 @@
             top: 100%;
             left: 0;
             width: 100%;
-            background: white;
-            border: 1px solid #ced4da;
+            background: #00152b;
+            border: 1px solid var(--secondary);
             border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
             z-index: 1000;
             max-height: 200px;
             overflow-y: auto;
@@ -293,18 +363,20 @@
         .suggestion-item {
             padding: 12px;
             cursor: pointer;
-            border-bottom: 1px solid #eee;
-            font-size: 16px;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+            font-size: 14px;
+            color: #ffffff;
         }
 
         .suggestion-item:hover {
-            background-color: #f1f1f1;
+            background-color: rgba(0, 240, 255, 0.15);
+            color: #00f0ff;
         }
 
         .alert-reincidence {
-            background-color: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeeba;
+            background-color: rgba(255, 183, 0, 0.15);
+            color: #ffb700;
+            border: 1px solid rgba(255, 183, 0, 0.3);
             padding: 12px;
             border-radius: 8px;
             margin-bottom: 15px;
@@ -315,16 +387,14 @@
         #offline-indicator {
             display: none;
             background-color: var(--warning);
-            color: #333;
+            color: #000;
             text-align: center;
             padding: 8px;
             font-weight: bold;
-            font-size: 15px;
+            font-size: 14px;
         }
 
-        /* ========================================== */
-        /* DISEÑO DE LA PLANTILLA DEL PDF EXECUTIVE   */
-        /* ========================================== */
+        /* Plantilla PDF Executive en previsualización */
         #pdf-template {
             width: 680px;
             padding: 12px 18px;
@@ -343,12 +413,7 @@
             color: #1E293B;
         }
 
-        .pdf-table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            margin-bottom: 4px; 
-        }
-        
+        .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 4px; }
         .pdf-table th, .pdf-table td { 
             border: 1px solid #CBD5E1 !important; 
             padding: 3.5px 6px !important; 
@@ -376,7 +441,7 @@
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 34, 68, 0.96);
+            background: rgba(0, 15, 30, 0.96);
             z-index: 3000;
             flex-direction: column;
             justify-content: center;
@@ -385,7 +450,7 @@
             text-align: center;
             padding: 20px;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            backdrop-filter: blur(10px);
         }
         
         .ship-container {
@@ -436,7 +501,6 @@
     <div id="login-screen">
         <div class="login-box">
             
-            <!-- LOGO OFICIAL CON RESPLANDOR -->
             <svg viewBox="0 0 420 85" style="width: 100%; max-width: 210px; height: auto; display: block; margin: 0 auto 15px auto; filter: drop-shadow(0 0 12px rgba(224, 91, 27, 0.45));">
                 <g transform="translate(10, 5)">
                     <polygon points="35,8 85,8 65,22 15,22" fill="#E05B1B" />
@@ -471,8 +535,8 @@
             ⚠️ Sincronización pendiente: <span id="pending-count">0</span> papeleta(s) guardadas sin conexión.
         </div>
 
-        <div class="app-top-header" style="background-color: #002244; padding: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border-bottom: 4px solid var(--primary); margin-bottom: 10px;">
-            <svg viewBox="0 0 420 85" style="width: 100%; max-width: 250px; height: auto; display: block; margin: 0 auto;">
+        <div class="app-top-header" style="background-color: #00152b; padding: 14px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border-bottom: 3px solid var(--apm-orange); margin-bottom: 10px;">
+            <svg viewBox="0 0 420 85" style="width: 100%; max-width: 220px; height: auto; display: block; margin: 0 auto;">
                 <g transform="translate(10, 5)">
                     <polygon points="35,8 85,8 65,22 15,22" fill="#E05B1B" />
                     <polygon points="5,28 115,28 95,42 -15,42" fill="#E05B1B" />
@@ -486,22 +550,23 @@
             <h2>📄 Emitir Papeleta</h2>
             
             <div class="card">
+                <h3>1. Oficial y Registro</h3>
                 <div class="form-group">
                     <label for="form-responsable">Oficial Responsable</label>
                     <select id="form-responsable" onchange="autoCalcularID()"></select>
                 </div>
                 <div class="form-group">
                     <label for="form-num-papeleta">N° Papeleta Siguiente</label>
-                    <input type="text" id="form-num-papeleta" readonly style="background:#e9ecef; font-weight:bold; color:var(--primary);">
+                    <input type="text" id="form-num-papeleta" readonly>
                 </div>
                 <div class="form-group">
                     <label for="form-id-papeleta">ID Documento Calculado</label>
-                    <input type="text" id="form-id-papeleta" readonly style="background:#e9ecef; font-weight:bold; color:red;">
+                    <input type="text" id="form-id-papeleta" readonly>
                 </div>
             </div>
 
             <div class="card">
-                <h3>Datos del Presunto Infractor</h3>
+                <h3>2. Datos del Presunto Infractor</h3>
                 <div class="form-group"><label>Nombres y Apellidos</label><input type="text" id="inf-nombre" oninput="actualizarDescripcionDinamica()"></div>
                 <div class="form-group">
                 <label>DNI / C.E / Pasaporte</label>
@@ -516,7 +581,7 @@
             </div>
 
             <div class="card">
-                <h3>Detalles del Suceso</h3>
+                <h3>3. Detalles del Suceso</h3>
                 <div class="form-group"><label>Lugar / Zona de Infracción</label><input type="text" id="inf-lugar" oninput="actualizarDescripcionDinamica()"></div>
                 <div class="form-group"><label>Fecha y Hora del Suceso</label><input type="datetime-local" id="inf-fecha-hora"></div>
                 
@@ -534,38 +599,38 @@
                 <div class="form-group">
                     <label>Medios Probatorios / Evidencias (Max 4 fotos recortadas)</label>
                     <input type="file" id="inf-evidencias-files" accept="image/*" style="display: none;" onchange="procesarSeleccionFoto()">
-                    <button type="button" class="btn-block" style="background-color: var(--secondary); padding: 12px; font-size: 16px; margin-bottom: 10px;" onclick="abrirSelectorDeFoto()">
+                    <button type="button" class="btn-block" style="background: rgba(0, 240, 255, 0.12); border: 1px solid var(--secondary); color: #00f0ff; padding: 13px; font-size: 15px; margin-bottom: 10px; box-shadow: none;" onclick="abrirSelectorDeFoto()">
                         📸 Agregar Foto desde Galería
                     </button>
                     <div id="galeria-previa" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;"></div>
                 </div>
             </div>
 
-            <button class="btn-block" style="background-color: var(--primary);" onclick="abrirVentanaPrevisualizacion()">🚀 GUARDAR Y EXPORTAR PDF</button>
+            <button class="btn-block" onclick="abrirVentanaPrevisualizacion()">🚀 GUARDAR Y EXPORTAR PDF</button>
         </section>
 
         <section id="view-dashboard" class="view-section" style="padding-top: 10px;">
             <h2>📊 Historial de Registros</h2>
             
             <div class="card" id="seccion-busqueda-dashboard" style="padding: 15px;">
-                <h4 style="margin-top:0; color:var(--primary);">Filtros de Búsqueda (Últimos 500 registros)</h4>
+                <h4 style="margin-top:0; color:#00f0ff;">Filtros de Búsqueda (Últimos 500 registros)</h4>
                 <div class="form-group">
-                    <label for="filtro-miembro" style="font-size:15px;">Buscar por Oficial Responsable:</label>
+                    <label for="filtro-miembro" style="font-size:14px;">Buscar por Oficial Responsable:</label>
                     <select id="filtro-miembro" onchange="filtrarHistorial()"></select>
                 </div>
                 <div class="form-group">
-                    <label for="filtro-dni" style="font-size:15px;">Buscar por DNI de Infractor:</label>
+                    <label for="filtro-dni" style="font-size:14px;">Buscar por DNI de Infractor:</label>
                     <div style="display: flex; gap: 8px;">
                         <input type="text" id="filtro-dni" placeholder="Ingrese DNI..." oninput="filtrarHistorial()" style="flex: 1;">
-                        <button type="button" onclick="ejecutarBusquedaAvanzadaDni()" style="background-color: var(--primary); color: white; border: none; padding: 10px 14px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 15px;">
+                        <button type="button" onclick="ejecutarBusquedaAvanzadaDni()" style="background-color: var(--primary); border: 1px solid var(--secondary); color: #00f0ff; padding: 10px 14px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 14px;">
                             🔍 Búsqueda Avanzada
                         </button>
                     </div>
                 </div>
                 <div id="alerta-reincidencia" class="alert-reincidence"></div>
                 
-                <div id="contenedor-avanzada-resultados" style="display: none; border-top: 2px dashed #ccc; margin-top: 15px; padding-top: 10px;">
-                    <h5 style="margin: 0 0 10px 0; color: var(--primary); font-size: 16px;">📂 Historial Completo en Servidor (Toda la base de datos)</h5>
+                <div id="contenedor-avanzada-resultados" style="display: none; border-top: 2px dashed rgba(0,240,255,0.3); margin-top: 15px; padding-top: 10px;">
+                    <h5 style="margin: 0 0 10px 0; color: #00f0ff; font-size: 15px;">📂 Historial Completo en Servidor (Toda la base de datos)</h5>
                     <div id="tabla-avanzada-area" class="table-responsive" style="max-height: 250px; overflow-y: auto;">
                         <table style="font-size: 14px;">
                             <thead style="position: sticky; top: 0; z-index: 1;">
@@ -604,35 +669,35 @@
 
         <section id="view-puesto" class="view-section" style="padding-top: 10px;">
             <h2>🏅 Tabla de Posiciones</h2>
-            <p style="font-size: 14px; color: #6c757d; margin-top: 0; text-align: center;">Ranking de Oficiales según total de papeletas emitidas históricamente.</p>
+            <p style="font-size: 14px; color: var(--text-muted); margin-top: 0; text-align: center;">Ranking de Oficiales según total de papeletas emitidas históricamente.</p>
 
             <div class="podium-container" style="display: flex; justify-content: center; align-items: flex-end; gap: 10px; margin: 30px auto 35px auto; height: 190px; max-width: 400px; box-sizing: border-box;">
                 
                 <div class="podium-step" style="display: flex; flex-direction: column; align-items: center; width: 30%;">
                     <span style="font-size: 28px; user-select: none;">🥈</span>
                     <span id="podium-2-name" style="font-size: 12px; font-weight: bold; text-align: center; margin-top: 4px; height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; color: var(--text-color);">Cargando...</span>
-                    <span id="podium-2-count" style="font-size: 12px; font-weight: bold; color: var(--primary); margin-bottom: 4px;">0</span>
-                    <div style="width: 100%; height: 60px; background-color: #d6d8db; border-top-left-radius: 8px; border-top-right-radius: 8px; display: flex; align-items: center; justify-content: center; color: #495057; font-weight: 900; font-size: 22px; box-shadow: inset 0 2px 4px rgba(255,255,255,0.4);">2</div>
+                    <span id="podium-2-count" style="font-size: 12px; font-weight: bold; color: #00f0ff; margin-bottom: 4px;">0</span>
+                    <div style="width: 100%; height: 60px; background-color: #334155; border-top-left-radius: 8px; border-top-right-radius: 8px; display: flex; align-items: center; justify-content: center; color: #f1f8ff; font-weight: 900; font-size: 22px; box-shadow: inset 0 2px 4px rgba(255,255,255,0.2);">2</div>
                 </div>
                 
                 <div class="podium-step" style="display: flex; flex-direction: column; align-items: center; width: 35%;">
                     <span style="font-size: 44px; user-select: none; animation: rockShip 2.2s infinite alternate;">🏆</span>
                     <span id="podium-1-name" style="font-size: 13px; font-weight: bold; text-align: center; margin-top: 4px; height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; color: #E05B1B;">Cargando...</span>
                     <span id="podium-1-count" style="font-size: 13px; font-weight: bold; color: #E05B1B; margin-bottom: 4px;">0</span>
-                    <div style="width: 100%; height: 95px; background: linear-gradient(135deg, #ffd700, #ffa500); border-top-left-radius: 8px; border-top-right-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 32px; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); box-shadow: 0 4px 10px rgba(255, 215, 0, 0.4);">1</div>
+                    <div style="width: 100%; height: 95px; background: linear-gradient(135deg, #ffd700, #ffa500); border-top-left-radius: 8px; border-top-right-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 32px; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);">1</div>
                 </div>
                 
                 <div class="podium-step" style="display: flex; flex-direction: column; align-items: center; width: 30%;">
                     <span style="font-size: 28px; user-select: none;">🥉</span>
                     <span id="podium-3-name" style="font-size: 12px; font-weight: bold; text-align: center; margin-top: 4px; height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; color: var(--text-color);">Cargando...</span>
-                    <span id="podium-3-count" style="font-size: 12px; font-weight: bold; color: var(--primary); margin-bottom: 4px;">0</span>
-                    <div style="width: 100%; height: 40px; background-color: #f5c6cb; border-top-left-radius: 8px; border-top-right-radius: 8px; display: flex; align-items: center; justify-content: center; color: #721c24; font-weight: 900; font-size: 22px; box-shadow: inset 0 2px 4px rgba(255,255,255,0.4);">3</div>
+                    <span id="podium-3-count" style="font-size: 12px; font-weight: bold; color: #00f0ff; margin-bottom: 4px;">0</span>
+                    <div style="width: 100%; height: 40px; background-color: #475569; border-top-left-radius: 8px; border-top-right-radius: 8px; display: flex; align-items: center; justify-content: center; color: #f1f8ff; font-weight: 900; font-size: 22px; box-shadow: inset 0 2px 4px rgba(255,255,255,0.2);">3</div>
                 </div>
                 
             </div>
 
-            <div class="table-responsive" style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.05); border: 1px solid #dee2e6;">
-                <table style="font-size: 16px;">
+            <div class="table-responsive">
+                <table style="font-size: 15px;">
                     <thead>
                         <tr>
                             <th style="width: 65px; text-align: center;">Puesto</th>
@@ -656,13 +721,13 @@
 
     <div id="cropper-modal" class="cropper-modal-overlay">
         <div class="cropper-container-box">
-            <h3 style="margin-top:0; color:var(--primary);">✂️ Recortar Evidencia</h3>
+            <h3 style="margin-top:0; color:#00f0ff;">✂️ Recortar Evidencia</h3>
             <div class="cropper-wrapper">
                 <img id="cropper-image" src="" alt="Previa">
             </div>
             <div class="cropper-actions">
-                <button type="button" class="btn-block" style="background-color:var(--danger);" onclick="cerrarModalRecorte()">Cancelar</button>
-                <button type="button" class="btn-block" style="background-color:var(--success);" onclick="aceptarRecorteFoto()">Cortar y Guardar</button>
+                <button type="button" class="btn-block" style="background: rgba(255,0,85,0.2); border: 1px solid var(--danger); color: #ff0055;" onclick="cerrarModalRecorte()">Cancelar</button>
+                <button type="button" class="btn-block" style="background: var(--success);" onclick="aceptarRecorteFoto()">Cortar y Guardar</button>
             </div>
         </div>
     </div>
@@ -670,8 +735,8 @@
     <!-- VENTANA EMERGENTE DE PREVISUALIZACIÓN -->
     <div id="preview-modal" class="preview-modal-overlay">
         <div class="preview-container-box">
-            <h3 style="margin-top:0; color:var(--primary); text-align: center;">👀 Vista Previa de la Papeleta</h3>
-            <p style="font-size:14px; color:#6c757d; margin-top:0; text-align: center;">Revise que todo esté correcto antes de generar el documento final.</p>
+            <h3 style="margin-top:0; color:#00f0ff; text-align: center;">👀 Vista Previa de la Papeleta</h3>
+            <p style="font-size:13px; color:var(--text-muted); margin-top:0; text-align: center;">Revise que todo esté correcto antes de generar el documento final.</p>
             
             <div class="preview-scroll-area">
                 <div id="preview-pdf-content" style="background: white; padding: 5px;">
@@ -785,8 +850,8 @@
             <div class="loader" id="form-loader"></div>
 
             <div class="preview-actions" id="preview-buttons-group">
-                <button type="button" class="btn-block" style="background-color:var(--warning); color: #333;" onclick="cerrarVentanaPrevisualizacion()">✏️ Modificar / Corregir</button>
-                <button type="button" class="btn-block" style="background-color:var(--success);" onclick="ejecutarExportacionFinal()">✅ Todo Conforme / Emitir</button>
+                <button type="button" class="btn-block" style="background: rgba(255, 183, 0, 0.15); border: 1px solid var(--warning); color: #ffb700;" onclick="cerrarVentanaPrevisualizacion()">✏️ Modificar / Corregir</button>
+                <button type="button" class="btn-block" style="background: linear-gradient(135deg, #ff5500, #E05B1B);" onclick="ejecutarExportacionFinal()">✅ Todo Conforme / Emitir</button>
             </div>
         </div>
     </div>
@@ -824,7 +889,6 @@
             }
         }
 
-        // 🌟 VALIDACIÓN DE PASSWORD CON CARGADOR DE 3 PUNTOS ANIMADOS
         function verificarPassword() {
             const userInput = document.getElementById("app-username").value.trim().toUpperCase();
             const passInput = document.getElementById("app-password").value.trim();
@@ -840,15 +904,12 @@
             loginError.style.display = "none";
             loginBtn.disabled = true;
             
-            // 🌟 Reemplazar texto por los 3 Puntos Animados
-            if (btnText) {
-                btnText.innerHTML = `
-                    <div class="dots-loader">
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                    </div>`;
-            }
+            btnText.innerHTML = `
+                <div class="dots-loader">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>`;
             loginBtn.style.opacity = "0.85";
 
             sessionStorage.setItem("secure_user_initials", userInput);
@@ -868,7 +929,7 @@
                     sessionStorage.removeItem("secure_auth_plain");
                     
                     loginBtn.disabled = false;
-                    if (btnText) btnText.innerText = "Ingresar al Sistema";
+                    btnText.innerText = "Ingresar al Sistema";
                     loginBtn.style.opacity = "1";
                 } else {
                     document.getElementById("login-screen").style.display = "none";
@@ -878,7 +939,7 @@
                     renderizarDatosSincronizados(data);
 
                     loginBtn.disabled = false;
-                    if (btnText) btnText.innerText = "Ingresar al Sistema";
+                    btnText.innerText = "Ingresar al Sistema";
                     loginBtn.style.opacity = "1";
                 }
             })
@@ -890,7 +951,7 @@
                 sessionStorage.removeItem("secure_auth_plain");
                 
                 loginBtn.disabled = false;
-                if (btnText) btnText.innerText = "Ingresar al Sistema";
+                btnText.innerText = "Ingresar al Sistema";
                 loginBtn.style.opacity = "1";
             });
         }
@@ -1013,7 +1074,7 @@
             img.src = fotoRecortadaBase64;
             img.style.width = "80px"; img.style.height = "80px";
             img.style.objectFit = "cover"; img.style.borderRadius = "8px";
-            img.style.border = "2px solid var(--primary)";
+            img.style.border = "2px solid var(--apm-orange)";
 
             const btnBorrar = document.createElement("button");
             btnBorrar.innerText = "✕";
@@ -1182,7 +1243,6 @@
             document.getElementById("preview-modal").style.display = "none";
         }
 
-        // 🌟 EXPORTACIÓN E EMISIÓN INSTANTÁNEA (< 2.5 SEGUNDOS)
         function ejecutarExportacionFinal() {
             document.getElementById("waiting-modal").style.display = "flex";
 
@@ -1403,23 +1463,23 @@
                 if (totalInfracciones > 1) {
                     alertaBox.style.display = "block";
                     alertaBox.className = "alert-reincidence";
-                    alertaBox.style.backgroundColor = "#f8d7da";
-                    alertaBox.style.color = "#721c24";
-                    alertaBox.style.borderColor = "#f5c6cb";
+                    alertaBox.style.backgroundColor = "rgba(220, 53, 69, 0.2)";
+                    alertaBox.style.color = "#ff3366";
+                    alertaBox.style.borderColor = "rgba(255, 51, 102, 0.4)";
                     alertaBox.innerHTML = `⚠️ ¡Alerta de Reincidente! El DNI ingresado cuenta con <strong>${totalInfracciones} papeletas</strong> dentro de la lista de los últimos 500 registros.`;
                 } else if (totalInfracciones === 1) {
                     alertaBox.style.display = "block";
                     alertaBox.className = "alert-reincidence";
-                    alertaBox.style.backgroundColor = "#e2e3e5";
-                    alertaBox.style.color = "#383d41";
-                    alertaBox.style.borderColor = "#d6d8db";
+                    alertaBox.style.backgroundColor = "rgba(255, 183, 0, 0.15)";
+                    alertaBox.style.color = "#ffb700";
+                    alertaBox.style.borderColor = "rgba(255, 183, 0, 0.3)";
                     alertaBox.innerHTML = `ℹ️ El infractor con este DNI cuenta con 1 sola falta previa en los últimos 500 registros.`;
                 } else {
                     alertaBox.style.display = "block";
                     alertaBox.className = "alert-reincidence";
-                    alertaBox.style.backgroundColor = "#d4edda";
-                    alertaBox.style.color = "#155724";
-                    alertaBox.style.borderColor = "#c3e6cb";
+                    alertaBox.style.backgroundColor = "rgba(0, 200, 83, 0.15)";
+                    alertaBox.style.color = "#00C853";
+                    alertaBox.style.borderColor = "rgba(0, 200, 83, 0.3)";
                     alertaBox.innerHTML = `✅ Sin incidencias recientes dentro del rango de los últimos 500 registros.`;
                 }
             } else {
@@ -1440,7 +1500,7 @@
             registrosFiltrados.forEach(h => {
                 let fFormat = h.fecha_infraccion ? h.fecha_infraccion.split("T")[0] : "-";
                 tbody.innerHTML += `<tr>
-                    <td><strong>${h.id_papeleta}</strong></td>
+                    <td><strong style="color: #00f0ff;">${h.id_papeleta}</strong></td>
                     <td>${h.responsable}</td>
                     <td>${h.infractor}</td>
                     <td>${h.dni}</td>
@@ -1490,7 +1550,7 @@
                     data.resultados.forEach(res => {
                         let fFormat = res.fecha_infraccion ? res.fecha_infraccion.split("T")[0] : "-";
                         tbodyAvanzada.innerHTML += `<tr>
-                            <td><strong>${res.id_papeleta}</strong></td>
+                            <td><strong style="color: #00f0ff;">${res.id_papeleta}</strong></td>
                             <td>${res.responsable}</td>
                             <td>${res.conducta}</td>
                             <td>${fFormat}</td>
@@ -1500,18 +1560,18 @@
                     const alertaBox = document.getElementById("alerta-reincidencia");
                     alertaBox.style.display = "block";
                     alertaBox.className = "alert-reincidence";
-                    alertaBox.style.backgroundColor = "#dc3545";
-                    alertaBox.style.color = "white";
+                    alertaBox.style.backgroundColor = "rgba(220, 53, 69, 0.25)";
+                    alertaBox.style.color = "#ff3366";
                     alertaBox.innerHTML = `🚨 ¡REINCIDENCIA ABSOLUTA DETECTADA! Este infractor tiene un historial completo de <strong>${data.resultados.length} papeletas registradas</strong> en la base de datos histórica.`;
                     
                 } else if (data.status === "success" && data.resultados.length === 0) {
-                    tbodyAvanzada.innerHTML = `<tr><td colspan="4" style="text-align:center; color: var(--success); font-weight: bold;">✅ Limpio en Historial Completo. No se encontraron incidencias históricas para este DNI.</td></tr>`;
+                    tbodyAvanzada.innerHTML = `<tr><td colspan="4" style="text-align:center; color: #00C853; font-weight: bold;">✅ Limpio en Historial Completo. No se encontraron incidencias históricas para este DNI.</td></tr>`;
                     
                     const alertaBox = document.getElementById("alerta-reincidencia");
                     alertaBox.style.display = "block";
                     alertaBox.className = "alert-reincidence";
-                    alertaBox.style.backgroundColor = "#d4edda";
-                    alertaBox.style.color = "#155724";
+                    alertaBox.style.backgroundColor = "rgba(0, 200, 83, 0.15)";
+                    alertaBox.style.color = "#00C853";
                     alertaBox.innerHTML = `✅ Verificación Histórica: El infractor no registra ninguna falta previa en toda la base de datos de Google Sheets.`;
                 } else {
                     tbodyAvanzada.innerHTML = `<tr><td colspan="4" style="text-align:center; color: red;">Error: ${data.message}</td></tr>`;
@@ -1585,9 +1645,9 @@
                 for (let i = 3; i < ranking.length; i++) {
                     tbody.innerHTML += `
                         <tr>
-                            <td style="text-align: center; font-weight: bold;">${i + 1}</td>
+                            <td style="text-align: center; font-weight: bold; color: #00f0ff;">${i + 1}</td>
                             <td><strong>${ranking[i].nombre}</strong> (${ranking[i].iniciales})</td>
-                            <td style="text-align: center; font-weight: bold; color: var(--primary);">${ranking[i].count}</td>
+                            <td style="text-align: center; font-weight: bold; color: #ff5500;">${ranking[i].count}</td>
                         </tr>
                     `;
                 }
