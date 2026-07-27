@@ -589,44 +589,60 @@
     left: 0; 
     width: 100vw; 
     height: 100vh;
-    background: rgba(0, 8, 16, 0.85);
+    background: rgba(0, 8, 16, 0.88);
     z-index: 4000;
     justify-content: center;
     align-items: center;
     padding: 20px;
     box-sizing: border-box;
+    backdrop-filter: blur(8px);
 }
 
 #modal-instruccion-expediente .modal-box {
-    background: #111827 !important;
-    border: 1px solid rgba(255, 255, 255, 0.18) !important;
-    box-shadow: 0 25px 65px rgba(0, 0, 0, 0.85);
-    border-radius: 16px;
-    width: 90%;
-    max-width: 950px !important;
-    height: 82vh !important; /* Altura perfecta centrada en pantalla */
-    max-height: 82vh !important;
+    background: #0d1527 !important;
+    border: 1px solid rgba(0, 240, 255, 0.25) !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 240, 255, 0.15);
+    border-radius: 14px;
+    width: 92%;
+    max-width: 980px !important;
+    height: 85vh !important;
+    max-height: 85vh !important;
     display: flex;
     flex-direction: column;
     overflow: hidden;
     position: relative;
-    margin: auto !important; /* Centrado automático vertical y horizontal */
+    margin: 0 !important;
     border-top: 4px solid var(--apm-orange) !important;
+}
+
+.modal-header-fijo {
+    background-color: #061424 !important;
+    padding: 18px 24px;
+    border-bottom: 1.5px solid rgba(0, 240, 255, 0.2);
+    flex-shrink: 0;
 }
 
 .modal-cuerpo-trabajo {
     flex: 1;
-    padding: 20px 25px;
+    padding: 20px 24px;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
-    background-color: #0b1322 !important;
+    background-color: #09101d !important;
+}
+
+#secciones-panes-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    min-height: 0;
 }
 
 .wizard-step-pane {
     display: none;
-    flex: 1;
     flex-direction: column;
+    flex: 1;
 }
 
 .wizard-step-pane.active {
