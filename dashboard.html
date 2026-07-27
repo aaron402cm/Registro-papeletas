@@ -2458,6 +2458,104 @@ body.light-theme .notification-item:hover {
 body.light-theme .notification-item strong {
     color: #0f172a !important;
 }
+
+      /* 🌟 INTERRUPTOR DESLIZANTE COMPACTO PARA LA COLUMNA "MODO" EN LA TABLA */
+.inline-switch-cell {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 240, 255, 0.05);
+    padding: 3px 8px;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    transition: all 0.25s ease;
+}
+
+body.light-theme .inline-switch-cell {
+    background: #f1f5f9 !important;
+    border-color: #cbd5e1 !important;
+}
+
+.switch-sm {
+    position: relative;
+    display: inline-block;
+    width: 32px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.switch-sm input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider-sm {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(255, 255, 255, 0.2);
+    transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.slider-sm:before {
+    position: absolute;
+    content: "";
+    height: 12px;
+    width: 12px;
+    left: 2px;
+    bottom: 2px;
+    background-color: #ffffff;
+    transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+/* Estado ACTIVADO (AUTOMÁTICO) */
+.switch-sm input:checked + .slider-sm {
+    background-color: rgba(0, 240, 255, 0.3);
+    border-color: #00f0ff;
+}
+
+body.light-theme .switch-sm input:checked + .slider-sm {
+    background-color: #0284c7 !important;
+    border-color: #0284c7 !important;
+}
+
+.switch-sm input:checked + .slider-sm:before {
+    transform: translateX(14px);
+    background-color: #00f0ff;
+}
+
+body.light-theme .switch-sm input:checked + .slider-sm:before {
+    background-color: #ffffff !important;
+}
+
+.inline-modo-label {
+    font-size: 11px;
+    font-weight: 800;
+    font-family: 'Segoe UI', monospace;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.modo-auto-text {
+    color: #00f0ff;
+}
+
+body.light-theme .modo-auto-text {
+    color: #0369a1 !important;
+}
+
+.modo-manual-text {
+    color: #ffb700;
+}
+
+body.light-theme .modo-manual-text {
+    color: #b45309 !important;
+}  
     </style>
 </head>
 <body>
@@ -3804,13 +3902,20 @@ function filtrarPorEtapaTramite(etapa) {
                     `;
                 }
 
-let modoBadge = "";
-const modoClean = String(p.modo_tramite || "MANUAL").trim().toUpperCase();
-if (modoClean === "AUTOMATICO") {
-    modoBadge = `<span class="badge badge-modo-auto" title="Trámite Automático por IA">🤖 Automático</span>`;
-} else {
-    modoBadge = `<span class="badge badge-modo-manual" title="Revisión y Firma Manual">✍️ Manual</span>`;
-}
+// 🌟 DIBUJAR LA BARRA DESLIZADORA DIRECTAMENTE EN CADA FILA DE LA TABLA
+const isAuto = (String(p.modo_tramite || "MANUAL").trim().toUpperCase() === "AUTOMATICO");
+
+const modoBadge = `
+    <div class="inline-switch-cell" onclick="event.stopPropagation()" title="Desliza para cambiar entre Manual y Automático">
+        <label class="switch-sm">
+            <input type="checkbox" ${isAuto ? "checked" : ""} onchange="cambiarModoDirectoTabla('${p.id_papeleta}', this.checked)">
+            <span class="slider-sm"></span>
+        </label>
+        <span class="inline-modo-label ${isAuto ? 'modo-auto-text' : 'modo-manual-text'}">
+            ${isAuto ? "🤖 Auto" : "✍️ Manual"}
+        </span>
+    </div>
+`;
 
                 let badgeSancionSugerida = "";
                 try {
@@ -4711,6 +4816,46 @@ window.addEventListener("keydown", function(event) {
         }
     }
 });
+        // 🌟 CAMBIO Y GUARDADO INSTANTÁNEO DE MODO DESDE LA TABLA PRINCIPAL
+function cambiarModoDirectoTabla(idPapeleta, esAuto) {
+    const nuevoModo = esAuto ? "AUTOMATICO" : "MANUAL";
+
+    // 1. Actualizar el estado en la memoria RAM local del Dashboard
+    if (globalDashboardCache && globalDashboardCache.dashboardData && globalDashboardCache.dashboardData.papeletas) {
+        const papeleta = globalDashboardCache.dashboardData.papeletas.find(p => String(p.id_papeleta) === String(idPapeleta));
+        if (papeleta) {
+            papeleta.modo_tramite = nuevoModo;
+            papeleta.modo = nuevoModo;
+
+            // Si la ventana modal está abierta con este mismo expediente, sincronizar su interruptor interno
+            if (String(activePapeletaId) === String(idPapeleta)) {
+                const modalSwitch = document.getElementById("toggle-automode-switch");
+                if (modalSwitch) modalSwitch.checked = esAuto;
+                evaluarVisibilidadBotonEnviar(papeleta);
+            }
+        }
+        
+        // Recalcular los números de las cajas superiores (MODO AUTOMÁTICO IA)
+        calcularFiltrosEtapa(globalDashboardCache.dashboardData.papeletas);
+    }
+
+    // 2. Volver a renderizar la tabla para actualizar el texto (🤖 Auto / ✍️ Manual)
+    filtrarYRenderizarTabla();
+
+    // 3. Guardar el cambio automáticamente en la Columna M de Google Sheets
+    const user = sessionStorage.getItem("secure_user_initials");
+    const auth = sessionStorage.getItem("secure_auth_plain");
+    const url = `${CONFIG_WEB_APP_URL}?action=toggle_modo_tramite&id=${encodeURIComponent(idPapeleta)}&modo=${encodeURIComponent(nuevoModo)}&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`;
+
+    fetch(url)
+    .then(res => res.json())
+    .then(data => {
+        console.log(`⚡ Modo cambiado desde tabla a ${nuevoModo} para ${idPapeleta}`);
+    })
+    .catch(err => {
+        console.error("Error al guardar cambio de modo desde la tabla:", err);
+    });
+}
     </script>
 </body>
 </html>
