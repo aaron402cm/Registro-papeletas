@@ -17,6 +17,8 @@
             --warning: #ffc107;
             --bg-color: #f8f9fa;
             --text-color: #212529;
+            --apm-navy: #002244;
+            --apm-orange: #E05B1B;
         }
 
         body {
@@ -58,7 +60,7 @@
             padding-bottom: 80px;
         }
 
-        /* Barra de navegación inferior fija para celular con efecto Ojo de Pez */
+        /* Barra de navegación inferior fija */
         .navbar {
             position: fixed;
             bottom: 0;
@@ -83,13 +85,12 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* Efecto ojo de pez elástico de escalado y rebote */
             transition: transform 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.35), color 0.25s ease;
         }
 
         .nav-btn.active {
-            color: #E05B1B !important; /* Pinta de color Naranja Corporativo */
-            transform: scale(1.15) translateY(-5px); /* Salto de ojo de pez */
+            color: var(--apm-orange) !important;
+            transform: scale(1.15) translateY(-5px);
         }
 
         .nav-btn span {
@@ -152,36 +153,6 @@
             outline: none;
         }
 
-        /* Botones de Opción Grande */
-        .radio-tile-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .radio-tile {
-            border: 2px solid #ced4da;
-            padding: 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            background: white;
-            font-weight: bold;
-        }
-
-        .radio-tile input {
-            width: 25px;
-            height: 25px;
-            margin-right: 15px;
-        }
-
-        .radio-tile.selected {
-            border-color: var(--secondary);
-            background-color: #e7f1ff;
-        }
-
-        /* Botones de acción */
         .btn-block {
             width: 100%;
             background-color: var(--success);
@@ -195,7 +166,7 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        /* Modales / Ventanas Emergentes */
+        /* Modales */
         .cropper-modal-overlay, .preview-modal-overlay {
             display: none;
             position: fixed;
@@ -234,7 +205,7 @@
             overflow-y: auto;
             flex: 1;
             border: 1px solid #ccc;
-            background: #666;
+            background: #475569;
             padding: 10px;
             margin-bottom: 15px;
             border-radius: 6px;
@@ -251,7 +222,6 @@
         th, td { padding: 12px; border: 1px solid #dee2e6; text-align: left; }
         th { background-color: var(--primary); color: white; }
 
-        /* Contenedor para sugerencias predictivas */
         .suggestions-box {
             display: none;
             position: absolute;
@@ -278,7 +248,6 @@
             background-color: #f1f1f1;
         }
 
-        /* Alerta de Reincidencia */
         .alert-reincidence {
             background-color: #fff3cd;
             color: #856404;
@@ -290,7 +259,6 @@
             display: none;
         }
 
-        /* Indicador Offline en cabecera */
         #offline-indicator {
             display: none;
             background-color: var(--warning);
@@ -302,69 +270,60 @@
         }
 
         /* ========================================== */
-        /* DISEÑO DE LA PLANTILLA DEL PDF REAL        */
+        /* DISEÑO DE LA PLANTILLA DEL PDF EXECUTIVE   */
         /* ========================================== */
         #pdf-template {
             width: 680px;
-            padding: 15px 20px;
+            padding: 12px 18px;
             background: white;
-            color: #000000 !important;
-            font-family: Arial, sans-serif;
+            color: #1E293B !important;
+            font-family: 'Segoe UI', Arial, sans-serif;
             font-size: 11px;
             box-sizing: border-box;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
+            line-height: 1.25;
         }
         
-        #pdf-template div, #pdf-template p, #pdf-template span, #pdf-template strong {
-            color: #000000 !important;
+        #pdf-template div, #pdf-template p, #pdf-template span, #pdf-template strong, #pdf-template td, #pdf-template th {
+            color: #1E293B;
         }
 
-        .pdf-header { text-align: center; font-weight: bold; font-size: 13px; margin-bottom: 10px; text-transform: uppercase; color: #000000 !important; }
-        .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+        .pdf-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-bottom: 4px; 
+        }
         
         .pdf-table th, .pdf-table td { 
-            border: 1px solid #000000 !important; 
-            padding: 4px 6px; 
+            border: 1px solid #CBD5E1 !important; 
+            padding: 3.5px 6px !important; 
             text-align: left; 
             font-size: 10px; 
             vertical-align: top;
-            color: #000000 !important; 
-        }
-        .pdf-table th { 
-            background-color: #ffd9b3 !important; 
-            color: #000000 !important; 
-            font-weight: bold;
+            color: #1E293B !important; 
         }
         
         .section-title { 
-            font-weight: bold; 
-            margin-top: 8px; 
+            font-weight: 800; 
+            margin-top: 6px; 
             margin-bottom: 4px; 
-            background: #ffe6cc !important; 
-            padding: 4px 6px; 
+            background: #F0F4F8 !important; 
+            padding: 3px 8px; 
             font-size: 10px; 
             text-transform: uppercase; 
-            color: #000000 !important; 
-            border: 1px solid #000000;
+            color: #002244 !important; 
+            border: none;
+            border-left: 3.5px solid #E05B1B !important;
+            border-radius: 0 3px 3px 0;
         }
 
-        .descripcion-flexible-contenedor {
-            min-height: 60px;
-            margin-bottom: 8px;
-        }
-
-        .pdf-bloque-protegido {
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-        }
-        /* Pantalla de Espera del Buque Navegando */
         .waiting-modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 34, 68, 0.96); /* Azul APM Terminals oscuro */
+            background: rgba(0, 34, 68, 0.96);
             z-index: 3000;
             flex-direction: column;
             justify-content: center;
@@ -420,7 +379,7 @@
 </head>
 <body>
 
-    <!-- Pantalla de bloqueo con validación individual y visor de clave -->
+    <!-- Pantalla de bloqueo -->
     <div id="login-screen">
         <div class="login-box">
             <h2 style="border:none; margin-top:0; color: var(--primary);">🔒 Acceso Seguro</h2>
@@ -441,12 +400,10 @@
     </div>
 
     <div id="main-app">
-        <!-- Indicador de Sincronización Pendiente (Offline) -->
         <div id="offline-indicator">
             ⚠️ Sincronización pendiente: <span id="pending-count">0</span> papeleta(s) guardadas sin conexión.
         </div>
 
-        <!-- Encabezado de la aplicación -->
         <div class="app-top-header" style="background-color: #002244; padding: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border-bottom: 4px solid var(--primary); margin-bottom: 10px;">
             <svg viewBox="0 0 420 85" style="width: 100%; max-width: 250px; height: auto; display: block; margin: 0 auto;">
                 <g transform="translate(10, 5)">
@@ -481,7 +438,7 @@
                 <div class="form-group"><label>Nombres y Apellidos</label><input type="text" id="inf-nombre" oninput="actualizarDescripcionDinamica()"></div>
                 <div class="form-group">
                 <label>DNI / C.E / Pasaporte</label>
-                <input type="tel" id="inf-dni" inputmode="numeric" pattern="[0-9]*" maxlength="8" oninput="validarYActualizarDNI(this)" placeholder="Ingrese 8 dígitos">
+                <input type="tel" id="inf-dni" inputmode="numeric" pattern="[0-9]*" maxlength="8" placeholder="Ingrese 8 dígitos">
                 </div>
                 <div class="form-group"><label>Cargo</label><input type="text" id="inf-cargo" oninput="actualizarDescripcionDinamica()"></div>
                 <div class="form-group"><label>Número de Contacto</label><input type="text" id="inf-contacto" oninput="actualizarDescripcionDinamica()"></div>
@@ -540,7 +497,6 @@
                 </div>
                 <div id="alerta-reincidencia" class="alert-reincidence"></div>
                 
-                <!-- Resultados de Búsqueda Avanzada en Toda la Base de Datos -->
                 <div id="contenedor-avanzada-resultados" style="display: none; border-top: 2px dashed #ccc; margin-top: 15px; padding-top: 10px;">
                     <h5 style="margin: 0 0 10px 0; color: var(--primary); font-size: 16px;">📂 Historial Completo en Servidor (Toda la base de datos)</h5>
                     <div id="tabla-avanzada-area" class="table-responsive" style="max-height: 250px; overflow-y: auto;">
@@ -583,10 +539,8 @@
             <h2>🏅 Tabla de Posiciones</h2>
             <p style="font-size: 14px; color: #6c757d; margin-top: 0; text-align: center;">Ranking de Oficiales según total de papeletas emitidas históricamente.</p>
 
-            <!-- PODIO 3D EN EL ENCABEZADO -->
             <div class="podium-container" style="display: flex; justify-content: center; align-items: flex-end; gap: 10px; margin: 30px auto 35px auto; height: 190px; max-width: 400px; box-sizing: border-box;">
                 
-                <!-- 2do Puesto (Izquierda) -->
                 <div class="podium-step" style="display: flex; flex-direction: column; align-items: center; width: 30%;">
                     <span style="font-size: 28px; user-select: none;">🥈</span>
                     <span id="podium-2-name" style="font-size: 12px; font-weight: bold; text-align: center; margin-top: 4px; height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; color: var(--text-color);">Cargando...</span>
@@ -594,7 +548,6 @@
                     <div style="width: 100%; height: 60px; background-color: #d6d8db; border-top-left-radius: 8px; border-top-right-radius: 8px; display: flex; align-items: center; justify-content: center; color: #495057; font-weight: 900; font-size: 22px; box-shadow: inset 0 2px 4px rgba(255,255,255,0.4);">2</div>
                 </div>
                 
-                <!-- 1er Puesto (Centro - El más alto) -->
                 <div class="podium-step" style="display: flex; flex-direction: column; align-items: center; width: 35%;">
                     <span style="font-size: 44px; user-select: none; animation: rockShip 2.2s infinite alternate;">🏆</span>
                     <span id="podium-1-name" style="font-size: 13px; font-weight: bold; text-align: center; margin-top: 4px; height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; color: #E05B1B;">Cargando...</span>
@@ -602,7 +555,6 @@
                     <div style="width: 100%; height: 95px; background: linear-gradient(135deg, #ffd700, #ffa500); border-top-left-radius: 8px; border-top-right-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 32px; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); box-shadow: 0 4px 10px rgba(255, 215, 0, 0.4);">1</div>
                 </div>
                 
-                <!-- 3er Puesto (Derecha) -->
                 <div class="podium-step" style="display: flex; flex-direction: column; align-items: center; width: 30%;">
                     <span style="font-size: 28px; user-select: none;">🥉</span>
                     <span id="podium-3-name" style="font-size: 12px; font-weight: bold; text-align: center; margin-top: 4px; height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; color: var(--text-color);">Cargando...</span>
@@ -612,7 +564,6 @@
                 
             </div>
 
-            <!-- RESTO DEL RANKING -->
             <div class="table-responsive" style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.05); border: 1px solid #dee2e6;">
                 <table style="font-size: 16px;">
                     <thead>
@@ -649,6 +600,7 @@
         </div>
     </div>
 
+    <!-- VENTANA EMERGENTE DE PREVISUALIZACIÓN -->
     <div id="preview-modal" class="preview-modal-overlay">
         <div class="preview-container-box">
             <h3 style="margin-top:0; color:var(--primary); text-align: center;">👀 Vista Previa de la Papeleta</h3>
@@ -657,16 +609,11 @@
             <div class="preview-scroll-area">
                 <div id="preview-pdf-content" style="background: white; padding: 5px;">
                     
-                    <div class="preview-scroll-area">
-                <div id="preview-pdf-content" style="background: white; padding: 5px;">
-                    
-                    <!-- PLANTILLA OFICIAL EXECUTIVE 1 HOJA -->
-                    <div id="pdf-template" style="width: 680px; padding: 12px 18px; background: white; color: #1E293B; font-family: 'Segoe UI', Arial, sans-serif; font-size: 11px; box-sizing: border-box; margin: 0 auto;">
+                    <!-- PLANTILLA EXECUTIVE 1 HOJA (APM TERMINALS) -->
+                    <div id="pdf-template">
                         
-                        <!-- BARRA DE ACENTO -->
                         <div style="height: 4px; background: linear-gradient(90deg, #002244 0%, #E05B1B 100%); width: 100%; margin-bottom: 8px;"></div>
 
-                        <!-- CABECERA -->
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                             <div>
                                 <div style="font-size: 20px; font-weight: 900; color: #002244; line-height: 1;">APM TERMINALS</div>
@@ -683,62 +630,62 @@
                         </div>
 
                         <!-- SECCIÓN 1: INFRACTOR -->
-                        <div class="section-title" style="background-color: #F0F4F8; color: #002244; font-weight: 800; font-size: 10px; text-transform: uppercase; padding: 3px 8px; border-left: 3.5px solid #E05B1B; margin-top: 6px; margin-bottom: 4px;">
+                        <div class="section-title">
                             1. DATOS DEL PRESUNTO INFRACTOR Y CONTRATISTA
                         </div>
-                        <table class="pdf-table" style="width: 100%; border-collapse: collapse; margin-bottom: 4px;">
+                        <table class="pdf-table">
                             <tr>
-                                <td style="width:50%; border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>NOMBRES Y APELLIDOS:</strong><br><span id="pdf-txt-nombre"></span></td>
-                                <td style="width:50%; border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>DNI/C.E/PASAPORTE:</strong><br><span id="pdf-txt-dni"></span></td>
+                                <td style="width:50%;"><strong>NOMBRES Y APELLIDOS:</strong><br><span id="pdf-txt-nombre"></span></td>
+                                <td style="width:50%;"><strong>DNI/C.E/PASAPORTE:</strong><br><span id="pdf-txt-dni"></span></td>
                             </tr>
                             <tr>
-                                <td style="border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>CARGO / FUNCIÓN:</strong><br><span id="pdf-txt-cargo"></span></td>
-                                <td style="border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>TELÉFONO DE CONTACTO:</strong><br><span id="pdf-txt-contacto"></span></td>
+                                <td><strong>CARGO / FUNCIÓN:</strong><br><span id="pdf-txt-cargo"></span></td>
+                                <td><strong>TELÉFONO DE CONTACTO:</strong><br><span id="pdf-txt-contacto"></span></td>
                             </tr>
                             <tr>
-                                <td style="border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>EMPRESA/RAZÓN SOCIAL:</strong><br><span id="pdf-txt-empresa"></span></td>
-                                <td style="border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>CORREO ELECTRÓNICO:</strong><br><span id="pdf-txt-correo"></span></td>
+                                <td><strong>EMPRESA/RAZÓN SOCIAL:</strong><br><span id="pdf-txt-empresa"></span></td>
+                                <td><strong>CORREO ELECTRÓNICO:</strong><br><span id="pdf-txt-correo"></span></td>
                             </tr>
                             <tr>
-                                <td style="border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>LICENCIA DE CONDUCIR:</strong><br><span id="pdf-txt-licencia"></span></td>
-                                <td style="border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>PLACA DE VEHÍCULO:</strong><br><span id="pdf-txt-placa"></span></td>
+                                <td><strong>LICENCIA DE CONDUCIR:</strong><br><span id="pdf-txt-licencia"></span></td>
+                                <td><strong>PLACA DE VEHÍCULO:</strong><br><span id="pdf-txt-placa"></span></td>
                             </tr>
                         </table>
 
                         <!-- SECCIÓN 2: CIRCUNSTANCIAS -->
-                        <div class="section-title" style="background-color: #F0F4F8; color: #002244; font-weight: 800; font-size: 10px; text-transform: uppercase; padding: 3px 8px; border-left: 3.5px solid #E05B1B; margin-top: 6px; margin-bottom: 4px;">
+                        <div class="section-title">
                             2. CIRCUNSTANCIAS DE LA INFRACCIÓN DETECTADA
                         </div>
-                        <table class="pdf-table" style="width: 100%; border-collapse: collapse; margin-bottom: 4px;">
+                        <table class="pdf-table">
                             <tr>
-                                <td style="width:50%; border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>LUGAR / ZONA DE LA INFRACCIÓN:</strong><br><span id="pdf-txt-lugar"></span></td>
-                                <td style="width:50%; border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>FECHA Y HORA DEL SUCESO:</strong><br><span id="pdf-txt-fecha-hora"></span></td>
+                                <td style="width:50%;"><strong>LUGAR / ZONA DE LA INFRACCIÓN:</strong><br><span id="pdf-txt-lugar"></span></td>
+                                <td style="width:50%;"><strong>FECHA Y HORA DEL SUCESO:</strong><br><span id="pdf-txt-fecha-hora"></span></td>
                             </tr>
                         </table>
 
                         <!-- SECCIÓN 3: HECHOS -->
-                        <div class="section-title" style="background-color: #F0F4F8; color: #002244; font-weight: 800; font-size: 10px; text-transform: uppercase; padding: 3px 8px; border-left: 3.5px solid #E05B1B; margin-top: 6px; margin-bottom: 4px;">
+                        <div class="section-title">
                             3. DESCRIPCIÓN DETALLADA DE LOS HECHOS CONSTATADOS
                         </div>
                         <div style="border: 1px solid #CBD5E1; background-color: #FAFAFA; border-radius: 4px; padding: 5px 8px; font-size: 10px; line-height: 1.3; margin-bottom: 4px;" id="pdf-txt-descripcion"></div>
 
                         <!-- SECCIÓN 4: MEDIOS PROBATORIOS -->
-                        <div class="section-title" style="background-color: #F0F4F8; color: #002244; font-weight: 800; font-size: 10px; text-transform: uppercase; padding: 3px 8px; border-left: 3.5px solid #E05B1B; margin-top: 6px; margin-bottom: 4px;">
+                        <div class="section-title">
                             4. MEDIOS PROBATORIOS Y EVIDENCIAS FOTOGRÁFICAS
                         </div>
                         <div style="border: 1px solid #CBD5E1; background-color: #FAFAFA; border-radius: 4px; padding: 4px; min-height: 35px; margin-bottom: 4px; display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;" id="pdf-txt-evidencias"></div>
 
                         <!-- SECCIÓN 5: ENCUADRE RIS -->
-                        <div class="section-title" style="background-color: #F0F4F8; color: #002244; font-weight: 800; font-size: 10px; text-transform: uppercase; padding: 3px 8px; border-left: 3.5px solid #E05B1B; margin-top: 6px; margin-bottom: 4px;">
+                        <div class="section-title">
                             5. ENCUADRE LEGAL RIS Y GRADUACIÓN DE LA FALTA
                         </div>
-                        <table class="pdf-table" style="width: 100%; border-collapse: collapse; margin-bottom: 4px;">
+                        <table class="pdf-table">
                             <tr>
-                                <td style="width:50%; border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>ÁREA DE LA INFRACCIÓN:</strong><br>Seguridad Operativa y Accesos</td>
-                                <td style="width:50%; border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>GRADUACIÓN:</strong><br><span id="pdf-txt-graduacion" style="font-weight:bold; color: #991B1B;"></span></td>
+                                <td style="width:50%;"><strong>ÁREA DE LA INFRACCIÓN:</strong><br>Seguridad Operativa y Accesos</td>
+                                <td style="width:50%;"><strong>GRADUACIÓN:</strong><br><span id="pdf-txt-graduacion" style="font-weight:bold; color: #991B1B;"></span></td>
                             </tr>
                             <tr>
-                                <td colspan="2" style="border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>CONDUCTA IMPUTADA:</strong><br><span id="pdf-txt-conducta"></span></td>
+                                <td colspan="2"><strong>CONDUCTA IMPUTADA:</strong><br><span id="pdf-txt-conducta"></span></td>
                             </tr>
                         </table>
 
@@ -747,14 +694,14 @@
                             <div id="pdf-txt-sancion-bloque" style="margin-top: 2px;"></div>
                         </div>
 
-                        <!-- SECCIÓN 6: ÓRGANO EMISOR (ANÓNIMO) -->
-                        <table class="pdf-table" style="width: 100%; border-collapse: collapse; margin-bottom: 4px;">
+                        <!-- SECCIÓN 6: ÓRGANO EMISOR (ANÓNIMO Y SIN OFICIAL) -->
+                        <table class="pdf-table">
                             <tr>
-                                <td style="width:50%; border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>ORGANISMO EMISOR:</strong><br>Departamento de Protección y Seguridad (SEC)</td>
-                                <td style="width:50%; border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>FECHA Y HORA DE EMISIÓN:</strong><br><span id="pdf-txt-fecha-envio"></span></td>
+                                <td style="width:50%;"><strong>ORGANISMO EMISOR:</strong><br>Departamento de Protección y Seguridad (SEC)</td>
+                                <td style="width:50%;"><strong>FECHA Y HORA DE EMISIÓN:</strong><br><span id="pdf-txt-fecha-envio"></span></td>
                             </tr>
                             <tr>
-                                <td colspan="2" style="border: 1px solid #CBD5E1; padding: 3.5px 6px; font-size: 10px;"><strong>MODO DE EMISIÓN:</strong><br>Sistema Electrónico Institucional APM Terminals Callao</td>
+                                <td colspan="2"><strong>MODO DE EMISIÓN:</strong><br>Sistema Electrónico Institucional APM Terminals Callao</td>
                             </tr>
                         </table>
 
@@ -764,9 +711,6 @@
                         </div>
 
                     </div>
-
-                </div>
-            </div>
 
                 </div>
             </div>
@@ -788,7 +732,6 @@
         let cropperInstance = null;    
         let actualFechaEnvioGlobal = "";
         
-        // Plantillas locales por defecto
         let plantillasCache = [
             {
                 conducta: "Personal no se dirigió al complejo SINI",
@@ -802,7 +745,6 @@
 
         let plantillaRawSeleccionada = "";
 
-        // --- SISTEMA DE VISUALIZACIÓN DE CONTRASEÑA (VER / OCULTAR) ---
         function togglePasswordVisibility() {
             const passInput = document.getElementById("app-password");
             const toggleBtn = document.getElementById("toggle-password-btn");
@@ -815,73 +757,69 @@
             }
         }
 
-    // --- INICIO DE SESIÓN INDIVIDUAL SEGURO (CORREGIDO) ---
-function verificarPassword() {
-    const userInput = document.getElementById("app-username").value.trim().toUpperCase();
-    const passInput = document.getElementById("app-password").value.trim();
-    const loginError = document.getElementById("login-error");
-    const loginBtn = document.getElementById("login-btn");
-    
-    if (!userInput || !passInput) {
-        alert("Por favor, ingrese sus Iniciales y Contraseña.");
-        return;
-    }
+        function verificarPassword() {
+            const userInput = document.getElementById("app-username").value.trim().toUpperCase();
+            const passInput = document.getElementById("app-password").value.trim();
+            const loginError = document.getElementById("login-error");
+            const loginBtn = document.getElementById("login-btn");
+            
+            if (!userInput || !passInput) {
+                alert("Por favor, ingrese sus Iniciales y Contraseña.");
+                return;
+            }
 
-    loginError.style.display = "none";
-    loginBtn.disabled = true;
-    loginBtn.innerText = "⏳ Verificando... Espere por favor";
-    loginBtn.style.backgroundColor = "#6c757d";
+            loginError.style.display = "none";
+            loginBtn.disabled = true;
+            loginBtn.innerText = "⏳ Verificando... Espere por favor";
+            loginBtn.style.backgroundColor = "#6c757d";
 
-    sessionStorage.setItem("secure_user_initials", userInput);
-    sessionStorage.setItem("secure_auth_plain", passInput);
+            sessionStorage.setItem("secure_user_initials", userInput);
+            sessionStorage.setItem("secure_auth_plain", passInput);
 
-    fetch(`${CONFIG_WEB_APP_URL}?user=${encodeURIComponent(userInput)}&auth=${encodeURIComponent(passInput)}`)
-    .then(res => {
-        if (!res.ok) {
-            throw new Error("El servidor respondió con código " + res.status);
+            fetch(`${CONFIG_WEB_APP_URL}?user=${encodeURIComponent(userInput)}&auth=${encodeURIComponent(passInput)}`)
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error("El servidor respondió con código " + res.status);
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (data.error || data.status === "error" || data.result === "error") {
+                    loginError.style.display = "block";
+                    loginError.innerText = data.message || data.error || "Credenciales incorrectas";
+                    
+                    sessionStorage.removeItem("secure_user_initials");
+                    sessionStorage.removeItem("secure_auth_plain");
+                    
+                    loginBtn.disabled = false;
+                    loginBtn.innerText = "Ingresar";
+                    loginBtn.style.backgroundColor = "var(--primary)";
+                } else {
+                    document.getElementById("login-screen").style.display = "none";
+                    document.getElementById("main-app").style.display = "block";
+                    
+                    databaseCache = data;
+                    renderizarDatosSincronizados(data);
+
+                    loginBtn.disabled = false;
+                    loginBtn.innerText = "Ingresar";
+                    loginBtn.style.backgroundColor = "var(--primary)";
+                }
+            })
+            .catch(err => {
+                loginError.style.display = "block";
+                loginError.innerText = "Error de conexión con el servidor";
+                alert("Error de conexión:\n" + err.message + "\n\nAsegúrese de desplegar una 'Nueva versión' en Apps Script.");
+                
+                sessionStorage.removeItem("secure_user_initials");
+                sessionStorage.removeItem("secure_auth_plain");
+                
+                loginBtn.disabled = false;
+                loginBtn.innerText = "Ingresar";
+                loginBtn.style.backgroundColor = "var(--primary)";
+            });
         }
-        return res.json();
-    })
-    .then(data => {
-        // Evaluar si las credenciales fueron rechazadas
-        if (data.error || data.status === "error" || data.result === "error") {
-            loginError.style.display = "block";
-            loginError.innerText = data.message || data.error || "Credenciales incorrectas";
-            
-            sessionStorage.removeItem("secure_user_initials");
-            sessionStorage.removeItem("secure_auth_plain");
-            
-            loginBtn.disabled = false;
-            loginBtn.innerText = "Ingresar";
-            loginBtn.style.backgroundColor = "var(--primary)";
-        } else {
-            // Acceso concedido
-            document.getElementById("login-screen").style.display = "none";
-            document.getElementById("main-app").style.display = "block";
-            
-            databaseCache = data;
-            renderizarDatosSincronizados(data);
 
-            loginBtn.disabled = false;
-            loginBtn.innerText = "Ingresar";
-            loginBtn.style.backgroundColor = "var(--primary)";
-        }
-    })
-    .catch(err => {
-        loginError.style.display = "block";
-        loginError.innerText = "Error de conexión con el servidor";
-        alert("Error de conexión:\n" + err.message + "\n\nAsegúrese de desplegar una 'Nueva versión' en Apps Script.");
-        
-        sessionStorage.removeItem("secure_user_initials");
-        sessionStorage.removeItem("secure_auth_plain");
-        
-        loginBtn.disabled = false;
-        loginBtn.innerText = "Ingresar";
-        loginBtn.style.backgroundColor = "var(--primary)";
-    });
-}
-
-        // --- INICIALIZACIÓN Y COLA OFFLINE ---
         window.addEventListener("load", function() {
             actualizarIndicadorOffline();
             procesarColaPendientes();
@@ -922,8 +860,6 @@ function verificarPassword() {
             if (cola.length === 0) return;
 
             const elemento = cola[0];
-            
-            // Adjuntar credenciales individuales en el envío de la cola offline
             elemento.user = sessionStorage.getItem("secure_user_initials");
             elemento.auth = sessionStorage.getItem("secure_auth_plain");
 
@@ -1024,7 +960,6 @@ function verificarPassword() {
             cerrarModalRecorte();
         }
 
-        // --- SUGERENCIAS PREDICTIVAS ---
         function buscarPlantillas(valor) {
             const listbox = document.getElementById("sugerencias-plantillas");
             if (!valor || valor.trim() === "") {
@@ -1124,49 +1059,44 @@ function verificarPassword() {
             document.getElementById("pdf-txt-num-papeleta").innerText = numPapeleta;
             document.getElementById("pdf-txt-nombre").innerText = document.getElementById("inf-nombre").value;
             document.getElementById("pdf-txt-dni").innerText = document.getElementById("inf-dni").value;
-            document.getElementById("pdf-txt-cargo").innerText = document.getElementById("inf-cargo").value;
-            document.getElementById("pdf-txt-contacto").innerText = document.getElementById("inf-contacto").value;
-            document.getElementById("pdf-txt-empresa").innerText = document.getElementById("inf-empresa").value;
-            document.getElementById("pdf-txt-correo").innerText = document.getElementById("inf-correo").value;
-            document.getElementById("pdf-txt-licencia").innerText = document.getElementById("inf-licencia").value;
-            document.getElementById("pdf-txt-placa").innerText = document.getElementById("inf-placa").value;
-            document.getElementById("pdf-txt-lugar").innerText = document.getElementById("inf-lugar").value;
+            document.getElementById("pdf-txt-cargo").innerText = document.getElementById("inf-cargo").value || "Conductor / Operador";
+            document.getElementById("pdf-txt-contacto").innerText = document.getElementById("inf-contacto").value || "-";
+            document.getElementById("pdf-txt-empresa").innerText = document.getElementById("inf-empresa").value || "-";
+            document.getElementById("pdf-txt-correo").innerText = document.getElementById("inf-correo").value || "-";
+            document.getElementById("pdf-txt-licencia").innerText = document.getElementById("inf-licencia").value || "-";
+            document.getElementById("pdf-txt-placa").innerText = document.getElementById("inf-placa").value || "-";
+            document.getElementById("pdf-txt-lugar").innerText = document.getElementById("inf-lugar").value || "Instalaciones del Terminal Portuario";
             
             const fInfraccionInput = document.getElementById("inf-fecha-hora").value;
             document.getElementById("pdf-txt-fecha-hora").innerText = fInfraccionInput ? fInfraccionInput.replace("T", " ") : "-";
             
-            document.getElementById("pdf-txt-conducta").innerText = document.getElementById("inf-conducta").value;
-            document.getElementById("pdf-txt-descripcion").innerText = document.getElementById("inf-descripcion").value;
+            document.getElementById("pdf-txt-conducta").innerText = document.getElementById("inf-conducta").value || "-";
+            document.getElementById("pdf-txt-descripcion").innerText = document.getElementById("inf-descripcion").value || "Se constató la infracción a las normas de seguridad del recinto portuario.";
             
             const contenedorPdfEvidencias = document.getElementById("pdf-txt-evidencias");
             contenedorPdfEvidencias.innerHTML = "";
             
             if(fotosBase64Guardadas.length === 0) {
-                contenedorPdfEvidencias.innerText = "NO SE ADJUNTARON EVIDENCIAS FOTOGRÁFICAS.";
+                contenedorPdfEvidencias.innerHTML = `<div style="color:#64748B; font-style:italic; font-size:9px; padding:4px;">NO SE REGISTRARON EVIDENCIAS FOTOGRÁFICAS.</div>`;
             } else {
-                contenedorPdfEvidencias.style.display = "grid";
-                contenedorPdfEvidencias.style.gridTemplateColumns = "repeat(4, 1fr)";
-                contenedorPdfEvidencias.style.gap = "6px";
-                contenedorPdfEvidencias.style.justifyItems = "center";
-
                 fotosBase64Guardadas.forEach(fotoData => {
                     const imgPdf = document.createElement("img");
                     imgPdf.src = fotoData;
-                    imgPdf.style.width = "100%"; imgPdf.style.maxWidth = "115px";
-                    imgPdf.style.height = "80px"; imgPdf.style.objectFit = "contain";
-                    imgPdf.style.border = "1px solid #333";
+                    imgPdf.style.maxWidth = "110px";
+                    imgPdf.style.maxHeight = "70px";
+                    imgPdf.style.objectFit = "contain";
+                    imgPdf.style.border = "1px solid #CBD5E1";
+                    imgPdf.style.borderRadius = "3px";
                     contenedorPdfEvidencias.appendChild(imgPdf);
                 });
             }
             
-            const graduacion = "GRAVE";
-            document.getElementById("pdf-txt-graduacion").innerText = graduacion;
+            document.getElementById("pdf-txt-graduacion").innerText = "GRAVE";
             document.getElementById("pdf-txt-fecha-envio").innerText = actualFechaEnvioGlobal;
 
-            let bloqueSancion = "• <strong>Primera vez:</strong> Suspensión temporal de 8 a 30 días.<br>" +
-                "• <strong>Segunda vez:</strong> Se considerará como infracción muy grave y se aplicará suspensión temporal de 31 días a 6 meses.<br>" +
-                "• <strong>Tercera vez:</strong> Se considerará como infracción muy grave y se aplicará suspensión temporal de 1 año.<br>" +
-                "• <strong>Medidas de carácter provisional:</strong> En caso aplique según evaluación.";
+            let bloqueSancion = "• <strong>Primera vez:</strong> Suspensión temporal de accesos de 8 a 30 días.<br>" +
+                "• <strong>Segunda vez (Reincidencia):</strong> Infracción muy grave; suspensión de 31 días a 6 meses.<br>" +
+                "• <strong>Tercera vez:</strong> Infracción muy grave; suspensión temporal por 1 año.";
             
             document.getElementById("pdf-txt-sancion-bloque").innerHTML = bloqueSancion;
 
@@ -1177,9 +1107,7 @@ function verificarPassword() {
             document.getElementById("preview-modal").style.display = "none";
         }
 
-        // --- EMISIÓN FINAL CON GENERACIÓN EN LA NUBE Y REDIRECCIÓN COMPLETA ---
         function ejecutarExportacionFinal() {
-            // 1. Mostrar la animación del buque navegando
             document.getElementById("waiting-modal").style.display = "flex";
 
             const responsable = document.getElementById("form-responsable").value;
@@ -1191,19 +1119,17 @@ function verificarPassword() {
             
             const elementoAImprimir = document.getElementById("pdf-template");
 
-            // Configuración optimizada de descarga local rápida en el móvil
+            // Configuración optimizada de descarga para 1 SOLA HOJA PERFECTA
             const opcionesConfig = {
-                margin:       10,
+                margin:       5,
                 filename:     `Papeleta_${idPapeleta}.pdf`,
-                image:        { type: 'jpeg', quality: 0.90 },
-                html2canvas:  { scale: 1.5, logging: false, useCORS: true, scrollY: 0 }, 
+                image:        { type: 'jpeg', quality: 0.95 },
+                html2canvas:  { scale: 2, logging: false, useCORS: true, scrollY: 0 }, 
                 jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
             };
 
-            // Ejecuta la descarga física local instantánea
             html2pdf().set(opcionesConfig).from(elementoAImprimir).save();
 
-            // Construir el paquete de datos para guardar y subir a Drive
             const payload = {
                 user: sessionStorage.getItem("secure_user_initials"),
                 auth: sessionStorage.getItem("secure_auth_plain"),
@@ -1226,7 +1152,6 @@ function verificarPassword() {
                 fotos: fotosBase64Guardadas 
             };
 
-            // Determinamos el saludo correspondiente por hora
             const hora = new Date().getHours();
             let saludo = "Buenas noches";
             if (hora >= 5 && hora < 12) {
@@ -1235,9 +1160,7 @@ function verificarPassword() {
                 saludo = "Buenas tardes";
             }
 
-            // Si está conectado a internet, subimos y redireccionamos
             if (navigator.onLine) {
-                // MODIFICADO: Quitamos 'mode: "no-cors"' para poder leer la respuesta JSON del servidor
                 fetch(CONFIG_WEB_APP_URL, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -1245,11 +1168,9 @@ function verificarPassword() {
                 })
                 .then(res => res.json())
                 .then(data => {
-                    // Ocultamos la animación del buque
                     document.getElementById("waiting-modal").style.display = "none";
 
                     if (data.status === "success") {
-                        // Construimos el mensaje para el grupo de WhatsApp
                         const mensajeWhatsApp = 
                             `¡${saludo}! Les saluda el inspector *${responsable}*.\n\n` +
                             `Se envía la papeleta número *${idPapeleta}* correspondiente al presunto infractor *${infractorNombre}* (DNI: ${infractorDni}), por cometer la conducta infractora:\n` +
@@ -1257,8 +1178,6 @@ function verificarPassword() {
                             `📄 *Papeleta en PDF (Drive):*\n${data.url}`;
 
                         const enlaceWhatsApp = "https://wa.me/?text=" + encodeURIComponent(mensajeWhatsApp);
-                        
-                        // Redirigimos al inspector a compartir en su grupo de WhatsApp
                         window.location.href = enlaceWhatsApp;
                         
                         finalizarFlujoEmision();
@@ -1272,11 +1191,9 @@ function verificarPassword() {
                     guardarEnColaOffline(payload);
                 });
             } else {
-                // Flujo sin conexión (Offline)
                 document.getElementById("waiting-modal").style.display = "none";
                 guardarEnColaOffline(payload);
 
-                // En modo offline, aún le permitimos enviar el reporte al grupo pero con un aviso de red
                 const mensajeWhatsAppOffline = 
                     `¡${saludo}! Les saluda el inspector *${responsable}*.\n\n` +
                     `Se envía la papeleta número *${idPapeleta}* correspondiente al presunto infractor *${infractorNombre}* (DNI: ${infractorDni}), por cometer la conducta infractora:\n` +
@@ -1298,7 +1215,6 @@ function verificarPassword() {
         }
 
         function finalizarFlujoEmision() {
-            document.getElementById("form-loader").style.display = "none";
             document.getElementById("preview-buttons-group").style.display = "flex";
             document.getElementById("preview-modal").style.display = "none";
             
@@ -1319,7 +1235,6 @@ function verificarPassword() {
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             
-            // Ajustamos el selector para soportar la pestaña de puesto
             const section = document.getElementById('view-' + target);
             if (section) {
                 section.classList.add('active');
@@ -1331,12 +1246,6 @@ function verificarPassword() {
             }
         }
 
-        function marcarRadio(radioInput) {
-            document.querySelectorAll('.radio-tile').forEach(t => t.classList.remove('selected'));
-            radioInput.parentElement.classList.add('selected');
-        }
-
-        // --- CARGA DE LA BASE DE DATOS ---
         function cargarDatosBaseDeDatos() {
             const secureUser = sessionStorage.getItem("secure_user_initials");
             const securePass = sessionStorage.getItem("secure_auth_plain");
@@ -1353,7 +1262,6 @@ function verificarPassword() {
         }
 
         function renderizarDatosSincronizados(data) {
-            // --- CONTROL DE SEGURIDAD INDIVIDUAL PARA BÚSQUEDAS ---
             const ADMIN_USERS = ["NI", "GK", "BB", "JSD", "RV"];
             const loggedUser = (sessionStorage.getItem("secure_user_initials") || "").trim().toUpperCase();
             const esAdmin = ADMIN_USERS.includes(loggedUser);
@@ -1361,22 +1269,18 @@ function verificarPassword() {
             const seccionBusqueda = document.getElementById("seccion-busqueda-dashboard");
             if (seccionBusqueda) {
                 if (esAdmin) {
-                    seccionBusqueda.style.display = "block"; // Los administradores ven la búsqueda
+                    seccionBusqueda.style.display = "block";
                 } else {
-                    seccionBusqueda.style.display = "none";  // Los restringidos no ven la búsqueda
+                    seccionBusqueda.style.display = "none";
                 }
             }
-            // ---------------------------------------------------------------
 
-            // MODIFICADO: Selección automática del Oficial Responsable según su Login
             const selectForm = document.getElementById("form-responsable");
             selectForm.innerHTML = "";
 
-            // Buscamos al usuario logueado en la lista de usuarios devuelta por el servidor
             const oficialLogueado = data.usuarios.find(u => u.iniciales.toUpperCase() === loggedUser);
 
             if (oficialLogueado) {
-                // Si encontramos coincidencia, agregamos solo a ese Oficial
                 let opt = document.createElement("option");
                 opt.value = oficialLogueado.nombre; 
                 opt.text = oficialLogueado.nombre;
@@ -1384,10 +1288,8 @@ function verificarPassword() {
                 opt.dataset.correlativo = oficialLogueado.siguienteCorrelativo;
                 selectForm.appendChild(opt);
 
-                // Deshabilitamos el select para que no pueda emitir bajo el nombre de otro oficial
                 selectForm.disabled = true;
             } else {
-                // Fallback de seguridad: Si por alguna razón no coincide, listamos todos (modo normal)
                 data.usuarios.forEach(u => {
                     let opt = document.createElement("option");
                     opt.value = u.nombre; opt.text = u.nombre;
@@ -1397,10 +1299,8 @@ function verificarPassword() {
                 selectForm.disabled = false;
             }
 
-            // Calcula automáticamente el N° de papeleta y el ID del documento
             autoCalcularID();
 
-            // Población del selector de filtros del Dashboard
             const selectDashboard = document.getElementById("filtro-miembro");
             selectDashboard.innerHTML = '<option value="">-- Todos los Integrantes --</option>';
             data.usuarios.forEach(u => {
@@ -1416,7 +1316,6 @@ function verificarPassword() {
             filtrarHistorial();
         }
 
-        // --- BÚSQUEDA LOCAL DINÁMICA (EN CACHÉ DE 500 REGISTROS) ---
         function filtrarHistorial() {
             const responsableSeleccionado = document.getElementById("filtro-miembro").value;
             const dniBuscado = document.getElementById("filtro-dni").value.trim().toLowerCase();
@@ -1481,7 +1380,6 @@ function verificarPassword() {
             });
         }
 
-        // --- BÚSQUEDA AVANZADA HISTÓRICA EN EL EXCEL ---
         function ejecutarBusquedaAvanzadaDni() {
             const dni = document.getElementById("filtro-dni").value.trim();
             const contenedorResultados = document.getElementById("contenedor-avanzada-resultados");
@@ -1561,7 +1459,7 @@ function verificarPassword() {
             document.getElementById("form-num-papeleta").value = option.dataset.correlativo;
             document.getElementById("form-id-papeleta").value = `${option.dataset.iniciales}_${option.dataset.correlativo}_${yearActual}`;
         }
-         // --- MOTOR DE CÁLCULO Y RENDERIZADO DE TABLA DE POSICIONES (PODIO) ---
+
         function renderizarLeaderboard(data) {
             const tbody = document.getElementById("leaderboard-cuerpo");
             if (!tbody) return;
@@ -1572,14 +1470,12 @@ function verificarPassword() {
                 return;
             }
 
-            // Lista de iniciales de administradores a excluir en el podio de "Puesto"
             const EXCLUDE_INITIALS = ["NI", "GK", "BB", "RV", "SEC", "JSD"];
 
-            // Filtramos excluyendo administradores y calculamos la cantidad de papeletas desde "Ultimo_Correlativo" (siguienteCorrelativo - 1)
             const ranking = data.usuarios
                 .filter(u => !EXCLUDE_INITIALS.includes(u.iniciales.toUpperCase()))
                 .map(u => {
-                    const totalPapeletas = Number(u.siguienteCorrelativo) - 1; // Siguiente correlativo menos 1 es el correlativo actual de la base de datos
+                    const totalPapeletas = Number(u.siguienteCorrelativo) - 1;
                     return {
                         nombre: u.nombre,
                         iniciales: u.iniciales.toUpperCase(),
@@ -1588,8 +1484,6 @@ function verificarPassword() {
                 })
                 .sort((a, b) => b.count - a.count);
 
-            // 1. Renderizar Podium (Top 3)
-            // 1er Puesto
             if (ranking[0]) {
                 document.getElementById("podium-1-name").innerText = ranking[0].nombre;
                 document.getElementById("podium-1-count").innerText = `${ranking[0].count} papeletas`;
@@ -1598,7 +1492,6 @@ function verificarPassword() {
                 document.getElementById("podium-1-count").innerText = "0 pap.";
             }
 
-            // 2do Puesto
             if (ranking[1]) {
                 document.getElementById("podium-2-name").innerText = ranking[1].nombre;
                 document.getElementById("podium-2-count").innerText = `${ranking[1].count} papeletas`;
@@ -1607,7 +1500,6 @@ function verificarPassword() {
                 document.getElementById("podium-2-count").innerText = "0 pap.";
             }
 
-            // 3er Puesto
             if (ranking[2]) {
                 document.getElementById("podium-3-name").innerText = ranking[2].nombre;
                 document.getElementById("podium-3-count").innerText = `${ranking[2].count} papeletas`;
@@ -1616,7 +1508,6 @@ function verificarPassword() {
                 document.getElementById("podium-3-count").innerText = "0 pap.";
             }
 
-            // 2. Renderizar Lista del puesto 4 en adelante
             if (ranking.length <= 3) {
                 tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; font-style:italic; color:#888;">No hay más oficiales en lista por el momento.</td></tr>`;
             } else {
@@ -1631,18 +1522,14 @@ function verificarPassword() {
                 }
             }
 
-            // 3. EFECTO DE CELEBRACIÓN: Si el usuario que tiene la sesión abierta está en 1er puesto
             const loggedUser = (sessionStorage.getItem("secure_user_initials") || "").trim().toUpperCase();
             if (ranking[0] && ranking[0].iniciales === loggedUser) {
                 triggerCelebracionPrimero();
             }
         }
 
-        // --- SISTEMA DE CELEBRACIÓN DE CAMPEÓN NATIVO ---
         function triggerCelebracionPrimero() {
-            // Sonido de acorde festivo e instrumentos metálicos
             playSonidoCelebracion();
-            // Explosión de partículas 3D (Medallas, Copas y Confeti)
             crearExplosionParticulas();
         }
 
@@ -1652,14 +1539,12 @@ function verificarPassword() {
             const ctx = new AudioContext();
             const now = ctx.currentTime;
 
-            // 1. Acorde armónico de victoria (C Mayor con séptima)
-            const freqs = [523.25, 659.25, 783.99, 1046.50]; // Notas agudas y festivas
+            const freqs = [523.25, 659.25, 783.99, 1046.50];
             freqs.forEach((freq, idx) => {
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
                 osc.type = 'triangle';
                 
-                // Pequeño delay de escala para simular arpa o aplauso inicial
                 osc.frequency.setValueAtTime(freq, now + idx * 0.05);
                 
                 gain.gain.setValueAtTime(0, now + idx * 0.05);
@@ -1672,7 +1557,6 @@ function verificarPassword() {
                 osc.stop(now + idx * 0.05 + 1.8);
             });
 
-            // 2. Ruido metálico secundario (simula campanas de felicitación)
             for (let i = 0; i < 4; i++) {
                 const oscCampana = ctx.createOscillator();
                 const gainCampana = ctx.createGain();
@@ -1714,24 +1598,21 @@ function verificarPassword() {
                 `;
                 container.appendChild(el);
 
-                // Vectores de física aleatoria (Ángulo y fuerza de salida)
                 const angle = Math.random() * Math.PI * 2;
                 const velocity = Math.random() * 280 + 100; 
                 const targetX = Math.cos(angle) * velocity;
-                const targetY = Math.sin(angle) * velocity + 160; // Desplazamiento por gravedad
+                const targetY = Math.sin(angle) * velocity + 160;
 
-                // Ejecutamos la animación por transición CSS
                 setTimeout(() => {
                     el.style.transform = `translate(calc(-50% + ${targetX}px), calc(-50% + ${targetY}px)) rotate(${Math.random() * 360}deg) scale(0.4)`;
                     el.style.opacity = '0';
                 }, 50);
             }
 
-            // Eliminamos el contenedor del DOM al expirar la animación
             setTimeout(() => { container.remove(); }, 2200);
         }
     </script>
-    <!-- MODAL DE ESPERA: BUQUE NAVEGANDO -->
+    
     <div id="waiting-modal" class="waiting-modal-overlay">
         <div class="ship-container">
             <div class="sailing-ship">🚢</div>
