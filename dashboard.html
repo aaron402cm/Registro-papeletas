@@ -3625,22 +3625,30 @@ body.light-theme .notification-item strong {
             const pIA = document.getElementById("pipe-count-ia"); if (pIA) pIA.innerText = enModoIA;
         }
 
-        function filtrarPorEtapaTramite(etapa) {
-            etapaTramiteActual = etapa;
+function filtrarPorEtapaTramite(etapa) {
+    etapaTramiteActual = etapa;
 
-            document.querySelectorAll(".pipeline-bar .pipeline-node").forEach(n => n.classList.remove("active"));
+    // 1. Limpiar el filtro desplegable de Estado Trámite para evitar cruces contradictorios
+    const selectSemaforo = document.getElementById("filtro-semaforo");
+    if (selectSemaforo) {
+        selectSemaforo.value = "";
+    }
 
-            let targetId = "pipe-all";
-            if (etapa === "EN_PLAZO") targetId = "pipe-enplazo";
-            else if (etapa === "DESCARGO_RECIBIDO") targetId = "pipe-descargo";
-            else if (etapa === "PLAZO_VENCIDO") targetId = "pipe-vencido";
-            else if (etapa === "AUTOMATICO") targetId = "pipe-ia";
+    // 2. Marcar visualmente la caja seleccionada
+    document.querySelectorAll(".pipeline-bar .pipeline-node").forEach(n => n.classList.remove("active"));
 
-            const elTarget = document.getElementById(targetId);
-            if (elTarget) elTarget.classList.add("active");
+    let targetId = "pipe-all";
+    if (etapa === "EN_PLAZO") targetId = "pipe-enplazo";
+    else if (etapa === "DESCARGO_RECIBIDO") targetId = "pipe-descargo";
+    else if (etapa === "PLAZO_VENCIDO") targetId = "pipe-vencido";
+    else if (etapa === "AUTOMATICO") targetId = "pipe-ia";
 
-            filtrarYRenderizarTabla();
-        }
+    const elTarget = document.getElementById(targetId);
+    if (elTarget) elTarget.classList.add("active");
+
+    // 3. Renderizar la tabla con la etapa filtrada limpia
+    filtrarYRenderizarTabla();
+}
 
         function ordenarTablaPor(columna) {
             if (sortColumnaActual === columna) {
