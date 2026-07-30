@@ -3342,14 +3342,17 @@ body.light-theme .modo-manual-text {
             });
         }
 
-        function cambiarPanel(target, btn) {
-            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.tab-link').forEach(b => b.classList.remove('active'));
-            const pTarget = document.getElementById('panel-' + target);
-            if (pTarget) pTarget.classList.add('active');
-            if (btn) btn.classList.add('active');
-            if (target === 'config') cargarReglasRISDesdeServidor();
-        }
+        // CÓDIGO CORREGIDO:
+function cambiarPanel(target, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-link').forEach(b => b.classList.remove('active'));
+    const pTarget = document.getElementById('panel-' + target);
+    if (pTarget) pTarget.classList.add('active');
+    if (btn) btn.classList.add('active');
+    
+    if (target === 'config') cargarReglasRISDesdeServidor();
+    if (target === 'cerradas-panel') cargarYRenderizarCasosCerrados(); 
+}
 
         function toggleLoginPassword() {
             const passInput = document.getElementById("sec-password");
@@ -3564,7 +3567,7 @@ body.light-theme .modo-manual-text {
             prevPapeletasCount = totalActual;
 
             renderizarTablaTiposModos();
-
+            cargarYRenderizarCasosCerrados();
             if (data.dashboardData && data.dashboardData.papeletas) {
                 poblarFiltrosDinamicos(data.dashboardData.papeletas);
                 calcularFiltrosEtapa(data.dashboardData.papeletas);
@@ -4009,7 +4012,15 @@ const modoBadge = `
                 tbody.appendChild(tr);
             });
         }
-
+        // NUEVA FUNCIÓN AÑADIDA:
+function cargarYRenderizarCasosCerrados() {
+    if (!globalDashboardCache || !globalDashboardCache.dashboardData || !globalDashboardCache.dashboardData.papeletas) return;
+    
+    // Filtrar únicamente los expedientes cuyo estado contenga la palabra "CERRADO"
+    const cerradas = globalDashboardCache.dashboardData.papeletas.filter(p => p.estado_tramite && p.estado_tramite.indexOf("CERRADO") !== -1);
+    
+    renderizarTablaCasosCerrados(cerradas);
+}
         function ejecutarBusquedaDBServidor(tipo) {
             const inputId = tipo === "activo" ? "tabla-buscador-rapido" : "buscador-casos-cerrados";
             const inputEl = document.getElementById(inputId);
