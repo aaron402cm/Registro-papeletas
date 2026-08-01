@@ -1054,7 +1054,7 @@ function guardarBorradorFormulario() {
         fechaHora: document.getElementById("inf-fecha-hora")?.value || "",
         conducta: document.getElementById("inf-conducta")?.value || "",
         descripcion: document.getElementById("inf-descripcion")?.value || "",
-        fotos: fotosBase64Guardadas || []
+        fotos: fotosBase64Guardadas || [], // <--- COMA AGREGADA AQUÍ
         correo2: document.getElementById("inf-correo-2")?.value || "",
         tieneCorreo2: document.getElementById("contenedor-correo-2")?.style.display === "flex"
     };
