@@ -2667,7 +2667,8 @@ body.light-theme .modo-manual-text {
                         📑 Tipos y Modos de Trámite
                     </button>   
                     <button class="tab-link" onclick="cambiarPanel('cerradas-panel', this)">
-                        🟢 Casos Cerrados
+                   🟢 Casos Cerrados
+                       <span class="tab-badge" id="badge-total-cerradas" style="display:none; background-color: rgba(0, 200, 83, 0.15) !important; color: #00C853 !important; border: 1px solid rgba(0, 200, 83, 0.3) !important;">0</span>
                     </button>
                     <button class="tab-link" onclick="cambiarPanel('kpis', this)">
                         📊 KPIs Operativos
@@ -3984,34 +3985,40 @@ const modoBadge = `
         }
 
         function renderizarTablaCasosCerrados(papeletasCerradas) {
-            const tbody = document.querySelector("#tabla-casos-cerrados tbody");
-            if (!tbody) return;
-            tbody.innerHTML = "";
-            if (papeletasCerradas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">No hay expedientes cerrados recientemente.</td></tr>`;
-                return;
-            }
-            papeletasCerradas.forEach(p => {
-                let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.replace("T", " ") : "-";
-                const tr = document.createElement("tr");
-                tr.className = "clickable-row";
-                let driveButton = p.carpeta_drive_url 
-                    ? `<a href="${p.carpeta_drive_url}" target="_blank" class="btn-pdf-view" style="background-color:#107c41; text-decoration:none; display:inline-block; padding:4px 8px; color: white; border-radius: 4px; font-weight: bold;">📂 Drive</a>`
-                    : `<span style="color:gray;">No disponible</span>`;
+    const tbody = document.querySelector("#tabla-casos-cerrados tbody");
+    if (!tbody) return;
+    tbody.innerHTML = "";
+    if (papeletasCerradas.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">No hay expedientes cerrados recientemente.</td></tr>`;
+        return;
+    }
+    papeletasCerradas.forEach(p => {
+        let fechaFormat = p.fecha_infraccion ? p.fecha_infraccion.replace("T", " ") : "-";
+        const tr = document.createElement("tr");
+        tr.className = "clickable-row";
+        
+        // 🚀 Al hacer clic en la fila, se abre el modal con la resolución
+        tr.onclick = function() {
+            verDetalleCasoCerrado(p.id_papeleta);
+        };
 
-                tr.innerHTML = `
-                    <td><strong>${p.id_papeleta}</strong></td>
-                    <td>${p.infractor}</td>
-                    <td>${p.empresa}</td>
-                    <td>${p.conducta}</td>
-                    <td>${fechaFormat}</td>
-                    <td><span class="badge badge-green">${p.estado_tramite === "CERRADO_SANCION" ? "SANCIONADO" : "AMONESTADO"}</span></td>
-                    <td>${driveButton}</td>
-                    <td><button class="btn-pdf-view" style="background-color: var(--apm-blue); border: none; padding: 4px 8px; border-radius: 4px; color: black; font-weight: bold; cursor: pointer;" onclick="abrirVisorPDF('${p.id_papeleta}', event)">📄 PDF</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
+        let driveButton = p.carpeta_drive_url 
+            ? `<a href="${p.carpeta_drive_url}" target="_blank" class="btn-pdf-view" style="background-color:#107c41; text-decoration:none; display:inline-block; padding:4px 8px; color: white; border-radius: 4px; font-weight: bold;" onclick="event.stopPropagation()">📂 Drive</a>`
+            : `<span style="color:gray;">No disponible</span>`;
+
+        tr.innerHTML = `
+            <td><strong style="color: #00f0ff;">${p.id_papeleta}</strong></td>
+            <td>${p.infractor}</td>
+            <td>${p.empresa}</td>
+            <td>${p.conducta}</td>
+            <td>${fechaFormat}</td>
+            <td><span class="badge badge-green">${p.estado_tramite === "CERRADO_SANCION" ? "SANCIONADO" : "AMONESTADO"}</span></td>
+            <td>${driveButton}</td>
+            <td><button class="btn-pdf-view" style="background-color: var(--apm-blue); border: none; padding: 4px 8px; border-radius: 4px; color: black; font-weight: bold; cursor: pointer;" onclick="abrirVisorPDF('${p.id_papeleta}', event)">📄 PDF</button></td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
         // NUEVA FUNCIÓN AÑADIDA:
 function cargarYRenderizarCasosCerrados() {
     if (!globalDashboardCache || !globalDashboardCache.dashboardData || !globalDashboardCache.dashboardData.papeletas) return;
@@ -4019,6 +4026,17 @@ function cargarYRenderizarCasosCerrados() {
     // Filtrar únicamente los expedientes cuyo estado contenga la palabra "CERRADO"
     const cerradas = globalDashboardCache.dashboardData.papeletas.filter(p => p.estado_tramite && p.estado_tramite.indexOf("CERRADO") !== -1);
     
+    // Actualizar el badge en el menú lateral
+    const badgeCerradas = document.getElementById("badge-total-cerradas");
+    if (badgeCerradas) {
+        if (cerradas.length > 0) {
+            badgeCerradas.innerText = cerradas.length;
+            badgeCerradas.style.display = "inline-block";
+        } else {
+            badgeCerradas.style.display = "none";
+        }
+    }
+
     renderizarTablaCasosCerrados(cerradas);
 }
         function ejecutarBusquedaDBServidor(tipo) {
@@ -4867,6 +4885,138 @@ function cambiarModoDirectoTabla(idPapeleta, esAuto) {
         console.error("Error al guardar cambio de modo desde la tabla:", err);
     });
 }
+        let idCasoCerradoActivo = null;
+
+function verDetalleCasoCerrado(id) {
+    idCasoCerradoActivo = id;
+    if (!globalDashboardCache || !globalDashboardCache.dashboardData) return;
+
+    const papeleta = globalDashboardCache.dashboardData.papeletas.find(p => String(p.id_papeleta) === String(id));
+    if (!papeleta) return;
+
+    document.getElementById("modal-cerrado-id").innerText = papeleta.id_papeleta;
+    document.getElementById("modal-cerrado-infractor").innerText = papeleta.infractor || "-";
+    document.getElementById("modal-cerrado-empresa").innerText = papeleta.empresa || "-";
+    document.getElementById("modal-cerrado-conducta").innerText = papeleta.conducta || "-";
+
+    const badgeEstado = document.getElementById("modal-cerrado-estado-badge");
+    if (badgeEstado) {
+        if (papeleta.estado_tramite === "CERRADO_SANCION") {
+            badgeEstado.innerText = "SANCIONADO";
+            badgeEstado.className = "badge badge-red";
+        } else {
+            badgeEstado.innerText = "AMONESTADO";
+            badgeEstado.className = "badge badge-green";
+        }
+    }
+
+    // Extraer días y texto de resolución desde el caché procesado
+    let dias = 0;
+    let resolucionTexto = "No se registró detalle escrito de la resolución.";
+
+    try {
+        if (papeleta.ia_analisis_cache && papeleta.ia_analisis_cache.trim() !== "") {
+            const cache = JSON.parse(papeleta.ia_analisis_cache);
+            if (cache.dias_sugeridos !== undefined) {
+                dias = cache.dias_sugeridos;
+            }
+            if (cache.correo_borrador && cache.correo_borrador.length > 10) {
+                resolucionTexto = cache.correo_borrador;
+            } else if (cache.analisis_caso) {
+                resolucionTexto = cache.analisis_caso;
+            }
+        }
+    } catch(e) {}
+
+    const elDias = document.getElementById("modal-cerrado-dias");
+    if (elDias) {
+        if (papeleta.estado_tramite === "CERRADO_ABSUELTO" || dias === 0) {
+            elDias.innerText = "0 Días (Amonestación Escrita)";
+            elDias.style.color = "#00C853";
+        } else {
+            elDias.innerText = `${dias} Día(s) Suspendido(s)`;
+            elDias.style.color = "#ffb700";
+        }
+    }
+
+    const elRes = document.getElementById("modal-cerrado-resolucion-texto");
+    if (elRes) elRes.innerText = resolucionTexto;
+
+    const btnDrive = document.getElementById("modal-cerrado-btn-drive");
+    if (btnDrive) {
+        if (papeleta.carpeta_drive_url && papeleta.carpeta_drive_url.trim() !== "") {
+            btnDrive.href = papeleta.carpeta_drive_url;
+            btnDrive.style.display = "inline-flex";
+        } else {
+            btnDrive.style.display = "none";
+        }
+    }
+
+    document.getElementById("modal-detalle-caso-cerrado").style.display = "flex";
+}
+
+function abrirVisorPDFDesdeModalCerrado() {
+    if (idCasoCerradoActivo) {
+        abrirVisorPDF(idCasoCerradoActivo, null);
+    }
+}
+
+function cerrarModalCasoCerrado() {
+    document.getElementById("modal-detalle-caso-cerrado").style.display = "none";
+    idCasoCerradoActivo = null;
+}
     </script>
+    <!-- MODAL DE DETALLE DE CASO CERRADO -->
+<div class="modal-overlay" id="modal-detalle-caso-cerrado">
+    <div class="modal-box" style="max-width: 700px; border-top: 4px solid var(--success-green);">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid var(--border-color); padding-bottom: 12px; margin-bottom: 15px;">
+            <h3 style="margin: 0; color: #00f0ff; font-size: 18px;">🟢 Detalle de Expediente Cerrado</h3>
+            <span class="modal-close-btn" style="position: static !important;" onclick="cerrarModalCasoCerrado()">✕</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; background: rgba(0, 15, 30, 0.6); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 15px;">
+            <div>
+                <span style="font-size: 11px; color: var(--apm-blue); font-weight: bold; font-family: monospace;">ID PAPELETA:</span><br>
+                <strong id="modal-cerrado-id" style="font-size: 15px; color: #ff5500; font-family: monospace;">-</strong>
+            </div>
+            <div>
+                <span style="font-size: 11px; color: var(--apm-blue); font-weight: bold; font-family: monospace;">INFRACTOR:</span><br>
+                <strong id="modal-cerrado-infractor" style="font-size: 14px; color: #ffffff;">-</strong>
+            </div>
+            <div>
+                <span style="font-size: 11px; color: var(--apm-blue); font-weight: bold; font-family: monospace;">EMPRESA CONTRATISTA:</span><br>
+                <strong id="modal-cerrado-empresa" style="font-size: 13px; color: #a0c0d5;">-</strong>
+            </div>
+            <div>
+                <span style="font-size: 11px; color: var(--apm-blue); font-weight: bold; font-family: monospace;">CONDUCTA SANCIONADA:</span><br>
+                <strong id="modal-cerrado-conducta" style="font-size: 13px; color: #cbd5e1;">-</strong>
+            </div>
+        </div>
+
+        <!-- MUESTRA DE DÍAS SUSPENDIDOS -->
+        <div style="background: rgba(255, 170, 0, 0.08); border: 1px solid rgba(255, 170, 0, 0.3); padding: 12px; border-radius: 8px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+                <span style="font-size: 11px; font-weight: bold; color: #ffb700; font-family: monospace;">ESTADO DEL CASO:</span><br>
+                <span id="modal-cerrado-estado-badge" class="badge badge-green">-</span>
+            </div>
+            <div style="text-align: right;">
+                <span style="font-size: 11px; font-weight: bold; color: #ffb700; font-family: monospace;">SANCIÓN APLICADA:</span><br>
+                <strong id="modal-cerrado-dias" style="font-size: 20px; color: #ffb700; font-family: monospace;">0 Días</strong>
+            </div>
+        </div>
+
+        <!-- RESOLUCIÓN FINAL -->
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-size: 11px; font-weight: bold; color: var(--apm-blue); margin-bottom: 6px; font-family: monospace;">📄 RESOLUCIÓN FINAL DE NOTIFICACIÓN:</label>
+            <div id="modal-cerrado-resolucion-texto" style="background-color: #061424; border: 1px solid var(--border-color); color: #ffffff; padding: 14px; border-radius: 6px; font-size: 12px; line-height: 1.5; white-space: pre-wrap; max-height: 220px; overflow-y: auto;">-</div>
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+            <a id="modal-cerrado-btn-drive" href="#" target="_blank" class="btn-pdf-view" style="background-color: #107c41 !important; color: white !important; padding: 10px 16px !important; font-size: 13px !important; display: none;">📂 Abrir Drive</a>
+            <button class="btn-pdf-view" style="background-color: var(--apm-blue) !important; color: black !important; padding: 10px 16px !important; font-size: 13px !important;" onclick="abrirVisorPDFDesdeModalCerrado()">📄 Ver PDF</button>
+            <button class="btn-apm" style="width: auto; background-color: var(--danger-red); color: white; padding: 10px 20px;" onclick="cerrarModalCasoCerrado()">Cerrar</button>
+        </div>
+    </div>
+</div>                    
 </body>
 </html>
