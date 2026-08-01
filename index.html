@@ -566,19 +566,41 @@
             </div>
 
             <div class="card">
-                <h3>2. Datos del Presunto Infractor</h3>
-                <div class="form-group"><label>Nombres y Apellidos</label><input type="text" id="inf-nombre" oninput="actualizarDescripcionDinamica()"></div>
-                <div class="form-group">
-                <label>DNI / C.E / Pasaporte</label>
-                <input type="tel" id="inf-dni" inputmode="numeric" pattern="[0-9]*" maxlength="8" placeholder="Ingrese 8 dígitos">
-                </div>
-                <div class="form-group"><label>Cargo</label><input type="text" id="inf-cargo" oninput="actualizarDescripcionDinamica()"></div>
-                <div class="form-group"><label>Número de Contacto</label><input type="text" id="inf-contacto" oninput="actualizarDescripcionDinamica()"></div>
-                <div class="form-group"><label>Empresa / Razón Social</label><input type="text" id="inf-empresa" oninput="actualizarDescripcionDinamica()"></div>
-                <div class="form-group"><label>Correo Electrónico</label><input type="email" id="inf-correo" oninput="actualizarDescripcionDinamica()"></div>
-                <div class="form-group"><label>N° Licencia de Conducir</label><input type="text" id="inf-licencia" oninput="actualizarDescripcionDinamica()"></div>
-                <div class="form-group"><label>Placa de Vehículo</label><input type="text" id="inf-placa" oninput="actualizarDescripcionDinamica()"></div>
-            </div>
+    <h3>2. Datos del Presunto Infractor</h3>
+    
+    <div class="form-group">
+        <label>DNI / C.E / Pasaporte</label>
+        <div style="display: flex; gap: 8px;">
+            <input type="tel" id="inf-dni" inputmode="numeric" pattern="[0-9]*" maxlength="8" placeholder="Ingrese 8 dígitos" style="flex: 1;">
+            <button type="button" onclick="consultarDniOnline()" style="background-color: var(--primary); border: 1px solid var(--secondary); color: #00f0ff; padding: 10px 14px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 14px;">
+                🔍 Buscar DNI
+            </button>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Nombres y Apellidos</label>
+        <input type="text" id="inf-nombre" oninput="actualizarDescripcionDinamica()">
+    </div>
+
+    <div class="form-group"><label>Cargo</label><input type="text" id="inf-cargo" oninput="actualizarDescripcionDinamica()"></div>
+    <div class="form-group"><label>Número de Contacto</label><input type="text" id="inf-contacto" oninput="actualizarDescripcionDinamica()"></div>
+    
+    <div class="form-group">
+        <label>Empresa / Razón Social (Opcional: Consulta por RUC)</label>
+        <div style="display: flex; gap: 8px; margin-bottom: 6px;">
+            <input type="tel" id="inf-ruc-input" placeholder="Ingresar RUC (11 dígitos)..." maxlength="11" style="flex: 1;">
+            <button type="button" onclick="consultarRucOnline()" style="background-color: var(--primary); border: 1px solid var(--secondary); color: #00f0ff; padding: 10px 14px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 14px;">
+                🏢 Buscar RUC
+            </button>
+        </div>
+        <input type="text" id="inf-empresa" oninput="actualizarDescripcionDinamica()" placeholder="Nombre de la empresa">
+    </div>
+
+    <div class="form-group"><label>Correo Electrónico</label><input type="email" id="inf-correo" oninput="actualizarDescripcionDinamica()"></div>
+    <div class="form-group"><label>N° Licencia de Conducir</label><input type="text" id="inf-licencia" oninput="actualizarDescripcionDinamica()"></div>
+    <div class="form-group"><label>Placa de Vehículo</label><input type="text" id="inf-placa" oninput="actualizarDescripcionDinamica()"></div>
+</div>
 
             <div class="card">
                 <h3>3. Detalles del Suceso</h3>
@@ -1754,5 +1776,75 @@
             Sincronizando con el servidor principal y generando el documento en la nube. Por favor, mantenga esta ventana abierta.
         </p>
     </div>
+            async function consultarDniOnline() {
+    const dniInput = document.getElementById("inf-dni");
+    const nombreInput = document.getElementById("inf-nombre");
+    const user = sessionStorage.getItem("secure_user_initials");
+    const auth = sessionStorage.getItem("secure_auth_plain");
+    const dni = dniInput.value.trim();
+
+    if (dni.length !== 8 || isNaN(dni)) {
+        alert("⚠️ Por favor ingrese un número de DNI válido (8 dígitos numéricos).");
+        return;
+    }
+
+    if (!user || !auth) {
+        alert("⚠️ Sesión no iniciada.");
+        return;
+    }
+
+    const originalText = nombreInput.value;
+    nombreInput.value = "🔍 Consultando en RENIEC / SUNAT...";
+
+    try {
+        const response = await fetch(`${CONFIG_WEB_APP_URL}?action=consultar_dni&dni=${dni}&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`);
+        const data = await response.json();
+
+        if (data.success && data.nombre) {
+            nombreInput.value = data.nombre;
+            actualizarDescripcionDinamica(); // Actualiza la plantilla si está en uso
+        } else {
+            alert("❌ " + (data.message || "No se encontró el DNI. Ingrese el nombre manualmente."));
+            nombreInput.value = originalText;
+        }
+    } catch (error) {
+        console.error("Error consultando DNI:", error);
+        alert("⚠️ Hubo un error de comunicación al consultar el DNI.");
+        nombreInput.value = originalText;
+    }
+}
+
+async function consultarRucOnline() {
+    const rucInput = document.getElementById("inf-ruc-input");
+    const empresaInput = document.getElementById("inf-empresa");
+    const user = sessionStorage.getItem("secure_user_initials");
+    const auth = sessionStorage.getItem("secure_auth_plain");
+    const ruc = rucInput.value.trim();
+
+    if (ruc.length !== 11 || isNaN(ruc)) {
+        alert("⚠️ Por favor ingrese un número de RUC válido (11 dígitos).");
+        return;
+    }
+
+    const originalText = empresaInput.value;
+    empresaInput.value = "🔍 Consultando SUNAT...";
+
+    try {
+        const response = await fetch(`${CONFIG_WEB_APP_URL}?action=consultar_ruc&ruc=${ruc}&user=${encodeURIComponent(user)}&auth=${encodeURIComponent(auth)}`);
+        const data = await response.json();
+
+        if (data.success && data.razon_social) {
+            empresaInput.value = data.razon_social;
+            actualizarDescripcionDinamica();
+        } else {
+            alert("❌ " + (data.message || "No se encontró la empresa. Ingrese el nombre manualmente."));
+            empresaInput.value = originalText;
+        }
+    } catch (error) {
+        console.error("Error consultando RUC:", error);
+        alert("⚠️ Hubo un error al consultar el RUC.");
+        empresaInput.value = originalText;
+    }
+}
 </body>
 </html>
