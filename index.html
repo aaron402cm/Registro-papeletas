@@ -535,16 +535,19 @@
             ⚠️ Sincronización pendiente: <span id="pending-count">0</span> papeleta(s) guardadas sin conexión.
         </div>
 
-        <div class="app-top-header" style="background-color: #00152b; padding: 14px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border-bottom: 3px solid var(--apm-orange); margin-bottom: 10px;">
-            <svg viewBox="0 0 420 85" style="width: 100%; max-width: 220px; height: auto; display: block; margin: 0 auto;">
-                <g transform="translate(10, 5)">
-                    <polygon points="35,8 85,8 65,22 15,22" fill="#E05B1B" />
-                    <polygon points="5,28 115,28 95,42 -15,42" fill="#E05B1B" />
-                </g>
-                <text x="125" y="28" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="18" fill="#E05B1B">Lifting Global Trade</text>
-                <text x="125" y="68" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="34" fill="#FFFFFF" letter-spacing="0.5">APM TERMINALS</text>
-            </svg>
-        </div>
+        <div class="app-top-header" style="background-color: #00152b; padding: 14px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border-bottom: 3px solid var(--apm-orange); margin-bottom: 10px; position: relative;">
+    <svg viewBox="0 0 420 85" style="width: 100%; max-width: 220px; height: auto; display: block; margin: 0 auto;">
+        <g transform="translate(10, 5)">
+            <polygon points="35,8 85,8 65,22 15,22" fill="#E05B1B" />
+            <polygon points="5,28 115,28 95,42 -15,42" fill="#E05B1B" />
+        </g>
+        <text x="125" y="28" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="18" fill="#E05B1B">Lifting Global Trade</text>
+        <text x="125" y="68" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="34" fill="#FFFFFF" letter-spacing="0.5">APM TERMINALS</text>
+    </svg>
+    <button onclick="cerrarSesion()" style="position: absolute; right: 15px; top: 15px; background: rgba(255,0,85,0.2); border: 1px solid var(--danger); color: #ff0055; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer;">
+        🚪 Salir
+    </button>
+</div>
 
         <section id="view-formulario" class="view-section active" style="padding-top: 10px;">
             <h2>📄 Emitir Papeleta</h2>
@@ -962,6 +965,42 @@ window.consultarRucOnline = async function() {
         empresaInput.value = originalText;
     }
 };
+
+        // Verifica si hay una sesión activa de menos de 12 horas al abrir o actualizar la página
+function verificarSesionGuardada() {
+    const savedUser = localStorage.getItem("secure_user_initials");
+    const savedAuth = localStorage.getItem("secure_auth_plain");
+    const expiry = localStorage.getItem("secure_session_expiry");
+
+    if (savedUser && savedAuth && expiry) {
+        const ahora = Date.now();
+        if (ahora < Number(expiry)) {
+            // La sesión sigue vigente (menos de 12 horas)
+            document.getElementById("app-username").value = savedUser;
+            document.getElementById("app-password").value = savedAuth;
+            
+            // Autologin silencioso
+            verificarPassword(true);
+        } else {
+            // Pasaron más de 12 horas: expira la sesión
+            console.log("Sesión expirada después de 12 horas.");
+            cerrarSesion();
+        }
+    }
+}
+
+// Función para cerrar sesión manualmente o limpiar credenciales caducadas
+function cerrarSesion() {
+    localStorage.removeItem("secure_user_initials");
+    localStorage.removeItem("secure_auth_plain");
+    localStorage.removeItem("secure_session_expiry");
+    sessionStorage.removeItem("secure_user_initials");
+    sessionStorage.removeItem("secure_auth_plain");
+
+    document.getElementById("main-app").style.display = "none";
+    document.getElementById("login-screen").style.display = "flex";
+    document.getElementById("app-password").value = "";
+}
         const CONFIG_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykGrZsjMZ3ewTIXjuPKqy-UDpOjtFPtT-ebMM_ilC6bf6qwPRcNn1KhdUhrODdYzEBKg/exec";
         
         let databaseCache = { usuarios: [], historial: [], plantillas: [] };
@@ -994,77 +1033,87 @@ window.consultarRucOnline = async function() {
             }
         }
 
-        function verificarPassword() {
-            const userInput = document.getElementById("app-username").value.trim().toUpperCase();
-            const passInput = document.getElementById("app-password").value.trim();
-            const loginError = document.getElementById("login-error");
-            const loginBtn = document.getElementById("login-btn");
-            const btnText = document.getElementById("btn-login-text");
+        function verificarPassword(esAutoLogin = false) {
+    const userInput = document.getElementById("app-username").value.trim().toUpperCase();
+    const passInput = document.getElementById("app-password").value.trim();
+    const loginError = document.getElementById("login-error");
+    const loginBtn = document.getElementById("login-btn");
+    const btnText = document.getElementById("btn-login-text");
+    
+    if (!userInput || !passInput) {
+        if (!esAutoLogin) alert("Por favor, ingrese sus Iniciales y Contraseña.");
+        return;
+    }
+
+    loginError.style.display = "none";
+    loginBtn.disabled = true;
+    
+    btnText.innerHTML = `
+        <div class="dots-loader">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>`;
+    loginBtn.style.opacity = "0.85";
+
+    // Guardar en localStorage con tiempo de expiración (12 horas = 43,200,000 ms)
+    const duracion12HorasMs = 12 * 60 * 60 * 1000;
+    const tiempoExpiracion = Date.now() + duracion12HorasMs;
+
+    localStorage.setItem("secure_user_initials", userInput);
+    localStorage.setItem("secure_auth_plain", passInput);
+    localStorage.setItem("secure_session_expiry", tiempoExpiracion.toString());
+    
+    // También guardamos en sessionStorage por compatibilidad con el resto del código
+    sessionStorage.setItem("secure_user_initials", userInput);
+    sessionStorage.setItem("secure_auth_plain", passInput);
+
+    fetch(`${CONFIG_WEB_APP_URL}?user=${encodeURIComponent(userInput)}&auth=${encodeURIComponent(passInput)}`)
+    .then(res => {
+        if (!res.ok) throw new Error("El servidor respondió con código " + res.status);
+        return res.json();
+    })
+    .then(data => {
+        if (data.error || data.status === "error" || data.result === "error") {
+            loginError.style.display = "block";
+            loginError.innerText = data.message || data.error || "Credenciales incorrectas";
             
-            if (!userInput || !passInput) {
-                alert("Por favor, ingrese sus Iniciales y Contraseña.");
-                return;
-            }
-
-            loginError.style.display = "none";
-            loginBtn.disabled = true;
+            cerrarSesion(); // Borra credenciales si falló
             
-            btnText.innerHTML = `
-                <div class="dots-loader">
-                    <div class="dot"></div>
-                    <div class="dot"></div>
-                    <div class="dot"></div>
-                </div>`;
-            loginBtn.style.opacity = "0.85";
+            loginBtn.disabled = false;
+            btnText.innerText = "Ingresar al Sistema";
+            loginBtn.style.opacity = "1";
+        } else {
+            document.getElementById("login-screen").style.display = "none";
+            document.getElementById("main-app").style.display = "block";
+            
+            databaseCache = data;
+            renderizarDatosSincronizados(data);
 
-            sessionStorage.setItem("secure_user_initials", userInput);
-            sessionStorage.setItem("secure_auth_plain", passInput);
-
-            fetch(`${CONFIG_WEB_APP_URL}?user=${encodeURIComponent(userInput)}&auth=${encodeURIComponent(passInput)}`)
-            .then(res => {
-                if (!res.ok) throw new Error("El servidor respondió con código " + res.status);
-                return res.json();
-            })
-            .then(data => {
-                if (data.error || data.status === "error" || data.result === "error") {
-                    loginError.style.display = "block";
-                    loginError.innerText = data.message || data.error || "Credenciales incorrectas";
-                    
-                    sessionStorage.removeItem("secure_user_initials");
-                    sessionStorage.removeItem("secure_auth_plain");
-                    
-                    loginBtn.disabled = false;
-                    btnText.innerText = "Ingresar al Sistema";
-                    loginBtn.style.opacity = "1";
-                } else {
-                    document.getElementById("login-screen").style.display = "none";
-                    document.getElementById("main-app").style.display = "block";
-                    
-                    databaseCache = data;
-                    renderizarDatosSincronizados(data);
-
-                    loginBtn.disabled = false;
-                    btnText.innerText = "Ingresar al Sistema";
-                    loginBtn.style.opacity = "1";
-                }
-            })
-            .catch(err => {
-                loginError.style.display = "block";
-                loginError.innerText = "Error de conexión con el servidor";
-                
-                sessionStorage.removeItem("secure_user_initials");
-                sessionStorage.removeItem("secure_auth_plain");
-                
-                loginBtn.disabled = false;
-                btnText.innerText = "Ingresar al Sistema";
-                loginBtn.style.opacity = "1";
-            });
+            loginBtn.disabled = false;
+            btnText.innerText = "Ingresar al Sistema";
+            loginBtn.style.opacity = "1";
         }
+    })
+    .catch(err => {
+        loginError.style.display = "block";
+        loginError.innerText = "Error de conexión con el servidor";
+        
+        if (!esAutoLogin) {
+            cerrarSesion();
+        }
+        
+        loginBtn.disabled = false;
+        btnText.innerText = "Ingresar al Sistema";
+        loginBtn.style.opacity = "1";
+    });
+}
 
         window.addEventListener("load", function() {
             actualizarIndicadorOffline();
             procesarColaPendientes();
             setInterval(procesarColaPendientes, 15000);
+            verificarSesionGuardada();
         });
 
         window.addEventListener("online", function() {
