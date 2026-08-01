@@ -620,7 +620,19 @@
         <input type="text" id="inf-empresa" oninput="actualizarDescripcionDinamica()" placeholder="Nombre de la empresa">
     </div>
 
-    <div class="form-group"><label>Correo Electrónico</label><input type="email" id="inf-correo" oninput="actualizarDescripcionDinamica()"></div>
+    <div class="form-group">
+    <label>Correo Electrónico (Notificación)</label>
+    <div style="display: flex; gap: 8px;">
+        <input type="email" id="inf-correo" oninput="actualizarDescripcionDinamica(); guardarBorradorFormulario();" placeholder="correo1@empresa.com" style="flex: 1;">
+        <button type="button" id="btn-add-email" onclick="mostrarSegundoCorreo()" style="background-color: var(--primary); border: 1px solid var(--secondary); color: #00f0ff; padding: 10px 14px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 18px;" title="Agregar otro correo">+</button>
+    </div>
+
+    <!-- Campo para el 2do Correo (Oculto por defecto) -->
+    <div id="contenedor-correo-2" style="display: none; flex-direction: row; gap: 8px; margin-top: 8px;">
+        <input type="email" id="inf-correo-2" oninput="actualizarDescripcionDinamica(); guardarBorradorFormulario();" placeholder="correo2@empresa.com (Opcional)" style="flex: 1;">
+        <button type="button" onclick="ocultarSegundoCorreo()" style="background-color: rgba(255, 0, 85, 0.2); border: 1px solid var(--danger); color: #ff0055; padding: 10px 14px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 14px;" title="Quitar correo">✕</button>
+    </div>
+</div>
     <div class="form-group"><label>N° Licencia de Conducir</label><input type="text" id="inf-licencia" oninput="actualizarDescripcionDinamica()"></div>
     <div class="form-group"><label>Placa de Vehículo</label><input type="text" id="inf-placa" oninput="actualizarDescripcionDinamica()"></div>
 </div>
@@ -1043,6 +1055,8 @@ function guardarBorradorFormulario() {
         conducta: document.getElementById("inf-conducta")?.value || "",
         descripcion: document.getElementById("inf-descripcion")?.value || "",
         fotos: fotosBase64Guardadas || []
+        correo2: document.getElementById("inf-correo-2")?.value || "",
+        tieneCorreo2: document.getElementById("contenedor-correo-2")?.style.display === "flex"
     };
 
     localStorage.setItem("papeleta_borrador_temp", JSON.stringify(borrador));
@@ -1075,6 +1089,11 @@ function recuperarBorradorFormulario() {
                 fotosBase64Guardadas = borrador.fotos;
                 renderizarGaleriaPrevia();
             }
+            if (borrador.tieneCorreo2) {
+                mostrarSegundoCorreo();
+               if(document.getElementById("inf-correo-2")) document.getElementById("inf-correo-2").value = borrador.correo2;
+            }
+
         }
     } catch(e) {
         console.error("Error al recuperar borrador:", e);
@@ -1118,6 +1137,39 @@ function renderizarGaleriaPrevia() {
         divContenedor.appendChild(btnBorrar);
         contenedorPrevia.appendChild(divContenedor);
     });
+}
+        // =========================================================================
+// GESTIÓN DE MÚLTIPLES CORREOS DE NOTIFICACIÓN
+// =========================================================================
+
+function mostrarSegundoCorreo() {
+    const contenedor = document.getElementById("contenedor-correo-2");
+    const btnAdd = document.getElementById("btn-add-email");
+    if (contenedor) contenedor.style.display = "flex";
+    if (btnAdd) btnAdd.style.display = "none";
+    guardarBorradorFormulario();
+}
+
+function ocultarSegundoCorreo() {
+    const contenedor = document.getElementById("contenedor-correo-2");
+    const input2 = document.getElementById("inf-correo-2");
+    const btnAdd = document.getElementById("btn-add-email");
+    
+    if (input2) input2.value = "";
+    if (contenedor) contenedor.style.display = "none";
+    if (btnAdd) btnAdd.style.display = "block";
+    
+    actualizarDescripcionDinamica();
+    guardarBorradorFormulario();
+}
+
+// Obtiene los correos unificados (ej. "correo1@test.com, correo2@test.com")
+function obtenerCorreoCompleto() {
+    const c1 = document.getElementById("inf-correo")?.value.trim() || "";
+    const c2 = document.getElementById("inf-correo-2")?.value.trim() || "";
+    
+    if (c1 && c2) return `${c1}, ${c2}`;
+    return c1 || c2 || "";
 }
         const CONFIG_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykGrZsjMZ3ewTIXjuPKqy-UDpOjtFPtT-ebMM_ilC6bf6qwPRcNn1KhdUhrODdYzEBKg/exec";
         
@@ -1477,7 +1529,7 @@ function renderizarGaleriaPrevia() {
             document.getElementById("pdf-txt-cargo").innerText = document.getElementById("inf-cargo").value || "Conductor / Operador";
             document.getElementById("pdf-txt-contacto").innerText = document.getElementById("inf-contacto").value || "-";
             document.getElementById("pdf-txt-empresa").innerText = document.getElementById("inf-empresa").value || "-";
-            document.getElementById("pdf-txt-correo").innerText = document.getElementById("inf-correo").value || "-";
+            document.getElementById("pdf-txt-correo").innerText = obtenerCorreoCompleto() || "-";
             document.getElementById("pdf-txt-licencia").innerText = document.getElementById("inf-licencia").value || "-";
             document.getElementById("pdf-txt-placa").innerText = document.getElementById("inf-placa").value || "-";
             document.getElementById("pdf-txt-lugar").innerText = document.getElementById("inf-lugar").value || "Instalaciones del Terminal Portuario";
@@ -1554,7 +1606,7 @@ function renderizarGaleriaPrevia() {
                 infractor_cargo: document.getElementById("inf-cargo").value,       
                 infractor_contacto: document.getElementById("inf-contacto").value, 
                 empresa: document.getElementById("inf-empresa").value,
-                infractor_correo: document.getElementById("inf-correo").value,
+                infractor_correo: obtenerCorreoCompleto(),
                 infractor_licencia: document.getElementById("inf-licencia").value, 
                 infractor_placa: document.getElementById("inf-placa").value,       
                 infractor_lugar: document.getElementById("inf-lugar").value,       
@@ -1625,22 +1677,39 @@ function renderizarGaleriaPrevia() {
         }
 
         function finalizarFlujoEmision() {
-            document.getElementById("preview-buttons-group").style.display = "flex";
-            document.getElementById("preview-modal").style.display = "none";
-            
-            document.getElementById("inf-nombre").value = ""; document.getElementById("inf-dni").value = "";
-            document.getElementById("inf-cargo").value = ""; document.getElementById("inf-contacto").value = "";
-            document.getElementById("inf-empresa").value = ""; document.getElementById("inf-correo").value = "";
-            document.getElementById("inf-licencia").value = ""; document.getElementById("inf-placa").value = "";
-            document.getElementById("inf-lugar").value = ""; document.getElementById("inf-fecha-hora").value = "";
-            document.getElementById("inf-conducta").value = ""; document.getElementById("inf-descripcion").value = "";
-            document.getElementById("galeria-previa").innerHTML = "";
-            fotosBase64Guardadas = [];
-            plantillaRawSeleccionada = "";
-            
-            limpiarBorradorFormulario();
-            cargarDatosBaseDeDatos();
-        }
+    document.getElementById("preview-buttons-group").style.display = "flex";
+    document.getElementById("preview-modal").style.display = "none";
+    
+    // Limpieza de inputs
+    document.getElementById("inf-nombre").value = ""; 
+    document.getElementById("inf-dni").value = "";
+    document.getElementById("inf-cargo").value = ""; 
+    document.getElementById("inf-contacto").value = "";
+    document.getElementById("inf-empresa").value = ""; 
+    document.getElementById("inf-correo").value = "";
+    
+    // 🚀 LIMPIAR Y OCULTAR EL SEGUNDO CORREO
+    if (document.getElementById("inf-correo-2")) {
+        document.getElementById("inf-correo-2").value = "";
+    }
+    ocultarSegundoCorreo(); // Oculta la casilla del 2do correo y vuelve a mostrar el botón "+"
+
+    document.getElementById("inf-licencia").value = ""; 
+    document.getElementById("inf-placa").value = "";
+    document.getElementById("inf-lugar").value = ""; 
+    document.getElementById("inf-fecha-hora").value = "";
+    document.getElementById("inf-conducta").value = ""; 
+    document.getElementById("inf-descripcion").value = "";
+    document.getElementById("galeria-previa").innerHTML = "";
+    
+    fotosBase64Guardadas = [];
+    plantillaRawSeleccionada = "";
+    
+    // Limpia también el borrador guardado en el teléfono
+    limpiarBorradorFormulario();
+    
+    cargarDatosBaseDeDatos();
+}
 
         function cambiarPestaña(target, btn) {
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
