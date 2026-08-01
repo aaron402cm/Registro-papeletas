@@ -1004,6 +1004,101 @@ function cerrarSesion() {
     document.getElementById("login-screen").style.display = "flex";
     document.getElementById("app-password").value = "";
 }
+        // =========================================================================
+// SISTEMA DE AUTO-GUARDADO DE BORRADOR (PREVIENE PÉRDIDA DE DATOS)
+// =========================================================================
+
+function guardarBorradorFormulario() {
+    const borrador = {
+        nombre: document.getElementById("inf-nombre")?.value || "",
+        dni: document.getElementById("inf-dni")?.value || "",
+        cargo: document.getElementById("inf-cargo")?.value || "",
+        contacto: document.getElementById("inf-contacto")?.value || "",
+        empresa: document.getElementById("inf-empresa")?.value || "",
+        correo: document.getElementById("inf-correo")?.value || "",
+        licencia: document.getElementById("inf-licencia")?.value || "",
+        placa: document.getElementById("inf-placa")?.value || "",
+        lugar: document.getElementById("inf-lugar")?.value || "",
+        fechaHora: document.getElementById("inf-fecha-hora")?.value || "",
+        conducta: document.getElementById("inf-conducta")?.value || "",
+        descripcion: document.getElementById("inf-descripcion")?.value || "",
+        fotos: fotosBase64Guardadas || []
+    };
+
+    localStorage.setItem("papeleta_borrador_temp", JSON.stringify(borrador));
+}
+
+function recuperarBorradorFormulario() {
+    const dataRaw = localStorage.getItem("papeleta_borrador_temp");
+    if (!dataRaw) return;
+
+    try {
+        const borrador = JSON.parse(dataRaw);
+
+        // Si hay al menos un dato escrito, restaurar
+        if (borrador.nombre || borrador.dni || borrador.conducta || (borrador.fotos && borrador.fotos.length > 0)) {
+            if(document.getElementById("inf-nombre")) document.getElementById("inf-nombre").value = borrador.nombre;
+            if(document.getElementById("inf-dni")) document.getElementById("inf-dni").value = borrador.dni;
+            if(document.getElementById("inf-cargo")) document.getElementById("inf-cargo").value = borrador.cargo;
+            if(document.getElementById("inf-contacto")) document.getElementById("inf-contacto").value = borrador.contacto;
+            if(document.getElementById("inf-empresa")) document.getElementById("inf-empresa").value = borrador.empresa;
+            if(document.getElementById("inf-correo")) document.getElementById("inf-correo").value = borrador.correo;
+            if(document.getElementById("inf-licencia")) document.getElementById("inf-licencia").value = borrador.licencia;
+            if(document.getElementById("inf-placa")) document.getElementById("inf-placa").value = borrador.placa;
+            if(document.getElementById("inf-lugar")) document.getElementById("inf-lugar").value = borrador.lugar;
+            if(document.getElementById("inf-fecha-hora")) document.getElementById("inf-fecha-hora").value = borrador.fechaHora;
+            if(document.getElementById("inf-conducta")) document.getElementById("inf-conducta").value = borrador.conducta;
+            if(document.getElementById("inf-descripcion")) document.getElementById("inf-descripcion").value = borrador.descripcion;
+
+            // Restaurar fotos
+            if (borrador.fotos && Array.isArray(borrador.fotos) && borrador.fotos.length > 0) {
+                fotosBase64Guardadas = borrador.fotos;
+                renderizarGaleriaPrevia();
+            }
+        }
+    } catch(e) {
+        console.error("Error al recuperar borrador:", e);
+    }
+}
+
+function limpiarBorradorFormulario() {
+    localStorage.removeItem("papeleta_borrador_temp");
+}
+
+function renderizarGaleriaPrevia() {
+    const contenedorPrevia = document.getElementById("galeria-previa");
+    if (!contenedorPrevia) return;
+    contenedorPrevia.innerHTML = "";
+
+    fotosBase64Guardadas.forEach((fotoBase64) => {
+        const divContenedor = document.createElement("div");
+        divContenedor.style.position = "relative";
+
+        const img = document.createElement("img");
+        img.src = fotoBase64;
+        img.style.width = "80px"; img.style.height = "80px";
+        img.style.objectFit = "cover"; img.style.borderRadius = "8px";
+        img.style.border = "2px solid var(--apm-orange)";
+
+        const btnBorrar = document.createElement("button");
+        btnBorrar.innerText = "✕";
+        btnBorrar.style.position = "absolute"; btnBorrar.style.top = "-5px"; btnBorrar.style.right = "-5px";
+        btnBorrar.style.background = "red"; btnBorrar.style.color = "white"; btnBorrar.style.border = "none";
+        btnBorrar.style.borderRadius = "50%"; btnBorrar.style.width = "20px"; btnBorrar.style.height = "20px";
+        btnBorrar.style.fontSize = "12px"; btnBorrar.style.cursor = "pointer";
+        
+        btnBorrar.onclick = function() {
+            const index = fotosBase64Guardadas.indexOf(fotoBase64);
+            if (index > -1) fotosBase64Guardadas.splice(index, 1);
+            divContenedor.remove();
+            guardarBorradorFormulario(); // Guardar cambio al eliminar foto
+        };
+
+        divContenedor.appendChild(img);
+        divContenedor.appendChild(btnBorrar);
+        contenedorPrevia.appendChild(divContenedor);
+    });
+}
         const CONFIG_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykGrZsjMZ3ewTIXjuPKqy-UDpOjtFPtT-ebMM_ilC6bf6qwPRcNn1KhdUhrODdYzEBKg/exec";
         
         let databaseCache = { usuarios: [], historial: [], plantillas: [] };
@@ -1117,6 +1212,12 @@ function cerrarSesion() {
             procesarColaPendientes();
             setInterval(procesarColaPendientes, 15000);
             verificarSesionGuardada();
+            recuperarBorradorFormulario();
+            const formularioSection = document.getElementById("view-formulario");
+            if (formularioSection) {
+            formularioSection.addEventListener("input", guardarBorradorFormulario);
+            formularioSection.addEventListener("change", guardarBorradorFormulario);
+           }
         });
 
         window.addEventListener("online", function() {
@@ -1251,6 +1352,7 @@ function cerrarSesion() {
             contenedorPrevia.appendChild(divContenedor);
 
             cerrarModalRecorte();
+            guardarBorradorFormulario();
         }
 
         function buscarPlantillas(valor) {
@@ -1516,6 +1618,7 @@ function cerrarSesion() {
             fotosBase64Guardadas = [];
             plantillaRawSeleccionada = "";
             
+            limpiarBorradorFormulario();
             cargarDatosBaseDeDatos();
         }
 
