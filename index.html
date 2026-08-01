@@ -975,15 +975,18 @@ function verificarSesionGuardada() {
     if (savedUser && savedAuth && expiry) {
         const ahora = Date.now();
         if (ahora < Number(expiry)) {
-            // La sesión sigue vigente (menos de 12 horas)
-            document.getElementById("app-username").value = savedUser;
-            document.getElementById("app-password").value = savedAuth;
-            
-            // Autologin silencioso
-            verificarPassword(true);
+            // ⚡ Ocultar login y mostrar la app DE INMEDIATO para evitar el parpadeo
+            document.getElementById("login-screen").style.display = "none";
+            document.getElementById("main-app").style.display = "block";
+
+            // Llenar datos de sesión
+            sessionStorage.setItem("secure_user_initials", savedUser);
+            sessionStorage.setItem("secure_auth_plain", savedAuth);
+
+            // Cargar datos en segundo plano silenciosamente
+            cargarDatosBaseDeDatos();
         } else {
-            // Pasaron más de 12 horas: expira la sesión
-            console.log("Sesión expirada después de 12 horas.");
+            // Sesión expirada después de 12 horas
             cerrarSesion();
         }
     }
